@@ -1,6 +1,6 @@
 {
   "minecraft": "1.21.1",
-  "neoforge": "21.1.259",
+  "neoforge": "21.1.264",
   "server": "91.197.6.164:22974",
   "managed": ["mods", "kubejs", "shaderpacks", "resourcepacks"],
   "configOnce": true
