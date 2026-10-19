@@ -1,0 +1,7 @@
+{
+  "minecraft": "1.21.1",
+  "neoforge": "21.1.259",
+  "server": "ton.serveur.minestrator.com:25565",
+  "managed": ["mods", "kubejs", "shaderpacks", "resourcepacks"],
+  "configOnce": true
+}
