@@ -1,0 +1,5 @@
+{
+  "the_world": {
+    "sounds": [ { "name": "mcrp:the_world", "attenuation_distance": 48 } ]
+  }
+}
