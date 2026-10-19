@@ -1,0 +1,19 @@
+{
+ "version": "2026-10-19T15:59:20.585Z",
+ "minecraft": "1.21.1",
+ "neoforge": "21.1.259",
+ "managed": [
+  "mods",
+  "kubejs",
+  "shaderpacks",
+  "resourcepacks"
+ ],
+ "server": "ton.serveur.minestrator.com:25565",
+ "files": [
+  {
+   "path": "mods/.gitkeep",
+   "sha1": "adc83b19e793491b1c6ea0fd8b46cd9f32e592fc",
+   "size": 1
+  }
+ ]
+}
