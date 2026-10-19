@@ -1,5 +1,5 @@
 {
- "version": "2026-10-19T16:27:15.642Z",
+ "version": "2026-10-19T16:30:22.453Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.259",
  "managed": [
@@ -8,7 +8,7 @@
   "shaderpacks",
   "resourcepacks"
  ],
- "server": "ton.serveur.minestrator.com:25565",
+ "server": "91.197.6.164:22974",
  "files": [
   {
    "path": "kubejs/assets/kubejs/textures/block/example_block.png",
