@@ -1,19 +1,784 @@
 {
- "version": "2026-10-19T15:59:20.585Z",
+ "version": "2026-10-19T16:44:36.662Z",
  "minecraft": "1.21.1",
- "neoforge": "21.1.259",
+ "neoforge": "21.1.264",
  "managed": [
   "mods",
   "kubejs",
   "shaderpacks",
   "resourcepacks"
  ],
- "server": "ton.serveur.minestrator.com:25565",
+ "server": "91.197.6.164:22974",
  "files": [
   {
-   "path": "mods/.gitkeep",
-   "sha1": "adc83b19e793491b1c6ea0fd8b46cd9f32e592fc",
-   "size": 1
+   "path": "kubejs/assets/kubejs/textures/block/example_block.png",
+   "sha1": "87f5ec8c26493050fc83543af8d33f2d28a98766",
+   "size": 247
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/item/example_item.png",
+   "sha1": "d9912cb709ad496b10f19f8b2c66d1e419eb760c",
+   "size": 372
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds.json",
+   "sha1": "ad34d26a3877510e350bb0232b928ccd7d6cc729",
+   "size": 100
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/the_world.ogg",
+   "sha1": "b5608f2b54137a5eb01445a80f1aa20735c29169",
+   "size": 56464
+  },
+  {
+   "path": "kubejs/client_scripts/classes_langue (11).js",
+   "sha1": "b81b962927da1f40297bbff9ce597966af517da1",
+   "size": 437740
+  },
+  {
+   "path": "kubejs/client_scripts/classes_langue_armes (2).js",
+   "sha1": "4f062666a0adb8eb34f19b0a6eb793cdea652cb9",
+   "size": 40064
+  },
+  {
+   "path": "kubejs/client_scripts/classes_langue_invocations (1).js",
+   "sha1": "cf75ed94b43dc0640f858f509a34f178eeebc483",
+   "size": 3447
+  },
+  {
+   "path": "kubejs/client_scripts/classes_tooltips (18).js",
+   "sha1": "937fe08c16e377bb6928867a9149aab40b4ce331",
+   "size": 71285
+  },
+  {
+   "path": "kubejs/client_scripts/main.js",
+   "sha1": "e6f23e21b25a366f2216fbf7da00ed7d34542f20",
+   "size": 116
+  },
+  {
+   "path": "kubejs/client_scripts/worldstop_portee_client.js",
+   "sha1": "0fc4fec175abe533dfa4b0b07abf309465f8c77b",
+   "size": 2219
+  },
+  {
+   "path": "kubejs/server_scripts/classes_boosts.js",
+   "sha1": "32c615ae118d3a3c0acd9bd1d0306a0bab07fa9e",
+   "size": 5919
+  },
+  {
+   "path": "kubejs/server_scripts/classes_desactives (2).js",
+   "sha1": "31e48d1c27bdaea49ca2b95b4d2e350c06b38a24",
+   "size": 7212
+  },
+  {
+   "path": "kubejs/server_scripts/classes_dump_armes (1).js",
+   "sha1": "e52e221317eb211b0029965a3740402a2bbe6c31",
+   "size": 2609
+  },
+  {
+   "path": "kubejs/server_scripts/classes_invocations (8).js",
+   "sha1": "449c9535a6c4090d509703178a19f573e8c52b56",
+   "size": 3472
+  },
+  {
+   "path": "kubejs/server_scripts/classes_rp (38).js",
+   "sha1": "2350a4d3a8b2d83d9ff1651417bc751dcffc7215",
+   "size": 62017
+  },
+  {
+   "path": "kubejs/server_scripts/classes_sets_hazen.js",
+   "sha1": "ab1569302a73f539b4683453f6209cbf55decfac",
+   "size": 2311
+  },
+  {
+   "path": "kubejs/server_scripts/classes_sons.js",
+   "sha1": "ca10c6d53d6f4326fa1e7518e5dfcc00535602d2",
+   "size": 1549
+  },
+  {
+   "path": "kubejs/server_scripts/mobs_distance.js",
+   "sha1": "757db7dbdb01fbe46c02c961abf1c7eb76ebf722",
+   "size": 10824
+  },
+  {
+   "path": "kubejs/server_scripts/rtp.js",
+   "sha1": "638dded3f47f214f28cf6bdf4661a0db77846ee8",
+   "size": 4531
+  },
+  {
+   "path": "kubejs/server_scripts/worldstop_portee.js",
+   "sha1": "8608af27129ef08101f53327dc97c8e331ab283e",
+   "size": 8295
+  },
+  {
+   "path": "kubejs/startup_scripts/classes_effets.js",
+   "sha1": "ed0ed6bd0cb4dd8967b85a626031e165df85580d",
+   "size": 5151
+  },
+  {
+   "path": "kubejs/startup_scripts/classes_niveaux.js",
+   "sha1": "b9817bb041f4bc077480e427181fe2f34b2ac7c9",
+   "size": 2448
+  },
+  {
+   "path": "kubejs/startup_scripts/main.js",
+   "sha1": "05ec115c372985dc9f77dd2513933aa8e90eba61",
+   "size": 117
+  },
+  {
+   "path": "mods/aaa_particles-neoforge-1.21.1-2.3.4.jar",
+   "sha1": "d8c7edd2cc8667ceeaf8e63865733048ae75eb5c",
+   "size": 5637159
+  },
+  {
+   "path": "mods/aces_spell_utils-1.2.7.4-1.21.1.jar",
+   "sha1": "9e52e16d97b22a105c13ed85ddb4a8795429987f",
+   "size": 398212
+  },
+  {
+   "path": "mods/acolyte-1.0.3.jar",
+   "sha1": "ad0abc821f3f8a6573ac19a50970fc1bc46b4275",
+   "size": 621837
+  },
+  {
+   "path": "mods/allthewizardgear-1.21.1-1.2.0.jar",
+   "sha1": "2eb0436130f08ad1228a1253649b2f28cdf89711",
+   "size": 125549
+  },
+  {
+   "path": "mods/ApothicAttributes-1.21.1-2.11.0.jar",
+   "sha1": "7ff0e452e10cb582c188626a413037e63db9ca04",
+   "size": 319609
+  },
+  {
+   "path": "mods/apprentice_codex-1.0.0+mc1.21.1.jar",
+   "sha1": "404a461c50bfee27d64f2c55eb1a0f40406299dd",
+   "size": 11215186
+  },
+  {
+   "path": "mods/archaion-1.21.1-1.4.4.jar",
+   "sha1": "157513c36b59ebb275fc8176fc7ace4d118c5d75",
+   "size": 7255820
+  },
+  {
+   "path": "mods/architectury-13.0.11-neoforge.jar",
+   "sha1": "008656a0702801174b8ec245ed7aad1921d6e9f1",
+   "size": 584734
+  },
+  {
+   "path": "mods/asterismarcanum-1.21.1-0.1.0.jar",
+   "sha1": "4a25ba80116168ddcc812f71467c0598127e774a",
+   "size": 987245
+  },
+  {
+   "path": "mods/atlas_api-1.21.1-1.2.0.jar",
+   "sha1": "79487e97bd6dbbd6cfbdbcd4fbf1a7ac34fb8998",
+   "size": 28419
+  },
+  {
+   "path": "mods/Auroras-1.21-1.6.2.jar",
+   "sha1": "2a27027b3c95823e4bf7e0aa635b92742ca407e0",
+   "size": 2116122
+  },
+  {
+   "path": "mods/azurelib-neo-1.21.1-3.1.23-alpha.2.jar",
+   "sha1": "6151497f0889cda7f88120020a015c97e8dc86f8",
+   "size": 973473
+  },
+  {
+   "path": "mods/balm-neoforge-1.21.1-21.0.66.jar",
+   "sha1": "dd3606a349f4a3c8fb5bd0ab22905675c02b0d74",
+   "size": 783793
+  },
+  {
+   "path": "mods/better-advanced-tooltips-2101.1.0-build.5.jar",
+   "sha1": "5b73537b908764f2d3fd593a0f56a8b1b034bc50",
+   "size": 37653
+  },
+  {
+   "path": "mods/bettercombat-neoforge-2.4.0+1.21.1.jar",
+   "sha1": "bacbc8c86671663e9998b141c5732250c1f4d4fb",
+   "size": 1045389
+  },
+  {
+   "path": "mods/biolith-neoforge-3.0.14.jar",
+   "sha1": "8b041bce1cd0c5f5223c285784a3e8498273d6ea",
+   "size": 218062
+  },
+  {
+   "path": "mods/BiomesOPlenty-neoforge-1.21.1-21.1.0.14.jar",
+   "sha1": "6a12e1a249d074fb18f07d1f141b80ca2885e2be",
+   "size": 22338157
+  },
+  {
+   "path": "mods/caelus-neoforge-7.0.1+1.21.1.jar",
+   "sha1": "e4c2e1af4e3082d68f7df75f7c8ce30116d71515",
+   "size": 50235
+  },
+  {
+   "path": "mods/carryon-neoforge-1.21.1-2.2.6.13.jar",
+   "sha1": "2ceb0d9284525b6cb2a214c88cf6511cab91f601",
+   "size": 361486
+  },
+  {
+   "path": "mods/cataclysm_spellbooks-1.1.11-1.21.jar",
+   "sha1": "917c976cf801d4d0090c57686f1ad1693b714117",
+   "size": 737143
+  },
+  {
+   "path": "mods/chronomancy-1.0.5.jar",
+   "sha1": "307e2d0edc765a02b224d47724c750116d002df1",
+   "size": 5879199
+  },
+  {
+   "path": "mods/citadel-1.21.1-2.7.6.jar",
+   "sha1": "e0392370117ec16a721f8d65728944398de77607",
+   "size": 3028943
+  },
+  {
+   "path": "mods/cloth-config-15.0.140-neoforge.jar",
+   "sha1": "c3e5733ba4503b102589a026000fd5ce0212f6f2",
+   "size": 1163890
+  },
+  {
+   "path": "mods/Clumps-neoforge-1.21.1-19.0.0.1.jar",
+   "sha1": "fa2576297c7bd12b28aa7070e8141792bd66da4c",
+   "size": 18382
+  },
+  {
+   "path": "mods/cobweb-neoforge-1.21-1.4.0.jar",
+   "sha1": "5ae5dbf4184a62b9ff5bd31f6f8ba62943dd197d",
+   "size": 410948
+  },
+  {
+   "path": "mods/codexregroup-1.0.2.jar",
+   "sha1": "df3863d5c26f09b5f1d94cc71f950bb12c0fddf8",
+   "size": 8045
+  },
+  {
+   "path": "mods/colormagic-1.3.0.jar",
+   "sha1": "76add0d3758eb8fc0a62caa8920426e622b8f955",
+   "size": 923015
+  },
+  {
+   "path": "mods/comforts-neoforge-9.0.5+1.21.1.jar",
+   "sha1": "21d6bee3821d62fe3356c51fb1d697871a3087ff",
+   "size": 422658
+  },
+  {
+   "path": "mods/connectedglass-1.1.14-neoforge-mc1.21.jar",
+   "sha1": "0a44c13d6744e0eeec5bf38f58756a8e86e96f55",
+   "size": 819976
+  },
+  {
+   "path": "mods/corpse-neoforge-1.21.1-1.1.21.jar",
+   "sha1": "124791f94c501c2c12a132f4cc69a3a738498b9d",
+   "size": 256713
+  },
+  {
+   "path": "mods/craftedcore-5.8.2.jar",
+   "sha1": "4215877e2366d0be5e159470b6ecdce33d34a0fb",
+   "size": 780543
+  },
+  {
+   "path": "mods/CreeperOverhaul-neoforge-1.21.1-4.0.6.jar",
+   "sha1": "5a07cc032df790e7d110ad3dedb7a76253ffd565",
+   "size": 1185088
+  },
+  {
+   "path": "mods/cristellib-neoforge-1.21.1-3.1.7.jar",
+   "sha1": "d250804b7ecea365bc736ec36ec6fc3f933917f1",
+   "size": 583525
+  },
+  {
+   "path": "mods/crittersandcompanions-neoforge-1.21.1-2.7.0.jar",
+   "sha1": "957286bd79fd0b735c2e9619a249dde77292ca06",
+   "size": 2098079
+  },
+  {
+   "path": "mods/crystal_chronicles-0.1.4-alpha.jar",
+   "sha1": "b9627bd03ad4e8b5037905732b775bb20d9dcc1b",
+   "size": 2188817
+  },
+  {
+   "path": "mods/curios-neoforge-9.5.1+1.21.1.jar",
+   "sha1": "418fcd42e3a7844c9bdc71c9b6401fdb3894e0c4",
+   "size": 410690
+  },
+  {
+   "path": "mods/cursed_school-1.21.1-1.0.17.jar",
+   "sha1": "0113854450c5267435c6e5ca0237dc85c9337bdf",
+   "size": 679474
+  },
+  {
+   "path": "mods/cursespells-1.21.1-1.0.0.jar",
+   "sha1": "87111a988be3f089d7b9954e5c269cce83afbb99",
+   "size": 24494296
+  },
+  {
+   "path": "mods/darkdoppelganger-4.1.0-1.21.1.jar",
+   "sha1": "b20fcbdd8a012587a9dc1e89fc3855b19c93539c",
+   "size": 4520327
+  },
+  {
+   "path": "mods/dummmmmmy-1.21-2.1.2-neoforge.jar",
+   "sha1": "87fb529cbb220a33fedf45a4a6f2269b8e00fffe",
+   "size": 215883
+  },
+  {
+   "path": "mods/emf_compat_core_neoforge_1.21.1_2.3.2.jar",
+   "sha1": "67e4a92e2df2a2b86a655cfc081d971a81f5a9f8",
+   "size": 174702
+  },
+  {
+   "path": "mods/emf_compat_iron_spells_neoforge_1.21.1_2.1.0.jar",
+   "sha1": "3c809569e5082cda819065a6747ab0ca49c5ed53",
+   "size": 104918
+  },
+  {
+   "path": "mods/emotecraft-borrow-their-emote-1.0.1+1.21.1+neoforge.jar",
+   "sha1": "e2cf8d40b01a06ec39e5d5a4674962a1045c5dae",
+   "size": 304401
+  },
+  {
+   "path": "mods/emotecraft-for-MC1.21.1-2.4.12-neoforge.jar",
+   "sha1": "1228c7597c4b6cbaec10a090f9b5b471ca9042d4",
+   "size": 861829
+  },
+  {
+   "path": "mods/endermanoverhaul-neoforge-1.21.1-2.0.3.jar",
+   "sha1": "f71aa503738f2e23a8d939b7ea9f96f2fe203f11",
+   "size": 1330403
+  },
+  {
+   "path": "mods/entity_model_features-3.3.12-1.21-neoforge.jar",
+   "sha1": "e9a163b77243cdfcb0ad3d698dc48a60cb8710e9",
+   "size": 656382
+  },
+  {
+   "path": "mods/entity_texture_features-7.2.6-1.21-neoforge.jar",
+   "sha1": "1a77ddb156daa4125c205424f05f0fa861517d9c",
+   "size": 807089
+  },
+  {
+   "path": "mods/esoteric_spell-1.3.53.jar",
+   "sha1": "0f2a49e07fecf3c6a01ed91ccc7869734af57b37",
+   "size": 6721701
+  },
+  {
+   "path": "mods/expandability-12.0.0.jar",
+   "sha1": "70cf454b1217a350f1789fabb39b6622aac8be12",
+   "size": 44765
+  },
+  {
+   "path": "mods/farmers-spell-n-spellbook-1.0.6.0-1.21.1.jar",
+   "sha1": "9e79fb168da979e4aed035c41e417812415d09c9",
+   "size": 5584679
+  },
+  {
+   "path": "mods/FarmersDelight-1.21.1-1.3.4.jar",
+   "sha1": "27675ddfcb8cc37e6ea1ab6c15051c7949d94657",
+   "size": 3160490
+  },
+  {
+   "path": "mods/FastFurnace-1.21.1-9.0.1.jar",
+   "sha1": "acdcdc7c61b49b3b04490fce9843dcf8b531dfc3",
+   "size": 4623
+  },
+  {
+   "path": "mods/fastleafdecay-35.jar",
+   "sha1": "589f05dcd58d3708cee9046b23fe11fb81a25d2e",
+   "size": 9511
+  },
+  {
+   "path": "mods/FastWorkbench-1.21.1-9.1.3.jar",
+   "sha1": "7343b63ded70c0546811c768118d16d3a86418ee",
+   "size": 28635
+  },
+  {
+   "path": "mods/firesenderexpansion-2.5.1.jar",
+   "sha1": "ff881371ff04f77135f0a7f4f11ff80cc70bb53f",
+   "size": 2477428
+  },
+  {
+   "path": "mods/framework-neoforge-1.21.1-0.13.11.jar",
+   "sha1": "e46eb138fbb13a12f37154fb4ec407d64b326475",
+   "size": 387334
+  },
+  {
+   "path": "mods/ftb-library-neoforge-2101.1.37.jar",
+   "sha1": "b6e503587afcd678ec257e4abdc6362ff18c2fef",
+   "size": 1439881
+  },
+  {
+   "path": "mods/ftb-quests-neoforge-2101.1.36.jar",
+   "sha1": "b2ede29b98a3022c22065fbe9b1761e385a28683",
+   "size": 1609984
+  },
+  {
+   "path": "mods/ftb-teams-neoforge-2101.1.11.jar",
+   "sha1": "62b65f752d0326edd13244e58d5f2aec035da4e9",
+   "size": 308236
+  },
+  {
+   "path": "mods/fusion-1.3.16-neoforge-mc1.21.1.jar",
+   "sha1": "c3cd7c2718583aa5a12e8502c6b92e050bad0c19",
+   "size": 947335
+  },
+  {
+   "path": "mods/fzzy_config-0.7.7+1.21+neoforge.jar",
+   "sha1": "518eadc53c065a74a49207769209c116e77d1849",
+   "size": 2392693
+  },
+  {
+   "path": "mods/gametechbcs_spellbooks-3.0.0-1.21.1.jar",
+   "sha1": "9631e1e55aca8fcdc92438345794d49dddf97e5d",
+   "size": 1689146
+  },
+  {
+   "path": "mods/GatewaysToEternity-1.21.1-5.1.0.jar",
+   "sha1": "f91a593378209f527fe81e731ca60fe8f8da2319",
+   "size": 646451
+  },
+  {
+   "path": "mods/geckolib-neoforge-1.21.1-4.9.3.jar",
+   "sha1": "5cfe835472a5c5457ae9ac192d9d7b317454d5ac",
+   "size": 634531
+  },
+  {
+   "path": "mods/ghosts-neoforge-1.21.1-1.3.4.jar",
+   "sha1": "17709b739ea8652252d71ef2ccc5a9829c2c845e",
+   "size": 708088
+  },
+  {
+   "path": "mods/GlitchCore-neoforge-1.21.1-2.1.0.2.jar",
+   "sha1": "a31c3f36330f19aa538add3d727782a62c9c30ad",
+   "size": 90717
+  },
+  {
+   "path": "mods/goblintraders-neoforge-1.21.1-1.11.2.jar",
+   "sha1": "4507faefb977321b598daa3fb35d7e1a9a03eb80",
+   "size": 462245
+  },
+  {
+   "path": "mods/golemoverhaul-neoforge-1.21.1-1.1.1.jar",
+   "sha1": "797235253e2477822c8b18e3e9f4643dc9d8e634",
+   "size": 1036924
+  },
+  {
+   "path": "mods/GrandTeleport-NeoForge-1.21.1-1.0.2.jar",
+   "sha1": "d18b3b38cda73abc383a5832854fd4cc42c8ab0f",
+   "size": 1290817
+  },
+  {
+   "path": "mods/gtbcs_cataclysmic_uis-1.0.3+1.21.1.jar",
+   "sha1": "b5f665dbe83105092c7731ae9f53d1f3a9359549",
+   "size": 655091
+  },
+  {
+   "path": "mods/gtbcs_geomancy_plus-1.1.0-1.21.1.jar",
+   "sha1": "67e9652799f35f1fbd09968da6f400d0229f5599",
+   "size": 475333
+  },
+  {
+   "path": "mods/gtbcs_spell_lib-2.2.0-1.21.1.jar",
+   "sha1": "36cce8ab3117e89ae992a84a566d596709db2ffe",
+   "size": 308353
+  },
+  {
+   "path": "mods/hazennstuff-1.4.0.14.jar",
+   "sha1": "3be20bacb44c1923348ab6f61b685eec6aacfdcd",
+   "size": 7921289
+  },
+  {
+   "path": "mods/hazentouvelib-1.0.11.jar",
+   "sha1": "2ecd8cc5f41c5581d03e52e457ed45ec787cb04c",
+   "size": 580898
+  },
+  {
+   "path": "mods/iris-neoforge-1.8.14-beta.1+mc1.21.1.jar",
+   "sha1": "1bd129cf7bce65d6b1c0543045f0620c98a0f885",
+   "size": 2540723
+  },
+  {
+   "path": "mods/irons_jewelry-1.21.1-2.0.2.jar",
+   "sha1": "2f8d934d04111037dcf3fe7b04c96aec892da744",
+   "size": 731614
+  },
+  {
+   "path": "mods/irons_lib-1.21.1-2.2.0.jar",
+   "sha1": "33ca1a58dc0b384a6de26171f34b3bf608aaeeb2",
+   "size": 462255
+  },
+  {
+   "path": "mods/irons_spellbooks-1.21.1-3.16.3.jar",
+   "sha1": "017fd8140c477f9ae602cf95594f1c23bef1d6e3",
+   "size": 13890046
+  },
+  {
+   "path": "mods/iss_magicfromtheeast-1.1.5.jar",
+   "sha1": "e3552ea6b7b32b843c48bf0d857237d4b7129ab0",
+   "size": 1680780
+  },
+  {
+   "path": "mods/jei-1.21.1-neoforge-19.64.0.455.jar",
+   "sha1": "f6d6fc08d54c40752926b570a2220471e8c45c1a",
+   "size": 2375741
+  },
+  {
+   "path": "mods/kotlinforforge-5.12.0-all.jar",
+   "sha1": "a2032c921e93a0ccb0db5d742167e3139c2de01b",
+   "size": 7279276
+  },
+  {
+   "path": "mods/kubejs-neoforge-2101.7.2-build.377.jar",
+   "sha1": "150c5d6efc09b969ac350ea205128dff832e0850",
+   "size": 2294111
+  },
+  {
+   "path": "mods/L_Ender's Cataclysm 1.21.1-3.33.jar",
+   "sha1": "f0310277167c82fd16a5c2bab220b5c5c262f133",
+   "size": 73375667
+  },
+  {
+   "path": "mods/lionfishapi-3.1.jar",
+   "sha1": "353ca00ed118eb67cf11085abbbd699884722326",
+   "size": 91596
+  },
+  {
+   "path": "mods/lithostitched-1.8.1-neoforge-21.1.jar",
+   "sha1": "88cdded5b617e19b4d2676948b5550699de23578",
+   "size": 1023751
+  },
+  {
+   "path": "mods/lootr-neoforge-1.21.1-1.11.38.127.jar",
+   "sha1": "7a305b581abd90e1a8b7c1bb5eb4511d2653aa58",
+   "size": 1075929
+  },
+  {
+   "path": "mods/mcrp_voice-1.0.0.jar",
+   "sha1": "0310214d035cd42a412fa3fce2b45d847d8f1aa4",
+   "size": 23561
+  },
+  {
+   "path": "mods/mcw-bridges-3.1.2-mc1.21.1neoforge.jar",
+   "sha1": "71ece28129789a2123cf07e79938f488d8675bb2",
+   "size": 661387
+  },
+  {
+   "path": "mods/mcw-lights-1.1.5-mc1.21.1neoforge.jar",
+   "sha1": "13c1107caf26b2c60d8626b3658b26cc7f634b38",
+   "size": 525744
+  },
+  {
+   "path": "mods/mcw-mcwfences-1.2.1-mc1.21.1neoforge.jar",
+   "sha1": "b5580c3fc521ed8bf4db3e407bd590efc317f74d",
+   "size": 673871
+  },
+  {
+   "path": "mods/mcw-mcwwindows-2.4.2-mc1.21.1neoforge.jar",
+   "sha1": "eb1d3c118acb450cc2fe14c2ce7ce247a1bca60c",
+   "size": 1261268
+  },
+  {
+   "path": "mods/mezz_config-1.21.1-neoforge-0.6.8-standalone.jar",
+   "sha1": "d99ed592d8ab7105c00444047be7d8346d694ba3",
+   "size": 327173
+  },
+  {
+   "path": "mods/monsterspellbooks-0.0.16.3.jar",
+   "sha1": "b3aa89fd081bf4bfaf8d0f4380bcdc393c66ab0e",
+   "size": 3738781
+  },
+  {
+   "path": "mods/MoogsEndStructures-universal-1.21-2.1.1.jar",
+   "sha1": "ef5f57f0e5d06a2f8bec5c073e01ddb061ad477a",
+   "size": 2285901
+  },
+  {
+   "path": "mods/MoogsStructureLib-neoforge-1.21.1-3.4.2.jar",
+   "sha1": "c379b8d5dc1a4b1e8987da1052d6b4de81354d72",
+   "size": 1094979
+  },
+  {
+   "path": "mods/MoogsVoyagerStructures-universal-1.21-5.1.3.jar",
+   "sha1": "6759fa57891f731e54f865c13ffa0601a829b76a",
+   "size": 2234287
+  },
+  {
+   "path": "mods/moonlight-1.21.1-3.7.2-neoforge.jar",
+   "sha1": "0da45e6bc941f4b9b18dda24f8d047431ddc7226",
+   "size": 2299162
+  },
+  {
+   "path": "mods/MossyLib-1.6.0+1.21.1+neoforge.jar",
+   "sha1": "330e8f3889516d53229ccd464f8d572a89f21b6d",
+   "size": 179468
+  },
+  {
+   "path": "mods/mowziesmobs-1.21.1-1.8.2.jar",
+   "sha1": "d64475cd77444b056ece6472c79d40293dc63c6c",
+   "size": 36042925
+  },
+  {
+   "path": "mods/nightlights-neoforge-1.3.0.jar",
+   "sha1": "02937a826683eac93993dea270a48e6cc7976392",
+   "size": 440917
+  },
+  {
+   "path": "mods/notenoughanimations-neoforge-1.12.6-mc1.21.1.jar",
+   "sha1": "2098ae4965ebefb2dc8d5aec42a7d5282414fddc",
+   "size": 1866035
+  },
+  {
+   "path": "mods/paladin_spells-1.21.1-1.1.1.jar",
+   "sha1": "e4c6f4fa70989f0b9f1819e46e29f68d414ccbaf",
+   "size": 1858683
+  },
+  {
+   "path": "mods/Placebo-1.21.1-9.9.4.jar",
+   "sha1": "007d52a42020a331d5272495f6d676e0ad1a2c13",
+   "size": 326063
+  },
+  {
+   "path": "mods/plasmovoice-neoforge-1.21.1-2.1.17.jar",
+   "sha1": "79494a08be1cc40c30b7027ed128bd75949dfcc4",
+   "size": 12341959
+  },
+  {
+   "path": "mods/player-animation-lib-forge-2.0.4+1.21.1.jar",
+   "sha1": "05be8ddcc78532b9a5520c718edc6c971cd0057c",
+   "size": 203149
+  },
+  {
+   "path": "mods/prometheus-neoforge-1.21-1.2.5.jar",
+   "sha1": "c4ef1020569a1dfc5bb161221449d7cf13b597cb",
+   "size": 1056045
+  },
+  {
+   "path": "mods/resourcefulconfig-neoforge-1.21-3.0.11.jar",
+   "sha1": "6bf2b6ea9c071c00a2abcdc552667fb6f7d21031",
+   "size": 341009
+  },
+  {
+   "path": "mods/resourcefullib-neoforge-1.21-3.0.12.jar",
+   "sha1": "24389c8e48ff0e8594e4686b750c494c66a5f8df",
+   "size": 484332
+  },
+  {
+   "path": "mods/rhino-2101.2.7-build.85.jar",
+   "sha1": "370598a1d2321c8a705ce539eb970375f20150c3",
+   "size": 882075
+  },
+  {
+   "path": "mods/simplyswords-neoforge-1.70.2-1.21.1.jar",
+   "sha1": "05b074ff774467f1fe9fb5592151b7845c321cbc",
+   "size": 16282660
+  },
+  {
+   "path": "mods/SimplyTooltips-neoforge-0.1.5.jar",
+   "sha1": "6227453d5b628b1009d6ec516a0da5b588849744",
+   "size": 5512986
+  },
+  {
+   "path": "mods/skinlayers3d-neoforge-1.11.4-mc1.21.1.jar",
+   "sha1": "d4864fac231ff3d360e08a82f06553c3f76de8a6",
+   "size": 1905514
+  },
+  {
+   "path": "mods/sodium-neoforge-0.8.13+mc1.21.1.jar",
+   "sha1": "1757289be21ed18db5b0d90703fa3db1b2de5693",
+   "size": 1292934
+  },
+  {
+   "path": "mods/somakespells-1.0.9-fix.jar",
+   "sha1": "aa99cb7752eb544bd4febd3553bcb15dbfb4c52d",
+   "size": 2554112
+  },
+  {
+   "path": "mods/soul-fire-d-neoforge-1.21-6.1.0.jar",
+   "sha1": "877002a5aa386f9011ebc4eb3360a7647ac359d9",
+   "size": 667319
+  },
+  {
+   "path": "mods/specs_irons_spellbooks-1.6.13-neoforge-1.21.1.jar",
+   "sha1": "0ccbbc03c3de90af00507d573cbc975358ac8030",
+   "size": 705789
+  },
+  {
+   "path": "mods/spell_actionbar-1.1.7-neoforge-1.21.1.jar",
+   "sha1": "b812ba5c350a5ba23276d7b9368c164697824d6a",
+   "size": 139791
+  },
+  {
+   "path": "mods/Structory_26.2_v1.3.7.jar",
+   "sha1": "8a9a1a1b3f74398310420b6fbe2c26ef142bed42",
+   "size": 1261346
+  },
+  {
+   "path": "mods/supermartijn642corelib-1.1.25-neoforge-mc1.21.jar",
+   "sha1": "60d45feac8cd2f0b497b013c7fd501b3ae8b6f6d",
+   "size": 562683
+  },
+  {
+   "path": "mods/supplementaries-1.21.1-4.0.2-neoforge.jar",
+   "sha1": "af25cb08a82c72b3fb67508071ce627714bd2b57",
+   "size": 13840377
+  },
+  {
+   "path": "mods/t_and_t-fabric-neoforge-1.13.11.jar",
+   "sha1": "8f00e36a11568c0b66bbdf5c0e9ee492e511b303",
+   "size": 3553006
+  },
+  {
+   "path": "mods/tempest_almanac-0.21.6.jar",
+   "sha1": "c95add7ea4c849bb1c5f111593cde77b8a745499",
+   "size": 1238256
+  },
+  {
+   "path": "mods/TerraBlender-neoforge-1.21.1-4.1.0.8.jar",
+   "sha1": "2016eed89eac0eb0510d2190c3b0b80bf4346191",
+   "size": 120364
+  },
+  {
+   "path": "mods/Terralith_1.21.x_v2.6.2.jar",
+   "sha1": "d4a9fe71b841f70edfb4b280f9bf5c58e4a28224",
+   "size": 2814865
+  },
+  {
+   "path": "mods/walkers-5.8.13.jar",
+   "sha1": "e55e5c3c3cc6ab838479c372e1ea135fe32b9587",
+   "size": 1147028
+  },
+  {
+   "path": "mods/waystones-neoforge-1.21.1-21.1.46.jar",
+   "sha1": "75718161662d9ec957ba22e10e497788ec1687ba",
+   "size": 1223229
+  },
+  {
+   "path": "mods/wind_spellbooks-1.0.5.jar",
+   "sha1": "8744886899bc245ae147a44baa2b183689cec7da",
+   "size": 459532
+  },
+  {
+   "path": "mods/woodwalkers_spellbooks-0.3.2-BETA.jar",
+   "sha1": "82db0628c3d65c888ffd658d7b66683aedde903e",
+   "size": 22791
+  },
+  {
+   "path": "mods/xaerominimap-neoforge-1.21.1-26.6.0.jar",
+   "sha1": "551e8e2aa3498b506cc949a74606cdc0380e5e00",
+   "size": 2186351
+  },
+  {
+   "path": "mods/xaeroworldmap-neoforge-1.21.1-1.47.0.jar",
+   "sha1": "2936c9cb9dfbdab145fe6f1e8ae2c68915246a5f",
+   "size": 1427078
+  },
+  {
+   "path": "mods/yet_another_config_lib_v3-3.8.2+1.21.1-neoforge.jar",
+   "sha1": "fe270c9f6e0a8142cf316944087f5109cef08bbb",
+   "size": 1118651
   }
  ]
 }
