@@ -447,10 +447,12 @@ function appliquerClasse(server, joueur, classe, reinit) {
   }
   for (var sort in SORTS_PAR_CLASSE) {
     var autorisee = classeAutorisee(SORTS_PAR_CLASSE[sort], classe.nom)
-    cmd(server, 'specs_codex spell ' + (autorisee ? 'unlock' : 'lock') + ' ' + nom + ' ' + sort)
-    if (autorisee) {
-      // Le Codex n'affiche et ne laisse utiliser un sort que si SON école est ouverte :
-      // on ouvre donc l'école du sort (les autres sorts de cette école restent bloqués au lancer).
+    if (!autorisee) {
+      cmd(server, 'specs_codex spell lock ' + nom + ' ' + sort)
+    } else {
+      // On n'offre PAS le sort au départ : le joueur commence sans aucun sort et doit le découvrir.
+      // On ouvre seulement son école pour qu'il puisse le lancer une fois découvert
+      // (son onglet reste caché du Codex tant qu'aucun de ses sorts n'est découvert).
       var ecole = ecoleDuSort(sort)
       if (ecole) cmd(server, 'specs_codex school unlock ' + nom + ' ' + ecole)
     }
