@@ -1,5 +1,5 @@
 {
- "version": "2026-10-19T16:44:36.662Z",
+ "version": "2026-10-19T21:46:56.714Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -31,22 +31,22 @@
    "size": 56464
   },
   {
-   "path": "kubejs/client_scripts/classes_langue (11).js",
-   "sha1": "b81b962927da1f40297bbff9ce597966af517da1",
-   "size": 437740
-  },
-  {
-   "path": "kubejs/client_scripts/classes_langue_armes (2).js",
+   "path": "kubejs/client_scripts/classes_langue_armes.js",
    "sha1": "4f062666a0adb8eb34f19b0a6eb793cdea652cb9",
    "size": 40064
   },
   {
-   "path": "kubejs/client_scripts/classes_langue_invocations (1).js",
+   "path": "kubejs/client_scripts/classes_langue_invocations.js",
    "sha1": "cf75ed94b43dc0640f858f509a34f178eeebc483",
    "size": 3447
   },
   {
-   "path": "kubejs/client_scripts/classes_tooltips (18).js",
+   "path": "kubejs/client_scripts/classes_langue.js",
+   "sha1": "b81b962927da1f40297bbff9ce597966af517da1",
+   "size": 437740
+  },
+  {
+   "path": "kubejs/client_scripts/classes_tooltips.js",
    "sha1": "937fe08c16e377bb6928867a9149aab40b4ce331",
    "size": 71285
   },
@@ -66,24 +66,24 @@
    "size": 5919
   },
   {
-   "path": "kubejs/server_scripts/classes_desactives (2).js",
+   "path": "kubejs/server_scripts/classes_desactives.js",
    "sha1": "31e48d1c27bdaea49ca2b95b4d2e350c06b38a24",
    "size": 7212
   },
   {
-   "path": "kubejs/server_scripts/classes_dump_armes (1).js",
+   "path": "kubejs/server_scripts/classes_dump_armes.js",
    "sha1": "e52e221317eb211b0029965a3740402a2bbe6c31",
    "size": 2609
   },
   {
-   "path": "kubejs/server_scripts/classes_invocations (8).js",
+   "path": "kubejs/server_scripts/classes_invocations.js",
    "sha1": "449c9535a6c4090d509703178a19f573e8c52b56",
    "size": 3472
   },
   {
-   "path": "kubejs/server_scripts/classes_rp (38).js",
-   "sha1": "2350a4d3a8b2d83d9ff1651417bc751dcffc7215",
-   "size": 62017
+   "path": "kubejs/server_scripts/classes_rp.js",
+   "sha1": "8cc70fda628ccec279751bd3a546eddc90714eb8",
+   "size": 62084
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -401,6 +401,11 @@
    "size": 2477428
   },
   {
+   "path": "mods/forgematica-0.4.3+mc1.21.1.jar",
+   "sha1": "d27eec1a3b72520ec096a2c0e35adce65031d36e",
+   "size": 1646167
+  },
+  {
    "path": "mods/framework-neoforge-1.21.1-0.13.11.jar",
    "sha1": "e46eb138fbb13a12f37154fb4ec407d64b326475",
    "size": 387334
@@ -486,6 +491,11 @@
    "size": 308353
   },
   {
+   "path": "mods/handcrafted-neoforge-1.21.1-4.0.3.jar",
+   "sha1": "8ecd27f1d66f9b742cfae3c8ffa773765f574b52",
+   "size": 7132842
+  },
+  {
    "path": "mods/hazennstuff-1.4.0.14.jar",
    "sha1": "3be20bacb44c1923348ab6f61b685eec6aacfdcd",
    "size": 7921289
@@ -494,6 +504,11 @@
    "path": "mods/hazentouvelib-1.0.11.jar",
    "sha1": "2ecd8cc5f41c5581d03e52e457ed45ec787cb04c",
    "size": 580898
+  },
+  {
+   "path": "mods/immersive_paintings-neoforge-1.21.1-0.7.9.jar",
+   "sha1": "0386ff2db20edfcafc890760adb96073cd38c1a2",
+   "size": 5506376
   },
   {
    "path": "mods/iris-neoforge-1.8.14-beta.1+mc1.21.1.jar",
@@ -554,6 +569,11 @@
    "path": "mods/lootr-neoforge-1.21.1-1.11.38.127.jar",
    "sha1": "7a305b581abd90e1a8b7c1bb5eb4511d2653aa58",
    "size": 1075929
+  },
+  {
+   "path": "mods/mafglib-0.4.3+mc1.21.1.jar",
+   "sha1": "9f62df832b1d5c9fe1aead873bd65cb8defacac7",
+   "size": 1314767
   },
   {
    "path": "mods/mcrp_voice-1.0.0.jar",
