@@ -213,8 +213,10 @@ var LIBRES = [
 ]
 
 function ligneClasse(r) {
-  if (r.classes.length === 0) return Text.red('Classe : objet désactivé')
-  return Text.gold('Classe : ' + r.classes.join(' / '))
+  var en = langueAnglaise()
+  if (r.classes.length === 0) return Text.red(en ? 'Class: item disabled' : 'Classe : objet désactivé')
+  var ligne = 'Classe : ' + r.classes.join(' / ')
+  return Text.gold(en ? traduireEN(ligne) : ligne)
 }
 
 function tousLesIds() {
@@ -1039,7 +1041,7 @@ function retirerDoublons(liste) {
   for (var i = 0; i < liste.size(); i++) {
     var s = ''
     try { s = String(liste.get(i).getString()) } catch (e) { s = '' }
-    if (s.indexOf('Classe : ') === 0) {
+    if (s.indexOf('Classe : ') === 0 || s.indexOf('Class: ') === 0) {
       if (vu) { liste.remove(i); i-- } else { vu = true }
     }
   }
@@ -1061,7 +1063,7 @@ function infobulleSorts(event) {
       if (RESTRICTIONS[r].regle.test(idObjet)) return
     }
     var cl = classesDeLObjet(st)
-    if (cl.length > 0) event.getToolTip().add(Text.gold('Classe : ' + cl.join(' / ')))
+    if (cl.length > 0) event.getToolTip().add(Text.gold(langueAnglaise() ? traduireEN('Classe : ' + cl.join(' / ')) : 'Classe : ' + cl.join(' / ')))
     retirerDoublons(event.getToolTip())
   } catch (e) {
     if (!SORTS_ERREUR_LOGUEE) {

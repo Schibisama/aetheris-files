@@ -70,7 +70,7 @@ function cmdRtp(ctx) {
   if (!joueur) return 0
   var niveau = rtpVal(joueur, 'level', 'level')
   if (RTP.DIMENSIONS.indexOf(rtpDimension(niveau)) === -1) {
-    joueur.tell(Text.red('/rtp est indisponible dans cette dimension.'))
+    joueur.tell(Text.translate('mcrp.rtp.dimension').red())
     return 0
   }
 
@@ -79,20 +79,20 @@ function cmdRtp(ctx) {
   if (RTP.RECHARGE_S > 0 && !modo) {
     var reste = Math.ceil((Number(data.getLong(RTP_CLE)) + RTP.RECHARGE_S * 1000 - Date.now()) / 1000)
     if (reste > 0) {
-      joueur.tell(Text.red('/rtp en recharge : encore ' + reste + ' s.'))
+      joueur.tell(Text.translate('mcrp.rtp.recharge', reste).red())
       return 0
     }
   }
 
   var cible = rtpTrouver(niveau, Number(rtpVal(joueur, 'x', 'getX')), Number(rtpVal(joueur, 'z', 'getZ')))
   if (!cible) {
-    joueur.tell(Text.red('Aucun endroit sûr trouvé, réessaie dans un instant.'))
+    joueur.tell(Text.translate('mcrp.rtp.introuvable').red())
     return 0
   }
 
   ctx.source.server.runCommandSilent('tp ' + joueur.username + ' ' + cible.x.toFixed(2) + ' ' + cible.y + ' ' + cible.z.toFixed(2))
   data.putLong(RTP_CLE, Date.now())
-  joueur.tell(Text.green('Téléporté en X ' + Math.floor(cible.x) + ', Y ' + cible.y + ', Z ' + Math.floor(cible.z) + '.'))
+  joueur.tell(Text.translate('mcrp.rtp.ok', Math.floor(cible.x), cible.y, Math.floor(cible.z)).green())
   return 1
 }
 

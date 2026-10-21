@@ -459,12 +459,36 @@ function appliquerClasse(server, joueur, classe, reinit) {
   }
 }
 
+// Messages traduisibles : le client les affiche en français ou en anglais selon la langue du jeu
+// (textes dans client_scripts/classes_langue_messages.js, clés « mcrp.* »).
+function cleClasse(nom) {
+  var s = String(nom).toLowerCase()
+  var de = 'éèêëàâäîïôöùûüç', vers = 'eeeeaaaiioouuuc'
+  var r = ''
+  for (var i = 0; i < s.length; i++) {
+    var k = de.indexOf(s.charAt(i))
+    r += k >= 0 ? vers.charAt(k) : s.charAt(i)
+  }
+  return 'mcrp.classe.' + r.replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '')
+}
+
+function texteClasse(nom) {
+  return Text.translate(cleClasse(nom))
+}
+
+var SOUS_TITRES = {
+  "Les arcanes t'ont choisi.": 'mcrp.sous_titre.choisi',
+  'Les arcanes ont tranché.': 'mcrp.sous_titre.tranche',
+  'Ton destin a changé.': 'mcrp.sous_titre.change'
+}
+
 function annoncer(server, joueur, classe, sousTitre) {
   var nom = joueur.username
+  var cleSous = SOUS_TITRES[sousTitre] || 'mcrp.sous_titre.choisi'
   cmd(server, 'title ' + nom + ' times 20 80 20')
-  cmd(server, 'title ' + nom + ' subtitle {"text":"' + sousTitre + '","color":"gray","italic":true}')
-  cmd(server, 'title ' + nom + ' title {"text":"' + classe.nom + '","color":"gold","bold":true}')
-  server.tell(Text.gold(nom + " s'éveille en tant que ").append(Text.yellow(classe.nom).bold()).append(Text.gold('.')))
+  cmd(server, 'title ' + nom + ' subtitle {"translate":"' + cleSous + '","color":"gray","italic":true}')
+  cmd(server, 'title ' + nom + ' title {"translate":"' + cleClasse(classe.nom) + '","color":"gold","bold":true}')
+  server.tell(Text.translate('mcrp.msg.eveil', nom, texteClasse(classe.nom).yellow().bold()).gold())
 }
 
 // Tire une classe au hasard, différente de "exclureNom" si fourni.
@@ -493,9 +517,15 @@ function restriction(idObjet) {
   return null
 }
 
+// sujet : clé de traduction (mcrp.sujet.equipement / mcrp.sujet.artefact)
 function messageRestriction(r, sujet) {
-  if (r.classes.length === 0) return sujet + ' est désactivé sur ce serveur.'
-  return sujet + ' est réservé à : ' + r.classes.join(', ') + '.'
+  if (r.classes.length === 0) return Text.translate('mcrp.msg.desactive', Text.translate(sujet))
+  var liste = Text.of('')
+  for (var i = 0; i < r.classes.length; i++) {
+    if (i > 0) liste.append(Text.of(', '))
+    liste.append(texteClasse(r.classes[i]))
+  }
+  return Text.translate('mcrp.msg.reserve', Text.translate(sujet), liste)
 }
 
 function autorise(joueur, idObjet) {
@@ -518,13 +548,8 @@ PlayerEvents.loggedIn(function (event) {
     joueur.removeTag(TAG_RESET)
   }
 
-  if (!data.contains(CLE)) {
-    var nouvelle = tirer(null)
-    data.putString(CLE, nouvelle.nom)
-    appliquerClasse(server, joueur, nouvelle, true)
-    annoncer(server, joueur, nouvelle, "Les arcanes t'ont choisi.")
-    return
-  }
+  // Pas de classe automatique : un modérateur l'attribue avec /classe donner <joueur>.
+  if (!data.contains(CLE)) return
 
   var classe = classeDe(joueur)
   if (classe) appliquerClasse(server, joueur, classe, false)
@@ -535,46 +560,160 @@ function cmdInfos(ctx) {
   var joueur = ctx.source.player
   var classe = classeDe(joueur)
   var utilises = joueur.persistentData.getInt(CLE_REROLLS)
-  joueur.tell(Text.gold('Classe : ').append(Text.yellow(classe ? classe.nom : 'aucune')))
-  if (estTest(joueur)) joueur.tell(Text.aqua('Mode testeur actif : toutes les classes sont débloquées.'))
-  joueur.tell(Text.gray('Changements utilisés : ' + utilises + '/' + REROLLS_MAX + ' (coût : ' + COUT_ENCRE + ' encres légendaires)'))
+  joueur.tell(Text.translate('mcrp.info.classe', classe ? texteClasse(classe.nom).yellow() : Text.translate('mcrp.info.aucune').yellow()).gold())
+  if (estTest(joueur)) joueur.tell(Text.translate('mcrp.info.testeur').aqua())
+  joueur.tell(Text.translate('mcrp.info.changements', utilises, REROLLS_MAX, COUT_ENCRE, Text.translate('mcrp.pnj.nom')).gray())
   return 1
 }
 
-function cmdReroll(ctx, confirme) {
-  var joueur = ctx.source.player
-  var server = ctx.source.server
+// ───────────────────────── PNJ DU DESTIN ─────────────────────────
+// Un villageois immobile et invulnérable (tag TAG_PNJ). Clic droit = échange :
+// 1er clic : le PNJ annonce le prix ; 2e clic dans les 15 s : l'échange est fait.
+var TAG_PNJ = 'pnj_classes'
+var NOM_PNJ = 'Maître des Destins'
+var DELAI_CONFIRMATION = 15000
+var attenteConfirmation = {}
+
+function echangerClasse(server, joueur) {
+  var data = joueur.persistentData
+  var dire = function (t) { joueur.tell(Text.gold('[').append(Text.translate('mcrp.pnj.nom').gold()).append(Text.gold('] ')).append(t)) }
+  var id = String(joueur.uuid)
+  var classe = classeDe(joueur)
+
+  if (!classe) {
+    dire(Text.translate('mcrp.pnj.sans_classe').gray())
+    return
+  }
+  var utilises = data.getInt(CLE_REROLLS)
+  if (utilises >= REROLLS_MAX) {
+    dire(Text.translate('mcrp.pnj.scelle', REROLLS_MAX).red())
+    return
+  }
+  if (joueur.inventory.count(ENCRE) < COUT_ENCRE) {
+    dire(Text.translate('mcrp.pnj.encre', COUT_ENCRE).red())
+    return
+  }
+  var maintenant = Date.now()
+  var attente = attenteConfirmation[id]
+  if (!attente || maintenant - attente > DELAI_CONFIRMATION) {
+    attenteConfirmation[id] = maintenant
+    dire(Text.translate('mcrp.pnj.confirme', COUT_ENCRE, REROLLS_MAX - utilises).yellow())
+    return
+  }
+  delete attenteConfirmation[id]
+
+  var nouvelle = tirer(classe.nom)
+  cmd(server, 'clear ' + joueur.username + ' ' + ENCRE + ' ' + COUT_ENCRE)
+  data.putInt(CLE_REROLLS, utilises + 1)
+  data.putString(CLE, nouvelle.nom)
+  data.putBoolean(CLE_TEST, false)
+  appliquerClasse(server, joueur, nouvelle, true)
+  annoncer(server, joueur, nouvelle, 'Ton destin a changé.')
+}
+
+ItemEvents.entityInteracted(function (event) {
   try {
-    var data = joueur.persistentData
-    var utilises = data.getInt(CLE_REROLLS)
+    var cible = event.target
+    if (!cible || !cible.tags.contains(TAG_PNJ)) return
+    event.cancel() // pas de fenêtre de commerce
+    if (String(event.hand).toLowerCase().indexOf('main') === -1) return
+    echangerClasse(event.server, event.player)
+  } catch (e) {
+    console.error('[classes_rp] Erreur PNJ : ' + e)
+  }
+})
 
-    if (utilises >= REROLLS_MAX) {
-      joueur.tell(Text.red('Tu as déjà utilisé tes ' + REROLLS_MAX + ' changements de classe.'))
+// /classe pnj : fait apparaître le PNJ à la position du modérateur.
+function cmdPnj(ctx) {
+  var joueur = ctx.source.player
+  if (!joueur) return 0
+  var n = joueur.username
+  cmd(ctx.source.server, 'execute as ' + n + ' at ' + n + ' rotated as ' + n + ' run summon minecraft:villager ~ ~ ~ ' +
+    "{NoAI:1b,Invulnerable:1b,PersistenceRequired:1b,Silent:1b,Tags:[\"" + TAG_PNJ + "\"],CustomNameVisible:1b," +
+    "CustomName:'{\"translate\":\"mcrp.pnj.nom\",\"color\":\"gold\"}'," +
+    'VillagerData:{profession:"minecraft:cleric",level:6,type:"minecraft:plains"}}')
+  retour(ctx, 'PNJ créé. Pour le retirer : /kill @e[type=minecraft:villager,tag=' + TAG_PNJ + ',limit=1,sort=nearest]')
+  return 1
+}
+
+// Sort ÉPIQUE aléatoire de la classe du joueur, remis sous forme de parchemin.
+// Appelé par la récompense de la dernière quête du tutoriel (sort épique) (/classe recompense <joueur>, perm. 2).
+function sortRecompenseAleatoire(joueur) {
+  var classe = classeDe(joueur)
+  if (!classe) return null
+  var ecoles = [classe.ecole]
+  if (classe.sup) ecoles = ecoles.concat(classe.sup)
+  var Rarete = Java.loadClass('io.redspace.ironsspellbooks.api.spells.SpellRarity')
+  var RARETE_CIBLE = Rarete.EPIC // rareté de la récompense
+  var liste = SpellRegistryJ.getEnabledSpells()
+  var candidats = []
+  var repli = [] // sorts qui n'atteignent pas la rareté légendaire : meilleure rareté possible
+  for (var i = 0; i < liste.size(); i++) {
+    var sort = liste.get(i)
+    try {
+      var id = String(sort.getSpellId())
+      if (ecoles.indexOf(String(sort.getSchoolType().getId())) === -1) continue
+      if (SORTS_PAR_CLASSE[id] && !classeAutorisee(SORTS_PAR_CLASSE[id], classe.nom)) continue
+      var niveau = sort.getMinLevelForRarity(RARETE_CIBLE)
+      if (niveau < 1 || niveau > sort.getMaxLevel() || String(sort.getRarity(niveau).name()).toUpperCase() !== 'EPIC') {
+        var max = sort.getMaxLevel()
+        if (max >= 1) repli.push({ sort: sort, id: id, niveau: max, valeur: Number(sort.getRarity(max).getValue()), legendaire: false })
+        continue
+      }
+      candidats.push({ sort: sort, id: id, niveau: niveau, legendaire: true })
+    } catch (e) { /* sort ignoré */ }
+  }
+  if (candidats.length === 0) {
+    // Repli : aucun sort épique atteignable -> le sort de la classe de rareté la plus haute (niveau maximum).
+    if (repli.length === 0) return null
+    var meilleure = -1
+    for (var r = 0; r < repli.length; r++) if (repli[r].valeur > meilleure) meilleure = repli[r].valeur
+    for (var q = 0; q < repli.length; q++) if (repli[q].valeur === meilleure) candidats.push(repli[q])
+  }
+  return candidats[Math.floor(Math.random() * candidats.length)]
+}
+
+// /classe recompense <joueur> : parchemin légendaire de la classe (récompense de quête, perm. 2).
+function cmdRecompense(ctx, cible) {
+  try {
+    var choix = sortRecompenseAleatoire(cible)
+    if (!choix) {
+      cible.tell(Text.translate('mcrp.msg.recompense_aucun').red())
+      retour(ctx, 'Aucun sort disponible pour ' + cible.username + ' (classe : ' + (classeDe(cible) ? classeDe(cible).nom : 'aucune') + ').')
       return 0
     }
-    if (joueur.inventory.count(ENCRE) < COUT_ENCRE) {
-      joueur.tell(Text.red('Il te faut ' + COUT_ENCRE + ' encres légendaires dans ton inventaire.'))
-      return 0
-    }
-    if (!confirme) {
-      joueur.tell(Text.gold('Changer de classe coûte ' + COUT_ENCRE + ' encres légendaires (' + (REROLLS_MAX - utilises) + ' restant(s)). ')
-        .append(Text.yellow('Tape /classe reroll confirmer pour valider.')))
-      return 1
-    }
-
-    var actuelle = classeDe(joueur)
-    var nouvelle = tirer(actuelle ? actuelle.nom : null)
-
-    cmd(server, 'clear ' + joueur.username + ' ' + ENCRE + ' ' + COUT_ENCRE)
-    data.putInt(CLE_REROLLS, utilises + 1)
-    data.putString(CLE, nouvelle.nom)
-    data.putBoolean(CLE_TEST, false)
-    appliquerClasse(server, joueur, nouvelle, true)
-    annoncer(server, joueur, nouvelle, 'Ton destin a changé.')
+    var ISpellContainerJ = Java.loadClass('io.redspace.ironsspellbooks.api.spells.ISpellContainer')
+    var pile = Item.of('irons_spellbooks:scroll')
+    ISpellContainerJ.set(pile, ISpellContainerJ.createScrollContainer(choix.sort, choix.niveau, pile))
+    cible.give(pile)
+    var p = choix.id.split(':')
+    cible.tell(Text.translate(choix.legendaire ? 'mcrp.msg.recompense' : 'mcrp.msg.recompense_repli', Text.translate('spell.' + p[0] + '.' + p[1]).gold()).green())
+    retour(ctx, cible.username + ' reçoit un parchemin : ' + choix.id + ' (niveau ' + choix.niveau + (choix.legendaire ? ', épique' : ', repli : meilleure rareté disponible') + ').')
     return 1
   } catch (e) {
-    console.error('[classes_rp] Erreur dans /classe reroll : ' + e)
-    joueur.tell(Text.red('Une erreur est survenue (voir logs/kubejs/server.log).'))
+    console.error('[classes_rp] Erreur dans /classe recompense : ' + e)
+    cible.tell(Text.translate('mcrp.msg.recompense_aucun').red())
+    return 0
+  }
+}
+
+// /classe donner <joueur> : classe aléatoire à un joueur qui n'en a pas encore.
+function cmdDonner(ctx, cible) {
+  try {
+    if (classeDe(cible)) {
+      retour(ctx, cible.username + ' a déjà une classe (' + classeDe(cible).nom + '). Utilise /classe reset pour retirer au sort.')
+      return 0
+    }
+    var nouvelle = tirer(null)
+    cible.persistentData.putString(CLE, nouvelle.nom)
+    cible.persistentData.putBoolean(CLE_TEST, false)
+    appliquerClasse(ctx.source.server, cible, nouvelle, true)
+    annoncer(ctx.source.server, cible, nouvelle, "Les arcanes t'ont choisi.")
+    retour(ctx, cible.username + ' est maintenant ' + nouvelle.nom + '.')
+    return 1
+  } catch (e) {
+    console.error('[classes_rp] Erreur dans /classe donner : ' + e)
+    retour(ctx, 'Erreur (voir logs/kubejs/server.log).')
     return 0
   }
 }
@@ -637,7 +776,7 @@ function cmdTesteurRetirer(ctx, cible) {
 function cmdAdminCompteur(ctx, cible) {
   cible.persistentData.putInt(CLE_REROLLS, 0)
   retour(ctx, 'Compteur de changements remis à 0 pour ' + cible.username + ' (0/' + REROLLS_MAX + ').')
-  cible.tell(Text.gold('Tes changements de classe ont été remis à zéro (0/' + REROLLS_MAX + ').'))
+  cible.tell(Text.translate('mcrp.msg.compteur', REROLLS_MAX).gold())
   return 1
 }
 
@@ -650,9 +789,17 @@ ServerEvents.commandRegistry(function (event) {
     Commands.literal('classe')
       .executes(function (ctx) { return cmdInfos(ctx) })
       .then(Commands.literal('info').executes(function (ctx) { return cmdInfos(ctx) }))
-      .then(Commands.literal('reroll')
-        .executes(function (ctx) { return cmdReroll(ctx, false) })
-        .then(Commands.literal('confirmer').executes(function (ctx) { return cmdReroll(ctx, true) })))
+      .then(Commands.literal('donner')
+        .requires(estModo)
+        .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+          .executes(function (ctx) { return cmdDonner(ctx, Arguments.PLAYER.getResult(ctx, 'joueur')) })))
+      .then(Commands.literal('recompense')
+        .requires(estModo)
+        .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+          .executes(function (ctx) { return cmdRecompense(ctx, Arguments.PLAYER.getResult(ctx, 'joueur')) })))
+      .then(Commands.literal('pnj')
+        .requires(estModo)
+        .executes(function (ctx) { return cmdPnj(ctx) }))
       .then(Commands.literal('reset')
         .requires(estModo)
         .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
@@ -692,7 +839,7 @@ function traiterArmure(joueur, slot) {
   }
 
   joueur.give(copie)
-  joueur.tell(Text.red(messageRestriction(restriction(id), 'Cet équipement')))
+  joueur.tell(messageRestriction(restriction(id), 'mcrp.sujet.equipement').red())
   console.info('[classes_rp] Pièce retirée : ' + id + ' (' + joueur.username + ')')
   // Resynchronise l'inventaire complet avec le client : évite qu'une pièce « fantôme » reste affichée sur la tête.
   try { joueur.inventoryMenu.sendAllDataToRemote() } catch (e1) {}
@@ -713,7 +860,7 @@ function traiterCurio(joueur, equipes, i) {
   if (!equipes.getStackInSlot(i).isEmpty()) return // retrait échoué : on ne donne rien
 
   joueur.give(copie)
-  joueur.tell(Text.red(messageRestriction(restriction(id), 'Cet artefact')))
+  joueur.tell(messageRestriction(restriction(id), 'mcrp.sujet.artefact').red())
 }
 
 function verifierCurios(joueur) {

@@ -192,7 +192,8 @@ function mdEffets(ent, bonusVie, boss, idDim, niveau) {
         nom.append(mdNomMob(ent))
         if (titre && !titre.avant) nom.append(mdBordeaux(Text.of(' ' + titre.titre)))
         ent.setCustomName(nom)
-        ent.setCustomNameVisible(true)
+        // Nom visible seulement quand on regarde le mob : un nom « toujours visible » traverse les blocs.
+        ent.setCustomNameVisible(false)
       }
     } catch (e2) {}
   }
@@ -225,7 +226,13 @@ function mdTraiter(ent) {
   var idType = mdIdMob(ent)
   var boss = mdBoss(ent, idType)
   // Déjà traité (mob rechargé depuis la sauvegarde) ?
-  try { if (ent.tags.contains(MD_TAG)) return } catch (e0) {}
+  try {
+    if (ent.tags.contains(MD_TAG)) {
+      // Mobs déjà traités (anciens mobs rechargés) : on retire l'affichage permanent du nom.
+      try { if (ent.customName && String(ent.customName.getString()).indexOf('[Lvl ') === 0) ent.setCustomNameVisible(false) } catch (e00) {}
+      return
+    }
+  } catch (e0) {}
   try { ent.addTag(MD_TAG) } catch (e1) {}
 
   var tirage = Math.floor(Math.random() * MD.TIRAGES)

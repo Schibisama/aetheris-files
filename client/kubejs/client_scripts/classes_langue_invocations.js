@@ -37,7 +37,8 @@ function invNomsAjouter(langue, indice) {
       try {
         var p = id.split(':')
         var v = INV_NOMS[id]
-        event.add(p[0], 'spell.' + p[0] + '.' + p[1], '[' + v[0] + '] ' + v[indice])
+        var titre = '[' + v[0] + '] ' + v[indice]
+        event.add(p[0], 'spell.' + p[0] + '.' + p[1], langue === 'en_us' ? traduireEN(titre) : titre)
         n++
       } catch (e) {
         console.error('[classes_langue_invocations] ' + id + ' : ' + e)

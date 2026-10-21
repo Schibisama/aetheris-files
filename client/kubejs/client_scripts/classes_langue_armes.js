@@ -352,7 +352,12 @@ function armAjouterTextes(langue) {
     for (var cle in TEXTES_ARMES) {
       if (!TEXTES_ARMES[cle]) continue
       try {
-        event.add('simplyswords', cle, TEXTES_ARMES[cle])
+        var valeur = TEXTES_ARMES[cle]
+        if (langue === 'en_us') {
+          if (valeur.charAt(0) !== '[') continue // les descriptions restent celles du mod en anglais
+          valeur = traduireEN(valeur)
+        }
+        event.add('simplyswords', cle, valeur)
         n++
       } catch (e) {
         console.error('[classes_langue_armes] Texte refusé : ' + cle + ' : ' + e)

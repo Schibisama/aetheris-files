@@ -1,0 +1,86 @@
+// Textes des messages du serveur (clés « mcrp.* ») en français et en anglais.
+// À placer dans : <instance>/kubejs/client_scripts/classes_langue_messages.js  (puis F3+T)
+// Dépend de aaa_traduction.js (CLASSES_EN). Une langue autre que le français retombe sur l'anglais.
+
+function msgSlug(nom) {
+  var s = String(nom).toLowerCase()
+  var de = 'éèêëàâäîïôöùûüç', vers = 'eeeeaaaiioouuuc'
+  var r = ''
+  for (var i = 0; i < s.length; i++) {
+    var k = de.indexOf(s.charAt(i))
+    r += k >= 0 ? vers.charAt(k) : s.charAt(i)
+  }
+  return r.replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '')
+}
+
+var MSG_FR = {
+  'mcrp.msg.eveil': "%s s'éveille en tant que %s.",
+  'mcrp.sous_titre.choisi': "Les arcanes t'ont choisi.",
+  'mcrp.sous_titre.tranche': 'Les arcanes ont tranché.',
+  'mcrp.sous_titre.change': 'Ton destin a changé.',
+  'mcrp.msg.desactive': '%s est désactivé sur ce serveur.',
+  'mcrp.msg.reserve': '%s est réservé à : %s.',
+  'mcrp.sujet.equipement': 'Cet équipement',
+  'mcrp.sujet.artefact': 'Cet artefact',
+  'mcrp.info.classe': 'Classe : %s',
+  'mcrp.info.aucune': 'aucune',
+  'mcrp.info.testeur': 'Mode testeur actif : toutes les classes sont débloquées.',
+  'mcrp.info.changements': 'Changements utilisés : %s/%s (coût : %s encres légendaires, auprès du %s)',
+  'mcrp.msg.compteur': 'Tes changements de classe ont été remis à zéro (0/%s).',
+  'mcrp.pnj.nom': 'Maître des Destins',
+  'mcrp.pnj.sans_classe': "Les arcanes ne t'ont pas encore éveillé. Reviens quand un Maître t'aura donné ta voie.",
+  'mcrp.pnj.scelle': 'Ton destin est scellé : tu as déjà changé %s fois.',
+  'mcrp.pnj.encre': 'Il me faut %s encres légendaires pour réécrire ton destin.',
+  'mcrp.pnj.confirme': 'Réécrire ton destin coûte %s encres légendaires (%s changement(s) restant(s)). Fais-moi un nouveau clic droit pour confirmer.',
+  'mcrp.rtp.dimension': '/rtp est indisponible dans cette dimension.',
+  'mcrp.rtp.recharge': '/rtp en recharge : encore %s s.',
+  'mcrp.rtp.introuvable': 'Aucun endroit sûr trouvé, réessaie dans un instant.',
+  'mcrp.rtp.ok': 'Téléporté en X %s, Y %s, Z %s.',
+  'mcrp.msg.recompense': 'Les arcanes te font un don : un parchemin de %s, sort épique de ta classe.',
+  'mcrp.msg.recompense_repli': 'Les arcanes te font un don : un parchemin de %s, un des sorts les plus puissants de ta classe.',
+  'mcrp.msg.recompense_aucun': "Aucun sort n'a pu t'être remis (as-tu reçu une classe ?). Préviens un modérateur."
+}
+var MSG_EN = {
+  'mcrp.msg.eveil': '%s awakens as %s.',
+  'mcrp.sous_titre.choisi': 'The arcane has chosen you.',
+  'mcrp.sous_titre.tranche': 'The arcane has decided.',
+  'mcrp.sous_titre.change': 'Your fate has changed.',
+  'mcrp.msg.desactive': '%s is disabled on this server.',
+  'mcrp.msg.reserve': '%s is reserved for: %s.',
+  'mcrp.sujet.equipement': 'This equipment',
+  'mcrp.sujet.artefact': 'This artifact',
+  'mcrp.info.classe': 'Class: %s',
+  'mcrp.info.aucune': 'none',
+  'mcrp.info.testeur': 'Tester mode active: all classes are unlocked.',
+  'mcrp.info.changements': 'Changes used: %s/%s (cost: %s legendary inks, from the %s)',
+  'mcrp.msg.compteur': 'Your class changes have been reset (0/%s).',
+  'mcrp.pnj.nom': 'Master of Fates',
+  'mcrp.pnj.sans_classe': 'The arcane has not awakened you yet. Come back once a Master has given you your path.',
+  'mcrp.pnj.scelle': 'Your fate is sealed: you have already changed %s times.',
+  'mcrp.pnj.encre': 'I need %s legendary inks to rewrite your fate.',
+  'mcrp.pnj.confirme': 'Rewriting your fate costs %s legendary inks (%s change(s) left). Right-click me again to confirm.',
+  'mcrp.rtp.dimension': '/rtp is unavailable in this dimension.',
+  'mcrp.rtp.recharge': '/rtp is on cooldown: %s s left.',
+  'mcrp.rtp.introuvable': 'No safe spot found, try again in a moment.',
+  'mcrp.rtp.ok': 'Teleported to X %s, Y %s, Z %s.',
+  'mcrp.msg.recompense': 'The arcane grants you a gift: a scroll of %s, an epic spell of your class.',
+  'mcrp.msg.recompense_repli': 'The arcane grants you a gift: a scroll of %s, one of the most powerful spells of your class.',
+  'mcrp.msg.recompense_aucun': "No spell could be given to you (do you have a class?). Tell a moderator."
+}
+
+function msgAjouter(langue) {
+  ClientEvents.lang(langue, function (event) {
+    var table = langue === 'en_us' ? MSG_EN : MSG_FR
+    for (var k in table) event.add('mcrp', k, table[k])
+    for (var fr in CLASSES_EN) {
+      event.add('mcrp', 'mcrp.classe.' + msgSlug(fr), langue === 'en_us' ? CLASSES_EN[fr] : fr)
+    }
+  })
+}
+
+try {
+  msgAjouter('en_us')
+  msgAjouter('fr_fr')
+} catch (e) {
+  console.error('[classes_langue_messages] Erreur : ' + e)
+}

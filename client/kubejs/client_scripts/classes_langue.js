@@ -47,7 +47,9 @@ function ajouterTextes(langue) {
     for (var ns in parNs) {
       var cles = parNs[ns]
       for (var k in cles) {
-        event.add(ns, k, corrigerClasse(ns, k, cles[k]))
+        var valeur = corrigerClasse(ns, k, cles[k])
+        if (langue === 'en_us') valeur = traduireEN(valeur)
+        event.add(ns, k, valeur)
         n++
       }
     }

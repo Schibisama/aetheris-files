@@ -1,5 +1,5 @@
 {
- "version": "2026-10-19T21:46:56.714Z",
+ "version": "2026-10-21T16:03:11.558Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -31,24 +31,34 @@
    "size": 56464
   },
   {
+   "path": "kubejs/client_scripts/aaa_traduction.js",
+   "sha1": "f206169ad484f264f94c187f101eb015f30097bb",
+   "size": 1887
+  },
+  {
    "path": "kubejs/client_scripts/classes_langue_armes.js",
-   "sha1": "4f062666a0adb8eb34f19b0a6eb793cdea652cb9",
-   "size": 40064
+   "sha1": "32a5d00cdfc7b527a9b50a36f1251251bd9241f7",
+   "size": 40276
   },
   {
    "path": "kubejs/client_scripts/classes_langue_invocations.js",
-   "sha1": "cf75ed94b43dc0640f858f509a34f178eeebc483",
-   "size": 3447
+   "sha1": "ce32c6c8ebbe6ebac27ccf2d4b50b0c6e8e172e9",
+   "size": 3514
+  },
+  {
+   "path": "kubejs/client_scripts/classes_langue_messages.js",
+   "sha1": "5b6a322ae4d8383d8eeae7c9b92a7bf5cac8e73a",
+   "size": 4678
   },
   {
    "path": "kubejs/client_scripts/classes_langue.js",
-   "sha1": "b81b962927da1f40297bbff9ce597966af517da1",
-   "size": 437740
+   "sha1": "25e779aeba9cfdf38e33788cff7a9e4ae55f9711",
+   "size": 437828
   },
   {
    "path": "kubejs/client_scripts/classes_tooltips.js",
-   "sha1": "937fe08c16e377bb6928867a9149aab40b4ce331",
-   "size": 71285
+   "sha1": "dfcfb3c074eff73afd6f52267d3004bd0dc0447b",
+   "size": 71480
   },
   {
    "path": "kubejs/client_scripts/main.js",
@@ -82,8 +92,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "8cc70fda628ccec279751bd3a546eddc90714eb8",
-   "size": 62084
+   "sha1": "55f1ff4c4fa52f6789b13f91de09b68302a306da",
+   "size": 69061
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -97,13 +107,13 @@
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
-   "sha1": "757db7dbdb01fbe46c02c961abf1c7eb76ebf722",
-   "size": 10824
+   "sha1": "4feff76b86b10ce77a4b037ba0d6b0b717390195",
+   "size": 11194
   },
   {
    "path": "kubejs/server_scripts/rtp.js",
-   "sha1": "638dded3f47f214f28cf6bdf4661a0db77846ee8",
-   "size": 4531
+   "sha1": "193954340133cb7830d747168fae0b1bc910cd95",
+   "size": 4468
   },
   {
    "path": "kubejs/server_scripts/worldstop_portee.js",
@@ -114,6 +124,11 @@
    "path": "kubejs/startup_scripts/classes_effets.js",
    "sha1": "ed0ed6bd0cb4dd8967b85a626031e165df85580d",
    "size": 5151
+  },
+  {
+   "path": "kubejs/startup_scripts/classes_equip_ecoles.js",
+   "sha1": "29b6dda635e03320c0c8a5cac3f9c275744357ea",
+   "size": 36758
   },
   {
    "path": "kubejs/startup_scripts/classes_niveaux.js",
@@ -577,8 +592,8 @@
   },
   {
    "path": "mods/mcrp_voice-1.0.0.jar",
-   "sha1": "0310214d035cd42a412fa3fce2b45d847d8f1aa4",
-   "size": 23561
+   "sha1": "f1d3cc65521be827667b6d41e733998ad0ed87ad",
+   "size": 23746
   },
   {
    "path": "mods/mcw-bridges-3.1.2-mc1.21.1neoforge.jar",
