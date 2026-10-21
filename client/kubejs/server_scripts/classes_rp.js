@@ -149,8 +149,8 @@ function classeAutorisee(permis, nomClasse) {
   return permis.indexOf('*') !== -1 || permis.indexOf(nomClasse) !== -1
 }
 
-var ENCRE = 'irons_spellbooks:legendary_ink' // à vérifier : /give @s irons_spellbooks:<Tab>
-var COUT_ENCRE = 64
+var ENCRE = 'minecraft:nether_star' // objet demandé au PNJ (le nom de la constante vient de l'ancienne encre)
+var COUT_ENCRE = 1
 var REROLLS_MAX = 3
 var CLE_TEST = 'classe_testeur' // mode testeur (modérateurs) : toutes les classes à la fois
 
@@ -617,7 +617,9 @@ ItemEvents.entityInteracted(function (event) {
     if (!cible || !cible.tags.contains(TAG_PNJ)) return
     event.cancel() // pas de fenêtre de commerce
     if (String(event.hand).toLowerCase().indexOf('main') === -1) return
-    echangerClasse(event.server, event.player)
+    var srv = event.server || event.player.server || event.level.server
+    console.info('[classes_rp] PNJ : clic de ' + event.player.username)
+    echangerClasse(srv, event.player)
   } catch (e) {
     console.error('[classes_rp] Erreur PNJ : ' + e)
   }
