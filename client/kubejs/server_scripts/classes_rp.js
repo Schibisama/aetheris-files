@@ -455,6 +455,8 @@ function appliquerClasse(server, joueur, classe, reinit) {
       // (son onglet reste caché du Codex tant qu'aucun de ses sorts n'est découvert).
       var ecole = ecoleDuSort(sort)
       if (ecole) cmd(server, 'specs_codex school unlock ' + nom + ' ' + ecole)
+      // Sorts ouverts à TOUS (liste « * ») : offerts dès le départ, même après le tirage de la classe.
+      if (SORTS_PAR_CLASSE[sort].indexOf('*') !== -1) cmd(server, 'specs_codex spell unlock ' + nom + ' ' + sort)
     }
   }
 }
