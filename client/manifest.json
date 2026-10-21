@@ -1,5 +1,5 @@
 {
- "version": "2026-10-21T20:09:27.633Z",
+ "version": "2026-10-21T20:20:26.627Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -92,8 +92,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "ce2350ad153f56b2f7cd02461ec286ad2c540d07",
-   "size": 69212
+   "sha1": "41fe3e9b88bdd511b8c61eb06c778f7aea779493",
+   "size": 70138
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",

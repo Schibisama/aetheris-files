@@ -611,19 +611,34 @@ function echangerClasse(server, joueur) {
   annoncer(server, joueur, nouvelle, 'Ton destin a changé.')
 }
 
-ItemEvents.entityInteracted(function (event) {
-  try {
-    var cible = event.target
-    if (!cible || !cible.tags.contains(TAG_PNJ)) return
-    event.cancel() // pas de fenêtre de commerce
-    if (String(event.hand).toLowerCase().indexOf('main') === -1) return
-    var srv = event.server || event.player.server || event.level.server
-    console.info('[classes_rp] PNJ : clic de ' + event.player.username)
-    echangerClasse(srv, event.player)
-  } catch (e) {
-    console.error('[classes_rp] Erreur PNJ : ' + e)
-  }
-})
+// Clic droit sur le PNJ : on écoute l'évènement NeoForge avec la priorité la plus haute (serveur uniquement),
+// avant que le villageois ne réagisse (sinon il « secoue la tête » faute d'offres de commerce).
+try {
+  var EVT_PNJ = Java.loadClass('net.neoforged.neoforge.event.entity.player.PlayerInteractEvent$EntityInteract')
+  var PRIO_PNJ = Java.loadClass('net.neoforged.bus.api.EventPriority').HIGHEST
+  var RESULTAT_PNJ = Java.loadClass('net.minecraft.world.InteractionResult').SUCCESS
+  Java.loadClass('net.neoforged.neoforge.common.NeoForge').EVENT_BUS.addListener(PRIO_PNJ, false, EVT_PNJ, function (e) {
+    try {
+      var cible = e.getTarget()
+      if (!cible || !cible.getTags().contains(TAG_PNJ)) return
+      var niveau = e.getLevel()
+      var client = niveau.clientSide
+      if (client === undefined || typeof client === 'function') client = niveau.isClientSide
+      if (client === true) return
+      e.setCanceled(true)
+      e.setCancellationResult(RESULTAT_PNJ)
+      if (String(e.getHand()).toUpperCase().indexOf('MAIN') === -1) return
+      var joueur = e.getEntity()
+      console.info('[classes_rp] PNJ : clic de ' + joueur.username)
+      echangerClasse(joueur.server, joueur)
+    } catch (err) {
+      console.error('[classes_rp] Erreur PNJ : ' + err)
+    }
+  })
+  console.info('[classes_rp] PNJ du destin actif (clic droit).')
+} catch (e) {
+  console.error('[classes_rp] PNJ du destin indisponible : ' + e)
+}
 
 // /classe pnj : fait apparaître le PNJ à la position du modérateur.
 function cmdPnj(ctx) {
