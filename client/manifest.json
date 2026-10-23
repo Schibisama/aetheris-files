@@ -1,5 +1,5 @@
 {
- "version": "2026-10-21T20:29:14.828Z",
+ "version": "2026-10-23T16:53:42.027Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -92,8 +92,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "955221a994f0aba3f5f75e5d1cef3e771154fd98",
-   "size": 70363
+   "sha1": "da014d683de71140757bbf4fce423b6925d42a01",
+   "size": 74764
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -106,9 +106,14 @@
    "size": 1549
   },
   {
+   "path": "kubejs/server_scripts/end_spawn.js",
+   "sha1": "1adaa6c849bfbf4a5bd568e2930b8135935441f2",
+   "size": 1440
+  },
+  {
    "path": "kubejs/server_scripts/mobs_distance.js",
-   "sha1": "4feff76b86b10ce77a4b037ba0d6b0b717390195",
-   "size": 11194
+   "sha1": "b8aff824163fad0c8b9cbc02f85a4ac64c5520dc",
+   "size": 11357
   },
   {
    "path": "kubejs/server_scripts/rtp.js",
@@ -154,6 +159,11 @@
    "path": "mods/acolyte-1.0.3.jar",
    "sha1": "ad0abc821f3f8a6573ac19a50970fc1bc46b4275",
    "size": 621837
+  },
+  {
+   "path": "mods/aetheris_cthulhu-neoforge-1.21.1-1.1.0.jar",
+   "sha1": "f9e24fd1e91ff5563eee61bfa370d2b0a353cacb",
+   "size": 2118921
   },
   {
    "path": "mods/allthewizardgear-1.21.1-1.2.0.jar",

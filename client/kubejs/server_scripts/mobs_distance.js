@@ -24,6 +24,7 @@ var MD = {
     'minecraft:the_end': { mult: 1, centre: { x: 0, z: 0 } }   // End : depuis l'île centrale
   },
   LUEUR_BONUS: 3.0,         // le mob brille quand son bonus de vie atteint cette valeur (0 = jamais)
+  EXCLUS: ['aetheris_cthulhu:cthulhu'],  // mobs jamais modifiés par la distance (boss d'événement)
   BOSS_IDS: [
     'minecraft:ender_dragon', 'minecraft:wither', 'minecraft:warden', 'minecraft:elder_guardian',
     'cataclysm:ender_guardian', 'cataclysm:netherite_monstrosity', 'cataclysm:ignis', 'cataclysm:the_harbinger',
@@ -224,6 +225,7 @@ function mdTraiter(ent) {
   var niveauMob = mdNiveau(distance)
 
   var idType = mdIdMob(ent)
+  if (MD.EXCLUS && MD.EXCLUS.indexOf(idType) !== -1) return
   var boss = mdBoss(ent, idType)
   // Déjà traité (mob rechargé depuis la sauvegarde) ?
   try {
