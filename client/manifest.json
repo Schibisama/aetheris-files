@@ -1,5 +1,5 @@
 {
- "version": "2026-10-24T21:03:57.285Z",
+ "version": "2026-10-24T21:19:56.575Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -164,11 +164,6 @@
    "path": "mods/aetheris_cthulhu-neoforge-1.21.1-1.7.0.jar",
    "sha1": "7445b7d3946a309d78561f75bafab39b60e9a475",
    "size": 5588101
-  },
-  {
-   "path": "mods/aetheris_degats-neoforge-1.21.1-1.0.0.jar",
-   "sha1": "ce4a73ae7764158b0ca38e53f696487e150321bb",
-   "size": 10077
   },
   {
    "path": "mods/aetheris_noclip-neoforge-1.21.1-1.0.0.jar",
@@ -349,6 +344,11 @@
    "path": "mods/cursespells-1.21.1-1.0.0.jar",
    "sha1": "87111a988be3f089d7b9954e5c269cce83afbb99",
    "size": 24494296
+  },
+  {
+   "path": "mods/d4239400-immersivedamageindicators-neoforge-1.0.0-1.21.1.jar",
+   "sha1": "891ae8c6ac793f72bc74dfd34423f044c4967b9a",
+   "size": 247052
   },
   {
    "path": "mods/darkdoppelganger-4.1.0-1.21.1.jar",
@@ -544,6 +544,11 @@
    "path": "mods/immersive_paintings-neoforge-1.21.1-0.7.9.jar",
    "sha1": "0386ff2db20edfcafc890760adb96073cd38c1a2",
    "size": 5506376
+  },
+  {
+   "path": "mods/immersivemessages-neoforge-1.0.18-1.21.1.jar",
+   "sha1": "b0f31d833ce76e9d57b5eb05bed1c34f61aaa7e7",
+   "size": 1278637
   },
   {
    "path": "mods/iris-neoforge-1.8.14-beta.1+mc1.21.1.jar",
@@ -799,6 +804,11 @@
    "path": "mods/Terralith_1.21.x_v2.6.2.jar",
    "sha1": "d4a9fe71b841f70edfb4b280f9bf5c58e4a28224",
    "size": 2814865
+  },
+  {
+   "path": "mods/txnilib-neoforge-1.0.24-1.21.1.jar",
+   "sha1": "17b1bbb96e922e683a1807a2e7bece603fdc491d",
+   "size": 6276522
   },
   {
    "path": "mods/walkers-5.8.13.jar",
