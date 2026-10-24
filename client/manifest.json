@@ -1,5 +1,5 @@
 {
- "version": "2026-10-24T00:18:55.899Z",
+ "version": "2026-10-24T00:23:42.520Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -274,6 +274,11 @@
    "path": "mods/Clumps-neoforge-1.21.1-19.0.0.1.jar",
    "sha1": "fa2576297c7bd12b28aa7070e8141792bd66da4c",
    "size": 18382
+  },
+  {
+   "path": "mods/cobweb-neoforge-1.21-1.4.0.jar",
+   "sha1": "5ae5dbf4184a62b9ff5bd31f6f8ba62943dd197d",
+   "size": 410948
   },
   {
    "path": "mods/codexregroup-1.0.2.jar",
