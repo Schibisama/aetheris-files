@@ -1,5 +1,5 @@
 {
- "version": "2026-10-24T00:11:40.677Z",
+ "version": "2026-10-24T00:13:36.965Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -161,9 +161,9 @@
    "size": 621837
   },
   {
-   "path": "mods/aetheris_cthulhu-neoforge-1.21.1-1.4.0.jar",
-   "sha1": "1c694258a37d5dd04e9df20128178d0089002a8d",
-   "size": 2157895
+   "path": "mods/aetheris_cthulhu-neoforge-1.21.1-1.5.0.jar",
+   "sha1": "25e2b7c334ab5316a7309788e7014644e94dcb4b",
+   "size": 5584033
   },
   {
    "path": "mods/allthewizardgear-1.21.1-1.2.0.jar",
@@ -269,11 +269,6 @@
    "path": "mods/Clumps-neoforge-1.21.1-19.0.0.1.jar",
    "sha1": "fa2576297c7bd12b28aa7070e8141792bd66da4c",
    "size": 18382
-  },
-  {
-   "path": "mods/cobweb-neoforge-1.21-1.4.0.jar",
-   "sha1": "5ae5dbf4184a62b9ff5bd31f6f8ba62943dd197d",
-   "size": 410948
   },
   {
    "path": "mods/codexregroup-1.0.2.jar",
