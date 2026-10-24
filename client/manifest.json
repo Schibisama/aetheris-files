@@ -1,5 +1,5 @@
 {
- "version": "2026-10-24T22:02:50.567Z",
+ "version": "2026-10-24T22:38:00.975Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -166,9 +166,9 @@
    "size": 5782097
   },
   {
-   "path": "mods/aetheris_noclip-neoforge-1.21.1-1.0.0.jar",
-   "sha1": "4f580278441c8460553471e82bc8480371b429ed",
-   "size": 2973
+   "path": "mods/aetheris_noclip-neoforge-1.21.1-1.1.0.jar",
+   "sha1": "1bbd765ee472e2ff30622f181ed1c0bafecf90d8",
+   "size": 2759
   },
   {
    "path": "mods/allthewizardgear-1.21.1-1.2.0.jar",
