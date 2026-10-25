@@ -1,5 +1,5 @@
 {
- "version": "2026-10-25T19:23:30.601Z",
+ "version": "2026-10-25T22:49:51.396Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -244,6 +244,11 @@
    "path": "mods/BiomesOPlenty-neoforge-1.21.1-21.1.0.14.jar",
    "sha1": "6a12e1a249d074fb18f07d1f141b80ca2885e2be",
    "size": 22338157
+  },
+  {
+   "path": "mods/block_factorys_bosses-2.1.2-neo-1.21.1.jar",
+   "sha1": "249a5f2ba43fd341d4a2831691c154d92aa5a12d",
+   "size": 23943105
   },
   {
    "path": "mods/caelus-neoforge-7.0.1+1.21.1.jar",
@@ -624,6 +629,11 @@
    "path": "mods/L_Ender's Cataclysm 1.21.1-3.33.jar",
    "sha1": "f0310277167c82fd16a5c2bab220b5c5c262f133",
    "size": 73375667
+  },
+  {
+   "path": "mods/legendary_monsters-2.2.4-1.21.1.jar",
+   "sha1": "85778d7f4b7c1546279be9374be3b71b47e2c47d",
+   "size": 44757511
   },
   {
    "path": "mods/lionfishapi-3.1.jar",
