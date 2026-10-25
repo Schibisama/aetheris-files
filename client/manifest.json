@@ -1,5 +1,5 @@
 {
- "version": "2026-10-25T18:39:01.526Z",
+ "version": "2026-10-25T19:23:05.861Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -47,8 +47,8 @@
   },
   {
    "path": "kubejs/client_scripts/classes_langue_messages.js",
-   "sha1": "6655f14edc10e5c448750d592fc64d35b25d4869",
-   "size": 4681
+   "sha1": "4327154a06b77b65502a9c65fd6c49025f768213",
+   "size": 4847
   },
   {
    "path": "kubejs/client_scripts/classes_langue.js",
@@ -69,6 +69,11 @@
    "path": "kubejs/client_scripts/worldstop_portee_client.js",
    "sha1": "0fc4fec175abe533dfa4b0b07abf309465f8c77b",
    "size": 2219
+  },
+  {
+   "path": "kubejs/server_scripts/armourers_ops.js",
+   "sha1": "f30cac47bce59e49d7a79a786e786be0be1d4c1d",
+   "size": 2627
   },
   {
    "path": "kubejs/server_scripts/classes_boosts.js",
