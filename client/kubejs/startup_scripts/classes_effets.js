@@ -100,8 +100,98 @@ function traiterEffets(event) {
   }
 }
 
+// ───────────── Set Wizard d'Iron's Spells (kit de départ) ─────────────
+// Ordre voulu : casque 1, bottes 1, plastron 3, jambières 2 points d'armure, et +25 de mana max chacun.
+var WIZARD = {
+  helmet:     { armure: 1, groupe: 'HEAD' },
+  boots:      { armure: 1, groupe: 'FEET' },
+  chestplate: { armure: 3, groupe: 'CHEST' },
+  leggings:   { armure: 2, groupe: 'LEGS' }
+}
+var WIZARD_MANA = 25
+
+function traiterWizard(event, id) {
+  var m = /^irons_spellbooks:wizard_(helmet|boots|chestplate|leggings)$/.exec(id)
+  if (!m) return false
+  var def = WIZARD[m[1]]
+  var hArmure = holderAttribut('minecraft:generic.armor')
+  var hMana = holderAttribut('irons_spellbooks:max_mana')
+  event.removeIf(function (entree) {
+    var nom = String(entree.attribute().getRegisteredName())
+    return nom === 'minecraft:generic.armor' || nom === 'irons_spellbooks:max_mana'
+  })
+  var groupe = EF.Groupe[def.groupe]
+  if (hArmure) event.addModifier(hArmure, new EF.Modif(EF.RL.parse('classes_rp:wizard_armure_' + m[1]), def.armure, EF.Op.ADD_VALUE), groupe)
+  if (hMana) event.addModifier(hMana, new EF.Modif(EF.RL.parse('classes_rp:wizard_mana_' + m[1]), WIZARD_MANA, EF.Op.ADD_VALUE), groupe)
+  return true
+}
+
+// ───────────── Plafond de protection ─────────────
+// Toute pièce d'armure (ou bouclier) d'un mod est ramenée au plus à la protection du diamant, afin que
+// l'équipement des classes soit à peu près équivalent. L'équipement vanilla n'est pas touché.
+var PLAFOND_ARMURE = { head: 3, chest: 8, legs: 6, feet: 3 }
+var PLAFOND_ARMURE_MAIN = 3          // boucliers / objets tenus en main
+var PLAFOND_ROBUSTESSE = 2           // « armor toughness » par pièce
+var PLAFOND_RESISTANCE_RECUL = 0.1   // résistance au recul par pièce
+
+function emplacementDe(id, groupe) {
+  if (/(helmet|hat$|_hat|hood|mask|crown|headgear|visor|headpiece|circlet|tiara|ribbon|cowl)/.test(id)) return 'head'
+  if (/(chestplate|robe|coat|tunic|suit|dress|cuirass)/.test(id)) return 'chest'
+  if (/(leggings|pants|greaves|skirt)/.test(id)) return 'legs'
+  if (/(boots|shoes|geta)/.test(id)) return 'feet'
+  if (groupe === 'head' || groupe === 'chest' || groupe === 'legs' || groupe === 'feet') return groupe
+  return null
+}
+
+EF.journalPlafond = {}
+function plafonner(event, id) {
+  if (id.indexOf('minecraft:') === 0) return
+  var entrees = event.getModifiers()
+  var aChanger = []
+  for (var i = 0; i < entrees.size(); i++) {
+    var en = entrees.get(i)
+    var nom = String(en.attribute().getRegisteredName())
+    var mod = en.modifier()
+    if (String(mod.operation()) !== 'ADD_VALUE') continue
+    var groupe = String(en.slot().getSerializedName())
+    var enMain = (groupe === 'mainhand' || groupe === 'offhand' || groupe === 'hand')
+    var plafond = null
+    if (nom === 'minecraft:generic.armor') {
+      plafond = enMain ? PLAFOND_ARMURE_MAIN : PLAFOND_ARMURE[emplacementDe(id, groupe)]
+    } else if (nom === 'minecraft:generic.armor_toughness') {
+      plafond = PLAFOND_ROBUSTESSE
+    } else if (nom === 'minecraft:generic.knockback_resistance') {
+      plafond = PLAFOND_RESISTANCE_RECUL
+    }
+    if (plafond === null || plafond === undefined) continue
+    if (mod.amount() > plafond) aChanger.push({ en: en, plafond: plafond, ancien: mod.amount(), nom: nom })
+  }
+  for (var j = 0; j < aChanger.length; j++) {
+    var c = aChanger[j]
+    event.replaceModifier(c.en.attribute(), new EF.Modif(c.en.modifier().id(), c.plafond, EF.Op.ADD_VALUE), c.en.slot())
+    var cle = id + c.nom
+    if (!EF.journalPlafond[cle]) {
+      EF.journalPlafond[cle] = true
+      console.info('[classes_effets] plafond ' + id + ' : ' + c.nom.split('.').pop() + ' ' + c.ancien + ' -> ' + c.plafond)
+    }
+  }
+}
+
 try {
   initEffets()
+  NativeEvents.onEvent(
+    Java.loadClass('net.neoforged.neoforge.event.ItemAttributeModifierEvent'),
+    function (event) {
+      try {
+        var pile = event.getItemStack()
+        var id = String(EF.itemReg.getKey(pile.getItem()))
+        if (!traiterWizard(event, id)) plafonner(event, id)
+      } catch (err) {
+        if (!EF.erreurs) EF.erreurs = 0
+        if (EF.erreurs++ < 5) console.error('[classes_effets] ' + err)
+      }
+    }
+  )
   NativeEvents.onEvent(
     Java.loadClass('net.neoforged.neoforge.event.ItemAttributeModifierEvent'),
     function (event) { traiterEffets(event) }

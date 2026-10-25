@@ -64,7 +64,7 @@ var RESTRICTIONS = [
   { regle: /^apprenticecodex:element_maiden_robe_(ribbon|robe|leggings|boots)$/, classes: ['Paladin', 'Chromancien'] },
   { regle: /^apprenticecodex:elemental_bow$/, classes: ['Druide', 'Pyromancien', 'Hydromancien'] },
   { regle: /^apprenticecodex:explorers_cane$/, classes: ['Voyageur du Vide', 'Électro-Sorcier', 'Technomancien', 'Aéromancien'] },
-  { regle: /^apprenticecodex:spell_reaper_scythe$/, classes: ['Nécromancien', 'Spiritualiste'] },
+  { regle: /^apprenticecodex:spell_reaper_scythe$/, classes: ['Nécromancien'] },
   // ── Cataclysm: Spellbooks ──
   { regle: /^cataclysm_spellbooks:monstrous_flamberge$/, classes: ['Pyromancien'] },
   { regle: /^cataclysm_spellbooks:coral_staff$/, classes: ['Hydromancien'] },
@@ -77,7 +77,7 @@ var RESTRICTIONS = [
   { regle: /^iss_magicfromtheeast:muramasa$/, classes: ['Hémomancien'] },
   // ── Cataclysm (mod principal) : armes et armures ──
   { regle: /^cataclysm:(coral_spear|coral_bardiche|ceraunus)$/, classes: ['Hydromancien'] },
-  { regle: /^cataclysm:cursed_bow$/, classes: ['Spiritualiste', 'Symétriste'] },
+  { regle: /^cataclysm:cursed_bow$/, classes: ['Spiritualiste'] },
   { regle: /^cataclysm:wrath_of_the_desert$/, classes: ['Aéromancien', 'Géomancien'] },
   { regle: /^cataclysm:ancient_spear$/, classes: ['Aéromancien', 'Géomancien'] },
   { regle: /^cataclysm:soul_render$/, classes: ['Symétriste'] },
@@ -87,31 +87,31 @@ var RESTRICTIONS = [
   { regle: /^cataclysm:bloom_stone_pauldrons$/, classes: ['Druide', 'Géomancien'] },
   { regle: /^cataclysm:bone_reptile_(helmet|chestplate)$/, classes: ['Druide', 'Géomancien'] },
   // ── Monster Spellbooks ──
-  { regle: /^monsterspellbooks:(dwarven_engineer_(visor|chestplate|leggings|boots))$/, classes: ['Électro-Sorcier', 'Technomancien', 'Aéromancien'] },
+  { regle: /^monsterspellbooks:(dwarven_engineer_(visor|chestplate|leggings|boots))$/, classes: ['Électro-Sorcier', 'Technomancien'] },
   { regle: /^monsterspellbooks:dwarven_shield$/, classes: ['Technomancien', 'Électro-Sorcier', 'Aéromancien'] },
   { regle: /^monsterspellbooks:forge_masterpiece_(helmet|chestplate|leggings|boots)$/, classes: ['Pyromancien', 'Technomancien'] },
   { regle: /^monsterspellbooks:herobrine_cultist_(helmet|chestplate|leggings|boots)$/, classes: ['Pyromancien', 'Nécromancien', 'Hémomancien'] },
   { regle: /^monsterspellbooks:(starscourge_(helmet|chestplate|leggings|boots|sword))$/, classes: ['Voyageur du Vide', 'Astromancien'] },
-  { regle: /^monsterspellbooks:unstable_robes_(helmet|chestplate|leggings|boots)$/, classes: ['Voyageur du Vide', 'Chronomancien'] },
+  { regle: /^monsterspellbooks:unstable_robes_(helmet|chestplate|leggings|boots)$/, classes: ['Voyageur du Vide'] },
   { regle: /^monsterspellbooks:(claws_of_calamity)$/, classes: ['Électro-Sorcier', 'Aéromancien'] },
-  { regle: /^monsterspellbooks:eternal_knife$/, classes: ['Nécromancien', 'Spiritualiste'] },
+  { regle: /^monsterspellbooks:eternal_knife$/, classes: ['Nécromancien'] },
   { regle: /^monsterspellbooks:(great_axeblade|village_butcherer)$/, classes: ['Évocateur'] },
   { regle: /^monsterspellbooks:orichalcum_(axe|dagger|greataxe|greatsword|warhammer)$/, classes: ['Druide', 'Géomancien'] },
-  { regle: /^monsterspellbooks:swift_striker$/, classes: ['Voyageur du Vide', 'Chronomancien'] },
-  { regle: /^monsterspellbooks:vilenova_staff$/, classes: ['Spiritualiste', 'Symétriste'] },
+  { regle: /^monsterspellbooks:swift_striker$/, classes: ['Voyageur du Vide'] },
+  { regle: /^monsterspellbooks:vilenova_staff$/, classes: ['Nécromancien', 'Spiritualiste'] },
   // ── Fire's Ender Expansion ──
   { regle: /^firesenderexpansion:(void_staff|void_staff_holder)$/, classes: ['Voyageur du Vide'] },
   // ── ISS: Magic From The East ──
-  { regle: /^iss_magicfromtheeast:(jade_pagoda_(helmet|chestplate|leggings|boots)|jade_guandao)$/, classes: ['Symétriste', 'Spiritualiste'] },
+  { regle: /^iss_magicfromtheeast:(jade_pagoda_(helmet|chestplate|leggings|boots)|jade_guandao)$/, classes: ['Symétriste'] },
   { regle: /^iss_magicfromtheeast:mist_boots$/, classes: ['Hydromancien'] },
-  { regle: /^iss_magicfromtheeast:(soul_breaker|soul_katana|spirit_crusher)$/, classes: ['Spiritualiste', 'Symétriste'] },
+  { regle: /^iss_magicfromtheeast:(soul_breaker|soul_katana|spirit_crusher)$/, classes: ['Spiritualiste'] },
   // ── SomakeSpells ──
-  { regle: /^somakespells:abyssium_(helmet|chestplate|leggings|boots)$/, classes: ['Voyageur du Vide', 'Hydromancien'] },
+  { regle: /^somakespells:abyssium_(helmet|chestplate|leggings|boots)$/, classes: ['Voyageur du Vide'] },
   { regle: /^somakespells:ceranium_(helmet|chestplate|leggings|boots)$/, classes: ['Hydromancien', 'Électro-Sorcier', 'Aéromancien'] },
   { regle: /^somakespells:(ignitium_staff|soul_fire_ignitium_staff|infernal_fire_ignitium_staff)$/, classes: ['Pyromancien'] },
   { regle: /^somakespells:archangels_staff$/, classes: ['Paladin'] },
   { regle: /^somakespells:copper_glove$/, classes: ['Technomancien', 'Pyromancien'] },
-  { regle: /^somakespells:boltcutter_dagger$/, classes: ['Électro-Sorcier', 'Technomancien', 'Aéromancien'] },
+  { regle: /^somakespells:boltcutter_dagger$/, classes: ['Électro-Sorcier', 'Technomancien'] },
   { regle: /^somakespells:fragmented_sword_[123]$/, classes: ['Hémomancien'] },
   { regle: /^somakespells:glacium_greataxe$/, classes: ['Cryomancien'] },
   { regle: /^somakespells:mirrored_edge$/, classes: ['Symétriste'] },
@@ -169,8 +169,10 @@ var RESTRICTIONS = [
   { regle: /^crystal_chronicles:holy_(knight_(helmet|chestplate|leggings|boots)|sword|shield)$/,           classes: ['Paladin'] },
   { regle: /^crystal_chronicles:ice_(knight_(helmet|chestplate|leggings|boots)|hammer)$/,                  classes: ['Cryomancien'] },
   { regle: /^crystal_chronicles:blood_(knight_(helmet|chestplate|leggings|boots)|scythe)$/,                classes: ['Hémomancien'] },
-  { regle: /^crystal_chronicles:ender_(mage_(helmet|chestplate|leggings|boots)|staff|sickle)$/,            classes: ['Voyageur du Vide', 'Chronomancien'] },
+  { regle: /^crystal_chronicles:ender_(mage_(helmet|chestplate|leggings|boots)|staff|sickle)$/,            classes: ['Voyageur du Vide'] },
   { regle: /^crystal_chronicles:fire_(knight_(helmet|chestplate|leggings|boots)|chakram)$/,                classes: ['Pyromancien'] },
+  { regle: /^crystal_chronicles:nature_spear$/, classes: ['Druide'] },
+  { regle: /^crystal_chronicles:evocation_twinblade$/, classes: ['Évocateur'] },
   { regle: /^crystal_chronicles:nature_(knight_(helmet|chestplate|leggings|boots)|spear)$/,                classes: ['Druide', 'Géomancien'] },
   { regle: /^crystal_chronicles:lightning_(knight_(helmet|chestplate|leggings|boots)|bident|staff)$/,      classes: ['Électro-Sorcier', 'Aéromancien'] },
   { regle: /^crystal_chronicles:evocation_(knight_(helmet|chestplate|leggings|boots)|twinblade)$/,         classes: ['Évocateur', 'Ésotériste'] },
@@ -222,18 +224,18 @@ var RESTRICTIONS = [
   { regle: /^cataclysm_spellbooks:(bloom_stone_(hat|chestplate|skirt|greaves|staff))$/, classes: ['Druide', 'Géomancien'] },
   { regle: /^cataclysm_spellbooks:abyssal_warlock_(helmet|mask|chestplate|leggings|boots)$/, classes: ['Hydromancien'] },
   // ── Fire's Ender Expansion ──
-  { regle: /^firesenderexpansion:end_lord_(helmet|chestplate|leggings|boots)$/, classes: ['Voyageur du Vide', 'Chronomancien'] },
+  { regle: /^firesenderexpansion:end_lord_(helmet|chestplate|leggings|boots)$/, classes: ['Voyageur du Vide'] },
   // ── Asterism Arcanum ──
   // Tempest Almanac (école Astral) -> Astromancien : armures, armes et bijoux
   { regle: /^tempest_almanac:.*(helmet|chestplate|leggings|boots|sword|blade|staff|wand|scepter|spear|axe|hammer|bow|dagger|ring|amulet|necklace|charm|talisman|cape|cloak|robe|crown|hat|circlet|pendant)/, classes: ['Astromancien'] },
   { regle: /^asterismarcanum:(astral_(helmet|chestplate|leggings|boots)|celestial_staff|ethereal_talisman)$/, classes: ['Astromancien', 'Chromancien'] },
   // ── ISS: Magic From The East ──
-  { regle: /^iss_magicfromtheeast:(onmyoji_(helmet|chestplate|leggings|boots)|soulpiercer)$/, classes: ['Spiritualiste', 'Symétriste'] },
+  { regle: /^iss_magicfromtheeast:(onmyoji_(helmet|chestplate|leggings|boots)|soulpiercer)$/, classes: ['Spiritualiste'] },
   { regle: /^iss_magicfromtheeast:(taoist_(helmet|chestplate|leggings|boots)|elemental_commander_chestplate)$/, classes: ['Symétriste', 'Spiritualiste'] },
   // ── SomakeSpells ──
   { regle: /^somakespells:aquamancer_(helmet|chestplate|leggings|boots|staff)$/, classes: ['Hydromancien'] },
   { regle: /^somakespells:(centauri|scorn|fragmented_sword_1|fragmented_sword_2|withered_rose_staff)$/, classes: ['Hémomancien'] },
-  { regle: /^somakespells:(witherite_glaive|core_splitter)$/, classes: ['Électro-Sorcier', 'Technomancien', 'Aéromancien'] },
+  { regle: /^somakespells:(witherite_glaive|core_splitter)$/, classes: ['Électro-Sorcier'] },
   { regle: /^somakespells:(radiant_judgment|hallow_sword)$/, classes: ['Paladin'] },
   { regle: /^somakespells:last_mourning$/, classes: ['Évocateur'] },
   { regle: /^somakespells:symmetry_staff$/, classes: ['Symétriste'] }
@@ -357,6 +359,11 @@ function eqHolder(id) {
   return EQ.cacheAttr[id]
 }
 
+function eqEstLibre(base) {
+  for (var i = 0; i < EQ_LIBRES.length; i++) if (eqBaseEcole(EQ_LIBRES[i]) === base) return true
+  return false
+}
+
 function eqTraiter(event) {
   var pile = event.getItemStack()
   var id = String(EQ.itemReg.getKey(pile.getItem()))
@@ -366,9 +373,11 @@ function eqTraiter(event) {
   // Écoles autorisées = union de celles des classes de l'objet ; conversion seulement si UNE classe.
   var autorisees = {}
   var cible = null
+  var parClasse = []
   for (var i = 0; i < classes.length; i++) {
     var a = eqAutorisees(classes[i])
     if (!a) return
+    parClasse.push(a)
     for (var b in a.bases) autorisees[b] = true
     if (classes.length === 1) cible = a.cible
   }
@@ -381,6 +390,8 @@ function eqTraiter(event) {
   var entrees = event.getModifiers()
   var possede = {}   // suffixe -> true si un bonus de l'école cible existe déjà
   var etrangers = [] // { suffixe, modif, slot }
+  var sources = {}   // suffixe -> premier bonus d'école d'une classe de l'objet (modèle à recopier)
+  var presents = {}  // base d'école -> { suffixe -> true }
   for (var k = 0; k < entrees.size(); k++) {
     var entree = entrees.get(k)
     var nom = String(entree.attribute().getRegisteredName())
@@ -388,18 +399,41 @@ function eqTraiter(event) {
     if (!s || !EQ.attributsEcole[s.base]) continue
     if (autorisees[s.base]) {
       if (s.base === cible) possede[s.suffixe] = true
+      if (!presents[s.base]) presents[s.base] = {}
+      presents[s.base][s.suffixe] = true
+      if (!sources[s.suffixe] && !eqEstLibre(s.base)) sources[s.suffixe] = { modif: entree.modifier(), slot: entree.slot() }
       continue
     }
     etrangers.push({ suffixe: s.suffixe, modif: entree.modifier(), slot: entree.slot(), nom: nom })
+    if (!sources[s.suffixe]) sources[s.suffixe] = { modif: entree.modifier(), slot: entree.slot() }
   }
-  if (etrangers.length === 0) return
+
+  // Objets de PLUSIEURS classes : chaque classe doit avoir un bonus de son école (même montant que l'existant).
+  var ajouts = []   // { cibleBase, suffixe, src }
+  if (classes.length > 1) {
+    for (var suf in sources) {
+      for (var c = 0; c < classes.length; c++) {
+        var ac = parClasse[c]
+        var deja = false
+        for (var bb in ac.bases) if (presents[bb] && presents[bb][suf]) deja = true
+        if (deja) continue
+        var dup = false
+        for (var q = 0; q < ajouts.length; q++) if (ajouts[q].cibleBase === ac.cible && ajouts[q].suffixe === suf) dup = true
+        if (dup) continue
+        ajouts.push({ cibleBase: ac.cible, suffixe: suf, src: sources[suf], classe: classes[c] })
+      }
+    }
+  }
+  if (etrangers.length === 0 && ajouts.length === 0) return
 
   // Passe 2 : retirer les étrangers, convertir le premier de chaque type si possible
-  event.removeIf(function (entree) {
-    var nom2 = String(entree.attribute().getRegisteredName())
-    var s2 = eqSuffixe(nom2)
-    return !!(s2 && EQ.attributsEcole[s2.base] && !autorisees[s2.base])
-  })
+  if (etrangers.length > 0) {
+    event.removeIf(function (entree) {
+      var nom2 = String(entree.attribute().getRegisteredName())
+      var s2 = eqSuffixe(nom2)
+      return !!(s2 && EQ.attributsEcole[s2.base] && !autorisees[s2.base])
+    })
+  }
   var convertis = {}
   for (var j = 0; j < etrangers.length; j++) {
     var x = etrangers[j]
@@ -416,6 +450,19 @@ function eqTraiter(event) {
     if (!EQ.journal[id + resume]) {
       EQ.journal[id + resume] = true
       console.info('[classes_equip_ecoles] ' + id + ' [' + classes.join('/') + '] : ' + resume)
+    }
+  }
+  // Ajouts pour les classes sans bonus d'école
+  for (var z = 0; z < ajouts.length; z++) {
+    var ad = ajouts[z]
+    var hz = eqHolder(ad.cibleBase + ad.suffixe)
+    if (!hz) continue
+    var ms = ad.src.modif
+    event.addModifier(hz, new EQ.Modif(EQ.RL.parse('classes_rp:equip_' + id.replace(':', '_') + '_' + ad.cibleBase.split(':')[1] + ad.suffixe), ms.amount(), ms.operation()), ad.src.slot)
+    var cle = id + '+' + ad.cibleBase + ad.suffixe
+    if (!EQ.journal[cle]) {
+      EQ.journal[cle] = true
+      console.info('[classes_equip_ecoles] ' + id + ' [' + classes.join('/') + '] : + ' + ad.cibleBase + ad.suffixe + ' (' + ad.classe + ')')
     }
   }
 }
