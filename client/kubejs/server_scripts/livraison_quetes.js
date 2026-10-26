@@ -49,6 +49,60 @@ var LIVRAISONS = {
   }
 }
 
+// Quête simple « apporte N objets contre un sort de ta classe » : textes par défaut, remplaçables champ par champ.
+//   o = { cle, pnj, objet, nombre, nom (ex. "lingots d'or"), accepter, recompense, rarete: 'peu_commun' | 'rare' | 'epique', ... }
+function lvSimple(o) {
+  var cmdRecompense = { peu_commun: 'classe recompense_peu_commun %joueur%', rare: 'classe recompense %joueur%', epique: 'classe recompense_epique %joueur%' }
+  var q = {
+    cle: o.cle, pnj: o.pnj, objet: o.objet, nombre: o.nombre,
+    accepter: o.accepter,
+    encours: o.encours || "Alors, ces " + o.nombre + " " + o.nom + " ? Je t'attends.",
+    manque: o.manque || "Il m'en faut " + o.nombre + " (" + o.nom + "), pas un de moins. Reviens quand ton sac sera plein.",
+    sansClasse: o.sansClasse || "Tu n'as pas encore de voie arcanique, voyageur... Va voir qui de droit, puis reviens me trouver.",
+    rien: o.rien || "Tu ne m'as encore rien promis, voyageur.",
+    fini: o.fini || "Notre marché est conclu, voyageur. Merci encore.",
+    recompense: o.recompense,
+    commandeRecompense: cmdRecompense[o.rarete]
+  }
+  return q
+}
+
+LIVRAISONS.kael_or = lvSimple({
+  cle: 'kael_or_quete', pnj: 'Kael', objet: 'minecraft:gold_ingot', nombre: 32, nom: "lingots d'or", rarete: 'rare',
+  accepter: "J'ai un client qui paie en or et n'aime pas qu'on lui pose de questions. Trente-deux lingots d'or, apportés sans bruit, et je te laisse un savoir de ta voie. Pas de reçu.",
+  encours: "Mon client s'impatient. Ces trente-deux lingots, tu les as, ou tu as seulement parlé ?",
+  fini: "Notre affaire est faite. Tu ne m'as jamais vu, et moi, je ne t'ai jamais rien donné.",
+  recompense: "Pas mal. Voilà le butin : un savoir de ta voie. Si on te demande, tu l'as trouvé dans la rue."
+})
+LIVRAISONS.gorm_morue = lvSimple({
+  cle: 'gorm_morue_quete', pnj: 'Gorm', objet: 'minecraft:cod', nombre: 32, nom: 'morues crues', rarete: 'rare',
+  accepter: "Mes hommes n'ont plus rien à mettre sous la dent, la mer a la dent dure. Trente-deux morues crues pour la garnison, et je te remets un savoir de ta voie. Fais vite.",
+  encours: "Mes hommes ont faim, voyageur. Ces morues, elles arrivent ?",
+  fini: "La garnison est nourrie, et tu as la reconnaissance de la garde. Ça ne s'oublie pas.",
+  recompense: "Voilà de quoi tenir la ligne. Prends ceci : un savoir de ta voie. Que la garde veille sur toi."
+})
+LIVRAISONS.brokk_fer = lvSimple({
+  cle: 'brokk_fer_quete', pnj: 'Brokk', objet: 'minecraft:iron_ingot', nombre: 64, nom: 'lingots de fer', rarete: 'rare',
+  accepter: "Ma forge crève de faim : soixante-quatre lingots de fer, pas un de moins, et je t'apprends un tour de ta voie. Le fer ne se discute pas.",
+  encours: "Hmpf. Mes soixante-quatre lingots ? La forge refroidit.",
+  fini: "Ma forge tourne grâce à toi. On en reparlera, camarade.",
+  recompense: "Hmpf ! Du bon fer. Tiens, voilà ton dû : un savoir de ta voie, forgé à la main. Ne le laisse pas rouiller."
+})
+LIVRAISONS.tobin_paratonnerre = lvSimple({
+  cle: 'tobin_paratonnerre_quete', pnj: 'Tobin', objet: 'minecraft:lightning_rod', nombre: 10, nom: 'paratonnerres', rarete: 'peu_commun',
+  accepter: "Je voudrais dresser des paratonnerres sur la crête, pour attirer l'orage loin du camp. Dix de ceux-là et je te donne un petit savoir de ta voie.",
+  encours: "Mes paratonnerres ? Sans eux, le prochain orage frappe le camp !",
+  fini: "Le camp dort tranquille grâce à toi. Si tu vois un éclair de loin, c'est moi qui te remercie !",
+  recompense: "Parfait, avec ça l'orage sera content ! Tiens, un petit savoir de ta voie. Pas de quoi en faire un drame."
+})
+LIVRAISONS.edrik_chair = lvSimple({
+  cle: 'edrik_chair_quete', pnj: 'Edrik', objet: 'minecraft:rotten_flesh', nombre: 64, nom: 'chairs putréfiées', rarete: 'rare',
+  accepter: "Les morts rôdent, et leur chair souille la terre. Apporte-moi soixante-quatre chairs putréfiées : je les purifierai par la prière, et je te donnerai en échange un savoir de ta voie.",
+  encours: "Ces chairs putréfiées, voyageur ? La terre attend d'être lavée.",
+  fini: "La terre est plus propre grâce à toi. Que la lumière te garde.",
+  recompense: "Que la lumière soit rendue à cette chair. Merci, voyageur. Reçois ce savoir de ta voie : qu'il te serve avec justice."
+})
+
 function lvDire(joueur, q, texte) {
   joueur.tell(Text.gold('[' + q.pnj + '] ').append(Text.of(texte).gray()))
 }
