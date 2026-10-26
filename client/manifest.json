@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26T21:08:42.490Z",
+ "version": "2026-10-26T21:14:23.739Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -442,8 +442,8 @@
   },
   {
    "path": "kubejs/server_scripts/baton_neant.js",
-   "sha1": "631e648f8376d3b4e28505d1599de27841992070",
-   "size": 2124
+   "sha1": "e992cb212dbb8e346d3fddc8611277c262a36144",
+   "size": 2168
   },
   {
    "path": "kubejs/server_scripts/boss_zones.js",
