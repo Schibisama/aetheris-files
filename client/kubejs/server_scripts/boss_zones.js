@@ -229,6 +229,23 @@ ServerEvents.tick(function (event) {
   }
 })
 
+// Mémorise le dernier joueur ayant blessé un boss de zone (la mort du Yéti arrive après son animation, sans source)
+var bzDernierCoup = {}
+try {
+  NativeEvents.onEvent(
+    Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent'),
+    function (ev) {
+      try {
+        var cible = ev.getEntity()
+        var att = ev.getSource().getEntity()
+        if (!att || !att.isPlayer()) return
+        if (!cible.tags || !cible.tags.contains('boss_zone')) return
+        bzDernierCoup[String(cible.uuid)] = String(att.username)
+      } catch (e) {}
+    }
+  )
+} catch (e) { console.error('[boss_zones] suivi des coups indisponible : ' + e) }
+
 // Mort d'un boss : timer de respawn + crédit de quête au SEUL joueur qui a porté le coup fatal
 EntityEvents.death(function (event) {
   try {
@@ -243,6 +260,11 @@ EntityEvents.death(function (event) {
       if (!b.quete) continue
       var src = event.source
       var tueur = src ? src.actual : null
+      if (!tueur || !tueur.isPlayer()) {
+        var nomT = bzDernierCoup[String(event.entity.uuid)]
+        tueur = nomT ? event.server.getPlayer(nomT) : null
+      }
+      delete bzDernierCoup[String(event.entity.uuid)]
       if (!tueur || !tueur.isPlayer()) continue
       if (tueur.persistentData.getInt(b.quete.cle) === 1) {
         tueur.persistentData.putInt(b.quete.cle, 2)
