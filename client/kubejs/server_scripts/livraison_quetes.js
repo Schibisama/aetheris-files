@@ -218,3 +218,103 @@ ServerEvents.commandRegistry(function (event) {
   }
   event.register(Commands.literal('livraison').then(accepter).then(rendre).then(choix).then(reset).then(etat))
 })
+
+// ───── Quêtes des PNJ de classe (livraison) ─────
+LIVRAISONS.cls_pyromancien = lvSimple({
+  cle: 'cls_pyromancien_quete', pnj: "Cendric", objet: "minecraft:coal", nombre: 64, nom: "charbons", rarete: "peu_commun",
+  accepter: "Mon brasier s'éteint, et un pyromancien sans feu n'est qu'un homme en colère. Apporte-moi soixante-quatre charbons, et je te transmettrai un petit savoir de ta voie.",
+  encours: "Mes soixante-quatre charbons ? Le feu a faim, voyageur.",
+  fini: "Le brasier est vivant, grâce à toi. Reviens quand tu auras froid.",
+  recompense: "Voilà de quoi nourrir mon feu. Prends ce savoir de ta voie, mais ne brûle rien d'important."
+})
+LIVRAISONS.cls_cryomancien = lvSimple({
+  cle: 'cls_cryomancien_quete', pnj: "Névée", objet: "minecraft:packed_ice", nombre: 32, nom: "blocs de glace compactée", rarete: "rare",
+  accepter: "Mes réserves de glace fondent, et mes sortilèges avec elles. Trente-deux blocs de glace compactée, et je te confie un savoir de ta voie.",
+  encours: "Ma glace ? Elle fond, et moi avec.",
+  fini: "Mes cristaux tiennent bon. Merci, voyageur.",
+  recompense: "Le givre te reconnaît désormais. Prends ce savoir de ta voie."
+})
+LIVRAISONS.cls_voyageur_vide = lvSimple({
+  cle: 'cls_voyageur_vide_quete', pnj: "Zéphar le Passeur", objet: "minecraft:ender_pearl", nombre: 8, nom: "perles du Néant", rarete: "rare",
+  accepter: "J'ai besoin de huit perles du Néant pour ouvrir un passage stable. Apporte-les-moi, et je te laisserai un savoir de ta voie, ramené d'un endroit qui n'existe pas.",
+  encours: "Mes huit perles ? Sans elles, je ne vais nulle part.",
+  fini: "Le passage est ouvert. Je te dois une faveur, quelque part, quelque quand.",
+  recompense: "Du Vide pour le Vide. Prends ce savoir de ta voie, et ne demande pas d'où il vient."
+})
+LIVRAISONS.cls_evocateur = lvSimple({
+  cle: 'cls_evocateur_quete', pnj: "Oswin l'Évocateur", objet: "minecraft:emerald", nombre: 24, nom: "émeraudes", rarete: "rare",
+  accepter: "Mes focus sont épuisés. Apporte-moi vingt-quatre émeraudes, et je te transmets un savoir de ta voie, avec un petit sort de remerciement.",
+  encours: "Mes vingt-quatre émeraudes ? Mon cercle est prêt, il n'attend que ça.",
+  fini: "Mon cercle est complet. Merci, voyageur.",
+  recompense: "Parfait ! Voici ton dû : un savoir de ta voie. N'invoque rien chez l'aubergiste."
+})
+LIVRAISONS.cls_chronomancien = lvSimple({
+  cle: 'cls_chronomancien_quete', pnj: "Horace le Sablier", objet: "minecraft:clock", nombre: 4, nom: "horloges", rarete: "rare",
+  accepter: "Mes horloges se sont arrêtées, et le temps ici devient... flou. Apporte-moi quatre horloges, et je te donnerai un savoir de ta voie. Si tu es en retard, ce sera comme si tu étais à l'heure.",
+  encours: "Mes quatre horloges ? Elles auraient dû arriver hier. Ou demain.",
+  fini: "Mes horloges battent à nouveau. Le temps te remercie.",
+  recompense: "Voici ton dû, avant même que tu ne le demandes : un savoir de ta voie."
+})
+LIVRAISONS.cls_aeromancien = lvSimple({
+  cle: 'cls_aeromancien_quete', pnj: "Aelwen", objet: "minecraft:feather", nombre: 64, nom: "plumes", rarete: "peu_commun",
+  accepter: "Mes messagers sont à court de plumes pour les sceaux de vent. Apporte-m'en soixante-quatre, et je te glisserai un petit savoir de ta voie.",
+  encours: "Mes soixante-quatre plumes ? Le vent s'impatiente.",
+  fini: "Mes messagers volent à nouveau. Merci !",
+  recompense: "Un souffle de savoir pour toi. Garde-le à l'abri des courants d'air."
+})
+LIVRAISONS.cls_chromancien = lvSimple({
+  cle: 'cls_chromancien_quete', pnj: "Iris la Peintre d'Aura", objet: "minecraft:glow_ink_sac", nombre: 16, nom: "sacs d'encre luisante", rarete: "rare",
+  accepter: "Ma palette est vide, et il me manque la plus lumineuse des encres. Apporte-moi seize sacs d'encre luisante, et je te peindrai un savoir de ta voie.",
+  encours: "Mes seize sacs d'encre luisante ? Mon pinceau s'ennuie.",
+  fini: "Ma palette brille à nouveau. Merci, voyageur.",
+  recompense: "Regarde comme ça brille ! Voici ton savoir de ta voie, de toutes les couleurs."
+})
+LIVRAISONS.cls_necromancien = lvSimple({
+  cle: 'cls_necromancien_quete', pnj: "Mortimer le Fossoyeur", objet: "minecraft:bone", nombre: 64, nom: "os", rarete: "rare",
+  accepter: "Mes serviteurs manquent d'os, et un squelette incomplet est une insulte. Apporte-moi soixante-quatre os, et je te donnerai un savoir de ta voie.",
+  encours: "Mes soixante-quatre os ? Mes amis commencent à s'effondrer.",
+  fini: "Mes serviteurs te remercient. Ils ne parlent pas, mais je traduis.",
+  recompense: "Voici le fruit de notre marché : un savoir de ta voie. Que les morts te soient favorables."
+})
+LIVRAISONS.cls_reprouve = lvSimple({
+  cle: 'cls_reprouve_quete', pnj: "Ezra le Réprouvé", objet: "minecraft:ink_sac", nombre: 32, nom: "poches d'encre", rarete: "peu_commun",
+  accepter: "Mes registres sont presque vides d'encre. Trente-deux poches d'encre, et je te rédigerai un petit savoir de ta voie, sans clause cachée. Presque.",
+  encours: "Mes trente-deux poches d'encre ? Les registres attendent.",
+  fini: "Le contrat est honoré. Aucune clause cachée, juré.",
+  recompense: "Voici ton exemplaire : un savoir de ta voie. Signature facultative."
+})
+LIVRAISONS.cls_envouteur = lvSimple({
+  cle: 'cls_envouteur_quete', pnj: "Morgause l'Envoûteuse", objet: "minecraft:spider_eye", nombre: 16, nom: "yeux d'araignée", rarete: "peu_commun",
+  accepter: "Mes sortilèges ont besoin d'ingrédients frais. Apporte-moi seize yeux d'araignée, et je te laisserai un petit savoir de ta voie. Sans malédiction. Cette fois.",
+  encours: "Mes seize yeux d'araignée ? Mes charmes s'étiolent.",
+  fini: "Mon chaudron frémit de plaisir. Merci.",
+  recompense: "Voilà ton dû : un savoir de ta voie. Tu es libre de partir, c'est promis."
+})
+LIVRAISONS.cls_esoteriste = lvSimple({
+  cle: 'cls_esoteriste_quete', pnj: "Lysandre le Reclus", objet: "minecraft:amethyst_shard", nombre: 32, nom: "éclats d'améthyste", rarete: "rare",
+  accepter: "Mes cristaux de méditation se sont brisés. Trente-deux éclats d'améthyste, et je te transmettrai un savoir de ta voie. Ne le répète pas.",
+  encours: "Mes trente-deux éclats d'améthyste ? Ma méditation n'a plus de focus.",
+  fini: "Mes cristaux chantent à nouveau. Merci, voyageur.",
+  recompense: "Voici ce qui était caché : un savoir de ta voie. Garde-le près du cœur."
+})
+LIVRAISONS.cls_astromancien = lvSimple({
+  cle: 'cls_astromancien_quete', pnj: "Stellaria l'Astronome", objet: "minecraft:glowstone_dust", nombre: 32, nom: "poussières de glowstone", rarete: "peu_commun",
+  accepter: "Mes cartes du ciel perdent leur éclat. Apporte-moi trente-deux poussières de glowstone, et je te dévoilerai un petit savoir de ta voie, écrit dans les étoiles.",
+  encours: "Mes trente-deux poussières de glowstone ? Mes cartes pâlissent.",
+  fini: "Mes constellations brillent à nouveau. Merci.",
+  recompense: "Voici ce que disent les étoiles : un savoir de ta voie. Elles te souhaitent bonne route."
+})
+LIVRAISONS.cls_spiritualiste = lvSimple({
+  cle: 'cls_spiritualiste_quete', pnj: "Yuna la Moniale", objet: "minecraft:soul_sand", nombre: 16, nom: "blocs de sable des âmes", rarete: "peu_commun",
+  accepter: "Mon sanctuaire manque de sable des âmes pour l'encens. Apporte-moi seize blocs de ce sable, et je te transmettrai un petit savoir de ta voie.",
+  encours: "Mes seize blocs de sable des âmes ? Mon encens s'éteint.",
+  fini: "Mon sanctuaire est apaisé. Merci.",
+  recompense: "Que cette connaissance t'accompagne : un savoir de ta voie."
+})
+LIVRAISONS.cls_symetriste = lvSimple({
+  cle: 'cls_symetriste_quete', pnj: "Symon le Géomètre", objet: "minecraft:copper_ingot", nombre: 48, nom: "lingots de cuivre", rarete: "peu_commun",
+  accepter: "Mes instruments de mesure sont tordus. Apporte-moi quarante-huit lingots de cuivre, et je te remettrai un petit savoir de ta voie, parfaitement équilibré.",
+  encours: "Mes quarante-huit lingots de cuivre ? Il m'en manque pour que ce soit symétrique.",
+  fini: "Parfait équilibre. Merci, voyageur.",
+  recompense: "Voici ton dû, parfaitement calibré : un savoir de ta voie."
+})

@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26T19:39:40.139Z",
+ "version": "2026-10-26T20:34:10.736Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -59,6 +59,76 @@
    "path": "kubejs/assets/mcrp/textures/entity/brokk.png",
    "sha1": "352f68465b5c2674b0a20341bb1a5d1277fd7a7d",
    "size": 5390
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/cls_aeromancien.png",
+   "sha1": "ed622a21b7e71d31b0159f6513de614d5a840b71",
+   "size": 3453
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/cls_astromancien.png",
+   "sha1": "0746428aba6de6595b7a81157261e50cc7356e11",
+   "size": 5113
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/cls_chromancien.png",
+   "sha1": "75e41f8a2c7758d2824e1d572b0511b581919cf7",
+   "size": 3344
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/cls_chronomancien.png",
+   "sha1": "e80ce54d3af7970cab29bb80534e24a6f55fa970",
+   "size": 4598
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/cls_cryomancien.png",
+   "sha1": "23cdf13827a09e1e477dbe3325a4de709422df37",
+   "size": 2907
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/cls_envouteur.png",
+   "sha1": "2ad37ada5748127fc3bb695488cc386e31e5e059",
+   "size": 3232
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/cls_esoteriste.png",
+   "sha1": "a1b6a280c4893398a9010477a89cbef551a25ab9",
+   "size": 6263
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/cls_evocateur.png",
+   "sha1": "755488c74c7d7136088236b5de8f9ea2a2bc541c",
+   "size": 3638
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/cls_necromancien.png",
+   "sha1": "7e4f3eb8cf8994718a42030acc24b5454f21340a",
+   "size": 2985
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/cls_pyromancien.png",
+   "sha1": "fd0ac7527b90aa00158fef718ca598f7fc042e24",
+   "size": 4726
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/cls_reprouve.png",
+   "sha1": "498114a0cc94d18a3f31926c739d0ba2598c84fb",
+   "size": 4203
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/cls_spiritualiste.png",
+   "sha1": "59364d3e26c051ddcbb65cacbcad9252264fb872",
+   "size": 4341
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/cls_symetriste.png",
+   "sha1": "cc863557ef1e53c386713e8ce6b76008a2024933",
+   "size": 3733
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/cls_voyageur_vide.png",
+   "sha1": "021eca1a2bf9485424cad1fb1b84033e94efa00d",
+   "size": 4853
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/edrik.png",
@@ -422,8 +492,8 @@
   },
   {
    "path": "kubejs/server_scripts/livraison_quetes.js",
-   "sha1": "3e0bc426e76d946af76799f51966d6c4bdad45e4",
-   "size": 13389
+   "sha1": "f366480ddef22ffc018cfeef501140dca870df6b",
+   "size": 21615
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
