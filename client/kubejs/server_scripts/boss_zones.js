@@ -27,7 +27,9 @@ var BOSSES = {
       rien: "Tu ne m'as encore rien promis, voyageur.",
       vivant: "Helvar respire toujours. Je le sens. Va.",
       recompense: "Il est donc tombé... Merci. Prends ce savoir : c'est tout ce que ce vieux serment avait encore de précieux. Maintenant, je peux enfin me reposer.",
-      annonceMort: 'Helvar est tombé sous ta lame. Retourne voir Ser Aldric.',
+      annonceMort: 'Helvar est tombé sous ta lame. Un écu brisé gît dans ton sac : rapporte-le à Ser Aldric.',
+      objet: 'kubejs:ecu_brise_helvar',   // preuve donnée au seul tueur, reprise par le PNJ au rapport
+      sansObjet: "Où est l'écu brisé ? Sans lui, je ne puis croire que Helvar est tombé. Retrouve-le.",
       commandeRecompense: 'classe recompense_epique %joueur%'   // %joueur% = pseudo
     }
   }
@@ -152,6 +154,7 @@ EntityEvents.death(function (event) {
       if (!tueur || !tueur.isPlayer()) continue
       if (tueur.persistentData.getInt(b.quete.cle) === 1) {
         tueur.persistentData.putInt(b.quete.cle, 2)
+        if (b.quete.objet) tueur.give(Item.of(b.quete.objet, 1))
         tueur.tell(Text.gold(b.quete.annonceMort))
       }
     }
@@ -181,7 +184,9 @@ function bqRendre(server, joueur, q) {
   if (etat === 0) bqDire(joueur, q, q.rien)
   else if (etat === 1) bqDire(joueur, q, q.vivant)
   else if (etat === 3) bqDire(joueur, q, q.fini)
+  else if (q.objet && joueur.inventory.count(q.objet) < 1) bqDire(joueur, q, q.sansObjet)
   else {
+    if (q.objet) server.runCommandSilent('clear ' + joueur.username + ' ' + q.objet + ' 1')
     d.putInt(q.cle, 3)
     server.runCommandSilent(q.commandeRecompense.replace('%joueur%', joueur.username))
     bqDire(joueur, q, q.recompense)

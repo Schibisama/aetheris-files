@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26T14:53:11.077Z",
+ "version": "2026-10-26T15:15:18.775Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -14,6 +14,11 @@
    "path": "kubejs/assets/kubejs/textures/block/example_block.png",
    "sha1": "87f5ec8c26493050fc83543af8d33f2d28a98766",
    "size": 247
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/item/ecu_brise_helvar.png",
+   "sha1": "2f0903710246d82918e4d5c0da2841ab80e0dac6",
+   "size": 292
   },
   {
    "path": "kubejs/assets/kubejs/textures/item/example_item.png",
@@ -122,8 +127,8 @@
   },
   {
    "path": "kubejs/server_scripts/boss_zones.js",
-   "sha1": "ab3627e465b338de47adfba134e08b73b59d36d7",
-   "size": 9934
+   "sha1": "31c6713bd475a3ad56d4c12d3d6bf45881bb0f68",
+   "size": 10430
   },
   {
    "path": "kubejs/server_scripts/chasse_quete.js",
@@ -204,6 +209,11 @@
    "path": "kubejs/startup_scripts/main.js",
    "sha1": "05ec115c372985dc9f77dd2513933aa8e90eba61",
    "size": 117
+  },
+  {
+   "path": "kubejs/startup_scripts/objets_quetes.js",
+   "sha1": "f8f91a05298c869b05cb4f1a3813fe89676113e6",
+   "size": 439
   },
   {
    "path": "mods/aaa_particles-neoforge-1.21.1-2.3.4.jar",
