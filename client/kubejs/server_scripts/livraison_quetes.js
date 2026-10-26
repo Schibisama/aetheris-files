@@ -36,7 +36,7 @@ var LIVRAISONS = {
   sylvaine_roses: {
     cle: 'sylvaine_roses_quete',
     pnj: 'Sylvaine',
-    objet: 'minecraft:rose_bush',   // rosier (« rose » dans le jeu de base)
+    objet: 'biomesoplenty:rose',   // rose de Biomes O' Plenty
     nombre: 16,
     accepter: "Un client m'a commandé un bouquet, et mes rosiers ont tous gelé. Rapporte-m'en seize, bien rouges, et je te remercierai d'un petit savoir que les herbes m'ont soufflé.",
     encours: "Mes seize roses ? Le client s'impatiente, et les épines ne se cueillent pas toutes seules.",
@@ -76,10 +76,10 @@ LIVRAISONS.kael_or = lvSimple({
 })
 LIVRAISONS.gorm_morue = lvSimple({
   cle: 'gorm_morue_quete', pnj: 'Gorm', objet: 'minecraft:cod', nombre: 32, nom: 'morues crues', rarete: 'rare',
-  accepter: "Mes hommes n'ont plus rien à mettre sous la dent, la mer a la dent dure. Trente-deux morues crues pour la garnison, et je te remets un savoir de ta voie. Fais vite.",
-  encours: "Mes hommes ont faim, voyageur. Ces morues, elles arrivent ?",
-  fini: "La garnison est nourrie, et tu as la reconnaissance de la garde. Ça ne s'oublie pas.",
-  recompense: "Voilà de quoi tenir la ligne. Prends ceci : un savoir de ta voie. Que la garde veille sur toi."
+  accepter: "Mon équipage n'a plus rien à mettre sous la dent, et le port est à sec. Trente-deux morues crues pour la cambuse, et je te remets un savoir de ta voie. Vite, la marée n'attend pas.",
+  encours: "Mon équipage a faim, terrien. Ces morues, elles arrivent ?",
+  fini: "La cambuse est pleine, et tu as la reconnaissance de mon équipage. Une place à bord t'attendra toujours.",
+  recompense: "De quoi tenir jusqu'au prochain port ! Prends ceci : un savoir de ta voie. Que le vent te soit favorable."
 })
 LIVRAISONS.brokk_fer = lvSimple({
   cle: 'brokk_fer_quete', pnj: 'Brokk', objet: 'minecraft:iron_ingot', nombre: 64, nom: 'lingots de fer', rarete: 'rare',

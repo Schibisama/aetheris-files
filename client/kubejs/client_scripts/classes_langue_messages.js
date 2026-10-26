@@ -38,6 +38,7 @@ var MSG_FR = {
   'mcrp.rtp.introuvable': 'Aucun endroit sûr trouvé, réessaie dans un instant.',
   'mcrp.rtp.ok': 'Téléporté en X %s, Y %s, Z %s.',
   'mcrp.msg.recompense': 'Les arcanes te font un don : un parchemin de %s, sort %s de ta classe.',
+  'mcrp.subtitle.npc_parole': 'Un PNJ parle',
   'mcrp.rarete.uncommon': 'peu commun',
   'mcrp.rarete.rare': 'rare',
   'mcrp.rarete.epic': 'épique',
@@ -69,6 +70,7 @@ var MSG_EN = {
   'mcrp.rtp.introuvable': 'No safe spot found, try again in a moment.',
   'mcrp.rtp.ok': 'Teleported to X %s, Y %s, Z %s.',
   'mcrp.msg.recompense': 'The arcane grants you a gift: a scroll of %s, a spell of %s rarity from your class.',
+  'mcrp.subtitle.npc_parole': 'An NPC speaks',
   'mcrp.rarete.uncommon': 'uncommon',
   'mcrp.rarete.rare': 'rare',
   'mcrp.rarete.epic': 'epic',
@@ -80,7 +82,7 @@ function msgAjouter(langue) {
   ClientEvents.lang(langue, function (event) {
     var table = langue === 'en_us' ? MSG_EN : MSG_FR
     for (var k in table) event.add('mcrp', k, table[k])
-    event.add('mcrp', 'item.farmersdelight.mutton_wrap', 'Durum') // le wrap de mouton de Farmer's Delight s'appelle Durum
+    event.add('farmersdelight', 'item.farmersdelight.mutton_wrap', 'Durum') // le wrap de mouton de Farmer's Delight s'appelle Durum
     for (var fr in CLASSES_EN) {
       event.add('mcrp', 'mcrp.classe.' + msgSlug(fr), langue === 'en_us' ? CLASSES_EN[fr] : fr)
     }

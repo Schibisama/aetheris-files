@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26T16:40:14.547Z",
+ "version": "2026-10-26T17:21:44.145Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -27,8 +27,13 @@
   },
   {
    "path": "kubejs/assets/mcrp/sounds.json",
-   "sha1": "ad34d26a3877510e350bb0232b928ccd7d6cc729",
-   "size": 100
+   "sha1": "96b92af3b9f7dda62f1eff49e2feaccc2eeebca9",
+   "size": 165
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/npc/parole_masculine.ogg",
+   "sha1": "4cb80a197e9cb581262080903a263fa93c29ed77",
+   "size": 104233
   },
   {
    "path": "kubejs/assets/mcrp/sounds/the_world.ogg",
@@ -97,8 +102,8 @@
   },
   {
    "path": "kubejs/client_scripts/classes_langue_messages.js",
-   "sha1": "e0d0b32bf3beb16942003f4d0f64980cc3d721e2",
-   "size": 5413
+   "sha1": "6c987db06acc81dd6b31703890f92c37fa587c5f",
+   "size": 5516
   },
   {
    "path": "kubejs/client_scripts/classes_langue.js",
@@ -177,8 +182,8 @@
   },
   {
    "path": "kubejs/server_scripts/livraison_quetes.js",
-   "sha1": "4256b8f76e7babd9ba2b57cd8003df46b2042ede",
-   "size": 11669
+   "sha1": "3fe44eddd91958708384ad5188432e534d65d468",
+   "size": 11703
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
