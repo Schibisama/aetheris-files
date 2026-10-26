@@ -6,19 +6,21 @@ var BN_NOM = 'Bâton du Néant'
 
 function bnTient(joueur) {
   try {
-    var it = joueur.mainHandItem
-    if (!it || it.empty || String(it.id) !== 'minecraft:blaze_rod') return false
-    return String(it.displayName).indexOf(BN_NOM) !== -1
+    var it = joueur.getMainHandItem()
+    if (!it || it.isEmpty() || String(it.id) !== 'minecraft:blaze_rod') return false
+    return String(it.getHoverName().getString()).indexOf(BN_NOM) !== -1
   } catch (e) { return false }
 }
 
 function bnTuer(joueur, cible) {
   try {
-    if (!cible || !cible.living || cible.player) return false
-    if (String(cible.type).indexOf('easy_npc:') === 0) return false
-    var s = joueur.server
-    s.runCommandSilent('damage ' + cible.stringUuid + ' 1000000 minecraft:generic_kill by ' + joueur.stringUuid)
-    if (cible.alive) s.runCommandSilent('kill ' + cible.stringUuid)
+    if (!cible || cible.isPlayer()) return false
+    if (!cible.isAlive()) return false
+    if (String(cible.getType()).indexOf('easy_npc') !== -1) return false
+    var s = joueur.getServer()
+    var u = String(cible.getStringUUID())
+    s.getCommands().performPrefixedCommand(s.createCommandSourceStack().withSuppressedOutput(), 'damage ' + u + ' 1000000 minecraft:generic_kill by ' + String(joueur.getStringUUID()))
+    if (cible.isAlive()) s.getCommands().performPrefixedCommand(s.createCommandSourceStack().withSuppressedOutput(), 'kill ' + u)
     return true
   } catch (e) { console.error('[baton_neant] ' + e); return false }
 }
@@ -30,14 +32,22 @@ ItemEvents.entityInteracted(function (event) {
   if (bnTuer(j, event.target)) event.cancel()
 })
 
-EntityEvents.hurt(function (event) {
-  try {
-    var src = event.source
-    var j = src ? src.player : null
-    if (!j || !bnTient(j)) return
-    if (bnTuer(j, event.entity)) event.cancel()
-  } catch (e) { console.error('[baton_neant] ' + e) }
-})
+// Clic gauche : on annule les dégâts normaux et on tue.
+try {
+  NativeEvents.onEvent(
+    Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent'),
+    function (event) {
+      try {
+        var att = event.getSource().getEntity()
+        if (!att || !att.isPlayer() || !bnTient(att)) return
+        if (bnTuer(att, event.getEntity())) event.setCanceled(true)
+      } catch (e) { console.error('[baton_neant] ' + e) }
+    }
+  )
+  console.info('[baton_neant] Clic gauche actif.')
+} catch (e) {
+  console.error('[baton_neant] Clic gauche indisponible : ' + e)
+}
 
 ServerEvents.commandRegistry(function (event) {
   var Commands = event.commands
