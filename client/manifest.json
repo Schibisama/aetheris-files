@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26T20:51:07.782Z",
+ "version": "2026-10-26T21:08:07.802Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -439,6 +439,11 @@
    "path": "kubejs/server_scripts/armourers_ops.js",
    "sha1": "f30cac47bce59e49d7a79a786e786be0be1d4c1d",
    "size": 2627
+  },
+  {
+   "path": "kubejs/server_scripts/baton_neant.js",
+   "sha1": "631e648f8376d3b4e28505d1599de27841992070",
+   "size": 2124
   },
   {
    "path": "kubejs/server_scripts/boss_zones.js",
