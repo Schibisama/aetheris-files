@@ -1,8 +1,6 @@
 {
-  "npc.parole_masculine": {
-    "sounds": [
-      { "name": "mcrp:npc/parole_masculine", "stream": false }
-    ],
-    "subtitle": "mcrp.subtitle.npc_parole"
-  }
+  "npc.parole_masculine_1": { "sounds": [ { "name": "mcrp:npc/parole_masculine_1", "stream": false } ], "subtitle": "mcrp.subtitle.npc_parole" },
+  "npc.parole_masculine_2": { "sounds": [ { "name": "mcrp:npc/parole_masculine_2", "stream": false } ], "subtitle": "mcrp.subtitle.npc_parole" },
+  "npc.parole_feminine_1": { "sounds": [ { "name": "mcrp:npc/parole_feminine_1", "stream": false } ], "subtitle": "mcrp.subtitle.npc_parole" },
+  "npc.parole_feminine_2": { "sounds": [ { "name": "mcrp:npc/parole_feminine_2", "stream": false } ], "subtitle": "mcrp.subtitle.npc_parole" }
 }

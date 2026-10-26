@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26T17:37:48.133Z",
+ "version": "2026-10-26T17:56:59.201Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -27,13 +27,28 @@
   },
   {
    "path": "kubejs/assets/mcrp/sounds.json",
-   "sha1": "96b92af3b9f7dda62f1eff49e2feaccc2eeebca9",
-   "size": 165
+   "sha1": "df8bdfcc0c755180f6b91f78c71ea40d415e8bd0",
+   "size": 583
   },
   {
-   "path": "kubejs/assets/mcrp/sounds/npc/parole_masculine.ogg",
-   "sha1": "4cb80a197e9cb581262080903a263fa93c29ed77",
-   "size": 104233
+   "path": "kubejs/assets/mcrp/sounds/npc/parole_feminine_1.ogg",
+   "sha1": "3c4690175733f4b692f919c5355130b2f2bf5849",
+   "size": 101893
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/npc/parole_feminine_2.ogg",
+   "sha1": "148f733b20c9df106d73eb0bb1d6a2bca0cdd697",
+   "size": 70691
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/npc/parole_masculine_1.ogg",
+   "sha1": "23ad5e8f89e575a8d509f0701735ae99ded25334",
+   "size": 104097
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/npc/parole_masculine_2.ogg",
+   "sha1": "583a46b224d1bee5e5efcb3c690302581a3ddf85",
+   "size": 83491
   },
   {
    "path": "kubejs/assets/mcrp/sounds/the_world.ogg",
