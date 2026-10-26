@@ -59,6 +59,7 @@ var BOSSES = {
     x: 919, y: 227, z: 706,
     rayon: 30,
     aggro: 30,   // attaque d'office tout joueur (survie/aventure) à moins de 30 blocs
+    nbtSpawn: 'is_enraged:2,BossBarVisible:1b',   // départ « éveillé » (comme un yéti de structure) : sans ça Skor reste en statue de glace
     respawnMin: 30,
     quete: {
       cle: 'skor_quete',
@@ -119,7 +120,7 @@ function bzRamener(server, e, b) {
 
 function bzSpawn(server, nom, b) {
   server.runCommandSilent('execute in minecraft:overworld run summon ' + b.type + ' ' + b.x + ' ' + b.y + ' ' + b.z +
-    ' {Tags:["boss_zone","boss_' + nom + '"],PersistenceRequired:1b}')
+    ' {Tags:["boss_zone","boss_' + nom + '"],PersistenceRequired:1b' + (b.nbtSpawn ? ',' + b.nbtSpawn : '') + '}')
   console.info('[boss_zones] ' + nom + ' apparaît en ' + b.x + ' ' + b.y + ' ' + b.z)
 }
 
