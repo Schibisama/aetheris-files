@@ -57,7 +57,7 @@ function glMemoriser(server, e) {
   try { dim = String(e.getLevel().dimension().location()) } catch (x) {}
   var f = new GL_CT()
   f.putDouble('x', e.getX()); f.putDouble('y', e.getY()); f.putDouble('z', e.getZ()); f.putString('dim', dim)
-  liste.put(String(e.getStringUUID()), f)
+  liste.put(String(e.uuid), f)
   d.put(GL_CLE, liste)
 }
 
@@ -65,7 +65,7 @@ function glOublier(server, e) {
   var d = server.persistentData
   if (!d.contains(GL_CLE)) return
   var liste = d.getCompound(GL_CLE)
-  liste.remove(String(e.getStringUUID()))
+  liste.remove(String(e.uuid))
   d.put(GL_CLE, liste)
 }
 
@@ -133,7 +133,7 @@ ServerEvents.commandRegistry(function (event) {
     if (!e) { ctx.source.player.tell(Text.red('Aucune entité à moins de 5 blocs.')); return 0 }
     e.addTag(GELE_TAG)
     glMemoriser(ctx.source.server, e)
-    ctx.source.server.runCommandSilent('data merge entity ' + e.getStringUUID() + ' {Invulnerable:1b,NoGravity:1b}')
+    ctx.source.server.runCommandSilent('data merge entity ' + String(e.uuid) + ' {Invulnerable:1b,NoGravity:1b}')
     ctx.source.player.tell(Text.gray('Gelé : ' + e.getType().toString()))
     return 1
   }))
@@ -142,7 +142,7 @@ ServerEvents.commandRegistry(function (event) {
     if (!e) { ctx.source.player.tell(Text.red('Aucune entité à moins de 5 blocs.')); return 0 }
     e.removeTag(GELE_TAG)
     glOublier(ctx.source.server, e)
-    ctx.source.server.runCommandSilent('data merge entity ' + e.getStringUUID() + ' {Invulnerable:0b,NoGravity:0b}')
+    ctx.source.server.runCommandSilent('data merge entity ' + String(e.uuid) + ' {Invulnerable:0b,NoGravity:0b}')
     ctx.source.player.tell(Text.gray('Dégelé : ' + e.getType().toString()))
     return 1
   }))

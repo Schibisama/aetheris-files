@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26T23:04:58.131Z",
+ "version": "2026-10-26T23:09:38.736Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -462,18 +462,18 @@
   },
   {
    "path": "kubejs/server_scripts/balai_gele.js",
-   "sha1": "9d6f39f710abc95be681bf5acd7c24c60a7ac97e",
-   "size": 6288
+   "sha1": "58442655df54ee4e8666d56f5eedb57c920a71cc",
+   "size": 6260
   },
   {
    "path": "kubejs/server_scripts/baton_neant.js",
-   "sha1": "0fabb42a67156c20a80715de110e79ce7e6a9937",
-   "size": 2749
+   "sha1": "b3ee16b53096f1863c6692880e369de8bc6d8bca",
+   "size": 2571
   },
   {
    "path": "kubejs/server_scripts/boss_zones.js",
-   "sha1": "f9a6ff6fe9fda920e5e02322edb8b8071351ac45",
-   "size": 14683
+   "sha1": "579e729ea16123b2cb3431f362f274784104af08",
+   "size": 14661
   },
   {
    "path": "kubejs/server_scripts/chasse_quete.js",

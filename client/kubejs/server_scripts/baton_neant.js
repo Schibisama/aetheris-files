@@ -16,11 +16,11 @@ function bnTuer(joueur, cible) {
   try {
     if (!cible || cible.isPlayer()) return false
     if (!cible.isAlive()) return false
-    if (String(cible.getType()).indexOf('easy_npc') !== -1) return false
-    var s = joueur.getServer()
-    var u = String(cible.getStringUUID())
-    s.getCommands().performPrefixedCommand(s.createCommandSourceStack().withSuppressedOutput(), 'damage ' + u + ' 1000000 minecraft:generic_kill by ' + String(joueur.getStringUUID()))
-    if (cible.isAlive()) s.getCommands().performPrefixedCommand(s.createCommandSourceStack().withSuppressedOutput(), 'kill ' + u)
+    if (String(cible.type).indexOf('easy_npc') !== -1) return false
+    var s = joueur.server
+    var u = String(cible.uuid)
+    s.runCommandSilent('damage ' + u + ' 1000000 minecraft:generic_kill by ' + String(joueur.uuid))
+    if (cible.isAlive()) s.runCommandSilent('kill ' + u)
     return true
   } catch (e) { console.error('[baton_neant] ' + e); return false }
 }

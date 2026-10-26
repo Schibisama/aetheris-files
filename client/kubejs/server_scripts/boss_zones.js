@@ -136,7 +136,7 @@ function bzGererBarres(server, e, b) {
     var dx = j.x - b.x
     var dz = j.z - b.z
     var loin = Math.sqrt(dx * dx + dz * dz) > b.rayon + BARRE_MARGE
-    var cle = String(e.getStringUUID()) + '|' + String(j.getStringUUID())
+    var cle = String(e.uuid) + '|' + String(j.uuid)
     try {
       if (loin) {
         e.stopSeenByPlayer(j)
