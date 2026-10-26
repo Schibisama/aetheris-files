@@ -5,6 +5,7 @@
 // Si un PNJ a encore sa voix dans la case « Dialog open » d'Easy NPC (qui la rejoue à chaque clic, et en double avec ce script),
 // elle est automatiquement basculée vers « Speech » à la première interaction. Rien à refaire à la main.
 var VOIX_DELAI_MS = 12000   // pas de relance avant 12 s pour le même joueur et le même PNJ
+var VOIX_VOLUME = 0.5      // volume de la voix (1.0 = plein volume ; moins = plus doux, et audible un peu moins loin). Le joueur peut aussi régler « Voix » dans Options > Sons.
 var voixDernier = {}
 var CompoundTagVX = Java.loadClass('net.minecraft.nbt.CompoundTag')
 var ListTagVX = Java.loadClass('net.minecraft.nbt.ListTag')
@@ -36,6 +37,7 @@ ItemEvents.entityInteracted(function (event) {
           if (aSpeech) continue            // une voix Speech existe déjà : on retire le doublon
           var c = e.copy()
           c.putString('Type', 'SPEECH')
+          c.putFloat('Volume', VOIX_VOLUME)
           nouvelle.add(c)
           aSpeech = true
         } else {
@@ -61,7 +63,7 @@ ItemEvents.entityInteracted(function (event) {
     var maintenant = Date.now()
     if (voixDernier[cle] && maintenant - voixDernier[cle] < VOIX_DELAI_MS) return
     voixDernier[cle] = maintenant
-    event.server.runCommandSilent('playsound ' + nom + ' voice ' + joueur.username + ' ' + cible.x + ' ' + cible.y + ' ' + cible.z + ' 1 1')
+    event.server.runCommandSilent('playsound ' + nom + ' voice ' + joueur.username + ' ' + cible.x + ' ' + cible.y + ' ' + cible.z + ' ' + VOIX_VOLUME + ' 1')
   } catch (err) {
     console.error('[pnj_voix] ' + err)
   }
