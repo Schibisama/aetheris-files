@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26T22:21:37.270Z",
+ "version": "2026-10-26T22:34:30.080Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -449,6 +449,11 @@
    "path": "kubejs/server_scripts/armourers_ops.js",
    "sha1": "f30cac47bce59e49d7a79a786e786be0be1d4c1d",
    "size": 2627
+  },
+  {
+   "path": "kubejs/server_scripts/balai_gele.js",
+   "sha1": "9502b73f28fbcd78c666e1f61bef8e84c3d19df1",
+   "size": 3240
   },
   {
    "path": "kubejs/server_scripts/baton_neant.js",
