@@ -640,7 +640,7 @@ var NOM_PNJ = 'Maître des Destins'
 var DELAI_CONFIRMATION = 15000
 var attenteConfirmation = {}
 
-function echangerClasse(server, joueur) {
+function echangerClasse(server, joueur, direct) {
   var data = joueur.persistentData
   var dire = function (t) { joueur.tell(Text.gold('[').append(Text.translate('mcrp.pnj.nom').gold()).append(Text.gold('] ')).append(t)) }
   var id = String(joueur.uuid)
@@ -661,7 +661,7 @@ function echangerClasse(server, joueur) {
   }
   var maintenant = Date.now()
   var attente = attenteConfirmation[id]
-  if (!attente || maintenant - attente > DELAI_CONFIRMATION) {
+  if (!direct && (!attente || maintenant - attente > DELAI_CONFIRMATION)) {
     attenteConfirmation[id] = maintenant
     dire(Text.translate('mcrp.pnj.confirme', COUT_ENCRE, REROLLS_MAX - utilises).yellow())
     return
@@ -856,6 +856,12 @@ function cmdTesteurRetirer(ctx, cible) {
   }
 }
 
+// /classe maitre <joueur> : appelé par le dialogue du NPC Easy NPC (la confirmation est déjà faite dans le dialogue).
+function cmdMaitre(ctx, cible) {
+  echangerClasse(ctx.source.server, cible, true)
+  return 1
+}
+
 function cmdAdminCompteur(ctx, cible) {
   cible.persistentData.putInt(CLE_REROLLS, 0)
   retour(ctx, 'Compteur de changements remis à 0 pour ' + cible.username + ' (0/' + REROLLS_MAX + ').')
@@ -895,6 +901,10 @@ ServerEvents.commandRegistry(function (event) {
         .then(Commands.literal('retirer')
           .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
             .executes(function (ctx) { return cmdTesteurRetirer(ctx, Arguments.PLAYER.getResult(ctx, 'joueur')) }))))
+      .then(Commands.literal('maitre')
+        .requires(estModo)
+        .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+          .executes(function (ctx) { return cmdMaitre(ctx, Arguments.PLAYER.getResult(ctx, 'joueur')) })))
       .then(Commands.literal('compteur')
         .requires(estModo)
         .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
