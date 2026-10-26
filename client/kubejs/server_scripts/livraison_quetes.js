@@ -95,6 +95,13 @@ LIVRAISONS.tobin_paratonnerre = lvSimple({
   fini: "Le camp dort tranquille grâce à toi. Si tu vois un éclair de loin, c'est moi qui te remercie !",
   recompense: "Parfait, avec ça l'orage sera content ! Tiens, un petit savoir de ta voie. Pas de quoi en faire un drame."
 })
+LIVRAISONS.garde_fleches = lvSimple({
+  cle: 'garde_fleches_quete', pnj: 'Roderic', objet: 'minecraft:arrow', nombre: 64, nom: 'flèches', rarete: 'peu_commun',
+  accepter: "Mes archers n'ont plus de flèches, et la nuit tombe vite. Apporte-moi soixante-quatre flèches, et je te remettrai un savoir de ta voie, tiré de nos archives de garde. Ne traîne pas.",
+  encours: "Mes archers attendent leurs soixante-quatre flèches. La nuit n'attendra pas.",
+  fini: "Les remparts sont de nouveau armés, grâce à toi. La garde n'oublie jamais ceux qui l'ont aidée.",
+  recompense: "Voilà de quoi tenir la muraille jusqu'à l'aube. Prends ceci : un savoir de ta voie. La garde te salue, voyageur."
+})
 LIVRAISONS.edrik_chair = lvSimple({
   cle: 'edrik_chair_quete', pnj: 'Edrik', objet: 'minecraft:rotten_flesh', nombre: 64, nom: 'chairs putréfiées', rarete: 'rare',
   accepter: "Les morts rôdent, et leur chair souille la terre. Apporte-moi soixante-quatre chairs putréfiées : je les purifierai par la prière, et je te donnerai en échange un savoir de ta voie.",

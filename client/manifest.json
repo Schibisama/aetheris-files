@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26T17:22:25.235Z",
+ "version": "2026-10-26T17:36:18.734Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -52,8 +52,8 @@
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/gorm.png",
-   "sha1": "766baf14d48b78c8a3f3679991862d9cbb75e889",
-   "size": 6692
+   "sha1": "4e94d8adfe8969ffbdde51fc050f7d08ed0a244a",
+   "size": 1459
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/kael.png",
@@ -69,6 +69,116 @@
    "path": "kubejs/assets/mcrp/textures/entity/maitre_du_destin.png",
    "sha1": "8d60be4e890d2128d1687c1a9acd9aea13fd2c41",
    "size": 5426
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_00.png",
+   "sha1": "5cc6d6742f74bb2f77d8358e2105dc31f62e7d6d",
+   "size": 1725
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_01.png",
+   "sha1": "01de030608c62ceed8ed3dc626b86fb182d196d3",
+   "size": 2119
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_02.png",
+   "sha1": "191c7595472ba8aa3246b083a083a720b565df02",
+   "size": 2537
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_03.png",
+   "sha1": "15fba1043f6ec2c3f118be2f5ad448d863aefca4",
+   "size": 2539
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_04.png",
+   "sha1": "c280a1720a532b7ba5ab6cd6ad1de43a76934a4b",
+   "size": 1389
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_05.png",
+   "sha1": "64d52b13daf8ca461c4ed560c3a549ced6c79a59",
+   "size": 5068
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_06.png",
+   "sha1": "6f9e64eaf056e4928897e3dd488d4dab8359d4db",
+   "size": 3623
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_07.png",
+   "sha1": "f2ce253e07114fb71f948eda47f85b84e12fd0d6",
+   "size": 1256
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_08.png",
+   "sha1": "1f83ee933ffd761f574e9eda6942a62b23d3468b",
+   "size": 1894
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_09.png",
+   "sha1": "b0ad47c164c63bfc7421cfa8e57f8c2140af3d42",
+   "size": 1915
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_10.png",
+   "sha1": "c7a14e9c41b8583fe21b42c0d0f9b692fa66d631",
+   "size": 2773
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_11.png",
+   "sha1": "d640be10f453c09498dbc3a32e39e41349957518",
+   "size": 3156
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_12.png",
+   "sha1": "99c1093c5528d5d557a0903c94294e2fb1df36a0",
+   "size": 1800
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_13.png",
+   "sha1": "51301e5a0dd6e049f26c20d1a4decd75932ca708",
+   "size": 2616
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_14.png",
+   "sha1": "8ea9177575fb7eb6ec39a60871513bf581b7095e",
+   "size": 2310
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_15.png",
+   "sha1": "afb08694997534932728b4d309b836019be64c61",
+   "size": 1731
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_16.png",
+   "sha1": "c7bcca4ac270ae2e2e9d0867f610f5a54a4f37ef",
+   "size": 4506
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_17.png",
+   "sha1": "dfa2a212f381a29dd6aedbd467d412d727ab2e7c",
+   "size": 3331
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_18.png",
+   "sha1": "846d32c2a044f60fce06bd37b7f9f6aba7ab273d",
+   "size": 1449
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_19.png",
+   "sha1": "64fc4454cdb43e539a368540b4349f7bdc52d3fb",
+   "size": 1510
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_21.png",
+   "sha1": "aed4dbbf3992984d1562687499d6472fd7102f12",
+   "size": 2975
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_22.png",
+   "sha1": "e22edbc523ac9f9a80ab1cc4c5f6d0c331d8c7d6",
+   "size": 1515
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/ser_aldric.png",
@@ -182,8 +292,8 @@
   },
   {
    "path": "kubejs/server_scripts/livraison_quetes.js",
-   "sha1": "3fe44eddd91958708384ad5188432e534d65d468",
-   "size": 11703
+   "sha1": "d845b55f60e80f2432e85f87a11932899768dbf9",
+   "size": 12402
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
