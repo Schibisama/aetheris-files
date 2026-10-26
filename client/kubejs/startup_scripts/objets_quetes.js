@@ -6,4 +6,11 @@ StartupEvents.registry('item', function (event) {
     .maxStackSize(1)
     .tooltip(Text.gray("Le blason d'un chevalier des Enfers, fendu en deux."))
     .tooltip(Text.darkGray('À rapporter à Ser Aldric.'))
+
+  event.create('sceau_maledictus')
+    .displayName('Sceau de Maledictus')
+    .texture('kubejs:item/sceau_maledictus')
+    .maxStackSize(1)
+    .tooltip(Text.gray("Un sceau fendu, encore tiède de la malédiction qu'il contenait."))
+    .tooltip(Text.darkGray('À rapporter au Vieux Hiro.'))
 })

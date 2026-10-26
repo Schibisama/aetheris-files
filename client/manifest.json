@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26T21:14:56.223Z",
+ "version": "2026-10-26T21:26:17.683Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -24,6 +24,11 @@
    "path": "kubejs/assets/kubejs/textures/item/example_item.png",
    "sha1": "d9912cb709ad496b10f19f8b2c66d1e419eb760c",
    "size": 372
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/item/sceau_maledictus.png",
+   "sha1": "96bf62a6209d9bc0fb9e1e6426dc24ed01961d5e",
+   "size": 389
   },
   {
    "path": "kubejs/assets/mcrp/sounds.json",
@@ -139,6 +144,11 @@
    "path": "kubejs/assets/mcrp/textures/entity/gorm.png",
    "sha1": "4e94d8adfe8969ffbdde51fc050f7d08ed0a244a",
    "size": 1459
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/hiro.png",
+   "sha1": "a3092753362fb880ef57177eef5ce6c6781a94ab",
+   "size": 3726
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/kael.png",
@@ -447,8 +457,8 @@
   },
   {
    "path": "kubejs/server_scripts/boss_zones.js",
-   "sha1": "31c6713bd475a3ad56d4c12d3d6bf45881bb0f68",
-   "size": 10430
+   "sha1": "2b8dfe62825007ff492113175e2694c44a6bfa0e",
+   "size": 13736
   },
   {
    "path": "kubejs/server_scripts/chasse_quete.js",
@@ -547,8 +557,8 @@
   },
   {
    "path": "kubejs/startup_scripts/objets_quetes.js",
-   "sha1": "f8f91a05298c869b05cb4f1a3813fe89676113e6",
-   "size": 439
+   "sha1": "2e07db712a5bd91206601714356cfbe0acce0180",
+   "size": 733
   },
   {
    "path": "mods/aaa_particles-neoforge-1.21.1-2.3.4.jar",

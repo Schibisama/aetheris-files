@@ -32,6 +32,27 @@ var BOSSES = {
       sansObjet: "Où est l'écu brisé ? Sans lui, je ne puis croire que Helvar est tombé. Retrouve-le.",
       commandeRecompense: 'classe recompense_epique %joueur%'   // %joueur% = pseudo
     }
+  },
+  maledictus: {
+    type: 'cataclysm:maledictus',
+    x: 2684, y: 68, z: 1727,
+    rayon: 30,
+    respawnMin: 30,
+    quete: {
+      cle: 'maledictus_quete',
+      pnj: 'Hiro',
+      accepter: "Une île, loin à l'est, que les marins évitent. On dit qu'elle renferme la Malédiction elle-même, devenue chair. Quiconque ose l'affronter est maudit pour l'éternité... Mais quelqu'un doit mettre fin à ce murmure. Si tu l'oses, abats-le, et rapporte-moi le sceau qu'il laissera derrière lui.",
+      encours: "La Malédiction respire encore, voyageur. Je la sens jusque dans mes os. Va, et reviens quand elle se taira.",
+      tue: "Tu as déjà abattu la créature. Reviens me voir avec le sceau, que je puisse enfin respirer.",
+      fini: "La légende est close. Que ce qui doit être oublié le soit.",
+      rien: "Tu ne m'as encore rien promis, voyageur.",
+      vivant: "Je sens toujours la Malédiction sur cette île. Elle vit. Va.",
+      recompense: "Alors c'est vrai... Elle est tombée. Que les âmes de ceux qu'elle a pris trouvent le repos. Prends ce savoir : c'est le prix de ton courage.",
+      annonceMort: "Maledictus s'effondre. Un sceau fendu gît dans ton sac : rapporte-le à Hiro.",
+      objet: 'kubejs:sceau_maledictus',
+      sansObjet: "Où est le sceau ? Sans lui, je ne puis croire que la Malédiction est tombée. Retrouve-le.",
+      commandeRecompense: 'classe recompense_epique %joueur%'
+    }
   }
 }
 
@@ -80,6 +101,57 @@ function bzSpawn(server, nom, b) {
   console.info('[boss_zones] ' + nom + ' apparaît en ' + b.x + ' ' + b.y + ' ' + b.z)
 }
 
+// ───────────── Barres de vie : masquées pour les joueurs à plus de (rayon + 20) blocs du centre de la zone ─────────────
+var BARRE_MARGE = 20
+var bzChamps = {}
+var bzCaches = {}   // "boss|joueur" -> true quand on a retiré le joueur de la barre
+
+function bzBarres(e) {
+  var cls = e.getClass()
+  var nom = String(cls.getName())
+  if (!bzChamps[nom]) {
+    var liste = []
+    var c = cls
+    while (c && String(c.getName()) !== 'java.lang.Object') {
+      var fs = c.getDeclaredFields()
+      for (var i = 0; i < fs.length; i++) {
+        try {
+          var tn = String(fs[i].getType().getName())
+          if (tn.indexOf('BossEvent') !== -1 || tn.indexOf('BossInfo') !== -1) { fs[i].setAccessible(true); liste.push(fs[i]) }
+        } catch (x) {}
+      }
+      c = c.getSuperclass()
+    }
+    bzChamps[nom] = liste
+  }
+  var res = []
+  var champs = bzChamps[nom]
+  for (var k = 0; k < champs.length; k++) {
+    try { var v = champs[k].get(e); if (v) res.push(v) } catch (x) {}
+  }
+  return res
+}
+
+function bzGererBarres(server, e, b) {
+  var barres = bzBarres(e)
+  if (barres.length === 0) return
+  var joueurs = server.getPlayers()
+  for (var i = 0; i < joueurs.size(); i++) {
+    var j = joueurs.get(i)
+    var dx = j.x - b.x
+    var dz = j.z - b.z
+    var loin = Math.sqrt(dx * dx + dz * dz) > b.rayon + BARRE_MARGE
+    var cle = e.stringUuid + '|' + j.stringUuid
+    if (loin) {
+      for (var k = 0; k < barres.length; k++) { try { barres[k].removePlayer(j) } catch (x) {} }
+      bzCaches[cle] = true
+    } else if (bzCaches[cle]) {
+      for (var m = 0; m < barres.length; m++) { try { barres[m].addPlayer(j) } catch (x) {} }
+      delete bzCaches[cle]
+    }
+  }
+}
+
 ServerEvents.tick(function (event) {
   bzCompteur++
   if (bzCompteur % 5 !== 0) return
@@ -108,6 +180,7 @@ ServerEvents.tick(function (event) {
             cible = null
           }
         }
+        if (bzCompteur % 10 === 0) { try { bzGererBarres(event.server, e, b) } catch (x) { console.error('[boss_zones] barres : ' + x) } }
         // sans cible depuis un moment : régénération progressive (toutes les secondes)
         var pd = e.persistentData
         if (cible) {
