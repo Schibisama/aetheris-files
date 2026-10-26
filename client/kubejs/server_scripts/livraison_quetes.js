@@ -298,9 +298,9 @@ LIVRAISONS.cls_esoteriste = lvSimple({
   recompense: "Voici ce qui était caché : un savoir de ta voie. Garde-le près du cœur."
 })
 LIVRAISONS.cls_astromancien = lvSimple({
-  cle: 'cls_astromancien_quete', pnj: "Stellaria l'Astronome", objet: "minecraft:glowstone_dust", nombre: 32, nom: "poussières de glowstone", rarete: "peu_commun",
-  accepter: "Mes cartes du ciel perdent leur éclat. Apporte-moi trente-deux poussières de glowstone, et je te dévoilerai un petit savoir de ta voie, écrit dans les étoiles.",
-  encours: "Mes trente-deux poussières de glowstone ? Mes cartes pâlissent.",
+  cle: 'cls_astromancien_quete', pnj: "Stellaria l'Astronome", objet: "asterismarcanum:lumine_dust", nombre: 16, nom: "poussières de lumine", rarete: "peu_commun",
+  accepter: "Mes cartes du ciel perdent leur éclat. Apporte-moi seize poussières de lumine, et je te dévoilerai un petit savoir de ta voie, écrit dans les étoiles.",
+  encours: "Mes seize poussières de lumine ? Mes cartes pâlissent.",
   fini: "Mes constellations brillent à nouveau. Merci.",
   recompense: "Voici ce que disent les étoiles : un savoir de ta voie. Elles te souhaitent bonne route."
 })
@@ -312,9 +312,9 @@ LIVRAISONS.cls_spiritualiste = lvSimple({
   recompense: "Que cette connaissance t'accompagne : un savoir de ta voie."
 })
 LIVRAISONS.cls_symetriste = lvSimple({
-  cle: 'cls_symetriste_quete', pnj: "Symon le Géomètre", objet: "minecraft:copper_ingot", nombre: 48, nom: "lingots de cuivre", rarete: "peu_commun",
-  accepter: "Mes instruments de mesure sont tordus. Apporte-moi quarante-huit lingots de cuivre, et je te remettrai un petit savoir de ta voie, parfaitement équilibré.",
-  encours: "Mes quarante-huit lingots de cuivre ? Il m'en manque pour que ce soit symétrique.",
+  cle: 'cls_symetriste_quete', pnj: "Symon le Géomètre", objet: "iss_magicfromtheeast:jade", nombre: 32, nom: "éclats de jadestone", rarete: "peu_commun",
+  accepter: "Mes instruments de mesure sont tordus. Apporte-moi trente-deux éclats de jadestone, et je te remettrai un petit savoir de ta voie, parfaitement équilibré.",
+  encours: "Mes trente-deux éclats de jadestone ? Il m'en manque pour que ce soit symétrique.",
   fini: "Parfait équilibre. Merci, voyageur.",
   recompense: "Voici ton dû, parfaitement calibré : un savoir de ta voie."
 })
