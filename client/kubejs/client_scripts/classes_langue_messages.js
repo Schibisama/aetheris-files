@@ -80,6 +80,7 @@ function msgAjouter(langue) {
   ClientEvents.lang(langue, function (event) {
     var table = langue === 'en_us' ? MSG_EN : MSG_FR
     for (var k in table) event.add('mcrp', k, table[k])
+    event.add('mcrp', 'item.farmersdelight.mutton_wrap', 'Durum') // le wrap de mouton de Farmer's Delight s'appelle Durum
     for (var fr in CLASSES_EN) {
       event.add('mcrp', 'mcrp.classe.' + msgSlug(fr), langue === 'en_us' ? CLASSES_EN[fr] : fr)
     }
