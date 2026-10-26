@@ -1,5 +1,5 @@
 {
- "version": "2026-10-25T22:50:31.502Z",
+ "version": "2026-10-26T01:42:05.255Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -31,6 +31,11 @@
    "size": 56464
   },
   {
+   "path": "kubejs/assets/mcrp/textures/entity/maitre_destins.png",
+   "sha1": "c03d8fd155494ccdb75a5a304a735a6d62f02cab",
+   "size": 2981
+  },
+  {
    "path": "kubejs/client_scripts/aaa_traduction.js",
    "sha1": "f206169ad484f264f94c187f101eb015f30097bb",
    "size": 1887
@@ -47,8 +52,8 @@
   },
   {
    "path": "kubejs/client_scripts/classes_langue_messages.js",
-   "sha1": "4327154a06b77b65502a9c65fd6c49025f768213",
-   "size": 4847
+   "sha1": "ac3e0622f49e24359528f378498ee92ba9641d77",
+   "size": 5087
   },
   {
    "path": "kubejs/client_scripts/classes_langue.js",
