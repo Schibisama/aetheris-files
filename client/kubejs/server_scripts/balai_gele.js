@@ -42,6 +42,56 @@ try {
     })
 } catch (e) { console.error('[balai_gele] attaque indisponible : ' + e) }
 
+
+// Position mémorisée : si l'entité est poussée, elle est remise en place (toutes les 4 ticks).
+var GL_CLE = 'entites_gelees'
+var GL_COMPTEUR = 0
+var GL_UUID = Java.loadClass('java.util.UUID')
+var GL_CT = Java.loadClass('net.minecraft.nbt.CompoundTag')
+
+function glMemoriser(server, e) {
+  var d = server.persistentData
+  var liste = d.contains(GL_CLE) ? d.getCompound(GL_CLE) : new GL_CT()
+  var dim = 'minecraft:overworld'
+  try { dim = String(e.getLevel().dimension().location()) } catch (x) {}
+  var f = new GL_CT()
+  f.putDouble('x', e.getX()); f.putDouble('y', e.getY()); f.putDouble('z', e.getZ()); f.putString('dim', dim)
+  liste.put(String(e.getStringUUID()), f)
+  d.put(GL_CLE, liste)
+}
+
+function glOublier(server, e) {
+  var d = server.persistentData
+  if (!d.contains(GL_CLE)) return
+  var liste = d.getCompound(GL_CLE)
+  liste.remove(String(e.getStringUUID()))
+  d.put(GL_CLE, liste)
+}
+
+ServerEvents.tick(function (event) {
+  GL_COMPTEUR++
+  if (GL_COMPTEUR % 4 !== 0) return
+  try {
+    var server = event.server
+    var d = server.persistentData
+    if (!d.contains(GL_CLE)) { d.put(GL_CLE, new GL_CT()); return }
+    var liste = d.getCompound(GL_CLE)
+    var cles = liste.getAllKeys().toArray()
+    for (var i = 0; i < cles.length; i++) {
+      var f = liste.getCompound(cles[i])
+      var niveau = server.getLevel(String(f.getString('dim')))
+      if (!niveau) continue
+      var e = niveau.getEntity(GL_UUID.fromString(String(cles[i])))
+      if (!e) continue
+      var dx = e.getX() - f.getDouble('x'), dy = e.getY() - f.getDouble('y'), dz = e.getZ() - f.getDouble('z')
+      if (dx * dx + dy * dy + dz * dz > 0.0004) {
+        server.runCommandSilent('execute in ' + String(f.getString('dim')) + ' run tp ' + cles[i] + ' ' + f.getDouble('x') + ' ' + f.getDouble('y') + ' ' + f.getDouble('z'))
+      }
+      try { e.setDeltaMovement(0, 0, 0) } catch (x) {}
+    }
+  } catch (err) { console.error('[balai_gele] tick : ' + err) }
+})
+
 function glCible(ctx) {
   var j = ctx.source.player
   if (!j) return null
@@ -62,6 +112,7 @@ ServerEvents.commandRegistry(function (event) {
     var e = glCible(ctx)
     if (!e) { ctx.source.player.tell(Text.red('Aucune entité à moins de 5 blocs.')); return 0 }
     e.addTag(GELE_TAG)
+    glMemoriser(ctx.source.server, e)
     ctx.source.server.runCommandSilent('data merge entity ' + e.getStringUUID() + ' {Invulnerable:1b,NoGravity:1b}')
     ctx.source.player.tell(Text.gray('Gelé : ' + e.getType().toString()))
     return 1
@@ -70,6 +121,7 @@ ServerEvents.commandRegistry(function (event) {
     var e = glCible(ctx)
     if (!e) { ctx.source.player.tell(Text.red('Aucune entité à moins de 5 blocs.')); return 0 }
     e.removeTag(GELE_TAG)
+    glOublier(ctx.source.server, e)
     ctx.source.server.runCommandSilent('data merge entity ' + e.getStringUUID() + ' {Invulnerable:0b,NoGravity:0b}')
     ctx.source.player.tell(Text.gray('Dégelé : ' + e.getType().toString()))
     return 1
