@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26T21:41:54.299Z",
+ "version": "2026-10-26T21:49:15.123Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -464,6 +464,11 @@
    "path": "kubejs/server_scripts/chasse_quete.js",
    "sha1": "f5ab1f14d4ae97276f014b9254ff8a12663ceba3",
    "size": 4815
+  },
+  {
+   "path": "kubejs/server_scripts/chasse_squelettes.js",
+   "sha1": "dfeb3ddae19daa4f871bd60c6c080f88d5fc09cf",
+   "size": 3770
   },
   {
    "path": "kubejs/server_scripts/classes_boosts.js",
