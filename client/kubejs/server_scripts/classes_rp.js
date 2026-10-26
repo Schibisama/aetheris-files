@@ -720,7 +720,7 @@ function cmdPnj(ctx) {
 }
 
 // Sort aléatoire de la classe du joueur (rareté RARE ou EPIC), remis sous forme de parchemin.
-// /classe recompense <joueur> : sort RARE (dernière quête du tutoriel) ; /classe recompense_epique <joueur> : sort EPIC (perm. 2).
+// /classe recompense_peu_commun <joueur> : sort UNCOMMON ; /classe recompense <joueur> : sort RARE (dernière quête du tutoriel) ; /classe recompense_epique <joueur> : sort EPIC (perm. 2).
 function sortRecompenseAleatoire(joueur, rareteNom) {
   rareteNom = rareteNom || 'RARE'
   var classe = classeDe(joueur)
@@ -761,7 +761,7 @@ function sortRecompenseAleatoire(joueur, rareteNom) {
 function cmdRecompense(ctx, cible, rareteNom) {
   try {
     rareteNom = rareteNom || 'RARE'
-    var texteRarete = rareteNom === 'EPIC' ? Text.translate('mcrp.rarete.epic') : Text.translate('mcrp.rarete.rare')
+    var texteRarete = Text.translate(rareteNom === 'EPIC' ? 'mcrp.rarete.epic' : (rareteNom === 'UNCOMMON' ? 'mcrp.rarete.uncommon' : 'mcrp.rarete.rare'))
     var choix = sortRecompenseAleatoire(cible, rareteNom)
     if (!choix) {
       cible.tell(Text.translate('mcrp.msg.recompense_aucun').red())
@@ -889,6 +889,10 @@ ServerEvents.commandRegistry(function (event) {
         .requires(estModo)
         .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
           .executes(function (ctx) { return cmdRecompense(ctx, Arguments.PLAYER.getResult(ctx, 'joueur'), 'RARE') })))
+      .then(Commands.literal('recompense_peu_commun')
+        .requires(estModo)
+        .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+          .executes(function (ctx) { return cmdRecompense(ctx, Arguments.PLAYER.getResult(ctx, 'joueur'), 'UNCOMMON') })))
       .then(Commands.literal('recompense_epique')
         .requires(estModo)
         .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
