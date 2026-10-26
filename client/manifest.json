@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26T18:02:59.068Z",
+ "version": "2026-10-26T18:16:51.452Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -307,13 +307,18 @@
   },
   {
    "path": "kubejs/server_scripts/livraison_quetes.js",
-   "sha1": "d845b55f60e80f2432e85f87a11932899768dbf9",
-   "size": 12402
+   "sha1": "3e0bc426e76d946af76799f51966d6c4bdad45e4",
+   "size": 13389
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
    "sha1": "b8aff824163fad0c8b9cbc02f85a4ac64c5520dc",
    "size": 11357
+  },
+  {
+   "path": "kubejs/server_scripts/pnj_voix.js",
+   "sha1": "8e33bdbb43659ea830890e7058690f2c9779eb15",
+   "size": 1367
   },
   {
    "path": "kubejs/server_scripts/reinit_joueur.js",

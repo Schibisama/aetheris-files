@@ -133,8 +133,12 @@ function lvRendre(server, joueur, q) {
   var etat = d.getInt(q.cle)
   if (etat === 3) lvDire(joueur, q, q.fini)
   else if (etat === 2) lvDire(joueur, q, q.choisir)
-  else if (etat === 0) lvDire(joueur, q, q.rien)
-  else if (joueur.inventory.count(q.objet) < q.nombre) lvDire(joueur, q, q.manque)
+  // état 0 (quête pas encore acceptée) : on accepte de rendre directement si le joueur a tout ce qu'il faut
+  else if (joueur.inventory.count(q.objet) < q.nombre) {
+    var possede = joueur.inventory.count(q.objet)
+    console.info('[livraison] ' + joueur.username + ' : ' + q.objet + ' x' + possede + ' / ' + q.nombre)
+    lvDire(joueur, q, q.manque + ' (Tu en as ' + possede + '.)')
+  }
   else if (!d.contains('classe_rp_nom')) lvDire(joueur, q, q.sansClasse)   // pas de classe = pas de sort possible : on ne reprend rien
   else {
     lvExec(server, joueur, 'clear %joueur% ' + q.objet + ' ' + q.nombre)
@@ -199,5 +203,18 @@ ServerEvents.commandRegistry(function (event) {
       }
     })(nom)
   }
-  event.register(Commands.literal('livraison').then(accepter).then(rendre).then(choix).then(reset))
+  var etat = Commands.literal('etat').requires(estModo)
+  for (var nom3 in LIVRAISONS) {
+    ;(function (n) {
+      var q = LIVRAISONS[n]
+      etat = etat.then(Commands.literal(n).then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+        .executes(function (ctx) {
+          var j = Arguments.PLAYER.getResult(ctx, 'joueur')
+          var emetteur = ctx.source.player
+          if (emetteur) emetteur.tell(Text.gray(n + ' / ' + j.username + ' : état ' + j.persistentData.getInt(q.cle) + ', ' + q.objet + ' x' + j.inventory.count(q.objet) + ' (il en faut ' + q.nombre + '), classe : ' + (j.persistentData.contains('classe_rp_nom') ? 'oui' : 'non')))
+          return 1
+        })))
+    })(nom3)
+  }
+  event.register(Commands.literal('livraison').then(accepter).then(rendre).then(choix).then(reset).then(etat))
 })
