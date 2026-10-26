@@ -53,6 +53,27 @@ var BOSSES = {
       sansObjet: "Où est le sceau ? Sans lui, je ne puis croire que la Malédiction est tombée. Retrouve-le.",
       commandeRecompense: 'classe recompense_epique %joueur%'
     }
+  },
+  skor: {
+    type: 'block_factorys_bosses:yeti',
+    x: 919, y: 227, z: 706,
+    rayon: 30,
+    respawnMin: 30,
+    quete: {
+      cle: 'skor_quete',
+      pnj: 'Pip',
+      accepter: "Ma petite sœur Léna est malade, et le seul remède que connaisse l'herboriste demande une corne de Skor, le yéti des neiges. Je suis trop petit pour l'affronter... Toi, peut-être. Rapporte-moi sa corne, s'il te plaît !",
+      encours: "Skor est toujours là-haut dans les neiges... Léna s'affaiblit chaque jour. Je t'en supplie, rapporte-moi sa corne.",
+      tue: "Tu as vaincu Skor ? Alors reviens vite me donner sa corne !",
+      fini: "Léna va mieux, grâce à toi. Je n'oublierai jamais ce que tu as fait.",
+      rien: "Tu ne m'as encore rien promis. Tu veux bien m'aider ?",
+      vivant: "Skor vit encore, je le sens à ton air. Va, s'il te plaît.",
+      recompense: "La corne ! Tu l'as eue ! Avec ça, Léna sera guérie. Merci, merci ! Prends ce savoir : c'est tout ce que j'ai à t'offrir.",
+      annonceMort: "Skor s'effondre. Une corne givrée gît dans ton sac : rapporte-la à Pip.",
+      objet: 'kubejs:corne_de_skor',
+      sansObjet: "Où est la corne ? Sans elle, je ne peux pas faire le remède. Retrouve-la !",
+      commandeRecompense: 'classe recompense_epique %joueur%'
+    }
   }
 }
 

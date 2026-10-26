@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26T22:39:05.510Z",
+ "version": "2026-10-26T22:57:27.073Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -14,6 +14,11 @@
    "path": "kubejs/assets/kubejs/textures/block/example_block.png",
    "sha1": "87f5ec8c26493050fc83543af8d33f2d28a98766",
    "size": 247
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/item/corne_de_skor.png",
+   "sha1": "ce4c003f836d65d82a824f693e7a34a3bac9d111",
+   "size": 149
   },
   {
    "path": "kubejs/assets/kubejs/textures/item/ecu_brise_helvar.png",
@@ -164,6 +169,11 @@
    "path": "kubejs/assets/mcrp/textures/entity/maitre_du_destin.png",
    "sha1": "8d60be4e890d2128d1687c1a9acd9aea13fd2c41",
    "size": 5426
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pip.png",
+   "sha1": "1c163349ed08502a4cac620ce638ca29e20ccdb5",
+   "size": 4500
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_00.png",
@@ -462,8 +472,8 @@
   },
   {
    "path": "kubejs/server_scripts/boss_zones.js",
-   "sha1": "81098cc6058a756b224c53598a24d60a5ba59c2e",
-   "size": 13086
+   "sha1": "0fa34d834462f1740fab54e45de4f530802d6e60",
+   "size": 14390
   },
   {
    "path": "kubejs/server_scripts/chasse_quete.js",
@@ -517,8 +527,8 @@
   },
   {
    "path": "kubejs/server_scripts/livraison_quetes.js",
-   "sha1": "03342f7a3e43aa9fb69bfcc9be4485957d4696f3",
-   "size": 21605
+   "sha1": "312edd1c31992487731b1fbbce175190b399177b",
+   "size": 22147
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
@@ -572,8 +582,8 @@
   },
   {
    "path": "kubejs/startup_scripts/objets_quetes.js",
-   "sha1": "2e07db712a5bd91206601714356cfbe0acce0180",
-   "size": 733
+   "sha1": "57848310146e8df8557b7795e25a45d3da59c796",
+   "size": 985
   },
   {
    "path": "mods/aaa_particles-neoforge-1.21.1-2.3.4.jar",

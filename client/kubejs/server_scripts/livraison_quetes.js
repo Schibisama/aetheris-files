@@ -318,3 +318,11 @@ LIVRAISONS.cls_symetriste = lvSimple({
   fini: "Parfait équilibre. Merci, voyageur.",
   recompense: "Voici ton dû, parfaitement calibré : un savoir de ta voie."
 })
+
+LIVRAISONS.pip_algues = lvSimple({
+  cle: 'pip_algues_quete', pnj: 'Pip', objet: 'minecraft:kelp', nombre: 20, nom: 'algues', rarete: 'peu_commun',
+  accepter: "Léna ne mange presque plus. L'herboriste dit qu'un bouillon d'algues lui ferait du bien. Tu peux m'en rapporter vingt ? Je te donnerai ce que j'ai.",
+  encours: "Mes vingt algues ? Léna attend son bouillon...",
+  fini: "Léna a mangé son bouillon ! Merci beaucoup.",
+  recompense: "Des algues ! Léna va adorer. Tiens, prends ce savoir de ta voie : c'est tout ce que j'ai."
+})

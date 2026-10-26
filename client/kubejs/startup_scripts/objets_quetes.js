@@ -13,4 +13,11 @@ StartupEvents.registry('item', function (event) {
     .maxStackSize(1)
     .tooltip(Text.gray("Un sceau fendu, encore tiède de la malédiction qu'il contenait."))
     .tooltip(Text.darkGray('À rapporter au Vieux Hiro.'))
+
+  event.create('corne_de_skor')
+    .displayName('Corne de Skor')
+    .texture('kubejs:item/corne_de_skor')
+    .maxStackSize(1)
+    .tooltip(Text.gray("Une corne givrée arrachée au yéti Skor."))
+    .tooltip(Text.darkGray('À rapporter à Pip.'))
 })
