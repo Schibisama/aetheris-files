@@ -59,7 +59,7 @@ var BOSSES = {
     x: 919, y: 227, z: 706,
     rayon: 30,
     aggro: 30,   // attaque d'office tout joueur (survie/aventure) à moins de 30 blocs
-    nbtSpawn: 'is_enraged:2,BossBarVisible:1b',   // départ « éveillé » (comme un yéti de structure) : sans ça Skor reste en statue de glace
+    nbtSpawn: 'BossPhase:0,is_enraged:2,BossBarVisible:1b',   // départ « éveillé » (comme un yéti de structure) : sans ça Skor reste en statue de glace
     respawnMin: 30,
     quete: {
       cle: 'skor_quete',
