@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26T02:04:44.466Z",
+ "version": "2026-10-26T13:46:51.824Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -129,6 +129,11 @@
    "path": "kubejs/server_scripts/rtp.js",
    "sha1": "193954340133cb7830d747168fae0b1bc910cd95",
    "size": 4468
+  },
+  {
+   "path": "kubejs/server_scripts/wizard_teintures.js",
+   "sha1": "5aa20c68b1949d9ee81390b37becd1aa4194f2cc",
+   "size": 1637
   },
   {
    "path": "kubejs/server_scripts/worldstop_portee.js",
