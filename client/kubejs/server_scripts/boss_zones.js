@@ -126,6 +126,7 @@ function bzSpawn(server, nom, b) {
 var BARRE_MARGE = 10
 var bzCaches = {}   // "boss|joueur" -> true quand on a retiré le joueur de la barre
 var bzErrBarre = false
+console.info('[boss_zones] Masquage des barres de vie actif (marge ' + BARRE_MARGE + ' blocs au-delà du rayon).')
 
 // Méthodes publiques des entités : stopSeenByPlayer retire le joueur de la barre de vie du boss, startSeenByPlayer le remet.
 function bzGererBarres(server, e, b) {
@@ -139,6 +140,7 @@ function bzGererBarres(server, e, b) {
     try {
       if (loin) {
         e.stopSeenByPlayer(j)
+        if (!bzCaches[cle]) console.info('[boss_zones] barre retirée : ' + j.username + ' (' + Math.round(Math.sqrt(dx * dx + dz * dz)) + ' blocs) pour ' + String(e.getType()))
         bzCaches[cle] = true
       } else if (bzCaches[cle]) {
         e.startSeenByPlayer(j)
