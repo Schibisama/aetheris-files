@@ -636,7 +636,7 @@ function cmdInfos(ctx) {
 // Un villageois immobile et invulnérable (tag TAG_PNJ). Clic droit = échange :
 // 1er clic : le PNJ annonce le prix ; 2e clic dans les 15 s : l'échange est fait.
 var TAG_PNJ = 'pnj_classes'
-var NOM_PNJ = 'Maître des Destins'
+var NOM_PNJ = 'Maître du Destin'
 var DELAI_CONFIRMATION = 15000
 var attenteConfirmation = {}
 
@@ -903,7 +903,7 @@ ServerEvents.commandRegistry(function (event) {
             .executes(function (ctx) { return cmdTesteurRetirer(ctx, Arguments.PLAYER.getResult(ctx, 'joueur')) }))))
       .then(Commands.literal('maitre')
         .requires(function (source) {
-          // op, ou commande lancée par un NPC Easy NPC (dialogue du Maître des Destins)
+          // op, ou commande lancée par un NPC Easy NPC (dialogue du Maître du Destin)
           try { if (source.hasPermission(2)) return true } catch (e) {}
           try { var ent = source.entity; return !!ent && String(ent.type).indexOf('easy_npc:') === 0 } catch (e) { return false }
         })

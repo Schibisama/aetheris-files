@@ -28,7 +28,7 @@ var MSG_FR = {
   'mcrp.info.testeur': 'Mode testeur actif : toutes les classes sont débloquées.',
   'mcrp.info.changements': 'Changements utilisés : %s/%s (coût : %s étoile(s) du Nether, auprès du %s)',
   'mcrp.msg.compteur': 'Tes changements de classe ont été remis à zéro (0/%s).',
-  'mcrp.pnj.nom': 'Maître des Destins',
+  'mcrp.pnj.nom': 'Maître du Destin',
   'mcrp.pnj.sans_classe': "Les arcanes dorment encore en toi, voyageur. Reviens quand un Maître t'aura montré ta voie.",
   'mcrp.pnj.scelle': "Le fil de ton destin a déjà été retissé %s fois. Les Tisseurs n'en accordent pas davantage.",
   'mcrp.pnj.encre': 'Je ne puis réécrire ton destin sans offrande : apporte-moi %s étoile(s) du Nether.',

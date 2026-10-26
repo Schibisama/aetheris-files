@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26T13:55:01.960Z",
+ "version": "2026-10-26T14:13:28.087Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -31,9 +31,49 @@
    "size": 56464
   },
   {
-   "path": "kubejs/assets/mcrp/textures/entity/maitre_destins.png",
-   "sha1": "c03d8fd155494ccdb75a5a304a735a6d62f02cab",
-   "size": 2981
+   "path": "kubejs/assets/mcrp/textures/entity/brokk.png",
+   "sha1": "352f68465b5c2674b0a20341bb1a5d1277fd7a7d",
+   "size": 5390
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/edrik.png",
+   "sha1": "f024a1752dd9085080b6608ae65344f2b5e04476",
+   "size": 3037
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/gorm.png",
+   "sha1": "766baf14d48b78c8a3f3679991862d9cbb75e889",
+   "size": 6692
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/kael.png",
+   "sha1": "823bf085456625adbfcca03781aadb9cb0d72b17",
+   "size": 3754
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/maelys.png",
+   "sha1": "1b2697f841bdd8bc233ce63cae7e66479951b31f",
+   "size": 2269
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/maitre_du_destin.png",
+   "sha1": "8d60be4e890d2128d1687c1a9acd9aea13fd2c41",
+   "size": 5426
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/ser_aldric.png",
+   "sha1": "6d5ea117aa2615e5eaec961b929f1cb6be974526",
+   "size": 5069
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/sylvaine.png",
+   "sha1": "75bf99b21b419b99a1b13208b97ebf446a672e7a",
+   "size": 3657
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/tobin.png",
+   "sha1": "9a95015cf16463e4c3406c41d1240b270d227683",
+   "size": 3181
   },
   {
    "path": "kubejs/client_scripts/aaa_traduction.js",
@@ -52,8 +92,8 @@
   },
   {
    "path": "kubejs/client_scripts/classes_langue_messages.js",
-   "sha1": "ac3e0622f49e24359528f378498ee92ba9641d77",
-   "size": 5087
+   "sha1": "8e1637902b2c150dc0191676ababa664c9b14f69",
+   "size": 5085
   },
   {
    "path": "kubejs/client_scripts/classes_langue.js",
@@ -81,6 +121,11 @@
    "size": 2627
   },
   {
+   "path": "kubejs/server_scripts/chasse_quete.js",
+   "sha1": "f5ab1f14d4ae97276f014b9254ff8a12663ceba3",
+   "size": 4815
+  },
+  {
    "path": "kubejs/server_scripts/classes_boosts.js",
    "sha1": "32c615ae118d3a3c0acd9bd1d0306a0bab07fa9e",
    "size": 5919
@@ -102,8 +147,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "48599c7316d44780f77a17bf960a94db5e59ab69",
-   "size": 75945
+   "sha1": "682334f4da6e9247057f6d7ec90b2211450327c8",
+   "size": 75941
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
