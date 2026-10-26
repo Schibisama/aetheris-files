@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26T01:53:03.404Z",
+ "version": "2026-10-26T02:00:27.494Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -369,11 +369,6 @@
    "path": "mods/darkdoppelganger-4.1.0-1.21.1.jar",
    "sha1": "b20fcbdd8a012587a9dc1e89fc3855b19c93539c",
    "size": 4520327
-  },
-  {
-   "path": "mods/DistantHorizons-3.3.3-1.21.1-fabric-neoforge.jar",
-   "sha1": "4357b4d19fab818780c94f0e43dad1cc931634b2",
-   "size": 28289212
   },
   {
    "path": "mods/dummmmmmy-1.21-2.1.2-neoforge.jar",
