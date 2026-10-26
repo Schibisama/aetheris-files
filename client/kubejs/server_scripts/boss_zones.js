@@ -58,6 +58,7 @@ var BOSSES = {
     type: 'block_factorys_bosses:yeti',
     x: 919, y: 227, z: 706,
     rayon: 30,
+    aggro: 30,   // attaque d'office tout joueur (survie/aventure) à moins de 30 blocs
     respawnMin: 30,
     quete: {
       cle: 'skor_quete',
@@ -179,6 +180,23 @@ ServerEvents.tick(function (event) {
             try { e.setTarget(null) } catch (x) {}
             cible = null
           }
+        }
+        // aggro automatique : le boss prend pour cible le joueur le plus proche dans le rayon "aggro" (si défini)
+        if (b.aggro && !cible && bzCompteur % 10 === 0) {
+          try {
+            var lesJoueurs = event.server.getPlayers()
+            var proche = null, dmin = b.aggro * b.aggro
+            for (var q = 0; q < lesJoueurs.size(); q++) {
+              var jq = lesJoueurs.get(q)
+              if (jq.isSpectator() || jq.isCreative() || !jq.isAlive()) continue
+              var ax = jq.x - e.x, ay = jq.y - e.y, az = jq.z - e.z
+              var d2 = ax * ax + ay * ay + az * az
+              var zx = jq.x - b.x, zz = jq.z - b.z
+              if (zx * zx + zz * zz > b.rayon * b.rayon) continue
+              if (d2 <= dmin) { dmin = d2; proche = jq }
+            }
+            if (proche) { e.setTarget(proche); cible = proche }
+          } catch (x) { console.error('[boss_zones] aggro : ' + x) }
         }
         if (bzCompteur % 10 === 0) { try { bzGererBarres(event.server, e, b) } catch (x) { console.error('[boss_zones] barres : ' + x) } }
         // sans cible depuis un moment : régénération progressive (toutes les secondes)
