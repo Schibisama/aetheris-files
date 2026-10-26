@@ -902,7 +902,11 @@ ServerEvents.commandRegistry(function (event) {
           .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
             .executes(function (ctx) { return cmdTesteurRetirer(ctx, Arguments.PLAYER.getResult(ctx, 'joueur')) }))))
       .then(Commands.literal('maitre')
-        .requires(estModo)
+        .requires(function (source) {
+          // op, ou commande lancée par un NPC Easy NPC (dialogue du Maître des Destins)
+          try { if (source.hasPermission(2)) return true } catch (e) {}
+          try { var ent = source.entity; return !!ent && String(ent.type).indexOf('easy_npc:') === 0 } catch (e) { return false }
+        })
         .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
           .executes(function (ctx) { return cmdMaitre(ctx, Arguments.PLAYER.getResult(ctx, 'joueur')) })))
       .then(Commands.literal('compteur')
