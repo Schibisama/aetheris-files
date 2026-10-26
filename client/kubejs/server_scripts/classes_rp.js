@@ -719,15 +719,16 @@ function cmdPnj(ctx) {
   return 1
 }
 
-// Sort ÉPIQUE aléatoire de la classe du joueur, remis sous forme de parchemin.
-// Appelé par la récompense de la dernière quête du tutoriel (sort épique) (/classe recompense <joueur>, perm. 2).
-function sortRecompenseAleatoire(joueur) {
+// Sort aléatoire de la classe du joueur (rareté RARE ou EPIC), remis sous forme de parchemin.
+// /classe recompense <joueur> : sort RARE (dernière quête du tutoriel) ; /classe recompense_epique <joueur> : sort EPIC (perm. 2).
+function sortRecompenseAleatoire(joueur, rareteNom) {
+  rareteNom = rareteNom || 'RARE'
   var classe = classeDe(joueur)
   if (!classe) return null
   var ecoles = [classe.ecole]
   if (classe.sup) ecoles = ecoles.concat(classe.sup)
   var Rarete = Java.loadClass('io.redspace.ironsspellbooks.api.spells.SpellRarity')
-  var RARETE_CIBLE = Rarete.EPIC // rareté de la récompense
+  var RARETE_CIBLE = Rarete[rareteNom] // rareté de la récompense
   var liste = SpellRegistryJ.getEnabledSpells()
   var candidats = []
   var repli = [] // sorts qui n'atteignent pas la rareté légendaire : meilleure rareté possible
@@ -738,7 +739,7 @@ function sortRecompenseAleatoire(joueur) {
       if (ecoles.indexOf(String(sort.getSchoolType().getId())) === -1) continue
       if (SORTS_PAR_CLASSE[id] && !classeAutorisee(SORTS_PAR_CLASSE[id], classe.nom)) continue
       var niveau = sort.getMinLevelForRarity(RARETE_CIBLE)
-      if (niveau < 1 || niveau > sort.getMaxLevel() || String(sort.getRarity(niveau).name()).toUpperCase() !== 'EPIC') {
+      if (niveau < 1 || niveau > sort.getMaxLevel() || String(sort.getRarity(niveau).name()).toUpperCase() !== rareteNom) {
         var max = sort.getMaxLevel()
         if (max >= 1) repli.push({ sort: sort, id: id, niveau: max, valeur: Number(sort.getRarity(max).getValue()), legendaire: false })
         continue
@@ -757,9 +758,11 @@ function sortRecompenseAleatoire(joueur) {
 }
 
 // /classe recompense <joueur> : parchemin légendaire de la classe (récompense de quête, perm. 2).
-function cmdRecompense(ctx, cible) {
+function cmdRecompense(ctx, cible, rareteNom) {
   try {
-    var choix = sortRecompenseAleatoire(cible)
+    rareteNom = rareteNom || 'RARE'
+    var texteRarete = rareteNom === 'EPIC' ? Text.translate('mcrp.rarete.epic') : Text.translate('mcrp.rarete.rare')
+    var choix = sortRecompenseAleatoire(cible, rareteNom)
     if (!choix) {
       cible.tell(Text.translate('mcrp.msg.recompense_aucun').red())
       retour(ctx, 'Aucun sort disponible pour ' + cible.username + ' (classe : ' + (classeDe(cible) ? classeDe(cible).nom : 'aucune') + ').')
@@ -770,8 +773,8 @@ function cmdRecompense(ctx, cible) {
     ISpellContainerJ.set(pile, ISpellContainerJ.createScrollContainer(choix.sort, choix.niveau, pile))
     cible.give(pile)
     var p = choix.id.split(':')
-    cible.tell(Text.translate(choix.legendaire ? 'mcrp.msg.recompense' : 'mcrp.msg.recompense_repli', Text.translate('spell.' + p[0] + '.' + p[1]).gold()).green())
-    retour(ctx, cible.username + ' reçoit un parchemin : ' + choix.id + ' (niveau ' + choix.niveau + (choix.legendaire ? ', épique' : ', repli : meilleure rareté disponible') + ').')
+    cible.tell(Text.translate(choix.legendaire ? 'mcrp.msg.recompense' : 'mcrp.msg.recompense_repli', Text.translate('spell.' + p[0] + '.' + p[1]).gold(), texteRarete).green())
+    retour(ctx, cible.username + ' reçoit un parchemin : ' + choix.id + ' (niveau ' + choix.niveau + (choix.legendaire ? ', ' + rareteNom : ', repli : meilleure rareté disponible') + ').')
     return 1
   } catch (e) {
     console.error('[classes_rp] Erreur dans /classe recompense : ' + e)
@@ -885,7 +888,11 @@ ServerEvents.commandRegistry(function (event) {
       .then(Commands.literal('recompense')
         .requires(estModo)
         .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
-          .executes(function (ctx) { return cmdRecompense(ctx, Arguments.PLAYER.getResult(ctx, 'joueur')) })))
+          .executes(function (ctx) { return cmdRecompense(ctx, Arguments.PLAYER.getResult(ctx, 'joueur'), 'RARE') })))
+      .then(Commands.literal('recompense_epique')
+        .requires(estModo)
+        .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+          .executes(function (ctx) { return cmdRecompense(ctx, Arguments.PLAYER.getResult(ctx, 'joueur'), 'EPIC') })))
       .then(Commands.literal('pnj')
         .requires(estModo)
         .executes(function (ctx) { return cmdPnj(ctx) }))

@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26T14:14:06.525Z",
+ "version": "2026-10-26T14:46:47.612Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -92,8 +92,8 @@
   },
   {
    "path": "kubejs/client_scripts/classes_langue_messages.js",
-   "sha1": "8e1637902b2c150dc0191676ababa664c9b14f69",
-   "size": 5085
+   "sha1": "a4cd39f1d92674b61da7d3fd19c81700b27c7938",
+   "size": 5212
   },
   {
    "path": "kubejs/client_scripts/classes_langue.js",
@@ -119,6 +119,11 @@
    "path": "kubejs/server_scripts/armourers_ops.js",
    "sha1": "f30cac47bce59e49d7a79a786e786be0be1d4c1d",
    "size": 2627
+  },
+  {
+   "path": "kubejs/server_scripts/boss_helvar.js",
+   "sha1": "9b206189999b86920916db6c92a666fef2d93b48",
+   "size": 8162
   },
   {
    "path": "kubejs/server_scripts/chasse_quete.js",
@@ -147,8 +152,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "682334f4da6e9247057f6d7ec90b2211450327c8",
-   "size": 75941
+   "sha1": "e1a491747a6b204ab3de37426944ca3c1cbdd54f",
+   "size": 76495
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",

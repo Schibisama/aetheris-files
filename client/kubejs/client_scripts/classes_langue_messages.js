@@ -37,7 +37,9 @@ var MSG_FR = {
   'mcrp.rtp.recharge': '/rtp en recharge : encore %s s.',
   'mcrp.rtp.introuvable': 'Aucun endroit sûr trouvé, réessaie dans un instant.',
   'mcrp.rtp.ok': 'Téléporté en X %s, Y %s, Z %s.',
-  'mcrp.msg.recompense': 'Les arcanes te font un don : un parchemin de %s, sort épique de ta classe.',
+  'mcrp.msg.recompense': 'Les arcanes te font un don : un parchemin de %s, sort %s de ta classe.',
+  'mcrp.rarete.rare': 'rare',
+  'mcrp.rarete.epic': 'épique',
   'mcrp.msg.recompense_repli': 'Les arcanes te font un don : un parchemin de %s, un des sorts les plus puissants de ta classe.',
   'mcrp.msg.recompense_aucun': "Aucun sort n'a pu t'être remis (as-tu reçu une classe ?). Préviens un modérateur."
 }
@@ -65,7 +67,9 @@ var MSG_EN = {
   'mcrp.rtp.recharge': '/rtp is on cooldown: %s s left.',
   'mcrp.rtp.introuvable': 'No safe spot found, try again in a moment.',
   'mcrp.rtp.ok': 'Teleported to X %s, Y %s, Z %s.',
-  'mcrp.msg.recompense': 'The arcane grants you a gift: a scroll of %s, an epic spell of your class.',
+  'mcrp.msg.recompense': 'The arcane grants you a gift: a scroll of %s, a spell of %s rarity from your class.',
+  'mcrp.rarete.rare': 'rare',
+  'mcrp.rarete.epic': 'epic',
   'mcrp.msg.recompense_repli': 'The arcane grants you a gift: a scroll of %s, one of the most powerful spells of your class.',
   'mcrp.msg.recompense_aucun': "No spell could be given to you (do you have a class?). Tell a moderator."
 }
