@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26T23:25:48.027Z",
+ "version": "2026-10-26T23:28:26.164Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -456,6 +456,36 @@
    "size": 2219
   },
   {
+   "path": "kubejs/data/block_factorys_bosses/loot_table/entities/infernal_dragon.json",
+   "sha1": "413503c36a397dc762e59e615e9036aa6cee09ff",
+   "size": 39
+  },
+  {
+   "path": "kubejs/data/block_factorys_bosses/loot_table/entities/kraken.json",
+   "sha1": "413503c36a397dc762e59e615e9036aa6cee09ff",
+   "size": 39
+  },
+  {
+   "path": "kubejs/data/block_factorys_bosses/loot_table/entities/pirate_captain.json",
+   "sha1": "413503c36a397dc762e59e615e9036aa6cee09ff",
+   "size": 39
+  },
+  {
+   "path": "kubejs/data/block_factorys_bosses/loot_table/entities/sandworm.json",
+   "sha1": "413503c36a397dc762e59e615e9036aa6cee09ff",
+   "size": 39
+  },
+  {
+   "path": "kubejs/data/block_factorys_bosses/loot_table/entities/underworld_knight.json",
+   "sha1": "413503c36a397dc762e59e615e9036aa6cee09ff",
+   "size": 39
+  },
+  {
+   "path": "kubejs/data/block_factorys_bosses/loot_table/entities/yeti.json",
+   "sha1": "413503c36a397dc762e59e615e9036aa6cee09ff",
+   "size": 39
+  },
+  {
    "path": "kubejs/server_scripts/armourers_ops.js",
    "sha1": "f30cac47bce59e49d7a79a786e786be0be1d4c1d",
    "size": 2627
@@ -472,8 +502,8 @@
   },
   {
    "path": "kubejs/server_scripts/boss_zones.js",
-   "sha1": "ae24fb16196c9c54c365332b80d57aee53f7dab0",
-   "size": 15872
+   "sha1": "88e9249cc90c4eecfa60c73aa2127c0be97129fa",
+   "size": 16764
   },
   {
    "path": "kubejs/server_scripts/chasse_quete.js",
