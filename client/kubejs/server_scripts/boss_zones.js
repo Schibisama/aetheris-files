@@ -102,52 +102,29 @@ function bzSpawn(server, nom, b) {
 }
 
 // ───────────── Barres de vie : masquées pour les joueurs à plus de (rayon + 20) blocs du centre de la zone ─────────────
-var BARRE_MARGE = 20
-var bzChamps = {}
+var BARRE_MARGE = 10
 var bzCaches = {}   // "boss|joueur" -> true quand on a retiré le joueur de la barre
+var bzErrBarre = false
 
-function bzBarres(e) {
-  var cls = e.getClass()
-  var nom = String(cls.getName())
-  if (!bzChamps[nom]) {
-    var liste = []
-    var c = cls
-    while (c && String(c.getName()) !== 'java.lang.Object') {
-      var fs = c.getDeclaredFields()
-      for (var i = 0; i < fs.length; i++) {
-        try {
-          var tn = String(fs[i].getType().getName())
-          if (tn.indexOf('BossEvent') !== -1 || tn.indexOf('BossInfo') !== -1) { fs[i].setAccessible(true); liste.push(fs[i]) }
-        } catch (x) {}
-      }
-      c = c.getSuperclass()
-    }
-    bzChamps[nom] = liste
-  }
-  var res = []
-  var champs = bzChamps[nom]
-  for (var k = 0; k < champs.length; k++) {
-    try { var v = champs[k].get(e); if (v) res.push(v) } catch (x) {}
-  }
-  return res
-}
-
+// Méthodes publiques des entités : stopSeenByPlayer retire le joueur de la barre de vie du boss, startSeenByPlayer le remet.
 function bzGererBarres(server, e, b) {
-  var barres = bzBarres(e)
-  if (barres.length === 0) return
   var joueurs = server.getPlayers()
   for (var i = 0; i < joueurs.size(); i++) {
     var j = joueurs.get(i)
     var dx = j.x - b.x
     var dz = j.z - b.z
     var loin = Math.sqrt(dx * dx + dz * dz) > b.rayon + BARRE_MARGE
-    var cle = e.stringUuid + '|' + j.stringUuid
-    if (loin) {
-      for (var k = 0; k < barres.length; k++) { try { barres[k].removePlayer(j) } catch (x) {} }
-      bzCaches[cle] = true
-    } else if (bzCaches[cle]) {
-      for (var m = 0; m < barres.length; m++) { try { barres[m].addPlayer(j) } catch (x) {} }
-      delete bzCaches[cle]
+    var cle = String(e.getStringUUID()) + '|' + String(j.getStringUUID())
+    try {
+      if (loin) {
+        e.stopSeenByPlayer(j)
+        bzCaches[cle] = true
+      } else if (bzCaches[cle]) {
+        e.startSeenByPlayer(j)
+        delete bzCaches[cle]
+      }
+    } catch (x) {
+      if (!bzErrBarre) { bzErrBarre = true; console.error('[boss_zones] barres : ' + x) }
     }
   }
 }
