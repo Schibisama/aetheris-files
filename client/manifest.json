@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26T23:47:16.530Z",
+ "version": "2026-10-26T23:49:13.799Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -172,8 +172,8 @@
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pip.png",
-   "sha1": "7265515a6bd8e452326f3b8b88b942a058d7d17e",
-   "size": 3098
+   "sha1": "37a704d39ac836984ae9ed64e4113571c891a022",
+   "size": 6140
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_00.png",
