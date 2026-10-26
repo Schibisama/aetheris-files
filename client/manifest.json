@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26T14:47:19.783Z",
+ "version": "2026-10-26T14:52:42.001Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -121,9 +121,9 @@
    "size": 2627
   },
   {
-   "path": "kubejs/server_scripts/boss_helvar.js",
-   "sha1": "9b206189999b86920916db6c92a666fef2d93b48",
-   "size": 8162
+   "path": "kubejs/server_scripts/boss_zones.js",
+   "sha1": "ab3627e465b338de47adfba134e08b73b59d36d7",
+   "size": 9934
   },
   {
    "path": "kubejs/server_scripts/chasse_quete.js",
