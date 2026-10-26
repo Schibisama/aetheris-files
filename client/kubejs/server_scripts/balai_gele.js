@@ -17,6 +17,7 @@ function glBloquer(e) {
     if (!joueur || !joueur.isPlayer() || glOp(joueur)) return
     if (!glGele(e.getTarget())) return
     e.setCanceled(true)
+    try { e.setCancellationResult(Java.loadClass('net.minecraft.world.InteractionResult').FAIL) } catch (x) {}
   } catch (err) { console.error('[balai_gele] ' + err) }
 }
 
@@ -91,6 +92,25 @@ ServerEvents.tick(function (event) {
     }
   } catch (err) { console.error('[balai_gele] tick : ' + err) }
 })
+
+
+// Monter (quel que soit le chemin utilisé par le mod : clic, touche, paquet) : annulé pour les non-ops
+try {
+  Java.loadClass('net.neoforged.neoforge.common.NeoForge').EVENT_BUS.addListener(
+    Java.loadClass('net.neoforged.bus.api.EventPriority').HIGHEST, false,
+    Java.loadClass('net.neoforged.neoforge.event.entity.EntityMountEvent'),
+    function (e) {
+      try {
+        if (!e.isMounting()) return
+        var monteur = e.getEntityMounting()
+        if (!monteur || !monteur.isPlayer() || glOp(monteur)) return
+        if (!glGele(e.getEntityBeingMounted())) return
+        e.setCanceled(true)
+        try { monteur.displayClientMessage(Text.red('Ce balai est gelé.'), true) } catch (x) {}
+      } catch (err) { console.error('[balai_gele] ' + err) }
+    })
+  console.info('[balai_gele] Blocage de la monture actif.')
+} catch (e) { console.error('[balai_gele] monture indisponible : ' + e) }
 
 function glCible(ctx) {
   var j = ctx.source.player

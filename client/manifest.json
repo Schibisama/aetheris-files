@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26T22:35:54.398Z",
+ "version": "2026-10-26T22:38:42.065Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -452,8 +452,8 @@
   },
   {
    "path": "kubejs/server_scripts/balai_gele.js",
-   "sha1": "34dfd1fbc1e1d93cab1574ed7aac8528a0e3566e",
-   "size": 5269
+   "sha1": "9d6f39f710abc95be681bf5acd7c24c60a7ac97e",
+   "size": 6288
   },
   {
    "path": "kubejs/server_scripts/baton_neant.js",
