@@ -1,0 +1,60 @@
+// /reinit <joueur> (op) : remise à zéro COMPLÈTE d'un joueur, pour les tests.
+// Efface : inventaire, armure, main secondaire, curios, coffre de l'Ender, XP, effets, succès,
+// progression des quêtes FTB, classe + compteur de changements, sorts découverts, quêtes de chasse et de boss.
+// Après le reset, le joueur n'a plus de classe : utilise /classe donner <joueur> pour en tirer une.
+// Ne touche pas : position, point de réapparition, gamemode, waystones découvertes.
+
+function rzCmd(server, texte) {
+  try { server.runCommandSilent(texte) } catch (e) { console.error('[reinit] ' + texte + ' -> ' + e) }
+}
+
+function rzCleAEffacer(cle) {
+  return /^(classe_|chasse_)/.test(cle) || /_quete$/.test(cle)
+}
+
+function rzReinit(server, joueur) {
+  var n = joueur.username
+  rzCmd(server, 'clear ' + n)
+  rzCmd(server, 'curios clear ' + n)
+  try { joueur.enderChestInventory.clearContent() } catch (e) { console.error('[reinit] coffre ender : ' + e) }
+  rzCmd(server, 'xp set ' + n + ' 0 levels')
+  rzCmd(server, 'xp set ' + n + ' 0 points')
+  rzCmd(server, 'effect clear ' + n)
+  rzCmd(server, 'advancement revoke ' + n + ' everything')
+  rzCmd(server, 'ftbquests change_progress ' + n + ' reset file')
+  rzCmd(server, 'specs_codex spell lock_all ' + n)
+  rzCmd(server, 'specs_codex school lock_all ' + n)
+
+  // Données persistantes du joueur : classe, compteur, chasse, quêtes de boss (toute clé finissant par _quete)
+  var d = joueur.persistentData
+  var aEffacer = []
+  try {
+    var it = d.getAllKeys().iterator()
+    while (it.hasNext()) {
+      var k = String(it.next())
+      if (rzCleAEffacer(k)) aEffacer.push(k)
+    }
+  } catch (e2) { console.error('[reinit] lecture des données : ' + e2) }
+  for (var i = 0; i < aEffacer.length; i++) d.remove(aEffacer[i])
+  try { joueur.removeTag('classe_reset') } catch (e3) {}
+
+  rzCmd(server, 'effect give ' + n + ' minecraft:instant_health 1 10 true')
+  rzCmd(server, 'effect give ' + n + ' minecraft:saturation 1 20 true')
+  joueur.tell(Text.gold('Ton profil a été remis à zéro. Plus de classe, plus de quêtes, inventaire vide.'))
+  return aEffacer.length
+}
+
+ServerEvents.commandRegistry(function (event) {
+  var Commands = event.commands
+  var Arguments = event.arguments
+  event.register(Commands.literal('reinit')
+    .requires(function (source) { return source.hasPermission(2) })
+    .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+      .executes(function (ctx) {
+        var cible = Arguments.PLAYER.getResult(ctx, 'joueur')
+        var nb = rzReinit(ctx.source.server, cible)
+        var emetteur = ctx.source.player
+        if (emetteur) emetteur.tell(Text.gray(cible.username + ' remis à zéro (' + nb + ' données effacées). /classe donner ' + cible.username + ' pour un nouveau tirage.'))
+        return 1
+      })))
+})

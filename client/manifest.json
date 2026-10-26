@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26T15:15:48.756Z",
+ "version": "2026-10-26T15:40:36.995Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -179,6 +179,11 @@
    "path": "kubejs/server_scripts/mobs_distance.js",
    "sha1": "b8aff824163fad0c8b9cbc02f85a4ac64c5520dc",
    "size": 11357
+  },
+  {
+   "path": "kubejs/server_scripts/reinit_joueur.js",
+   "sha1": "20bd69f90d7a7face6c097ee5e30c857277500eb",
+   "size": 2819
   },
   {
    "path": "kubejs/server_scripts/rtp.js",
