@@ -246,6 +246,22 @@ try {
   )
 } catch (e) { console.error('[boss_zones] suivi des coups indisponible : ' + e) }
 
+// Aucun loot des boss de Bosses Rise (armes, etc.) : les récompenses passent par les quêtes
+var BOSS_SANS_LOOT = ['yeti', 'kraken', 'sandworm', 'infernal_dragon', 'underworld_knight', 'pirate_captain']
+try {
+  NativeEvents.onEvent(
+    Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingDropsEvent'),
+    function (ev) {
+      try {
+        var t = String(ev.getEntity().type)
+        for (var i = 0; i < BOSS_SANS_LOOT.length; i++) {
+          if (t === 'block_factorys_bosses:' + BOSS_SANS_LOOT[i]) { ev.setCanceled(true); return }
+        }
+      } catch (e) {}
+    }
+  )
+} catch (e) { console.error('[boss_zones] suppression du loot indisponible : ' + e) }
+
 // Mort d'un boss : timer de respawn + crédit de quête au SEUL joueur qui a porté le coup fatal
 EntityEvents.death(function (event) {
   try {
