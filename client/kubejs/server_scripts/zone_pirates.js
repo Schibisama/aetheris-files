@@ -1,6 +1,7 @@
 // Zone des anciens matelots du Capitaine Morrow (Sculk Castle) : 6 mobs de Cataclysm, aucun butin, la jambe de bois tombe quand le DERNIER meurt.
 //  - zone d'aggro (boîte) : les mobs attaquent d'office tout joueur (survie/aventure) dedans, et lâchent l'aggro si le joueur sort ou si eux sortent de la zone ;
 //  - régénération après 5 s sans cible ; respawn 30 min après la mort du dernier ; barres de vie masquées au-delà de la zone + 10 blocs.
+// Scylla : « Act:1b » obligatoire dans le NBT du summon, sinon elle reste endormie (forme d'ancre).
 //  - /pirate accepter|rendre <joueur> (quête de la jambe de bois, PNJ ou op) ; /pirate reset <joueur> ; /pirate respawn (op).
 // Nécessite : startup_scripts/objets_quetes.js (kubejs:jambe_de_bois) + redémarrage. Rechargement du script : /reload
 
@@ -10,8 +11,8 @@ var ZP = {
   marge: 5,        // tolérance autour de la boîte avant de ramener un mob (Scylla apparaît 1 bloc dehors)
   barreMarge: 10,  // les joueurs au-delà de la boîte + cette marge ne voient plus les barres de vie
   mobs: [
-    { type: 'cataclysm:scylla',      x: 1344, y: 62, z: -13124 },
-    { type: 'cataclysm:scylla',      x: 1321, y: 62, z: -13124 },
+    { type: 'cataclysm:scylla',      x: 1344, y: 62, z: -13124, nbt: 'Act:1b' },
+    { type: 'cataclysm:scylla',      x: 1321, y: 62, z: -13124, nbt: 'Act:1b' },
     { type: 'cataclysm:clawdian',    x: 1312, y: 62, z: -13111 },
     { type: 'cataclysm:clawdian',    x: 1355, y: 62, z: -13111 },
     { type: 'cataclysm:hippocamtus', x: 1350, y: 62, z: -13091 },
@@ -86,7 +87,7 @@ function zpSpawn(server) {
   for (var i = 0; i < ZP.mobs.length; i++) {
     var m = ZP.mobs[i]
     server.runCommandSilent('execute in minecraft:overworld run summon ' + m.type + ' ' + m.x + ' ' + m.y + ' ' + m.z +
-      ' {Tags:["pirate_zone","zp' + i + '"],PersistenceRequired:1b}')
+      ' {Tags:["pirate_zone","zp' + i + '"],PersistenceRequired:1b' + (m.nbt ? ',' + m.nbt : '') + '}')
   }
   server.persistentData.putInt('pirates_vivants', ZP.mobs.length)
   console.info('[zone_pirates] ' + ZP.mobs.length + ' anciens matelots apparaissent.')
