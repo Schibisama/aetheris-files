@@ -96,12 +96,23 @@ function zpSpawn(server) {
 ServerEvents.tick(function (event) {
   zpCompteur++
   var server = event.server
-  // nettoyage du butin parasite (3 s après chaque mort)
+  // nettoyage du butin parasite (1 s après chaque mort) : objets au sol sans « Thrower » (les objets jetés par un joueur sont épargnés), sauf la jambe de bois
   if (zpNettoyages.length > 0 && zpCompteur % 5 === 0) {
+    var nv = zpNiveau(server)
     for (var k = zpNettoyages.length - 1; k >= 0; k--) {
       var n = zpNettoyages[k]
-      server.runCommandSilent('execute in minecraft:overworld positioned ' + n.x + ' ' + n.y + ' ' + n.z +
-        ' run kill @e[type=minecraft:item,distance=..14,nbt=!{Item:{id:"kubejs:jambe_de_bois"}}]')
+      try {
+        if (nv && AABB_ZP) {
+          var li = nv.getEntitiesWithin(new AABB_ZP(n.x - 14, n.y - 14, n.z - 14, n.x + 14, n.y + 14, n.z + 14))
+          for (var q0 = 0; q0 < li.size(); q0++) {
+            var it = li.get(q0)
+            if (String(it.type) !== 'minecraft:item') continue
+            try { if (it.nbt.contains('Thrower')) continue } catch (x1) {}
+            try { if (String(it.item.id) === 'kubejs:jambe_de_bois') continue } catch (x2) {}
+            it.discard()
+          }
+        }
+      } catch (x) {}
       n.t--
       if (n.t <= 0) zpNettoyages.splice(k, 1)
     }
@@ -218,7 +229,7 @@ EntityEvents.death(function (event) {
     var reste = d.contains('pirates_vivants') ? d.getInt('pirates_vivants') - 1 : 0
     if (reste < 0) reste = 0
     d.putInt('pirates_vivants', reste)
-    zpNettoyages.push({ x: Math.round(e.x), y: Math.round(e.y), z: Math.round(e.z), t: 12 })
+    zpNettoyages.push({ x: Math.round(e.x), y: Math.round(e.y), z: Math.round(e.z), t: 4 })
     console.info('[zone_pirates] mort de ' + String(e.type) + ' : ' + reste + ' restant(s).')
     if (reste === 0) {
       d.putLong('pirates_respawn', Date.now() + ZP.respawnMin * 60 * 1000)

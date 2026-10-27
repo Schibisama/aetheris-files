@@ -184,7 +184,7 @@ function bzMort(server, nom, b, e, src) {
   var pd = e.persistentData
   if (pd.getInt('bz_mort') === 1) return
   pd.putInt('bz_mort', 1)
-  bzNettoyages.push({ x: Math.round(e.x), y: Math.round(e.y), z: Math.round(e.z), t: 12 })
+  bzNettoyages.push({ x: Math.round(e.x), y: Math.round(e.y), z: Math.round(e.z), t: 4 })
   server.persistentData.putLong(bzCle(nom), Date.now() + b.respawnMin * 60 * 1000)
   var cle = String(e.uuid)
   var tueur = src ? src.actual : null
@@ -216,10 +216,10 @@ ServerEvents.tick(function (event) {
   bzCompteur++
   if (bzCompteur % 5 !== 0) return
   if (bzNettoyages.length > 0) {
+    var nv = bzNiveau(event.server)
     for (var kk = bzNettoyages.length - 1; kk >= 0; kk--) {
       var nn = bzNettoyages[kk]
-      event.server.runCommandSilent('execute in minecraft:overworld positioned ' + nn.x + ' ' + nn.y + ' ' + nn.z +
-        ' run kill @e[type=minecraft:item,distance=..14]')
+      try { bzNettoyer(nv, nn.x, nn.y, nn.z) } catch (x) {}
       nn.t--
       if (nn.t <= 0) bzNettoyages.splice(kk, 1)
     }
@@ -335,6 +335,18 @@ try {
     }
   )
 } catch (e) { console.error('[boss_zones] suppression du loot indisponible : ' + e) }
+
+// Efface les objets au sol lâchés par le boss (sans « Thrower » : les objets jetés par un joueur sont épargnés)
+function bzNettoyer(niveau, x, y, z) {
+  if (!niveau || !AABB_BZ) return
+  var liste = niveau.getEntitiesWithin(new AABB_BZ(x - 14, y - 14, z - 14, x + 14, y + 14, z + 14))
+  for (var i = 0; i < liste.size(); i++) {
+    var it = liste.get(i)
+    if (String(it.type) !== 'minecraft:item') continue
+    try { if (it.nbt.contains('Thrower')) continue } catch (x1) {}
+    it.discard()
+  }
+}
 
 var bzNettoyages = []   // butin parasite (lâché hors événement) à effacer autour des boss de zone morts
 
