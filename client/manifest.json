@@ -1,5 +1,5 @@
 {
- "version": "2026-10-27T01:36:29.227Z",
+ "version": "2026-10-27T01:59:48.201Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -29,6 +29,11 @@
    "path": "kubejs/assets/kubejs/textures/item/example_item.png",
    "sha1": "d9912cb709ad496b10f19f8b2c66d1e419eb760c",
    "size": 372
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/item/jambe_de_bois.png",
+   "sha1": "140c9a3a82eb0afc044e5d45fdf3bda715ba904b",
+   "size": 246
   },
   {
    "path": "kubejs/assets/kubejs/textures/item/sceau_maledictus.png",
@@ -69,6 +74,11 @@
    "path": "kubejs/assets/mcrp/textures/entity/brokk.png",
    "sha1": "352f68465b5c2674b0a20341bb1a5d1277fd7a7d",
    "size": 5390
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/capitaine_pirate.png",
+   "sha1": "15fd777b1615e754bf69b2ecaf46728be10b48ad",
+   "size": 2346
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/cls_aeromancien.png",
@@ -582,8 +592,8 @@
   },
   {
    "path": "kubejs/server_scripts/livraison_quetes.js",
-   "sha1": "dedcdb632fd35d47cbf5bec28b46dad80a7fabda",
-   "size": 28424
+   "sha1": "f41615a2549c556ab173499ce2c14ac0b2f05866",
+   "size": 29022
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
@@ -616,6 +626,11 @@
    "size": 8295
   },
   {
+   "path": "kubejs/server_scripts/zone_pirates.js",
+   "sha1": "daade92fa92ab1914263389388d3f97f3edd317e",
+   "size": 13425
+  },
+  {
    "path": "kubejs/startup_scripts/classes_effets.js",
    "sha1": "3088814c1fcab4572e44b1f58ba68f51498f7f72",
    "size": 9394
@@ -637,8 +652,8 @@
   },
   {
    "path": "kubejs/startup_scripts/objets_quetes.js",
-   "sha1": "57848310146e8df8557b7795e25a45d3da59c796",
-   "size": 985
+   "sha1": "846082a50bd05e4cde4d8d93d747fe0eeb1d1418",
+   "size": 1297
   },
   {
    "path": "mods/aaa_particles-neoforge-1.21.1-2.3.4.jar",
