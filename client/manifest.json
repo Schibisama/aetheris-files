@@ -1,5 +1,5 @@
 {
- "version": "2026-10-27T01:03:48.230Z",
+ "version": "2026-10-27T01:21:40.768Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -522,13 +522,13 @@
   },
   {
    "path": "kubejs/server_scripts/baton_neant.js",
-   "sha1": "b3ee16b53096f1863c6692880e369de8bc6d8bca",
-   "size": 2571
+   "sha1": "93501b713c7856103ec415a8ce1e1d16b0d16e2a",
+   "size": 2835
   },
   {
    "path": "kubejs/server_scripts/boss_zones.js",
-   "sha1": "ad949b06301f7976b1d4f377efbf313ace496ef2",
-   "size": 18119
+   "sha1": "1345c5f10b50cbeab50ded1f0ee72f9f1efd8b93",
+   "size": 18155
   },
   {
    "path": "kubejs/server_scripts/chasse_quete.js",
