@@ -401,10 +401,10 @@ LIVRAISONS.bartholome_os = lvSimple({
 
 LIVRAISONS.ulrich_poudre = lvSimple({
   cle: 'ulrich_poudre_quete', pnj: 'Ulrich', objet: 'minecraft:blaze_powder', nombre: 20, nom: 'poudres de blaze', rarete: 'rare',
-  accepter: "Mes brûlures ne se referment jamais tout à fait. L'onguent que je prépare demande de la poudre de blaze, beaucoup. Apporte-m'en vingt, et je te céderai un savoir de ta voie.",
-  encours: "Mes vingt poudres de blaze ? La douleur n'attend pas, voyageur.",
-  fini: "Mon onguent est prêt. Le feu me laisse un peu de répit, grâce à toi.",
-  recompense: "Vingt poudres... Tu as le courage de ceux qui n'ont pas peur du feu. Prends ce savoir de ta voie : je n'ai que cela à offrir."
+  accepter: "*toux rauque* Mes brûlures... ne se referment jamais tout à fait. Il me faut de la poudre de blaze, pour mon onguent... Vingt. Apporte-m'en vingt... et je te céderai un savoir de ta voie.",
+  encours: "*souffle court* Mes vingt poudres de blaze... La douleur n'attend pas, voyageur...",
+  fini: "*un long soupir* Mon onguent est prêt... Le feu me laisse un peu de répit. Merci...",
+  recompense: "*sa main tremble en saisissant la poudre* Vingt... Tu n'as pas peur du feu, toi. Prends ce savoir de ta voie... c'est tout ce que j'ai."
 })
 
 LIVRAISONS.capitaine_longuevue = lvSimple({
