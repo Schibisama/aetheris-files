@@ -130,6 +130,22 @@ function bzBuff(server, e) {
   } catch (err) { console.error('[boss_zones] buff : ' + err) }
 }
 
+// Hors combat = aucun coup reçu depuis 20 s ET aucun joueur (hors spectateur) à moins de rayon + 30 blocs (le dragon perd souvent sa cible en vol).
+function bzHorsCombat(server, e, b) {
+  try {
+    var pd = e.persistentData
+    if (pd.contains('bz_coup') && Date.now() - pd.getLong('bz_coup') < 20000) return false
+    var js = server.getPlayers()
+    for (var i = 0; i < js.size(); i++) {
+      var j = js.get(i)
+      if (j.isSpectator() || !j.isAlive()) continue
+      var dx = j.x - b.x, dz = j.z - b.z
+      if (Math.sqrt(dx * dx + dz * dz) <= b.rayon + 30) return false
+    }
+  } catch (x) {}
+  return true
+}
+
 function bzCle(nom) { return 'boss_respawn_' + nom }
 
 function bzBoss(niveau, b, marge) {
@@ -317,7 +333,7 @@ ServerEvents.tick(function (event) {
         } else {
           var n = pd.getInt('bz_sans_cible') + 1
           pd.putInt('bz_sans_cible', n)
-          if (n >= REGEN_DELAI_S * 4 && bzCompteur % 20 === 0) {
+          if (n >= REGEN_DELAI_S * 4 && bzCompteur % 20 === 0 && bzHorsCombat(event.server, e, b)) {
             try { e.heal(e.maxHealth * REGEN_POURCENT / 100) } catch (x) {}
           }
         }
@@ -362,6 +378,7 @@ try {
     Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent'),
     function (ev) {
       try {
+        try { var tg = ev.getEntity(); if (tg.tags && tg.tags.contains('boss_zone')) tg.persistentData.putLong('bz_coup', Date.now()) } catch (e1) {}
         var att = null
         try { att = ev.getSource().actual } catch (e0) {}
         if (!att || !att.tags || !att.tags.contains('boss_zone')) return
