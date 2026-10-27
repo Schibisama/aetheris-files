@@ -65,6 +65,24 @@ function zpMobs(niveau) {
   return res
 }
 
+// ───────────── Difficulté : vie x3 et dégâts x1,5 (les seuils de phase restent en % de la vie max) ─────────────
+var ZP_VIE_MULT = 3
+var ZP_DEGATS_MULT = 1.5
+// Appliqué une seule fois par exemplaire (marqueur zp_buff). Garde le même % de vie courant.
+function zpBuff(server, e) {
+  try {
+    var pd = e.persistentData
+    if (pd.getInt('zp_buff') === 1) return
+    pd.putInt('zp_buff', 1)
+    var avant = e.maxHealth
+    var ratio = avant > 0 ? e.health / avant : 1
+    server.runCommandSilent('attribute ' + e.uuid + ' minecraft:generic.max_health modifier add aetheris:boss_vie ' + (ZP_VIE_MULT - 1) + ' add_multiplied_total')
+    var nouv = e.maxHealth * ratio
+    try { e.setHealth(nouv) } catch (x) { e.health = nouv }
+    console.info('[zone_pirates] vie x' + ZP_VIE_MULT + ' : ' + String(e.type) + ' ' + Math.round(avant) + ' -> ' + Math.round(e.maxHealth))
+  } catch (err) { console.error('[zone_pirates] buff : ' + err) }
+}
+
 function zpIndex(e) {
   try {
     for (var i = 0; i < ZP.mobs.length; i++) if (e.tags.contains('zp' + i)) return i
@@ -125,6 +143,7 @@ ServerEvents.tick(function (event) {
     var vivants = zpMobs(niveau)
     for (var i = 0; i < vivants.length; i++) {
       var e = vivants[i]
+      zpBuff(server, e)
       var idx = zpIndex(e)
       var cible = null
       try { cible = e.getTarget() } catch (x) {}
@@ -225,6 +244,21 @@ ServerEvents.tick(function (event) {
     }
   } catch (err) { if (!zpErr) { zpErr = true; console.error('[zone_pirates] barres : ' + err) } }
 })
+
+// Dégâts x1,5 : tout coup dont l'auteur est un mob de la zone pirate (corps à corps, boules de feu, souffle... si l'auteur est renseigné)
+try {
+  NativeEvents.onEvent(
+    Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent'),
+    function (ev) {
+      try {
+        var att = null
+        try { att = ev.getSource().actual } catch (e0) {}
+        if (!att || !att.tags || !att.tags.contains('pirate_zone')) return
+        ev.setAmount(ev.getAmount() * ZP_DEGATS_MULT)
+      } catch (e) {}
+    }
+  )
+} catch (e) { console.error('[pirate_zones] dégâts x1,5 indisponibles : ' + e) }
 
 // ───────── Aucun butin sur les 6 mobs ─────────
 try {

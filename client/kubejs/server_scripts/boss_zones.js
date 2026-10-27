@@ -112,6 +112,24 @@ function bzNiveau(server) {
   try { return server.overworld() } catch (e2) {}
   return null
 }
+// ───────────── Difficulté : vie x3 et dégâts x1,5 (les seuils de phase restent en % de la vie max) ─────────────
+var BZ_VIE_MULT = 3
+var BZ_DEGATS_MULT = 1.5
+// Appliqué une seule fois par exemplaire (marqueur bz_buff). Garde le même % de vie courant.
+function bzBuff(server, e) {
+  try {
+    var pd = e.persistentData
+    if (pd.getInt('bz_buff') === 1) return
+    pd.putInt('bz_buff', 1)
+    var avant = e.maxHealth
+    var ratio = avant > 0 ? e.health / avant : 1
+    server.runCommandSilent('attribute ' + e.uuid + ' minecraft:generic.max_health modifier add aetheris:boss_vie ' + (BZ_VIE_MULT - 1) + ' add_multiplied_total')
+    var nouv = e.maxHealth * ratio
+    try { e.setHealth(nouv) } catch (x) { e.health = nouv }
+    console.info('[boss_zones] vie x' + BZ_VIE_MULT + ' : ' + String(e.type) + ' ' + Math.round(avant) + ' -> ' + Math.round(e.maxHealth))
+  } catch (err) { console.error('[boss_zones] buff : ' + err) }
+}
+
 function bzCle(nom) { return 'boss_respawn_' + nom }
 
 function bzBoss(niveau, b, marge) {
@@ -258,6 +276,7 @@ ServerEvents.tick(function (event) {
       for (var i = 0; i < proches.length; i++) {
         var e = proches[i]
         if (bzEnMort(e)) { bzMort(server, nom, b, e, null); continue }
+        bzBuff(server, e)
         var dx = e.x - b.x
         var dz = e.z - b.z
         var cible = null
@@ -336,6 +355,21 @@ try {
     }
   )
 } catch (e) { console.error('[boss_zones] suivi des coups indisponible : ' + e) }
+
+// Dégâts x1,5 : tout coup dont l'auteur est un boss de zone (corps à corps, boules de feu, souffle... si l'auteur est renseigné)
+try {
+  NativeEvents.onEvent(
+    Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent'),
+    function (ev) {
+      try {
+        var att = null
+        try { att = ev.getSource().actual } catch (e0) {}
+        if (!att || !att.tags || !att.tags.contains('boss_zone')) return
+        ev.setAmount(ev.getAmount() * BZ_DEGATS_MULT)
+      } catch (e) {}
+    }
+  )
+} catch (e) { console.error('[boss_zones] dégâts x1,5 indisponibles : ' + e) }
 
 // Aucun butin pour les boss DE ZONE (seul l'objet de quête est donné). Les mêmes mobs hors de ces zones (structures d'origine) gardent leur butin normal.
 function bzEstBossDeZone(e) {
