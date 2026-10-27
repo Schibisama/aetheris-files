@@ -76,6 +76,29 @@ var BOSSES = {
       sansObjet: "Où est la corne ? Sans elle, je ne peux pas faire le remède. Retrouve-la !",
       commandeRecompense: 'classe recompense_epique %joueur%'
     }
+  },
+  dragon: {
+    type: 'block_factorys_bosses:infernal_dragon',
+    x: 1642, y: 207, z: 1795,
+    rayon: 45,   // plus large que les autres : le dragon vole et plonge
+    aggro: 40,
+    nbtSpawn: 'BossPhase:0,BossBarVisible:1b',   // départ sans cinématique d'intro (comme Skor) ; à ajuster si le dragon reste figé
+    respawnMin: 30,
+    quete: {
+      cle: 'dragon_quete',
+      pnj: 'Ulrich',
+      accepter: "*toux rauque* Le dragon... rôde encore là où le feu ne s'éteint jamais. Abats-le... et rapporte-moi une de ses écailles. Alors je saurai... que le cauchemar a une fin.",
+      encours: "*souffle court* La bête vit encore... Je sens sa chaleur jusque dans mes os. Va...",
+      tue: "*ses yeux brillent* Tu as abattu le dragon ?... Alors reviens vite me donner son écaille...",
+      fini: "*un long soupir* Le cauchemar est fini... Je n'ai plus rien à te demander. Merci...",
+      rien: "*toux* Tu ne m'as encore rien promis, voyageur...",
+      vivant: "*il secoue la tête* Le dragon respire toujours... Je le sens. Va...",
+      recompense: "*sa main tremble en saisissant l'écaille* Il est tombé... Ultgard peut enfin reposer. Prends ce savoir... c'est tout ce que j'ai à offrir.",
+      annonceMort: "Le dragon s'effondre. Une écaille brûlante gît dans ton sac : rapporte-la à Ulrich.",
+      objet: 'kubejs:ecaille_infernale',
+      sansObjet: "*souffle court* Où est l'écaille ?... Sans elle, je ne puis croire que la bête est morte. Retrouve-la...",
+      commandeRecompense: 'classe recompense_epique %joueur%'
+    }
   }
 }
 
