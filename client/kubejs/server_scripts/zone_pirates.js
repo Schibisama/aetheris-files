@@ -104,7 +104,7 @@ ServerEvents.tick(function (event) {
       var n = zpNettoyages[k]
       try {
         if (nv && AABB_ZP) {
-          var li = nv.getEntitiesWithin(new AABB_ZP(n.x - 14, n.y - 14, n.z - 14, n.x + 14, n.y + 14, n.z + 14))
+          var li = nv.getEntitiesWithin(new AABB_ZP(n.x - 20, n.y - 20, n.z - 20, n.x + 20, n.y + 20, n.z + 20))
           for (var q0 = 0; q0 < li.size(); q0++) {
             var it = li.get(q0)
             if (String(it.type) !== 'minecraft:item') continue
@@ -220,6 +220,7 @@ try {
   )
 } catch (e) { console.error('[zone_pirates] suppression du butin indisponible : ' + e) }
 
+// (nettoyage prolongé à 30 s : Scylla lâche son butin à la fin de son animation de mort)
 // ───────── Mort d'un mob : le dernier lâche la jambe de bois ─────────
 EntityEvents.death(function (event) {
   try {
@@ -230,7 +231,7 @@ EntityEvents.death(function (event) {
     var reste = d.contains('pirates_vivants') ? d.getInt('pirates_vivants') - 1 : 0
     if (reste < 0) reste = 0
     d.putInt('pirates_vivants', reste)
-    zpNettoyages.push({ x: Math.round(e.x), y: Math.round(e.y), z: Math.round(e.z), t: 4 })
+    zpNettoyages.push({ x: Math.round(e.x), y: Math.round(e.y), z: Math.round(e.z), t: 120 })
     console.info('[zone_pirates] mort de ' + String(e.type) + ' : ' + reste + ' restant(s).')
     if (reste === 0) {
       d.putLong('pirates_respawn', Date.now() + ZP.respawnMin * 60 * 1000)
