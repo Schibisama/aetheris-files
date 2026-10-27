@@ -82,6 +82,7 @@ var BOSSES = {
     x: 1642, y: 207, z: 1795,
     rayon: 45,   // plus large que les autres : le dragon vole et plonge
     aggro: 40,
+    soigneSiSort: true,   // sort de sa zone (aggro perdue) : retour au centre ET vie remise au maximum
     remonteSous: 12,   // s'il descend de plus de 12 blocs sous son point d'apparition : retour au point d'apparition, sans dégâts de chute
     nbtSpawn: 'BossPhase:0,BossBarVisible:1b',   // départ sans cinématique d'intro (comme Skor) ; à ajuster si le dragon reste figé
     respawnMin: 30,
@@ -298,7 +299,7 @@ ServerEvents.tick(function (event) {
           server.runCommandSilent('tp ' + e.uuid + ' ' + b.x + ' ' + b.y + ' ' + b.z)
           try { e.fallDistance = 0 } catch (x) {}
           try { e.setDeltaMovement(0, 0, 0) } catch (x) {}
-          console.info('[boss_zones] ' + nom + ' était tombé trop bas : retour au point d\'apparition.')
+          console.info('[boss_zones] ' + nom + ' était tombé trop bas : retour au point d\'apparition, sans soin.')
           continue
         }
         bzBuff(server, e)
@@ -308,6 +309,10 @@ ServerEvents.tick(function (event) {
         try { cible = e.getTarget() } catch (x) {}
         if (Math.sqrt(dx * dx + dz * dz) > b.rayon) {
           bzRamener(event.server, e, b)
+          if (b.soigneSiSort) {
+            try { e.setHealth(e.maxHealth) } catch (x) { try { e.health = e.maxHealth } catch (y) {} }
+            console.info('[boss_zones] ' + nom + ' est sorti de sa zone : retour au centre, vie restaurée.')
+          }
           cible = null
         } else if (cible) {
           var tx = cible.x - b.x
