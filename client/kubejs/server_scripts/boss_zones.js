@@ -184,6 +184,7 @@ function bzMort(server, nom, b, e, src) {
   var pd = e.persistentData
   if (pd.getInt('bz_mort') === 1) return
   pd.putInt('bz_mort', 1)
+  bzNettoyages.push({ x: Math.round(e.x), y: Math.round(e.y), z: Math.round(e.z), t: 12 })
   server.persistentData.putLong(bzCle(nom), Date.now() + b.respawnMin * 60 * 1000)
   var cle = String(e.uuid)
   var tueur = src ? src.actual : null
@@ -214,6 +215,15 @@ var bzDernierCoup = {}
 ServerEvents.tick(function (event) {
   bzCompteur++
   if (bzCompteur % 5 !== 0) return
+  if (bzNettoyages.length > 0) {
+    for (var kk = bzNettoyages.length - 1; kk >= 0; kk--) {
+      var nn = bzNettoyages[kk]
+      event.server.runCommandSilent('execute in minecraft:overworld positioned ' + nn.x + ' ' + nn.y + ' ' + nn.z +
+        ' run kill @e[type=minecraft:item,distance=..14]')
+      nn.t--
+      if (nn.t <= 0) bzNettoyages.splice(kk, 1)
+    }
+  }
   try {
     var server = event.server
     var niveau = bzNiveau(server)
@@ -304,21 +314,29 @@ try {
   )
 } catch (e) { console.error('[boss_zones] suivi des coups indisponible : ' + e) }
 
-// Aucun loot des boss de Bosses Rise (armes, etc.) : les récompenses passent par les quêtes
-var BOSS_SANS_LOOT = ['yeti', 'kraken', 'sandworm', 'infernal_dragon', 'underworld_knight', 'pirate_captain']
+// Aucun butin pour les boss DE ZONE (seul l'objet de quête est donné). Les mêmes mobs hors de ces zones (structures d'origine) gardent leur butin normal.
+function bzEstBossDeZone(e) {
+  try {
+    var t = String(e.type)
+    for (var nom in BOSSES) {
+      var b = BOSSES[nom]
+      if (b.type !== t) continue
+      var dx = e.x - b.x, dz = e.z - b.z
+      if (Math.sqrt(dx * dx + dz * dz) <= b.rayon + 40) return true
+    }
+  } catch (x) {}
+  return false
+}
 try {
   NativeEvents.onEvent(
     Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingDropsEvent'),
     function (ev) {
-      try {
-        var t = String(ev.getEntity().type)
-        for (var i = 0; i < BOSS_SANS_LOOT.length; i++) {
-          if (t === 'block_factorys_bosses:' + BOSS_SANS_LOOT[i]) { ev.setCanceled(true); return }
-        }
-      } catch (e) {}
+      try { if (bzEstBossDeZone(ev.getEntity())) ev.setCanceled(true) } catch (e) {}
     }
   )
 } catch (e) { console.error('[boss_zones] suppression du loot indisponible : ' + e) }
+
+var bzNettoyages = []   // butin parasite (lâché hors événement) à effacer autour des boss de zone morts
 
 // Mort d'un boss : timer de respawn + crédit de quête au SEUL joueur qui a porté le coup fatal
 EntityEvents.death(function (event) {
