@@ -154,6 +154,31 @@ function bzGererBarres(server, e, b) {
   }
 }
 
+// Masquage rapide des barres (toutes les 2 ticks) : un boss qui revient dans le champ d'un joueur le réajoute aussitôt, on le retire donc sans attendre.
+var bzCompteurBarre = 0
+var bzEntitesBarre = {}
+ServerEvents.tick(function (event) {
+  bzCompteurBarre++
+  if (bzCompteurBarre % 2 !== 0) return
+  try {
+    var niveau = bzNiveau(event.server)
+    if (!niveau || !AABB_BZ) return
+    var rafraichir = bzCompteurBarre % 20 === 0
+    for (var nom in BOSSES) {
+      var b = BOSSES[nom]
+      if (rafraichir || !bzEntitesBarre[nom]) bzEntitesBarre[nom] = bzBoss(niveau, b, b.rayon + 200)
+      var liste = bzEntitesBarre[nom]
+      for (var i = 0; i < liste.length; i++) {
+        var e = liste[i]
+        if (!e.isAlive()) continue
+        try { bzGererBarres(event.server, e, b) } catch (x) {}
+      }
+    }
+  } catch (err) {
+    if (!bzErrBarre) { bzErrBarre = true; console.error('[boss_zones] barres rapides : ' + err) }
+  }
+})
+
 // Fin de combat : timer de respawn + crédit de quête au dernier joueur ayant frappé (une seule fois par exemplaire)
 function bzMort(server, nom, b, e, src) {
   var pd = e.persistentData
