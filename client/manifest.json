@@ -1,5 +1,5 @@
 {
- "version": "2026-10-27T02:06:53.639Z",
+ "version": "2026-10-27T02:08:57.233Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -537,8 +537,8 @@
   },
   {
    "path": "kubejs/server_scripts/boss_zones.js",
-   "sha1": "2fdd5ecdbf0dc897a25f1b29b73deb79b3462d31",
-   "size": 19761
+   "sha1": "61f55f8ab0e9929025569cf7da918b5731cd79c4",
+   "size": 20189
   },
   {
    "path": "kubejs/server_scripts/chasse_quete.js",
@@ -627,8 +627,8 @@
   },
   {
    "path": "kubejs/server_scripts/zone_pirates.js",
-   "sha1": "daade92fa92ab1914263389388d3f97f3edd317e",
-   "size": 13425
+   "sha1": "40834c04aede4c9573e8034bf6130788dbc9745c",
+   "size": 13893
   },
   {
    "path": "kubejs/startup_scripts/classes_effets.js",
