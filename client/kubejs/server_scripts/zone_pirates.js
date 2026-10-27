@@ -220,6 +220,25 @@ try {
   )
 } catch (e) { console.error('[zone_pirates] suppression du butin indisponible : ' + e) }
 
+// ───────── Aucun autre mob ne naît dans la zone (naturel, spawner, structure, chunk...) ─────────
+// Seules les apparitions par commande (/summon du script) et par œuf restent possibles.
+try {
+  NativeEvents.onEvent(
+    Java.loadClass('net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent'),
+    function (ev) {
+      try {
+        var e = ev.getEntity()
+        if (!zpDans(e.x, e.z, ZP.marge + 10) || e.y < ZP.y1 - 10 || e.y > ZP.y2 + 25) return
+        var type = String(ev.getSpawnType())
+        if (type === 'COMMAND' || type === 'SPAWN_EGG') return
+        if (String(e.type).indexOf('easy_npc:') === 0) return
+        ev.setSpawnCancelled(true)
+      } catch (x) {}
+    }
+  )
+  console.info('[zone_pirates] Aucun autre mob ne peut apparaître dans la zone.')
+} catch (e) { console.error('[zone_pirates] blocage des apparitions indisponible : ' + e) }
+
 // (nettoyage prolongé à 30 s : Scylla lâche son butin à la fin de son animation de mort)
 // ───────── Mort d'un mob : le dernier lâche la jambe de bois ─────────
 EntityEvents.death(function (event) {

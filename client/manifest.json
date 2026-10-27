@@ -1,5 +1,5 @@
 {
- "version": "2026-10-27T12:51:17.001Z",
+ "version": "2026-10-27T12:52:26.786Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -627,8 +627,8 @@
   },
   {
    "path": "kubejs/server_scripts/zone_pirates.js",
-   "sha1": "945187c608fd84c90f4ef43bf8e84f9069518a7c",
-   "size": 15437
+   "sha1": "bcf627be984ce90a607756d871ad8a5c77bfe18c",
+   "size": 16347
   },
   {
    "path": "kubejs/startup_scripts/classes_effets.js",
