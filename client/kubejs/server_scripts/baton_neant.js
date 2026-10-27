@@ -19,7 +19,11 @@ function bnAuteur(src) {
   return null
 }
 
+var bnEnCours = false   // garde anti-récursion : la commande /damage redéclenche l'événement de dégâts, ce qui bouclait et faisait freezer
+
 function bnTuer(joueur, cible) {
+  if (bnEnCours) return false
+  bnEnCours = true
   try {
     if (!cible || cible.isPlayer()) return false
     if (!cible.isAlive()) return false
@@ -29,7 +33,7 @@ function bnTuer(joueur, cible) {
     s.runCommandSilent('damage ' + u + ' 1000000 minecraft:generic_kill by ' + String(joueur.uuid))
     if (cible.isAlive()) s.runCommandSilent('kill ' + u)
     return true
-  } catch (e) { console.error('[baton_neant] ' + e); return false }
+  } catch (e) { console.error('[baton_neant] ' + e); return false } finally { bnEnCours = false }
 }
 
 ItemEvents.entityInteracted(function (event) {
