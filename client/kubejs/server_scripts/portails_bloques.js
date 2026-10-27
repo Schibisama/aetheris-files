@@ -39,3 +39,22 @@ try {
 } catch (e) {
   console.error('[portails_bloques] indisponible : ' + e)
 }
+
+// ───────────── Mobs : ne traversent jamais les portails (Nether, End, retour de l'End) ─────────────
+// Seuls les joueurs changent de dimension ; tout autre être vivant (mobs, boss, PNJ, animaux) voit son voyage annulé et reste sur place.
+try {
+  NativeEvents.onEvent(
+    Java.loadClass('net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent'),
+    function (ev) {
+      try {
+        var e = ev.getEntity()
+        if (!e || e.isPlayer()) return
+        if (typeof e.isLiving === 'function' && !e.isLiving()) return   // objets au sol, projectiles... : inchangés
+        ev.setCanceled(true)
+      } catch (x) {}
+    }
+  )
+  console.info('[portails_bloques] Les mobs ne peuvent plus traverser les portails.')
+} catch (e) {
+  console.error('[portails_bloques] Blocage des mobs indisponible : ' + e)
+}
