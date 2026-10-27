@@ -1,5 +1,5 @@
 {
- "version": "2026-10-27T00:18:26.364Z",
+ "version": "2026-10-27T01:01:56.529Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -406,6 +406,56 @@
    "size": 3824
   },
   {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_w00.png",
+   "sha1": "9922b68095900ea7350a01f88bf1a96eef1e44dc",
+   "size": 4302
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_w01.png",
+   "sha1": "b67fae391534388ee22152d0c508be52a723caec",
+   "size": 5332
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_w02.png",
+   "sha1": "0570df8d2122b8a1bd0e0654a7202cb4863f77a9",
+   "size": 4298
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_w03.png",
+   "sha1": "4cfc7113122c489326300e2abcb058dacac18c9b",
+   "size": 3624
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_w04.png",
+   "sha1": "6940125feb7f692b96656ca0c46f4fb1a98590c6",
+   "size": 4491
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_w05.png",
+   "sha1": "d5487b41a6587580ae5bc36fe91ffa9120790da9",
+   "size": 4685
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_w06.png",
+   "sha1": "f3d06d089c215ed91a7556f66215d436357781b2",
+   "size": 3964
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_w07.png",
+   "sha1": "d3c9124e21f32375b1529891e29ed6bb8aef0d17",
+   "size": 4938
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_w08.png",
+   "sha1": "8c651bc147989adf806a01d3e1c6b8356bbfc6b5",
+   "size": 5118
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_w09.png",
+   "sha1": "36fa471404c1e3bce78b22e8cc7b8ddebc257aaa",
+   "size": 3627
+  },
+  {
    "path": "kubejs/assets/mcrp/textures/entity/ser_aldric.png",
    "sha1": "6d5ea117aa2615e5eaec961b929f1cb6be974526",
    "size": 5069
@@ -532,8 +582,8 @@
   },
   {
    "path": "kubejs/server_scripts/livraison_quetes.js",
-   "sha1": "312edd1c31992487731b1fbbce175190b399177b",
-   "size": 22147
+   "sha1": "766f7cbf1711a498a08925c355b81bd2d6d71ea8",
+   "size": 28502
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
