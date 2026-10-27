@@ -1,5 +1,5 @@
 {
- "version": "2026-10-27T01:02:17.727Z",
+ "version": "2026-10-27T01:03:24.603Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -582,8 +582,8 @@
   },
   {
    "path": "kubejs/server_scripts/livraison_quetes.js",
-   "sha1": "766f7cbf1711a498a08925c355b81bd2d6d71ea8",
-   "size": 28502
+   "sha1": "dedcdb632fd35d47cbf5bec28b46dad80a7fabda",
+   "size": 28424
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
