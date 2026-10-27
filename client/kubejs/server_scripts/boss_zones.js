@@ -82,6 +82,7 @@ var BOSSES = {
     x: 1642, y: 207, z: 1795,
     rayon: 45,   // plus large que les autres : le dragon vole et plonge
     aggro: 40,
+    remonteSous: 12,   // s'il descend de plus de 12 blocs sous son point d'apparition : retour au point d'apparition, sans dégâts de chute
     nbtSpawn: 'BossPhase:0,BossBarVisible:1b',   // départ sans cinématique d'intro (comme Skor) ; à ajuster si le dragon reste figé
     respawnMin: 30,
     quete: {
@@ -292,6 +293,14 @@ ServerEvents.tick(function (event) {
       for (var i = 0; i < proches.length; i++) {
         var e = proches[i]
         if (bzEnMort(e)) { bzMort(server, nom, b, e, null); continue }
+        if (b.remonteSous && e.y < b.y - b.remonteSous) {
+          try { e.setTarget(null) } catch (x) {}
+          server.runCommandSilent('tp ' + e.uuid + ' ' + b.x + ' ' + b.y + ' ' + b.z)
+          try { e.fallDistance = 0 } catch (x) {}
+          try { e.setDeltaMovement(0, 0, 0) } catch (x) {}
+          console.info('[boss_zones] ' + nom + ' était tombé trop bas : retour au point d\'apparition.')
+          continue
+        }
         bzBuff(server, e)
         var dx = e.x - b.x
         var dz = e.z - b.z
@@ -379,6 +388,16 @@ try {
     function (ev) {
       try {
         try { var tg = ev.getEntity(); if (tg.tags && tg.tags.contains('boss_zone')) tg.persistentData.putLong('bz_coup', Date.now()) } catch (e1) {}
+        try {
+          var tg2 = ev.getEntity()
+          if (tg2.tags && tg2.tags.contains('boss_zone')) {
+            var id = ''
+            try { id = String(ev.getSource().type().msgId()) } catch (e2) { try { id = String(ev.getSource().getMsgId()) } catch (e3) {} }
+            if (id === 'fall' || id === 'outOfWorld' || id === 'inWall' || id === 'flyIntoWall') {
+              for (var n in BOSSES) if (BOSSES[n].remonteSous && tg2.tags.contains('boss_' + n)) { ev.setCanceled(true); return }
+            }
+          }
+        } catch (e4) {}
         var att = null
         try { att = ev.getSource().actual } catch (e0) {}
         if (!att || !att.tags || !att.tags.contains('boss_zone')) return
