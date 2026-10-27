@@ -68,18 +68,18 @@ function zpMobs(niveau) {
 // ───────────── Difficulté : vie x3 et dégâts x1,5 (les seuils de phase restent en % de la vie max) ─────────────
 var ZP_VIE_MULT = 3
 var ZP_DEGATS_MULT = 1.5
-// Appliqué une seule fois par exemplaire (marqueur zp_buff). Garde le même % de vie courant.
+// Vie x3 par réduction des dégâts : chaque coup reçu est divisé par ZP_VIE_MULT (la barre descend 3 fois moins vite).
+// (L'ancien bonus d'attribut de vie max est retiré une fois par exemplaire pour ne pas se cumuler.)
 function zpBuff(server, e) {
   try {
     var pd = e.persistentData
-    if (pd.getInt('zp_buff') === 1) return
-    pd.putInt('zp_buff', 1)
+    if (pd.getInt('zp_buff2') === 1) return
+    pd.putInt('zp_buff2', 1)
     var avant = e.maxHealth
     var ratio = avant > 0 ? e.health / avant : 1
-    server.runCommandSilent('attribute ' + e.uuid + ' minecraft:generic.max_health modifier add aetheris:boss_vie ' + (ZP_VIE_MULT - 1) + ' add_multiplied_total')
+    server.runCommandSilent('attribute ' + e.uuid + ' minecraft:generic.max_health modifier remove aetheris:boss_vie')
     var nouv = e.maxHealth * ratio
-    try { e.setHealth(nouv) } catch (x) { e.health = nouv }
-    console.info('[zone_pirates] vie x' + ZP_VIE_MULT + ' : ' + String(e.type) + ' ' + Math.round(avant) + ' -> ' + Math.round(e.maxHealth))
+    try { if (Math.abs(nouv - e.health) > 0.5) e.setHealth(nouv) } catch (x) {}
   } catch (err) { console.error('[zone_pirates] buff : ' + err) }
 }
 
@@ -251,6 +251,7 @@ try {
     Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent'),
     function (ev) {
       try {
+        try { var tgv = ev.getEntity(); if (tgv.tags && tgv.tags.contains('pirate_zone')) ev.setAmount(ev.getAmount() / ZP_VIE_MULT) } catch (e5) {}
         var att = null
         try { att = ev.getSource().actual } catch (e0) {}
         if (!att || !att.tags || !att.tags.contains('pirate_zone')) return
