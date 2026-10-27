@@ -27,4 +27,11 @@ StartupEvents.registry('item', function (event) {
     .maxStackSize(1)
     .tooltip(Text.gray("Une jambe de bois rongée par le sel, gravée d'initiales à demi effacées."))
     .tooltip(Text.darkGray('À rapporter au Capitaine Morrow.'))
+
+  event.create('ecaille_infernale')
+    .displayName("Écaille du dragon infernal")
+    .texture('kubejs:item/ecaille_infernale')
+    .maxStackSize(1)
+    .tooltip(Text.gray("Une écaille brûlante, arrachée au dragon qui a ravagé Ultgard."))
+    .tooltip(Text.darkGray('À rapporter à Ulrich.'))
 })
