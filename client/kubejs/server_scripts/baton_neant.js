@@ -28,6 +28,7 @@ function bnTuer(joueur, cible) {
     if (!cible || cible.isPlayer()) return false
     if (!cible.isAlive()) return false
     if (String(cible.type).indexOf('easy_npc') !== -1) return false
+    if (String(cible.type).indexOf('corpse') !== -1) return false   // jamais les cadavres (mod Corpse) : ils contiennent l'inventaire des joueurs
     var s = joueur.server
     var u = String(cible.uuid)
     s.runCommandSilent('damage ' + u + ' 1000000 minecraft:generic_kill by ' + String(joueur.uuid))
