@@ -269,7 +269,8 @@ try {
     function (ev) {
       try {
         var cible = ev.getEntity()
-        var att = ev.getSource().getEntity()
+        var att = null
+        try { att = ev.getSource().actual } catch (e0) {}
         if (!att || !att.isPlayer()) return
         if (!cible.tags || !cible.tags.contains('boss_zone')) return
         bzDernierCoup[String(cible.uuid)] = String(att.username)

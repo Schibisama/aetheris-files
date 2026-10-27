@@ -12,6 +12,13 @@ function bnTient(joueur) {
   } catch (e) { return false }
 }
 
+// Auteur d'une source de dégâts (KubeJS 7 : .actual ; getEntity n'existe pas sur DamageSource ici)
+function bnAuteur(src) {
+  try { if (src.actual) return src.actual } catch (e) {}
+  try { if (src.getActual) return src.getActual() } catch (e) {}
+  return null
+}
+
 function bnTuer(joueur, cible) {
   try {
     if (!cible || cible.isPlayer()) return false
@@ -38,7 +45,7 @@ try {
     Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent'),
     function (event) {
       try {
-        var att = event.getSource().getEntity()
+        var att = bnAuteur(event.getSource())
         if (!att || !att.isPlayer() || !bnTient(att)) return
         if (bnTuer(att, event.getEntity())) event.setCanceled(true)
       } catch (e) { console.error('[baton_neant] ' + e) }
