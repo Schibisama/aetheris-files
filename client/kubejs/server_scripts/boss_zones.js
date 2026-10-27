@@ -398,6 +398,28 @@ function bqRendre(server, joueur, q) {
   return 1
 }
 
+// ───────── Aucun autre mob ne naît dans les zones de boss (naturel, spawner, structure, chunk...) ─────────
+// Rayon du boss + 10 blocs, 60 blocs de haut/bas. Restent possibles : /summon (script) et œufs de spawn.
+try {
+  NativeEvents.onEvent(
+    Java.loadClass('net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent'),
+    function (ev) {
+      try {
+        var e = ev.getEntity()
+        var type = String(ev.getSpawnType())
+        if (type === 'COMMAND' || type === 'SPAWN_EGG') return
+        if (String(e.type).indexOf('easy_npc:') === 0) return
+        for (var nom in BOSSES) {
+          var b = BOSSES[nom]
+          var dx = e.x - b.x, dz = e.z - b.z
+          if (Math.sqrt(dx * dx + dz * dz) <= b.rayon + 10 && Math.abs(e.y - b.y) <= 60) { ev.setSpawnCancelled(true); return }
+        }
+      } catch (x) {}
+    }
+  )
+  console.info('[boss_zones] Aucun autre mob ne peut apparaître dans les zones de boss.')
+} catch (e) { console.error('[boss_zones] blocage des apparitions indisponible : ' + e) }
+
 ServerEvents.commandRegistry(function (event) {
   var Commands = event.commands
   var Arguments = event.arguments
