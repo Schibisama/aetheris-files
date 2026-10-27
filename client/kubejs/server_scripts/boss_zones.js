@@ -441,5 +441,20 @@ ServerEvents.commandRegistry(function (event) {
       }))
     })(nom2)
   }
-  event.register(Commands.literal('boss').then(respawn))
+  // /boss clear <nom> : supprime le boss sans mort, sans butin ni crédit de quête ; il réapparaît après respawnMin minutes (op).
+  var clear = Commands.literal('clear').requires(estModo)
+  for (var nom3 in BOSSES) {
+    ;(function (n) {
+      clear = clear.then(Commands.literal(n).executes(function (ctx) {
+        var server = ctx.source.server
+        var b = BOSSES[n]
+        var niveau = bzNiveau(server)
+        var liste = niveau ? bzBoss(niveau, b, b.rayon + 40) : []
+        for (var i = 0; i < liste.length; i++) liste[i].discard()
+        server.persistentData.putLong(bzCle(n), Date.now() + b.respawnMin * 60 * 1000)
+        return 1
+      }))
+    })(nom3)
+  }
+  event.register(Commands.literal('boss').then(respawn).then(clear))
 })
