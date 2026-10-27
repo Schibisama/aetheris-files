@@ -154,6 +154,38 @@ function bzGererBarres(server, e, b) {
   }
 }
 
+// Fin de combat : timer de respawn + crédit de quête au dernier joueur ayant frappé (une seule fois par exemplaire)
+function bzMort(server, nom, b, e, src) {
+  var pd = e.persistentData
+  if (pd.getInt('bz_mort') === 1) return
+  pd.putInt('bz_mort', 1)
+  server.persistentData.putLong(bzCle(nom), Date.now() + b.respawnMin * 60 * 1000)
+  var cle = String(e.uuid)
+  var tueur = src ? src.actual : null
+  if (!tueur || !tueur.isPlayer()) {
+    var nomT = bzDernierCoup[cle]
+    tueur = nomT ? server.getPlayer(nomT) : null
+  }
+  delete bzDernierCoup[cle]
+  console.info('[boss_zones] ' + nom + ' vaincu' + (tueur ? ' par ' + tueur.username : ' (aucun joueur identifié)'))
+  if (!b.quete || !tueur || !tueur.isPlayer()) return
+  if (tueur.persistentData.getInt(b.quete.cle) === 1) {
+    tueur.persistentData.putInt(b.quete.cle, 2)
+    if (b.quete.objet) tueur.give(Item.of(b.quete.objet, 1))
+    tueur.tell(Text.gold(b.quete.annonceMort))
+  }
+}
+
+// Boss qui meurt « en animation » (Yéti : état DEATH, jamais de vraie mort avant la fin de la cinématique)
+function bzEnMort(e) {
+  try {
+    var n = e.nbt
+    return String(n.getString('State')) === 'DEATH' || n.getInt('is_enraged') === 6
+  } catch (x) { return false }
+}
+
+var bzDernierCoup = {}
+
 ServerEvents.tick(function (event) {
   bzCompteur++
   if (bzCompteur % 5 !== 0) return
@@ -167,6 +199,7 @@ ServerEvents.tick(function (event) {
       var proches = bzBoss(niveau, b, b.rayon + 40)
       for (var i = 0; i < proches.length; i++) {
         var e = proches[i]
+        if (bzEnMort(e)) { bzMort(server, nom, b, e, null); continue }
         var dx = e.x - b.x
         var dz = e.z - b.z
         var cible = null
@@ -230,7 +263,6 @@ ServerEvents.tick(function (event) {
 })
 
 // Mémorise le dernier joueur ayant blessé un boss de zone (la mort du Yéti arrive après son animation, sans source)
-var bzDernierCoup = {}
 try {
   NativeEvents.onEvent(
     Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent'),
@@ -272,21 +304,7 @@ EntityEvents.death(function (event) {
       var dx = event.entity.x - b.x
       var dz = event.entity.z - b.z
       if (Math.sqrt(dx * dx + dz * dz) > b.rayon + 40) continue   // un autre exemplaire, hors zone : ignoré
-      event.server.persistentData.putLong(bzCle(nom), Date.now() + b.respawnMin * 60 * 1000)
-      if (!b.quete) continue
-      var src = event.source
-      var tueur = src ? src.actual : null
-      if (!tueur || !tueur.isPlayer()) {
-        var nomT = bzDernierCoup[String(event.entity.uuid)]
-        tueur = nomT ? event.server.getPlayer(nomT) : null
-      }
-      delete bzDernierCoup[String(event.entity.uuid)]
-      if (!tueur || !tueur.isPlayer()) continue
-      if (tueur.persistentData.getInt(b.quete.cle) === 1) {
-        tueur.persistentData.putInt(b.quete.cle, 2)
-        if (b.quete.objet) tueur.give(Item.of(b.quete.objet, 1))
-        tueur.tell(Text.gold(b.quete.annonceMort))
-      }
+      bzMort(event.server, nom, b, event.entity, event.source)
     }
   } catch (err) {
     console.error('[boss_zones] mort : ' + err)
