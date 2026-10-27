@@ -1,5 +1,5 @@
 {
- "version": "2026-10-27T12:11:29.379Z",
+ "version": "2026-10-27T12:41:14.716Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -77,8 +77,8 @@
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/capitaine_pirate.png",
-   "sha1": "c79a79a51c7bb78c57de2401e768b95a5e24b7ab",
-   "size": 2980
+   "sha1": "fa77c2f0ec6a552d4d18fda77242cd6b07dd477a",
+   "size": 2552
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/cls_aeromancien.png",
