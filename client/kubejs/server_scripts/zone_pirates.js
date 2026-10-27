@@ -189,16 +189,30 @@ ServerEvents.tick(function (event) {
 
 // ───────── Barres de vie : masquées pour les joueurs loin de la zone (toutes les 2 ticks) ─────────
 var zpEntitesBarre = []
+// Liste dédiée aux barres : tous les mobs de type pirate dans un très large rayon (même hors de la boîte ou en train de mourir)
+function zpMobsBarre(niveau) {
+  var res = []
+  var m = ZP.marge + 200
+  var liste = niveau.getEntitiesWithin(new AABB_ZP(ZP.x1 - m, ZP.y1 - 80, ZP.z1 - m, ZP.x2 + m, ZP.y2 + 120, ZP.z2 + m))
+  for (var i = 0; i < liste.size(); i++) {
+    var e = liste.get(i)
+    if (zpTypes[String(e.type)] !== true) continue
+    var ok = false
+    try { ok = e.tags.contains('pirate_zone') } catch (x) {}
+    if (ok || zpDans(e.x, e.z, ZP.marge + 20)) res.push(e)
+  }
+  return res
+}
 ServerEvents.tick(function (event) {
   if (zpCompteur % 2 !== 0) return
   try {
     var niveau = zpNiveau(event.server)
     if (!niveau || !AABB_ZP) return
-    if (zpCompteur % 20 === 0 || zpEntitesBarre.length === 0) zpEntitesBarre = zpMobs(niveau)
+    if (zpCompteur % 10 === 0 || zpEntitesBarre.length === 0) zpEntitesBarre = zpMobsBarre(niveau)
     var js = event.server.getPlayers()
     for (var i = 0; i < zpEntitesBarre.length; i++) {
       var e = zpEntitesBarre[i]
-      if (!e.isAlive()) continue
+      if (e.removed) continue
       for (var q = 0; q < js.size(); q++) {
         var j = js.get(q)
         var loin = !zpDans(j.x, j.z, ZP.barreMarge)
