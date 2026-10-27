@@ -20,4 +20,11 @@ StartupEvents.registry('item', function (event) {
     .maxStackSize(1)
     .tooltip(Text.gray("Une corne givrée arrachée au yéti Skor."))
     .tooltip(Text.darkGray('À rapporter à Pip.'))
+
+  event.create('jambe_de_bois')
+    .displayName('Jambe de bois du Capitaine')
+    .texture('kubejs:item/jambe_de_bois')
+    .maxStackSize(1)
+    .tooltip(Text.gray("Une jambe de bois rongée par le sel, gravée d'initiales à demi effacées."))
+    .tooltip(Text.darkGray('À rapporter au Capitaine Morrow.'))
 })

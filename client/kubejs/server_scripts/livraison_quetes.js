@@ -398,3 +398,11 @@ LIVRAISONS.bartholome_os = lvSimple({
   fini: "Notre marché est conclu, voyageur. Merci encore.",
   recompense: "Voilà qui fera une colle solide ! Voici ton dû : un petit savoir de ta voie, relié à la main."
 })
+
+LIVRAISONS.capitaine_longuevue = lvSimple({
+  cle: 'capitaine_longuevue_quete', pnj: "Capitaine Morrow", objet: 'minecraft:spyglass', nombre: 1, nom: "longue-vue", rarete: 'peu_commun',
+  accepter: "Mon nécromancien a filé vers le nord, et je n'ai plus de longue-vue pour guetter l'horizon. Rapporte-m'en une, et je te laisserai un petit savoir de ta voie.",
+  encours: "Ma longue-vue ? L'horizon ne se surveille pas tout seul.",
+  fini: "Ma longue-vue est à son poste. Merci, voyageur.",
+  recompense: "Voilà de quoi voir venir la tempête ! Prends ce savoir de ta voie, en remerciement."
+})
