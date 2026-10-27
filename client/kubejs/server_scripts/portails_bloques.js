@@ -42,12 +42,14 @@ try {
 
 // ───────────── Mobs : ne traversent jamais les portails (Nether, End, retour de l'End) ─────────────
 // Seuls les joueurs changent de dimension ; tout autre être vivant (mobs, boss, PNJ, animaux) voit son voyage annulé et reste sur place.
+var PB_MOBS = true   // false = les mobs peuvent de nouveau traverser les portails (test : mettre false puis /reload)
 try {
   NativeEvents.onEvent(
     Java.loadClass('net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent'),
     function (ev) {
       try {
         var e = ev.getEntity()
+        if (!PB_MOBS) return
         if (!e || e.isPlayer()) return
         if (typeof e.isLiving === 'function' && !e.isLiving()) return   // objets au sol, projectiles... : inchangés
         ev.setCanceled(true)
