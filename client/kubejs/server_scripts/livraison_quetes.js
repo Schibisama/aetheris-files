@@ -350,49 +350,49 @@ LIVRAISONS.gaspard_fleches = lvSimple({
   recompense: "À la bonne heure, les remparts tiendront cette nuit. Voici ton dû : un petit savoir de ta voie."
 })
 LIVRAISONS.rodolphe_charbon = lvSimple({
-  cle: 'rodolphe_charbon_quete', pnj: "Rodolphe l'Allumeur", objet: 'minecraft:coal', nombre: 24, nom: "morceaux de charbon", rarete: 'peu_commun',
+  cle: 'rodolphe_charbon_quete', pnj: "Rodolphe", objet: 'minecraft:coal', nombre: 24, nom: "morceaux de charbon", rarete: 'peu_commun',
   accepter: "Mes lanternes manquent de combustible, et les rues s'assombrissent. Apporte-moi vingt-quatre morceaux de charbon, et je te remettrai un petit savoir de ta voie.",
   encours: "Mes vingt-quatre charbons ? Les rues vont rester dans le noir sans eux.",
   fini: "Notre marché est conclu, voyageur. Merci encore.",
   recompense: "Les lanternes brilleront ce soir ! Voici ton dû : un petit savoir de ta voie, comme une flamme qu'on te confie."
 })
 LIVRAISONS.gwenaelle_ficelle = lvSimple({
-  cle: 'gwenaelle_ficelle_quete', pnj: "Gwenaëlle la Couturière", objet: 'minecraft:string', nombre: 16, nom: "ficelles", rarete: 'peu_commun',
+  cle: 'gwenaelle_ficelle_quete', pnj: "Gwenaëlle", objet: 'minecraft:string', nombre: 16, nom: "ficelles", rarete: 'peu_commun',
   accepter: "Mon fil est épuisé, et j'ai trois manteaux en attente. Apporte-moi seize fils (de la ficelle fera l'affaire), et je te remettrai un petit savoir de ta voie.",
   encours: "Mes seize ficelles ? Les manteaux attendent, et il fait froid.",
   fini: "Notre marché est conclu, voyageur. Merci encore.",
   recompense: "Voilà qui fera de beaux ourlets ! Prends ceci : un petit savoir de ta voie, cousu main."
 })
 LIVRAISONS.marcelin_bougies = lvSimple({
-  cle: 'marcelin_bougies_quete', pnj: "Marcelin le Conteur", objet: 'minecraft:candle', nombre: 8, nom: "bougies", rarete: 'peu_commun',
+  cle: 'marcelin_bougies_quete', pnj: "Marcelin", objet: 'minecraft:candle', nombre: 8, nom: "bougies", rarete: 'peu_commun',
   accepter: "Mes veillées se font à la lueur des bougies, et mes réserves s'épuisent. Apporte-moi huit bougies, et je te transmettrai un petit savoir de ta voie, comme on glisse un secret au creux de l'oreille.",
   encours: "Mes huit bougies ? Une histoire sans lueur ne fait peur à personne.",
   fini: "Notre marché est conclu, voyageur. Merci encore.",
   recompense: "Voilà de quoi éclairer une belle veillée ! Voici ton dû : un petit savoir de ta voie, à raconter ou à garder."
 })
 LIVRAISONS.perrine_morue = lvSimple({
-  cle: 'perrine_morue_quete', pnj: "Perrine la Pêcheuse", objet: 'minecraft:cod', nombre: 12, nom: "morues crues", rarete: 'peu_commun',
+  cle: 'perrine_morue_quete', pnj: "Perrine", objet: 'minecraft:cod', nombre: 12, nom: "morues crues", rarete: 'peu_commun',
   accepter: "Mes filets sont déchirés et ma cambuse est vide. Apporte-moi douze morues crues, et je te transmettrai un petit savoir de ta voie, qu'on se transmet sur les quais.",
   encours: "Mes douze morues ? La marmite attend, et le bateau n'est pas prêt.",
   fini: "Notre marché est conclu, voyageur. Merci encore.",
   recompense: "Quelle belle prise ! Voici ton dû : un petit savoir de ta voie, tiré des filets."
 })
 LIVRAISONS.tancrede_pommes = lvSimple({
-  cle: 'tancrede_pommes_quete', pnj: "Tancrède l'Apprenti", objet: 'minecraft:apple', nombre: 10, nom: "pommes", rarete: 'peu_commun',
+  cle: 'tancrede_pommes_quete', pnj: "Tancrède", objet: 'minecraft:apple', nombre: 10, nom: "pommes", rarete: 'peu_commun',
   accepter: "Je n'ai rien avalé depuis hier, et mon maître ne me laisse pas quitter l'atelier. Apporte-moi dix pommes, et je te transmettrai un petit savoir de ta voie, trouvé dans ses notes.",
   encours: "Mes dix pommes ? J'ai si faim, tu sais.",
   fini: "Notre marché est conclu, voyageur. Merci encore.",
   recompense: "Merci, merci ! Voici ce que j'ai trouvé dans ses carnets : un petit savoir de ta voie."
 })
 LIVRAISONS.mirabelle_laine = lvSimple({
-  cle: 'mirabelle_laine_quete', pnj: "Sœur Mirabelle", objet: 'minecraft:white_wool', nombre: 8, nom: "laines blanches", rarete: 'peu_commun',
+  cle: 'mirabelle_laine_quete', pnj: "Mirabelle", objet: 'minecraft:white_wool', nombre: 8, nom: "laines blanches", rarete: 'peu_commun',
   accepter: "Mes bandages sont épuisés, et les blessés ne manquent pas. Apporte-moi huit laines blanches, que j'en tisse de nouveaux, et je te transmettrai un petit savoir de ta voie.",
   encours: "Mes huit laines blanches ? Les blessés attendent leurs bandages.",
   fini: "Notre marché est conclu, voyageur. Merci encore.",
   recompense: "Voilà qui sauvera quelques peaux ! Prends ceci : un petit savoir de ta voie, avec ma gratitude."
 })
 LIVRAISONS.bartholome_os = lvSimple({
-  cle: 'bartholome_os_quete', pnj: "Bartholomé le Relieur", objet: 'minecraft:bone', nombre: 16, nom: "os", rarete: 'peu_commun',
+  cle: 'bartholome_os_quete', pnj: "Bartholomé", objet: 'minecraft:bone', nombre: 16, nom: "os", rarete: 'peu_commun',
   accepter: "Ma colle est faite d'os broyés, et je n'en ai plus. Apporte-moi seize os, et je te transmettrai un petit savoir de ta voie, relié à la main.",
   encours: "Mes seize os ? Ma colle est à sec, et mes livres tombent en morceaux.",
   fini: "Notre marché est conclu, voyageur. Merci encore.",
