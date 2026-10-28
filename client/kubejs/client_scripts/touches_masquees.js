@@ -26,10 +26,26 @@ function tmMasquee(nom) {
   return false
 }
 
+var tmTout = false // true = tout afficher (bouton en haut à gauche de l'écran Contrôles)
+
+function tmBouton(e, ecran) {
+  var Button = Java.loadClass('net.minecraft.client.gui.components.Button')
+  var Component = Java.loadClass('net.minecraft.network.chat.Component')
+  var Minecraft = Java.loadClass('net.minecraft.client.Minecraft')
+  var texte = tmTout ? 'Touches cachées : visibles' : 'Touches cachées : masquées'
+  var b = Button.builder(Component.literal(texte), function (btn) {
+    tmTout = !tmTout
+    ecran.resize(Minecraft.getInstance(), ecran.width, ecran.height)
+  }).bounds(6, 6, 150, 20).build()
+  e.addListener(b)
+}
+
 function tmAppliquer(e) {
   try {
     var ecran = e.getScreen()
     if (String(ecran.getClass().getName()).indexOf('KeyBindsScreen') < 0) return
+    tmBouton(e, ecran)
+    if (tmTout) return
     var liste = null
     var enfants = ecran.children()
     for (var i = 0; i < enfants.size(); i++) {
