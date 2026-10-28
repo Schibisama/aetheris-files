@@ -1,5 +1,5 @@
 {
- "version": "2026-10-28T14:42:36.272Z",
+ "version": "2026-10-28T15:31:14.576Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -1544,6 +1544,11 @@
    "path": "mods/reactivemusic-neoforge-1.3.5-1.21.1.jar",
    "sha1": "1a45eb7b398a6216687a38496ae5979a63ff2ec6",
    "size": 85781079
+  },
+  {
+   "path": "mods/refurbished_furniture-neoforge-1.21.1-1.0.22.jar",
+   "sha1": "6c209e6b755ff26218efd55aedf2dea49183d29b",
+   "size": 7133477
   },
   {
    "path": "mods/resourcefulconfig-neoforge-1.21-3.0.11.jar",
