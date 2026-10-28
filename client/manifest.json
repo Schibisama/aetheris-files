@@ -1,5 +1,5 @@
 {
- "version": "2026-10-28T01:57:10.951Z",
+ "version": "2026-10-28T10:52:18.298Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -624,6 +624,11 @@
    "path": "kubejs/server_scripts/portails_bloques.js",
    "sha1": "8248186a4d5330979c8f78f0d68cd5b275c9aa2d",
    "size": 2942
+  },
+  {
+   "path": "kubejs/server_scripts/pseudo.js",
+   "sha1": "b366e3b50bf3b2c0baff7286b9b993cff71cac98",
+   "size": 8575
   },
   {
    "path": "kubejs/server_scripts/reinit_joueur.js",
