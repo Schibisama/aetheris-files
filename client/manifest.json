@@ -1,5 +1,5 @@
 {
- "version": "2026-10-28T17:18:27.972Z",
+ "version": "2026-10-28T17:22:59.763Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -162,23 +162,23 @@
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_00.png",
-   "sha1": "c58f9f6a7ff77787ebdc781ed0a59336b0ce6701",
-   "size": 3231
+   "sha1": "bd370c958092bec04b847ade3e47503d5f8d1440",
+   "size": 3241
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_01.png",
-   "sha1": "eed4c86ff20f302de82fafbd6b0f5a7c6049c3c6",
-   "size": 3129
+   "sha1": "86ec8a292ccc11c13f5bcec3603b34ba60530778",
+   "size": 3140
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_02.png",
-   "sha1": "8cde87db11a4d4fdf60529adbe4f88074363af08",
-   "size": 3252
+   "sha1": "434cf7eedaffeebdac9aca8230c7f6fd670d6b6f",
+   "size": 3266
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_03.png",
-   "sha1": "30083e8f6912a3e64e7a116bda2e59f8c0d67bd2",
-   "size": 3184
+   "sha1": "52f6f9f922dde9d7a26a79b6d7859e84ab5c6c99",
+   "size": 3186
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_04.png",
@@ -222,18 +222,18 @@
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_12.png",
-   "sha1": "46db7c206f4c4152608922cb457f60f12622c7cd",
-   "size": 2971
+   "sha1": "b545af22a2a4dac5990246181f8440ec71f6ee50",
+   "size": 3043
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_13.png",
-   "sha1": "983feb4ed0b960c761decb7533275fad6fa9ccad",
-   "size": 3120
+   "sha1": "bdaf30e75d8ee21a7cfbdfc50c6081ea40e356da",
+   "size": 3195
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_14.png",
-   "sha1": "454b18fcb17c17d42eb4ded5df455d04384087c2",
-   "size": 2996
+   "sha1": "052bcfbbda271b13a9742d465dcc68eb54d9480d",
+   "size": 3060
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_15.png",
@@ -242,8 +242,8 @@
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_16.png",
-   "sha1": "049fe638a231a1a502953e87ee884bc6bf4c6871",
-   "size": 2146
+   "sha1": "ebd7f2a466aeb9201f40389f4c3840a21c0d14a6",
+   "size": 2165
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_17.png",
@@ -267,28 +267,28 @@
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_21.png",
-   "sha1": "4dc284957147c954d5a1a775f184714228a93d62",
-   "size": 2334
+   "sha1": "ace543bb1b51b6a8bc515d4c2d7af9f8c5d17a25",
+   "size": 2340
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_22.png",
-   "sha1": "405f5d99215d3db476b82292cff8c7975ca88f2e",
-   "size": 2371
+   "sha1": "8b2bee5c20a2a5ac39bab484795eba5c9a641083",
+   "size": 2370
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_23.png",
-   "sha1": "6a4007a920c93a4b0a0ab8988a12c2d87ecb09fb",
-   "size": 2354
+   "sha1": "6e8fe2250261a597080aecf74a9f4729ae1d6493",
+   "size": 2353
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_24.png",
-   "sha1": "b83999255d3d8b2a329b0c4e1ebda3815c63ef95",
-   "size": 2208
+   "sha1": "f735a7786860adb939413d0e4cf1190da70e6606",
+   "size": 2386
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_25.png",
-   "sha1": "469dd785c2e6a80fcc026aede2fbb457ac5aa3db",
-   "size": 2225
+   "sha1": "1a26fcf6bad1e0a7fbac936ed4e15e5d72b3fca9",
+   "size": 2416
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_26.png",
@@ -307,8 +307,8 @@
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_29.png",
-   "sha1": "0e46619ab5f2f8f02bb1bbc68353d1c4de984013",
-   "size": 2766
+   "sha1": "eaceae914ddb81971c72aaf9cfb2df63b26bb6f8",
+   "size": 2840
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_30.png",
@@ -317,13 +317,13 @@
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_31.png",
-   "sha1": "fd4e7afcee2e42a5c2baac3cc2b2b55e83d61ff5",
-   "size": 2986
+   "sha1": "1d4dfc08a00eb45e23482d4245fb572a5ad0ed4d",
+   "size": 3066
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_32.png",
-   "sha1": "d55e99b956e66ce96ef5f65669144a8739af7caf",
-   "size": 3111
+   "sha1": "4ad012ca637537e70472f287113d41f95808e92a",
+   "size": 3121
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_33.png",
@@ -337,23 +337,23 @@
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_35.png",
-   "sha1": "d54db2e62f50bf4b283ae68690ffdd97a92b7a40",
-   "size": 2227
+   "sha1": "4f8e92d9f423bd4fc7ad9cd09778b7e8228339ea",
+   "size": 2442
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_36.png",
-   "sha1": "f412f607c769bd8639293021b99030194e57cfce",
+   "sha1": "7b4e4183299e0007734b8354fd55d0123c880977",
    "size": 2398
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_37.png",
-   "sha1": "fb01d4a954051936c6f9c013125072144fcb1ec3",
-   "size": 2094
+   "sha1": "880dd6d5f7f7bd9ed650bf433518366effd5a9cc",
+   "size": 2136
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_38.png",
-   "sha1": "9364ec99703a0df2cef3138722866f3ddaa536b2",
-   "size": 3110
+   "sha1": "68ddd78adeabbc678a09336238acda2a270bb0b5",
+   "size": 3120
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_39.png",
@@ -367,13 +367,13 @@
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_41.png",
-   "sha1": "d9e7b55eb9ba340e0a6ae8a784bf2122a970bdb9",
-   "size": 2326
+   "sha1": "5bc0c7fa05f5a53184ee476e0a11c66ec920576c",
+   "size": 2427
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_42.png",
-   "sha1": "cadc6ce0765a7c95ac7ec0512414deb61a59c794",
-   "size": 2356
+   "sha1": "7afaa6c524cda647cd69fb3c7129dca331b579d2",
+   "size": 2355
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/eleve_43.png",
