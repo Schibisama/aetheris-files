@@ -136,7 +136,7 @@ var SORTS_PAR_CLASSE = {
   'irons_spellbooks:slow': ['Évocateur', 'Chronomancien'],
   'irons_spellbooks:haste': ['Paladin', 'Chronomancien'],
   'irons_spellbooks:evasion': ['Voyageur du Vide', 'Chronomancien', 'Aéromancien'],
-  'irons_spellbooks:recall': ['Voyageur du Vide', 'Chronomancien'],
+  'irons_spellbooks:recall': ['*'], // Rappel : pour tout le monde (onglet Occultiste)
   'irons_spellbooks:teleport': ['Voyageur du Vide', 'Chronomancien'],
   'apprenticecodex:quick_blink': ['Voyageur du Vide', 'Chronomancien'],
   'irons_spellbooks:counterspell': ['Voyageur du Vide', 'Chronomancien', 'Symétriste'],

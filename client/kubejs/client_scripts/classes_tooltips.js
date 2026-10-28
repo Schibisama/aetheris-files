@@ -736,7 +736,7 @@ var CLASSE_DES_SORTS = {
   'irons_spellbooks:raise_hell': 'Pyromancien',
   'irons_spellbooks:ray_of_frost': 'Cryomancien',
   'irons_spellbooks:ray_of_siphoning': 'Hémomancien',
-  'irons_spellbooks:recall': 'Voyageur du Vide',
+  'irons_spellbooks:recall': 'toutes',
   'irons_spellbooks:root': 'Druide',
   'irons_spellbooks:sacrifice': 'Hémomancien',
   'irons_spellbooks:scapegoat': 'Évocateur',
@@ -979,7 +979,7 @@ var CLASSE_DES_SORTS = {
 
 // ── Classe réelle d'un sort, calculée d'après son école dans le jeu ──
 // (la table ci-dessus ne sert que de secours et pour les sorts à règle spéciale)
-var SORTS_SPECIAUX = ["irons_spellbooks:black_hole", "irons_spellbooks:starfall", "irons_spellbooks:wither_skull", "apprenticecodex:archer_multiple", "apprenticecodex:artisan_smash", "apprenticecodex:auto_magnet", "apprenticecodex:auto_turret", "apprenticecodex:bound_bow", "apprenticecodex:bound_sword", "apprenticecodex:breaching_enemy", "apprenticecodex:bullet_stream", "apprenticecodex:call_broom", "apprenticecodex:commence_fire", "apprenticecodex:companion_trunk", "apprenticecodex:dual_acrobat", "apprenticecodex:earth_forge", "apprenticecodex:field_overseer", "apprenticecodex:fly_swatter", "apprenticecodex:fujin", "apprenticecodex:graced_rain", "apprenticecodex:lethal_assault", "apprenticecodex:linear_build", "apprenticecodex:long_stride", "apprenticecodex:mage_light", "apprenticecodex:magic_spear", "apprenticecodex:mana_mending", "apprenticecodex:manifestation_grimoire", "apprenticecodex:mantis_leap", "apprenticecodex:mirage_avoidance", "apprenticecodex:personal_shelf", "apprenticecodex:precision_jack", "apprenticecodex:quick_arms", "apprenticecodex:remote_eye", "apprenticecodex:servant_gaze", "apprenticecodex:shiden", "apprenticecodex:silent_assassin", "apprenticecodex:sky_edge", "apprenticecodex:slash_blade", "apprenticecodex:tamers_pocket", "apprenticecodex:terra_resonance", "apprenticecodex:thermal_process", "apprenticecodex:thermal_slice", "apprenticecodex:tiro_volley", "cataclysm_spellbooks:abyssal_blast", "cataclysm_spellbooks:abyssal_predator", "cataclysm_spellbooks:abyssal_slash", "cataclysm_spellbooks:bone_storm", "cataclysm_spellbooks:conjure_ignited_reinforcement", "cataclysm_spellbooks:conjure_koboldiator", "cataclysm_spellbooks:conjure_thralls", "cataclysm_spellbooks:cursed_rush", "cataclysm_spellbooks:depth_charge", "cataclysm_spellbooks:dimensional_rift", "cataclysm_spellbooks:forgone_rage", "cataclysm_spellbooks:malevolent_battlefield", "cataclysm_spellbooks:monolith_crash", "cataclysm_spellbooks:pharaohs_wrath", "cataclysm_spellbooks:piercing_bone", "cataclysm_spellbooks:summon_koboleton", "cataclysm_spellbooks:thoths_witness", "cataclysm_spellbooks:tidal_grab", "cataclysm_spellbooks:void_beam", "chronomancy:the_world_stop", "crystal_chronicles:prismatic_portal", "farmers_spell:bad_apple", "farmers_spell:chaos_slash", "farmers_spell:goodberry", "farmers_spell:pan", "farmers_spell:phantom_loot", "farmers_spell:preserve_circle", "farmers_spell:seal_coat", "hazennstuff:arcane_cards", "hazennstuff:bone_bolt", "hazennstuff:cosmic_bolt", "hazennstuff:counterspell_spider_lily", "hazennstuff:evercomet_barrage", "hazennstuff:golden_shower", "hazennstuff:moonkissed", "hazennstuff:nights_edge_strike", "hazennstuff:parry", "hazennstuff:prismatic_shift", "hazennstuff:shadow_reaver", "hazennstuff:shooting_star", "hazennstuff:soul_seekers", "hazennstuff:spectral_axe", "hazennstuff:syringe_barrage", "hazennstuff:thorn_chakram", "hazennstuff:umbrashift_barrage", "hazennstuff:violent_regurgitation", "somakespells:chain_connection", "woodwalkers_spellbooks:shapeshifting"]
+var SORTS_SPECIAUX = ["irons_spellbooks:recall", "irons_spellbooks:black_hole", "irons_spellbooks:starfall", "irons_spellbooks:wither_skull", "apprenticecodex:archer_multiple", "apprenticecodex:artisan_smash", "apprenticecodex:auto_magnet", "apprenticecodex:auto_turret", "apprenticecodex:bound_bow", "apprenticecodex:bound_sword", "apprenticecodex:breaching_enemy", "apprenticecodex:bullet_stream", "apprenticecodex:call_broom", "apprenticecodex:commence_fire", "apprenticecodex:companion_trunk", "apprenticecodex:dual_acrobat", "apprenticecodex:earth_forge", "apprenticecodex:field_overseer", "apprenticecodex:fly_swatter", "apprenticecodex:fujin", "apprenticecodex:graced_rain", "apprenticecodex:lethal_assault", "apprenticecodex:linear_build", "apprenticecodex:long_stride", "apprenticecodex:mage_light", "apprenticecodex:magic_spear", "apprenticecodex:mana_mending", "apprenticecodex:manifestation_grimoire", "apprenticecodex:mantis_leap", "apprenticecodex:mirage_avoidance", "apprenticecodex:personal_shelf", "apprenticecodex:precision_jack", "apprenticecodex:quick_arms", "apprenticecodex:remote_eye", "apprenticecodex:servant_gaze", "apprenticecodex:shiden", "apprenticecodex:silent_assassin", "apprenticecodex:sky_edge", "apprenticecodex:slash_blade", "apprenticecodex:tamers_pocket", "apprenticecodex:terra_resonance", "apprenticecodex:thermal_process", "apprenticecodex:thermal_slice", "apprenticecodex:tiro_volley", "cataclysm_spellbooks:abyssal_blast", "cataclysm_spellbooks:abyssal_predator", "cataclysm_spellbooks:abyssal_slash", "cataclysm_spellbooks:bone_storm", "cataclysm_spellbooks:conjure_ignited_reinforcement", "cataclysm_spellbooks:conjure_koboldiator", "cataclysm_spellbooks:conjure_thralls", "cataclysm_spellbooks:cursed_rush", "cataclysm_spellbooks:depth_charge", "cataclysm_spellbooks:dimensional_rift", "cataclysm_spellbooks:forgone_rage", "cataclysm_spellbooks:malevolent_battlefield", "cataclysm_spellbooks:monolith_crash", "cataclysm_spellbooks:pharaohs_wrath", "cataclysm_spellbooks:piercing_bone", "cataclysm_spellbooks:summon_koboleton", "cataclysm_spellbooks:thoths_witness", "cataclysm_spellbooks:tidal_grab", "cataclysm_spellbooks:void_beam", "chronomancy:the_world_stop", "crystal_chronicles:prismatic_portal", "farmers_spell:bad_apple", "farmers_spell:chaos_slash", "farmers_spell:goodberry", "farmers_spell:pan", "farmers_spell:phantom_loot", "farmers_spell:preserve_circle", "farmers_spell:seal_coat", "hazennstuff:arcane_cards", "hazennstuff:bone_bolt", "hazennstuff:cosmic_bolt", "hazennstuff:counterspell_spider_lily", "hazennstuff:evercomet_barrage", "hazennstuff:golden_shower", "hazennstuff:moonkissed", "hazennstuff:nights_edge_strike", "hazennstuff:parry", "hazennstuff:prismatic_shift", "hazennstuff:shadow_reaver", "hazennstuff:shooting_star", "hazennstuff:soul_seekers", "hazennstuff:spectral_axe", "hazennstuff:syringe_barrage", "hazennstuff:thorn_chakram", "hazennstuff:umbrashift_barrage", "hazennstuff:violent_regurgitation", "somakespells:chain_connection", "woodwalkers_spellbooks:shapeshifting"]
 var ECOLE_VERS_CLASSE = {
  "irons_spellbooks:fire": "Pyromancien",
  "irons_spellbooks:ice": "Cryomancien",
@@ -1042,7 +1042,6 @@ var CLASSES_PARTAGEES = {
  'irons_spellbooks:haste': 'Paladin / Chronomancien',
  'irons_spellbooks:lightning_bolt': 'Électro-Sorcier / Aéromancien',
  'irons_spellbooks:oakskin': 'Druide / Géomancien',
- 'irons_spellbooks:recall': 'Voyageur du Vide / Chronomancien',
  'irons_spellbooks:root': 'Druide / Géomancien',
  'irons_spellbooks:shadow_slash': 'Voyageur du Vide / Symétriste',
  'irons_spellbooks:shield': 'Évocateur / Chromancien',
@@ -1114,6 +1113,39 @@ function retirerDoublons(liste) {
   }
 }
 
+// Le parchemin affiche l'école d'origine du sort (ex. « Pyromancien » pour Tempête d'Os, un sort de Cataclysm
+// rattaché à la Nécromancie par nos règles) : on remplace ce nom par celui de la classe réelle du sort.
+function corrigerEcoleAffichee(liste, stack) {
+  try {
+    var conteneur = ISpellContainer.get(stack)
+    if (conteneur === null || conteneur === undefined) return
+    var sorts = conteneur.getActiveSpells()
+    if (!SpellRegistryC) {
+      SpellRegistryC = Java.loadClass('io.redspace.ironsspellbooks.api.registry.SpellRegistry')
+      ResLocC = Java.loadClass('net.minecraft.resources.ResourceLocation')
+    }
+    var Composant = Java.loadClass('net.minecraft.network.chat.Component')
+    for (var k = 0; k < sorts.size(); k++) {
+      var id = String(sorts.get(k).getSpell().getSpellId())
+      var vraie = classeDuSort(id)
+      if (!vraie || vraie === 'toutes') continue
+      var sort = SpellRegistryC.getSpell(ResLocC.tryParse(id))
+      if (!sort) continue
+      var natif = ECOLE_VERS_CLASSE[String(sort.getSchoolType().getId())]
+      if (!natif || natif === vraie) continue
+      for (var i = 0; i < liste.size(); i++) {
+        var ligne = liste.get(i)
+        var txt = ''
+        try { txt = String(ligne.getString()).trim() } catch (e0) { continue }
+        if (txt === natif) {
+          liste.set(i, Composant.literal(vraie).setStyle(ligne.getStyle()))
+          break
+        }
+      }
+    }
+  } catch (e) {}
+}
+
 function infobulleSorts(event) {
   if (!SORTS_ACTIF) return
   try {
@@ -1129,6 +1161,7 @@ function infobulleSorts(event) {
     for (var r = 0; r < RESTRICTIONS.length; r++) {
       if (RESTRICTIONS[r].regle.test(idObjet)) return
     }
+    corrigerEcoleAffichee(event.getToolTip(), st)
     var cl = classesDeLObjet(st)
     if (cl.length > 0) event.getToolTip().add(Text.gold(langueAnglaise() ? traduireEN('Classe : ' + cl.join(' / ')) : 'Classe : ' + cl.join(' / ')))
     retirerDoublons(event.getToolTip())

@@ -1,5 +1,5 @@
 {
- "version": "2026-10-28T01:16:59.543Z",
+ "version": "2026-10-28T01:25:45.080Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -517,8 +517,8 @@
   },
   {
    "path": "kubejs/client_scripts/classes_tooltips.js",
-   "sha1": "a4a134ed9488db72991008954cf1e6a77c2a5111",
-   "size": 76161
+   "sha1": "745f4039042b1199b795dd852bebecf5f047cce7",
+   "size": 77619
   },
   {
    "path": "kubejs/client_scripts/main.js",
@@ -587,8 +587,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "dd56380b9926e2c6df1bf7f3b7e7d2398c218e2c",
-   "size": 79316
+   "sha1": "c230b3ac9c317c7779cdc4b7a2f2ca3ab0cf6cc2",
+   "size": 79335
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -807,8 +807,8 @@
   },
   {
    "path": "mods/codexregroup-1.0.2.jar",
-   "sha1": "df3863d5c26f09b5f1d94cc71f950bb12c0fddf8",
-   "size": 8045
+   "sha1": "43d0eafe675cfe125c0b47bfcd4f1226971a6e2c",
+   "size": 8067
   },
   {
    "path": "mods/colormagic-1.3.0.jar",
