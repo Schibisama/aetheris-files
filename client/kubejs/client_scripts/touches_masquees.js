@@ -28,24 +28,15 @@ function tmMasquee(nom) {
 
 var tmTout = false // true = tout afficher (bouton en haut à gauche de l'écran Contrôles)
 
-function tmBouton(e, ecran) {
-  var Button = Java.loadClass('net.minecraft.client.gui.components.Button')
-  var Component = Java.loadClass('net.minecraft.network.chat.Component')
-  var Minecraft = Java.loadClass('net.minecraft.client.Minecraft')
-  var texte = tmTout ? 'Touches cachées : visibles' : 'Touches cachées : masquées'
-  var b = Button.builder(Component.literal(texte), function (btn) {
-    tmTout = !tmTout
-    ecran.resize(Minecraft.getInstance(), ecran.width, ecran.height)
-  }).bounds(6, 6, 150, 20).build()
-  e.addListener(b)
-}
+// Remarque : sur cet écran, Screen#resize ne relance PAS l'initialisation (donc pas de nouvel évènement) ;
+// le bouton remplace donc directement le contenu de la liste, sans passer par un redimensionnement.
+function tmTexte() { return tmTout ? 'Touches cachées : visibles' : 'Touches cachées : masquées' }
 
 function tmAppliquer(e) {
   try {
     var ecran = e.getScreen()
     if (String(ecran).indexOf('KeyBindsScreen') < 0) return
-    tmBouton(e, ecran)
-    if (tmTout) return
+    tmTout = false
     var liste = null
     var enfants = ecran.children()
     for (var i = 0; i < enfants.size(); i++) {
@@ -56,6 +47,7 @@ function tmAppliquer(e) {
     var Minecraft = Java.loadClass('net.minecraft.client.Minecraft')
     var I18n = Java.loadClass('net.minecraft.client.resources.language.I18n')
     var Arrays = Java.loadClass('java.util.Arrays')
+    var ListeJava = Java.loadClass('java.util.ArrayList')
     var touches = Arrays.copyOf(Minecraft.getInstance().options.keyMappings, Minecraft.getInstance().options.keyMappings.length)
     Arrays.sort(touches)
 
@@ -75,11 +67,33 @@ function tmAppliquer(e) {
       idx++
     }
     if (idx !== entrees.size()) { console.log('[touches_masquees] ordre inattendu (' + idx + ' / ' + entrees.size() + '), rien masqué'); return }
-    // On retire par objets (removeAll) : remove(nombre) est ambigu entre remove(int) et remove(Object) dans Rhino.
-    var ListeJava = Java.loadClass('java.util.ArrayList')
-    var aSupprimer = new ListeJava()
-    for (var r = 0; r < aRetirer.length; r++) aSupprimer.add(entrees.get(aRetirer[r]))
-    entrees.removeAll(aSupprimer)
+
+    // Deux listes d'objets : toutes les entrées, et celles qu'on garde (remove(nombre) est ambigu dans Rhino : on ne l'utilise pas).
+    var toutes = new ListeJava(entrees)
+    var gardees = new ListeJava()
+    var retirees = {}
+    for (var r = 0; r < aRetirer.length; r++) retirees[aRetirer[r]] = true
+    for (var q = 0; q < toutes.size(); q++) if (!retirees[q]) gardees.add(toutes.get(q))
+
+    var appliquer = function () {
+      entrees.clear()
+      entrees.addAll(tmTout ? toutes : gardees)
+      try { liste.setScrollAmount(0) } catch (x1) {}
+    }
+    appliquer()
+
+    var Button = Java.loadClass('net.minecraft.client.gui.components.Button')
+    var Component = Java.loadClass('net.minecraft.network.chat.Component')
+    var bouton = null
+    bouton = Button.builder(Component.literal(tmTexte()), function (btn) {
+      try {
+        tmTout = !tmTout
+        appliquer()
+        bouton.setMessage(Component.literal(tmTexte()))
+      } catch (err2) { console.log('[touches_masquees] erreur bouton : ' + err2) }
+    }).bounds(6, 6, 150, 20).build()
+    e.addListener(bouton)
+
     if (!tmApercu.fait) {
       tmApercu.fait = true
       console.log('[touches_masquees] catégories (true = masquée) : ' + JSON.stringify(vues))
