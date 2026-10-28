@@ -46,16 +46,18 @@ function tmAppliquer(e) {
 
     var Minecraft = Java.loadClass('net.minecraft.client.Minecraft')
     var I18n = Java.loadClass('net.minecraft.client.resources.language.I18n')
-    var Arrays = Java.loadClass('java.util.Arrays')
     var ListeJava = Java.loadClass('java.util.ArrayList')
-    var touches = Arrays.copyOf(Minecraft.getInstance().options.keyMappings, Minecraft.getInstance().options.keyMappings.length)
-    Arrays.sort(touches)
+    // (Arrays.copyOf est ambigu dans Rhino : on copie à la main dans une ArrayList puis on trie, comme le fait la liste vanilla.)
+    var brutes = Minecraft.getInstance().options.keyMappings
+    var touches = new ListeJava()
+    for (var z = 0; z < brutes.length; z++) touches.add(brutes[z])
+    Java.loadClass('java.util.Collections').sort(touches)
 
     // Même ordre que la liste affichée : une entrée de catégorie, puis ses touches.
     var entrees = liste.children()
     var idx = 0, cat = null, masquer = false, aRetirer = [], vues = {}
-    for (var k = 0; k < touches.length; k++) {
-      var c = String(touches[k].getCategory())
+    for (var k = 0; k < touches.size(); k++) {
+      var c = String(touches.get(k).getCategory())
       if (c !== cat) {
         cat = c
         masquer = tmMasquee(I18n.get(c))
