@@ -489,6 +489,39 @@ function cmd(server, texte) {
   }
 }
 
+// Sorts interdits à une classe dans les écoles ouvertes uniquement « par exception » (ex. les sorts partagés
+// du Nécromancien ouvrent l'école Nécromancie : sans ceci, tous ses autres sorts seraient découvrables).
+// Liste mise en cache par classe ; reconstruite au premier appel.
+var CACHE_SORTS_INTERDITS = {}
+function sortsInterditsDeLaClasse(classe) {
+  if (CACHE_SORTS_INTERDITS[classe.nom]) return CACHE_SORTS_INTERDITS[classe.nom]
+  var propres = ecolesDeLaClasse(classe)
+  var liste = []
+  try {
+    var tous = SpellRegistryJ.getEnabledSpells()
+    for (var i = 0; i < tous.size(); i++) {
+      try {
+        var sort = tous.get(i)
+        var id = String(sort.getSpellId())
+        var ec = String(sort.getSchoolType().getId())
+        if (propres.indexOf(ec) !== -1) continue // école de la classe : accès normal
+        if (SORTS_PAR_CLASSE[id] && classeAutorisee(SORTS_PAR_CLASSE[id], classe.nom)) continue // sort offert à cette classe
+        liste.push(id)
+      } catch (e1) {}
+    }
+  } catch (e) {
+    console.error('[classes_rp] liste des sorts interdits indisponible : ' + e)
+  }
+  CACHE_SORTS_INTERDITS[classe.nom] = liste
+  return liste
+}
+
+function verrouillerSortsInterdits(server, joueur, classe) {
+  if (!classe || estTest(joueur)) return
+  var liste = sortsInterditsDeLaClasse(classe)
+  for (var i = 0; i < liste.length; i++) cmd(server, 'specs_codex spell lock ' + joueur.username + ' ' + liste[i])
+}
+
 // reinit = true : on repart de zéro (nouvelle classe) -> tous les sorts découverts sont oubliés.
 // À la simple reconnexion (reinit = false) on garde la progression du joueur.
 function appliquerClasse(server, joueur, classe, reinit) {
@@ -523,6 +556,7 @@ function appliquerClasse(server, joueur, classe, reinit) {
       if (SORTS_PAR_CLASSE[sort].indexOf('*') !== -1) cmd(server, 'specs_codex spell unlock ' + nom + ' ' + sort)
     }
   }
+  verrouillerSortsInterdits(server, joueur, classe)
 }
 
 // Messages traduisibles : le client les affiche en français ou en anglais selon la langue du jeu
@@ -1033,6 +1067,30 @@ ItemEvents.rightClicked(function (event) {
   if (!objet || objet.empty) return
   if (autorise(event.player, String(objet.id))) return
   event.cancel()
+})
+
+// Après l'usage d'un parchemin / d'une page de Codex / d'un grimoire, et régulièrement : on reverrouille les sorts
+// qui ne sont pas à la classe du joueur (ceux d'une école ouverte seulement par exception).
+ItemEvents.rightClicked(function (event) {
+  try {
+    var objet = event.item
+    if (!objet || objet.empty) return
+    if (!/scroll|codex_page|grimoire|spell_?book/.test(String(objet.id))) return
+    var joueur = event.player
+    var serveur = joueur.server
+    var classe = classeDe(joueur)
+    if (!classe || !serveur) return
+    serveur.scheduleInTicks(10, function () { verrouillerSortsInterdits(serveur, joueur, classe) })
+  } catch (e) {}
+})
+
+ServerEvents.tick(function (event) {
+  var serveur = event.server
+  if (serveur.tickCount % 600 !== 0) return
+  var joueurs = serveur.players
+  for (var i = 0; i < joueurs.length; i++) {
+    try { verrouillerSortsInterdits(serveur, joueurs[i], classeDe(joueurs[i])) } catch (e) {}
+  }
 })
 
 // Équiper une pièce par clic droit (armure, bijou Curios...) : certains mods traitent le clic AVANT KubeJS
