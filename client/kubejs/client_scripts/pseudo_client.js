@@ -1,23 +1,24 @@
 // pseudo_client.js : affiche le pseudo choisi avec /pseudo sur la plaque de nom d'origine (au-dessus de la tête).
 // Le serveur place le joueur dans une équipe « ps_... » dont le nom d'affichage est le pseudo ; on le lit ici.
 
+var PC_ERR = false
+
 function pcNom(p) {
   try {
     var t = p.getTeam()
     if (!t) return null
     if (String(t.getName()).indexOf('ps_') !== 0) return null
     return t.getDisplayName()
-  } catch (e) { return null }
+  } catch (e) { if (!PC_ERR) { PC_ERR = true; console.error('[pseudo_client] ' + e) } return null }
 }
 
 try {
   NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.player.PlayerEvent$NameFormat'), function (e) {
     try {
       var p = e.getEntity()
-      if (!p.level().isClientSide()) return
       var nom = pcNom(p)
       if (nom) e.setDisplayname(nom)
-    } catch (err) {}
+    } catch (err) { if (!PC_ERR) { PC_ERR = true; console.error('[pseudo_client] ' + err) } }
   })
 } catch (e0) { console.error('[pseudo_client] indisponible : ' + e0) }
 
@@ -43,7 +44,7 @@ try {
           p.refreshDisplayName()
         }
       }
-    } catch (e2) {}
+    } catch (e2) { if (!PC_ERR) { PC_ERR = true; console.error('[pseudo_client] tick : ' + e2) } }
   })
 } catch (e3) { console.error('[pseudo_client] tick indisponible : ' + e3) }
 
