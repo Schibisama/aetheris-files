@@ -43,13 +43,13 @@ function tmBouton(e, ecran) {
 function tmAppliquer(e) {
   try {
     var ecran = e.getScreen()
-    if (String(ecran.getClass().getName()).indexOf('KeyBindsScreen') < 0) return
+    if (String(ecran).indexOf('KeyBindsScreen') < 0) return
     tmBouton(e, ecran)
     if (tmTout) return
     var liste = null
     var enfants = ecran.children()
     for (var i = 0; i < enfants.size(); i++) {
-      if (String(enfants.get(i).getClass().getName()).indexOf('KeyBindsList') >= 0) { liste = enfants.get(i); break }
+      if (String(enfants.get(i)).indexOf('KeyBindsList') >= 0) { liste = enfants.get(i); break }
     }
     if (liste == null) { console.log('[touches_masquees] liste de touches introuvable'); return }
 
@@ -75,7 +75,11 @@ function tmAppliquer(e) {
       idx++
     }
     if (idx !== entrees.size()) { console.log('[touches_masquees] ordre inattendu (' + idx + ' / ' + entrees.size() + '), rien masqué'); return }
-    for (var r = aRetirer.length - 1; r >= 0; r--) entrees.remove(aRetirer[r])
+    // On retire par objets (removeAll) : remove(nombre) est ambigu entre remove(int) et remove(Object) dans Rhino.
+    var ListeJava = Java.loadClass('java.util.ArrayList')
+    var aSupprimer = new ListeJava()
+    for (var r = 0; r < aRetirer.length; r++) aSupprimer.add(entrees.get(aRetirer[r]))
+    entrees.removeAll(aSupprimer)
     if (!tmApercu.fait) {
       tmApercu.fait = true
       console.log('[touches_masquees] catégories (true = masquée) : ' + JSON.stringify(vues))
@@ -86,19 +90,17 @@ function tmAppliquer(e) {
 }
 var tmApercu = { fait: false }
 
-// Inscription directe sur le bus d'événements de NeoForge (NativeEvents.onEvent ne se déclenchait pas sur ce client).
+// Événement d'ouverture d'un écran (confirmé par le journal : il se déclenche pour chaque écran).
+// NB : getClass() n'existe pas dans Rhino ; on identifie les écrans et les listes avec String(objet).
 try {
-  var TM_PRIO = Java.loadClass('net.neoforged.bus.api.EventPriority').NORMAL
-  var TM_BUS = Java.loadClass('net.neoforged.neoforge.common.NeoForge').EVENT_BUS
-  var TM_EVT = Java.loadClass('net.neoforged.neoforge.client.event.ScreenEvent$Init$Post')
-  TM_BUS.addListener(TM_PRIO, false, TM_EVT, function (e) {
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.client.event.ScreenEvent$Init$Post'), function (e) {
     try {
       if (!tmApercu.ecrans) tmApercu.ecrans = 0
-      if (tmApercu.ecrans < 3) { tmApercu.ecrans++; console.log('[touches_masquees] écran ouvert : ' + e.getScreen().getClass().getName()) }
+      if (tmApercu.ecrans < 3) { tmApercu.ecrans++; console.log('[touches_masquees] écran ouvert : ' + String(e.getScreen())) }
     } catch (err0) {}
     tmAppliquer(e)
   })
-  console.log('[touches_masquees] chargé (bus NeoForge)')
+  console.log('[touches_masquees] chargé')
 } catch (err) {
   console.log('[touches_masquees] événement indisponible : ' + err)
 }

@@ -1,5 +1,5 @@
 {
- "version": "2026-10-28T21:38:52.424Z",
+ "version": "2026-10-28T21:44:02.271Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -1022,8 +1022,8 @@
   },
   {
    "path": "kubejs/client_scripts/touches_masquees.js",
-   "sha1": "db9d44281b9d3617b0255fc7083710f536fa01ea",
-   "size": 4321
+   "sha1": "0859ca826a110206e2258898a77c39be28eb546b",
+   "size": 4396
   },
   {
    "path": "kubejs/client_scripts/worldstop_portee_client.js",
@@ -1082,8 +1082,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "3ed19ddf612b827f22e649a6e97c1d2553f32304",
-   "size": 86222
+   "sha1": "3736ec83b84d18c24dfbe9584a9ba9daca3a535c",
+   "size": 86318
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",

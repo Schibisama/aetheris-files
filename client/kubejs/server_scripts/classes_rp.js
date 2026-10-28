@@ -1439,17 +1439,13 @@ try {
 // disparaît au bout de DUREE_INVOCATION_SEC secondes.
 var DUREE_INVOCATION_SEC = 30
 
+// NB : getClass() n'existe pas dans le moteur de script (Rhino) : on teste l'interface avec isInstance.
+var IMAGIC_SUMMON = null
+try { IMAGIC_SUMMON = Java.loadClass('io.redspace.ironsspellbooks.entity.mobs.IMagicSummon') } catch (e) {
+  console.error('[classes_rp] interface IMagicSummon introuvable : ' + e)
+}
 function estInvocation(entite) {
-  try {
-    var c = entite.getClass()
-    while (c) {
-      var itf = c.getInterfaces()
-      for (var i = 0; i < itf.length; i++) {
-        if (String(itf[i].getName()) === 'io.redspace.ironsspellbooks.entity.mobs.IMagicSummon') return true
-      }
-      c = c.getSuperclass()
-    }
-  } catch (e) {}
+  try { return !!(IMAGIC_SUMMON && IMAGIC_SUMMON.isInstance(entite)) } catch (e) {}
   return false
 }
 
