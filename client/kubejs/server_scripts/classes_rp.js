@@ -1089,23 +1089,46 @@ try {
 }
 try { CuriosApiJ = Java.loadClass('top.theillusivec4.curios.api.CuriosApi') } catch (e) { CuriosApiJ = null }
 
+var CustomDataJ = null, ComposantsJ = null
+try {
+  CustomDataJ = Java.loadClass('net.minecraft.world.item.component.CustomData')
+  ComposantsJ = Java.loadClass('net.minecraft.core.component.DataComponents')
+} catch (e) {}
+
+function grimoireDejaVide(pile) {
+  try {
+    var cd = pile.get(ComposantsJ.CUSTOM_DATA)
+    return !!cd && cd.copyTag().getBoolean('mcrp_grimoire_vide')
+  } catch (e) { return false }
+}
+
+function marquerGrimoireVide(pile) {
+  try { CustomDataJ.update(ComposantsJ.CUSTOM_DATA, pile, function (tag) { tag.putBoolean('mcrp_grimoire_vide', true) }) } catch (e) {}
+}
+
+// Un grimoire rencontré pour la première fois est vidé de TOUS ses sorts (ceux d'origine : butin, mobs...), puis marqué.
+// Ensuite le joueur peut y inscrire des sorts de sa classe : seuls les sorts étrangers sont retirés.
 function nettoyerGrimoire(pile, classe) {
   try {
     if (!pile || pile.isEmpty()) return
     if (!GrimoireJ.class.isInstance(pile.getItem())) return
     var c = ISpellContainerJ.get(pile)
     if (c === null || c === undefined) return
-    if (c.getActiveSpellCount() <= 0) return
-    var actifs = c.getActiveSpells()
-    var aRetirer = []
-    for (var i = 0; i < actifs.size(); i++) {
-      var id = String(actifs.get(i).getSpell().getSpellId())
-      if (!classe || sortInterditPourJoueur(classe, id)) aRetirer.push(Number(actifs.get(i).index()))
+    var premiere = !grimoireDejaVide(pile)
+    if (c.getActiveSpellCount() > 0) {
+      var actifs = c.getActiveSpells()
+      var aRetirer = []
+      for (var i = 0; i < actifs.size(); i++) {
+        var id = String(actifs.get(i).getSpell().getSpellId())
+        if (premiere || !classe || sortInterditPourJoueur(classe, id)) aRetirer.push(Number(actifs.get(i).index()))
+      }
+      if (aRetirer.length > 0) {
+        var m = c.mutableCopy()
+        for (var k = 0; k < aRetirer.length; k++) m.removeSpellAtIndex(aRetirer[k])
+        ISpellContainerJ.set(pile, m.toImmutable())
+      }
     }
-    if (aRetirer.length === 0) return
-    var m = c.mutableCopy()
-    for (var k = 0; k < aRetirer.length; k++) m.removeSpellAtIndex(aRetirer[k])
-    ISpellContainerJ.set(pile, m.toImmutable())
+    if (premiere) marquerGrimoireVide(pile)
   } catch (e) {}
 }
 
