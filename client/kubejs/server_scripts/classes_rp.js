@@ -1143,6 +1143,7 @@ ServerEvents.tick(function (event) {
 // par une page de Codex (clic droit annulé ci-dessous).
 var ParcheminJ = null, PageCodexJ = null
 try { PageCodexJ = Java.loadClass('com.specs.irons_spellbooks.item.CodexPageItem') } catch (e) {}
+try { ParcheminJ = Java.loadClass('io.redspace.ironsspellbooks.item.Scroll') } catch (e) {}
 
 function sortInterditPourJoueur(classe, id) {
   sortsInterditsDeLaClasse(classe)
@@ -1151,17 +1152,28 @@ function sortInterditPourJoueur(classe, id) {
 
 ItemEvents.rightClicked(function (event) {
   try {
-    if (!PageCodexJ) return
     var joueur = event.player
     var pile = event.item
-    if (!pile || pile.empty || !PageCodexJ.class.isInstance(pile.getItem())) return
+    if (!pile || pile.empty) return
+    var objet = pile.getItem()
+    var page = PageCodexJ && PageCodexJ.class.isInstance(objet)
+    var parch = ParcheminJ && ParcheminJ.class.isInstance(objet)
+    if (!page && !parch) return
     if (estTest(joueur)) return
     var classe = classeDe(joueur)
     if (!classe) return
-    var r = PageCodexJ.getSpellId(pile)
-    if (r && sortInterditPourJoueur(classe, String(r))) {
-      event.cancel()
-      joueur.tell(Text.red('Ce sort n\'appartient pas à ta classe : tu ne peux pas l\'apprendre.'))
+    var ids = []
+    if (page) { var r = PageCodexJ.getSpellId(pile); if (r) ids.push(String(r)) }
+    else {
+      var c = ISpellContainerJ.get(pile)
+      if (c) { var l = c.getActiveSpells(); for (var i = 0; i < l.size(); i++) ids.push(String(l.get(i).getSpell().getSpellId())) }
+    }
+    for (var k = 0; k < ids.length; k++) {
+      if (sortInterditPourJoueur(classe, ids[k])) {
+        event.cancel()
+        joueur.tell(Text.red('Ce sort n\'appartient pas à ta classe.'))
+        return
+      }
     }
   } catch (e) {}
 })
@@ -1188,7 +1200,7 @@ function reverrouillerDecouverts(serveur, joueur, classe) {
 
 ServerEvents.tick(function (event) {
   var serveur = event.server
-  if (serveur.tickCount % 20 !== 3) return
+  if (serveur.tickCount % 3 !== 0) return // toutes les 3 ticks : le sort étranger n'a pas le temps d'être affiché
   var joueurs = serveur.players
   for (var i = 0; i < joueurs.length; i++) {
     try {
