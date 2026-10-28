@@ -73,7 +73,6 @@ var SORTS_PAR_CLASSE = {
   'apprenticecodex:thermal_slice': ['Pyromancien', 'Technomancien'],
   'apprenticecodex:auto_magnet': ['Technomancien', 'Électro-Sorcier'],
   'apprenticecodex:long_stride': ['Électro-Sorcier', 'Voyageur du Vide'],
-  'apprenticecodex:manifestation_grimoire': ['*'],
   'apprenticecodex:mantis_leap': ['Technomancien'],
   'apprenticecodex:mirage_avoidance': ['Électro-Sorcier', 'Voyageur du Vide'],
   'apprenticecodex:personal_shelf': ['*'],
@@ -192,6 +191,7 @@ var SORTS_DESACTIVES = [
   'cataclysm_spellbooks:dimensional_rift',
   'cataclysm_spellbooks:void_beam',
   'apprenticecodex:linear_build',
+  'apprenticecodex:manifestation_grimoire',
   'hazennstuff:call_forth_terraprisma',
   'hazennstuff:terraprismic_barrage'
 ]
@@ -930,8 +930,7 @@ var COURS_ORDRE = [
   'apprenticecodex:companion_trunk',            // 6. Coffre de Compagnon
   'apprenticecodex:personal_shelf',             // 7. Étagère Personnelle
   'woodwalkers_spellbooks:shapeshifting',       // 8. Métamorphose
-  'apprenticecodex:mana_mending',               // 9. Réparation de Mana
-  'apprenticecodex:manifestation_grimoire'      // 10. Grimoire de Manifestation
+  'apprenticecodex:mana_mending'                // 9. Réparation de Mana
 ]
 var COURS_ECOLES_EXCLUES = /eldritch|occult|ritual|prismatic/
 var COURS_CACHE = null

@@ -351,7 +351,7 @@ var CLASSE_DES_SORTS = {
   'apprenticecodex:mana_mending': 'toutes',
   'apprenticecodex:mana_slash': 'Voyageur du Vide',
   'apprenticecodex:mana_transcription': 'toutes',
-  'apprenticecodex:manifestation_grimoire': 'toutes',
+  'apprenticecodex:manifestation_grimoire': 'Désactivé',
   'apprenticecodex:mantis_leap': 'Technomancien',
   'apprenticecodex:mirage_avoidance': 'Électro-Sorcier / Voyageur du Vide',
   'apprenticecodex:mist_form': 'Hémomancien',
