@@ -1,5 +1,5 @@
 {
- "version": "2026-10-28T13:23:57.392Z",
+ "version": "2026-10-28T13:26:52.384Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -471,51 +471,6 @@
    "size": 3627
   },
   {
-   "path": "kubejs/assets/mcrp/textures/entity/pnj_x00.png",
-   "sha1": "a7d04061c83c90cfd5026ab3bd790fcdc513386d",
-   "size": 3351
-  },
-  {
-   "path": "kubejs/assets/mcrp/textures/entity/pnj_x01.png",
-   "sha1": "5384c9ca29e989a977657742d06a4d460c59b9d2",
-   "size": 4150
-  },
-  {
-   "path": "kubejs/assets/mcrp/textures/entity/pnj_x02.png",
-   "sha1": "46fc2b055ef73a771a7e3e372fc2ab95ac08aa19",
-   "size": 4416
-  },
-  {
-   "path": "kubejs/assets/mcrp/textures/entity/pnj_x03.png",
-   "sha1": "0b9f56fc3dd60629e40d9bb1c4b5cea8f9798858",
-   "size": 3221
-  },
-  {
-   "path": "kubejs/assets/mcrp/textures/entity/pnj_x04.png",
-   "sha1": "63634bd8323425b762ddf4f4e0b3d112d27c7019",
-   "size": 3085
-  },
-  {
-   "path": "kubejs/assets/mcrp/textures/entity/pnj_x05.png",
-   "sha1": "25e9a7333c14a0adcf56e696f2cb303200bc258d",
-   "size": 4365
-  },
-  {
-   "path": "kubejs/assets/mcrp/textures/entity/pnj_x06.png",
-   "sha1": "8e40be8943f475260bfaed9a1e0d706b927c09b4",
-   "size": 5371
-  },
-  {
-   "path": "kubejs/assets/mcrp/textures/entity/pnj_x07.png",
-   "sha1": "666a31774d54d8d7362f8a3d93974ceb634160c1",
-   "size": 5382
-  },
-  {
-   "path": "kubejs/assets/mcrp/textures/entity/pnj_x08.png",
-   "sha1": "be84b7ec7a34a31992cbe5e2d883c2ac79516168",
-   "size": 4998
-  },
-  {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_x09.png",
    "sha1": "c2280709007d74844b4b491daad2574d947575ad",
    "size": 3893
@@ -524,46 +479,6 @@
    "path": "kubejs/assets/mcrp/textures/entity/pnj_x10.png",
    "sha1": "fb2b69478f4855de82e4ba3a3f08f12dd9a1698e",
    "size": 3387
-  },
-  {
-   "path": "kubejs/assets/mcrp/textures/entity/pnj_x11.png",
-   "sha1": "443e921b36589af44887e17e0187b77b727bd7fa",
-   "size": 4122
-  },
-  {
-   "path": "kubejs/assets/mcrp/textures/entity/pnj_x12.png",
-   "sha1": "86c81065fe6ce90276dba90695cbfb19f4dfd08d",
-   "size": 5385
-  },
-  {
-   "path": "kubejs/assets/mcrp/textures/entity/pnj_x13.png",
-   "sha1": "9a6d3b1dd7cf5236b9adbbef920d829e525d0954",
-   "size": 4749
-  },
-  {
-   "path": "kubejs/assets/mcrp/textures/entity/pnj_x14.png",
-   "sha1": "fcbada8bdeb2ada6b6efa4b50e3b47ce6fed0775",
-   "size": 3256
-  },
-  {
-   "path": "kubejs/assets/mcrp/textures/entity/pnj_x15.png",
-   "sha1": "478b05bb02f0cb827930720215e0432193f84fe5",
-   "size": 5350
-  },
-  {
-   "path": "kubejs/assets/mcrp/textures/entity/pnj_x16.png",
-   "sha1": "bf0495bf6557e1e2bc499ca0fc2f5056f9f24d69",
-   "size": 4443
-  },
-  {
-   "path": "kubejs/assets/mcrp/textures/entity/pnj_x17.png",
-   "sha1": "fab48a0d47f14b11d4fd8c21dbf3127527df7fe7",
-   "size": 4644
-  },
-  {
-   "path": "kubejs/assets/mcrp/textures/entity/pnj_x18.png",
-   "sha1": "6c52e0a6bfa64ca8f63c568f74cfa3a3e297e0b6",
-   "size": 3575
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_x19.png",
