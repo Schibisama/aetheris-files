@@ -28,65 +28,21 @@ function tmMasquee(nom) {
 
 var tmTout = false // true = tout afficher (bouton en haut à gauche de l'écran Contrôles)
 
-// Remarque : sur cet écran, Screen#resize ne relance PAS l'initialisation (donc pas de nouvel évènement) ;
-// le bouton remplace donc directement le contenu de la liste, sans passer par un redimensionnement.
-function tmTexte() { return tmTout ? 'Touches cachées : visibles' : 'Touches cachées : masquées' }
+// Sur cet écran, Screen#resize ne relance PAS l'initialisation : le bouton remplace donc directement le contenu de la liste.
+function tmTexte(etat) { return etat || (tmTout ? 'Touches cachées : visibles' : 'Touches cachées : masquées') }
 
 function tmAppliquer(e) {
+  var ecran = null, bouton = null
   try {
-    var ecran = e.getScreen()
+    ecran = e.getScreen()
     if (String(ecran).indexOf('KeyBindsScreen') < 0) return
     tmTout = false
-    var liste = null
-    var enfants = ecran.children()
-    for (var i = 0; i < enfants.size(); i++) {
-      if (String(enfants.get(i)).indexOf('KeyBindsList') >= 0) { liste = enfants.get(i); break }
-    }
-    if (liste == null) { console.log('[touches_masquees] liste de touches introuvable'); return }
-
-    var Minecraft = Java.loadClass('net.minecraft.client.Minecraft')
-    var I18n = Java.loadClass('net.minecraft.client.resources.language.I18n')
-    var ListeJava = Java.loadClass('java.util.ArrayList')
-    // (Arrays.copyOf est ambigu dans Rhino : on copie à la main dans une ArrayList puis on trie, comme le fait la liste vanilla.)
-    var brutes = Minecraft.getInstance().options.keyMappings
-    var touches = new ListeJava()
-    for (var z = 0; z < brutes.length; z++) touches.add(brutes[z])
-    Java.loadClass('java.util.Collections').sort(touches)
-
-    // Même ordre que la liste affichée : une entrée de catégorie, puis ses touches.
-    var entrees = liste.children()
-    var idx = 0, cat = null, masquer = false, aRetirer = [], vues = {}
-    for (var k = 0; k < touches.size(); k++) {
-      var c = String(touches.get(k).getCategory())
-      if (c !== cat) {
-        cat = c
-        masquer = tmMasquee(I18n.get(c))
-        vues[I18n.get(c)] = masquer
-        if (masquer) aRetirer.push(idx)
-        idx++
-      }
-      if (masquer) aRetirer.push(idx)
-      idx++
-    }
-    if (idx !== entrees.size()) { console.log('[touches_masquees] ordre inattendu (' + idx + ' / ' + entrees.size() + '), rien masqué'); return }
-
-    // Deux listes d'objets : toutes les entrées, et celles qu'on garde (remove(nombre) est ambigu dans Rhino : on ne l'utilise pas).
-    var toutes = new ListeJava(entrees)
-    var gardees = new ListeJava()
-    var retirees = {}
-    for (var r = 0; r < aRetirer.length; r++) retirees[aRetirer[r]] = true
-    for (var q = 0; q < toutes.size(); q++) if (!retirees[q]) gardees.add(toutes.get(q))
-
-    var appliquer = function () {
-      entrees.clear()
-      entrees.addAll(tmTout ? toutes : gardees)
-      try { liste.setScrollAmount(0) } catch (x1) {}
-    }
-    appliquer()
-
     var Button = Java.loadClass('net.minecraft.client.gui.components.Button')
     var Component = Java.loadClass('net.minecraft.network.chat.Component')
-    var bouton = null
+    var ListeJava = Java.loadClass('java.util.ArrayList')
+
+    // Le bouton est créé en premier : il apparaît même si le filtrage échoue (son texte le dit alors).
+    var appliquer = function () {}
     bouton = Button.builder(Component.literal(tmTexte()), function (btn) {
       try {
         tmTout = !tmTout
@@ -96,12 +52,58 @@ function tmAppliquer(e) {
     }).bounds(6, 6, 150, 20).build()
     e.addListener(bouton)
 
+    var liste = null
+    var enfants = ecran.children()
+    for (var i = 0; i < enfants.size(); i++) {
+      if (String(enfants.get(i)).indexOf('KeyBindsList') >= 0) { liste = enfants.get(i); break }
+    }
+    if (liste == null) { console.log('[touches_masquees] liste de touches introuvable'); bouton.setMessage(Component.literal(tmTexte('Touches cachées : liste introuvable'))); return }
+
+    var Minecraft = Java.loadClass('net.minecraft.client.Minecraft')
+    var I18n = Java.loadClass('net.minecraft.client.resources.language.I18n')
+
+    // Catégories dans l'ordre d'affichage (touches triées comme le fait la liste vanilla).
+    var brutes = Minecraft.getInstance().options.keyMappings
+    var touches = new ListeJava()
+    for (var z = 0; z < brutes.length; z++) touches.add(brutes[z])
+    Java.loadClass('java.util.Collections').sort(touches)
+    var cats = [], derniere = null
+    for (var k = 0; k < touches.size(); k++) {
+      var c = String(touches.get(k).getCategory())
+      if (c !== derniere) { cats.push(c); derniere = c }
+    }
+
+    // On parcourt les entrées : chaque « CategoryEntry » ouvre la catégorie suivante, les autres entrées lui appartiennent.
+    var entrees = liste.children()
+    var toutes = new ListeJava(entrees)
+    var gardees = new ListeJava()
+    var ci = -1, masquer = false, vues = {}, nbCat = 0, nbMasquees = 0
+    for (var q = 0; q < toutes.size(); q++) {
+      var en = toutes.get(q)
+      if (String(en).indexOf('CategoryEntry') >= 0) {
+        ci++; nbCat++
+        var nom = ci < cats.length ? I18n.get(cats[ci]) : ''
+        masquer = nom !== '' && tmMasquee(nom)
+        vues[nom] = masquer
+      }
+      if (masquer) nbMasquees++
+      else gardees.add(en)
+    }
+    if (nbCat !== cats.length) console.log('[touches_masquees] attention : ' + nbCat + ' catégories affichées, ' + cats.length + ' attendues')
     if (!tmApercu.fait) {
       tmApercu.fait = true
-      console.log('[touches_masquees] catégories (true = masquée) : ' + JSON.stringify(vues))
+      console.log('[touches_masquees] entrées ' + toutes.size() + ', masquées ' + nbMasquees + ', catégories (true = masquée) : ' + JSON.stringify(vues))
     }
+
+    appliquer = function () {
+      entrees.clear()
+      entrees.addAll(tmTout ? toutes : gardees)
+      try { liste.setScrollAmount(0) } catch (x1) {}
+    }
+    appliquer()
   } catch (err) {
     console.log('[touches_masquees] erreur : ' + err)
+    try { if (bouton) bouton.setMessage(Java.loadClass('net.minecraft.network.chat.Component').literal(tmTexte('Touches cachées : erreur (voir log)'))) } catch (x) {}
   }
 }
 var tmApercu = { fait: false }
