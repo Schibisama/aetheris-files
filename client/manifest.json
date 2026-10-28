@@ -1,5 +1,5 @@
 {
- "version": "2026-10-28T22:05:12.080Z",
+ "version": "2026-10-28T22:06:53.966Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -1002,13 +1002,13 @@
   },
   {
    "path": "kubejs/client_scripts/classes_langue.js",
-   "sha1": "f0da605bd54ab11271b11f8c58fe4fa468c2fbcc",
-   "size": 440948
+   "sha1": "a332f76499a3f8971fa6d55f42fa6dad644f7b71",
+   "size": 441068
   },
   {
    "path": "kubejs/client_scripts/classes_tooltips.js",
-   "sha1": "b5abf092d5e925ebd2d2125335557eca76f362f3",
-   "size": 80204
+   "sha1": "c3afb2cf9ce2c40db9077c81b5ba44a2287e8b77",
+   "size": 80234
   },
   {
    "path": "kubejs/client_scripts/main.js",
@@ -1082,8 +1082,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "c381c84c0693f4941a4d4f610fffb3ca374d81e5",
-   "size": 94366
+   "sha1": "95add69652cf421176d53412ac9c783523805960",
+   "size": 94502
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
