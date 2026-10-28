@@ -1,5 +1,5 @@
 {
- "version": "2026-10-28T22:06:53.966Z",
+ "version": "2026-10-28T22:18:11.663Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -34,6 +34,11 @@
    "path": "kubejs/assets/kubejs/textures/item/example_item.png",
    "sha1": "d9912cb709ad496b10f19f8b2c66d1e419eb760c",
    "size": 372
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/item/fragment_cumulonimbus.png",
+   "sha1": "17cd2524fa965ae785921458e39625b08131eace",
+   "size": 241
   },
   {
    "path": "kubejs/assets/kubejs/textures/item/jambe_de_bois.png",
@@ -414,6 +419,11 @@
    "path": "kubejs/assets/mcrp/textures/entity/maitre_du_destin.png",
    "sha1": "8d60be4e890d2128d1687c1a9acd9aea13fd2c41",
    "size": 5426
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/mistral.png",
+   "sha1": "ed622a21b7e71d31b0159f6513de614d5a840b71",
+   "size": 3453
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pip.png",
@@ -1047,8 +1057,8 @@
   },
   {
    "path": "kubejs/server_scripts/boss_zones.js",
-   "sha1": "d856ecf9143debc7853c1bf566d353478bbd69d7",
-   "size": 29555
+   "sha1": "7deab8b874715a58a17eb02abb43b2dc2a7c799a",
+   "size": 32570
   },
   {
    "path": "kubejs/server_scripts/chasse_quete.js",
@@ -1107,8 +1117,8 @@
   },
   {
    "path": "kubejs/server_scripts/livraison_quetes.js",
-   "sha1": "a01bb0bb6bcd738eb63b4a45d0f709519025ba76",
-   "size": 29747
+   "sha1": "6c080c4637917bd34dfec33493e920749cd988af",
+   "size": 30465
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
@@ -1172,8 +1182,8 @@
   },
   {
    "path": "kubejs/startup_scripts/objets_quetes.js",
-   "sha1": "03c9eef2003240441212b5917eac36794bf1b5fd",
-   "size": 1598
+   "sha1": "f2e8a14c61448f9ab2a268d3aba4aeefd88c0a70",
+   "size": 1902
   },
   {
    "path": "mods/aaa_particles-neoforge-1.21.1-2.3.4.jar",
