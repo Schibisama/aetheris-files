@@ -1166,6 +1166,41 @@ ItemEvents.rightClicked(function (event) {
   } catch (e) {}
 })
 
+// Sorts étrangers déjà découverts (Codex, encre, grimoire...) : repérés chaque seconde dans les données du Codex
+// et reverrouillés aussitôt (aucune commande si rien à retirer).
+var UnlocksJ = null
+try { UnlocksJ = Java.loadClass('com.specs.irons_spellbooks.unlock.SpellUnlockAttachments').UNLOCKS } catch (e) {
+  console.error('[classes_rp] Données du Codex indisponibles (reverrouillage rapide inactif) : ' + e)
+}
+
+function reverrouillerDecouverts(serveur, joueur, classe) {
+  if (!UnlocksJ) return
+  var donnees = joueur.getData(UnlocksJ.get())
+  if (!donnees) return
+  var it = donnees.getDiscoveredSpells().iterator()
+  var aVerrouiller = []
+  while (it.hasNext()) {
+    var id = String(it.next())
+    if (sortInterditPourJoueur(classe, id)) aVerrouiller.push(id)
+  }
+  for (var i = 0; i < aVerrouiller.length; i++) cmd(serveur, 'specs_codex spell lock ' + joueur.username + ' ' + aVerrouiller[i])
+}
+
+ServerEvents.tick(function (event) {
+  var serveur = event.server
+  if (serveur.tickCount % 20 !== 3) return
+  var joueurs = serveur.players
+  for (var i = 0; i < joueurs.length; i++) {
+    try {
+      var j = joueurs[i]
+      if (estTest(j)) continue
+      var classe = classeDe(j)
+      if (!classe) continue
+      reverrouillerDecouverts(serveur, j, classe)
+    } catch (e) {}
+  }
+})
+
 // Après l'usage d'un parchemin / d'une page de Codex / d'un grimoire, et régulièrement : on reverrouille les sorts
 // qui ne sont pas à la classe du joueur (ceux d'une école ouverte seulement par exception).
 ItemEvents.rightClicked(function (event) {
