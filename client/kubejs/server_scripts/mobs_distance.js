@@ -14,7 +14,7 @@ var MD = {
   ARMURE: 0.1,              // idem pour l'armure (points)
   PLAFOND: 3.0,             // plafond du bonus vie / dégâts : +300 %
   PLAFOND_ARMURE: 10,       // plafond du bonus d'armure (points)
-  FACTEUR_BOSS: 0.5,        // les boss reçoivent la moitié du bonus (et du plafond)
+  FACTEUR_BOSS: 1.0,        // part du bonus reçue par les boss (1 = identique aux autres mobs ; 0.5 = moitié). Les boss de ZONE (tags boss_zone / pirate_zone) sont exclus.
   SEUIL_BOSS_VIE: 150,      // un mob avec au moins autant de vie de base est traité comme un boss
   // Dimensions concernées. mult = multiplicateur du bonus ; centre = point de départ (null = spawn de l'Overworld).
   // Nether : distance mesurée en blocs du Nether depuis les coordonnées du spawn de l'Overworld, bonus divisé par 8.
@@ -183,7 +183,7 @@ function mdEffets(ent, bonusVie, boss, idDim, niveau) {
       ent.server.runCommandSilent('execute in ' + idDim + ' run particle ' + particule + ' ' + x.toFixed(2) + ' ' + y.toFixed(2) + ' ' + z.toFixed(2) + ' 0.4 0.7 0.4 0.03 25 force')
     } catch (e) {}
   }
-  if (!boss) {
+  {
     try {
       if (!ent.customName) {
         var nom = Text.of('[Lvl ' + niveau + '] ')
@@ -226,6 +226,8 @@ function mdTraiter(ent) {
 
   var idType = mdIdMob(ent)
   if (MD.EXCLUS && MD.EXCLUS.indexOf(idType) !== -1) return
+  // Boss de zone (boss_zones.js, zone_pirates.js) : jamais modifiés par la distance.
+  try { if (ent.tags.contains('boss_zone') || ent.tags.contains('pirate_zone')) return } catch (ez) {}
   var boss = mdBoss(ent, idType)
   // Déjà traité (mob rechargé depuis la sauvegarde) ?
   try {
