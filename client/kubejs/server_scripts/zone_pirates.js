@@ -68,7 +68,27 @@ function zpMobs(niveau) {
 // ───────────── Difficulté : vie x3 et dégâts x1,5 (les seuils de phase restent en % de la vie max) ─────────────
 var ZP_VIE_MULT = 3
 var ZP_DEGATS_MULT = 1.5
-// Vie x3 par réduction des dégâts : chaque coup reçu est divisé par ZP_VIE_MULT (la barre descend 3 fois moins vite).
+// Vie x3 par suivi des PV : à chaque tick, si les PV du boss ont baissé (quelle que soit la source : coup, sort, effet, pourcentage de vie...),
+// on lui rend les 2/3 de la perte. Indépendant des évènements de dégâts ; ignoré sous 0,2 PV (le mod annule alors la mort lui-même).
+var zpHpPrec = {}
+var zpLogsVie = 0
+function zpVieFictive(e) {
+  try {
+    var id = String(e.uuid)
+    var h = e.health
+    var prec = zpHpPrec[id]
+    if (prec === undefined) prec = h
+    if (h < prec - 0.001 && h > 0.2 && e.isAlive()) {
+      var rendu = (prec - h) * (1 - 1 / ZP_VIE_MULT)
+      var nh = Math.min(e.maxHealth, h + rendu)
+      e.setHealth(nh)
+      if (zpLogsVie < 15) { zpLogsVie++; console.info('[zone_pirates] vie x3 : perte ' + (prec - h).toFixed(1) + ' -> ' + (prec - nh).toFixed(1) + ' (' + String(e.type) + ', ' + nh.toFixed(0) + '/' + e.maxHealth.toFixed(0) + ')') }
+      h = nh
+    }
+    zpHpPrec[id] = h
+  } catch (err) {}
+}
+
 // (L'ancien bonus d'attribut de vie max est retiré une fois par exemplaire pour ne pas se cumuler.)
 function zpBuff(server, e) {
   try {
@@ -80,6 +100,7 @@ function zpBuff(server, e) {
     server.runCommandSilent('attribute ' + e.uuid + ' minecraft:generic.max_health modifier remove aetheris:boss_vie')
     var nouv = e.maxHealth * ratio
     try { if (Math.abs(nouv - e.health) > 0.5) e.setHealth(nouv) } catch (x) {}
+    zpHpPrec[String(e.uuid)] = e.health
   } catch (err) { console.error('[zone_pirates] buff : ' + err) }
 }
 
@@ -271,7 +292,6 @@ try {
     Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent'),
     function (ev) {
       try {
-        try { var tgv = ev.getEntity(); if (tgv.tags && tgv.tags.contains('pirate_zone')) ev.setAmount(ev.getAmount() / ZP_VIE_MULT) } catch (e5) {}
         var att = null
         try { att = ev.getSource().actual } catch (e0) {}
         if (!att || !att.tags || !att.tags.contains('pirate_zone')) return
@@ -418,3 +438,13 @@ ServerEvents.commandRegistry(function (event) {
 })
 
 console.info('[zone_pirates] Zone des anciens matelots chargée.')
+
+// Suivi de la vie x3 : à chaque tick.
+ServerEvents.tick(function (event) {
+  try {
+    var niveau = zpNiveau(event.server)
+    if (!niveau || !AABB_ZP) return
+    var liste = zpMobs(niveau)
+    for (var i = 0; i < liste.length; i++) zpVieFictive(liste[i])
+  } catch (err) {}
+})

@@ -117,7 +117,27 @@ function bzNiveau(server) {
 // ───────────── Difficulté : vie x3 et dégâts x1,5 (les seuils de phase restent en % de la vie max) ─────────────
 var BZ_VIE_MULT = 3
 var BZ_DEGATS_MULT = 1.5
-// Vie x3 par réduction des dégâts : chaque coup reçu est divisé par BZ_VIE_MULT (la barre descend 3 fois moins vite).
+// Vie x3 par suivi des PV : à chaque tick, si les PV du boss ont baissé (quelle que soit la source : coup, sort, effet, pourcentage de vie...),
+// on lui rend les 2/3 de la perte. Indépendant des évènements de dégâts ; ignoré sous 0,2 PV (le mod annule alors la mort lui-même).
+var bzHpPrec = {}
+var bzLogsVie = 0
+function bzVieFictive(e) {
+  try {
+    var id = String(e.uuid)
+    var h = e.health
+    var prec = bzHpPrec[id]
+    if (prec === undefined) prec = h
+    if (h < prec - 0.001 && h > 0.2 && e.isAlive()) {
+      var rendu = (prec - h) * (1 - 1 / BZ_VIE_MULT)
+      var nh = Math.min(e.maxHealth, h + rendu)
+      e.setHealth(nh)
+      if (bzLogsVie < 15) { bzLogsVie++; console.info('[boss_zones] vie x3 : perte ' + (prec - h).toFixed(1) + ' -> ' + (prec - nh).toFixed(1) + ' (' + String(e.type) + ', ' + nh.toFixed(0) + '/' + e.maxHealth.toFixed(0) + ')') }
+      h = nh
+    }
+    bzHpPrec[id] = h
+  } catch (err) {}
+}
+
 // (L'ancien bonus d'attribut de vie max est retiré une fois par exemplaire pour ne pas se cumuler.)
 function bzBuff(server, e) {
   try {
@@ -129,6 +149,7 @@ function bzBuff(server, e) {
     server.runCommandSilent('attribute ' + e.uuid + ' minecraft:generic.max_health modifier remove aetheris:boss_vie')
     var nouv = e.maxHealth * ratio
     try { if (Math.abs(nouv - e.health) > 0.5) e.setHealth(nouv) } catch (x) {}
+    bzHpPrec[String(e.uuid)] = e.health
   } catch (err) { console.error('[boss_zones] buff : ' + err) }
 }
 
@@ -417,7 +438,6 @@ try {
             }
           }
         } catch (e4) {}
-        try { var tgv = ev.getEntity(); if (tgv.tags && tgv.tags.contains('boss_zone')) ev.setAmount(ev.getAmount() / BZ_VIE_MULT) } catch (e5) {}
         var att = null
         try { att = ev.getSource().actual } catch (e0) {}
         if (!att || !att.tags || !att.tags.contains('boss_zone')) return
@@ -592,4 +612,17 @@ ServerEvents.commandRegistry(function (event) {
     })(nom3)
   }
   event.register(Commands.literal('boss').then(respawn).then(clear))
+})
+
+// Suivi de la vie x3 : à chaque tick (pas toutes les 5 ticks) pour ne rater aucune perte de PV.
+ServerEvents.tick(function (event) {
+  try {
+    var niveau = bzNiveau(event.server)
+    if (!niveau || !AABB_BZ) return
+    for (var nom in BOSSES) {
+      var b = BOSSES[nom]
+      var liste = bzBoss(niveau, b, b.rayon + 40)
+      for (var i = 0; i < liste.length; i++) bzVieFictive(liste[i])
+    }
+  } catch (err) {}
 })
