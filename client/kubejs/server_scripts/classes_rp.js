@@ -1069,6 +1069,62 @@ ItemEvents.rightClicked(function (event) {
   event.cancel()
 })
 
+// ───────────── Grimoires : aucun sort inscrit ─────────────
+// Un grimoire trouvé (coffre, mob...) contient des sorts : n'importe qui pourrait les utiliser hors de sa classe
+// et sans les avoir découverts. Tout grimoire est donc vidé de ses sorts (sauf pour les testeurs) ;
+// seuls restent ses emplacements. Contrôle toutes les 20 ticks : inventaire, curseur et emplacements Curios.
+var GrimoireJ = null, ISpellContainerJ = null, SpellContainerJ = null, CuriosApiJ = null
+try {
+  GrimoireJ = Java.loadClass('io.redspace.ironsspellbooks.item.SpellBook')
+  ISpellContainerJ = Java.loadClass('io.redspace.ironsspellbooks.api.spells.ISpellContainer')
+  SpellContainerJ = Java.loadClass('io.redspace.ironsspellbooks.capabilities.magic.SpellContainer')
+} catch (e) {
+  console.error('[classes_rp] Vidage des grimoires indisponible : ' + e)
+}
+try { CuriosApiJ = Java.loadClass('top.theillusivec4.curios.api.CuriosApi') } catch (e) { CuriosApiJ = null }
+
+function viderGrimoire(pile) {
+  try {
+    if (!pile || pile.isEmpty()) return
+    if (!GrimoireJ.class.isInstance(pile.getItem())) return
+    var c = ISpellContainerJ.get(pile)
+    if (c === null || c === undefined) return
+    if (c.getActiveSpellCount() <= 0) return
+    var vide
+    try { vide = new SpellContainerJ(c.getMaxSpellCount(), c.isSpellWheel(), c.mustEquip(), c.isImproved()) }
+    catch (e0) { vide = ISpellContainerJ.create(c.getMaxSpellCount(), c.isSpellWheel(), c.mustEquip()) }
+    ISpellContainerJ.set(pile, vide)
+  } catch (e) {}
+}
+
+function viderGrimoiresDuJoueur(joueur) {
+  var inv = joueur.getInventory()
+  for (var i = 0; i < inv.getContainerSize(); i++) viderGrimoire(inv.getItem(i))
+  try { viderGrimoire(joueur.containerMenu.getCarried()) } catch (e1) {}
+  if (CuriosApiJ) {
+    try {
+      var opt = CuriosApiJ.getCuriosInventory(joueur)
+      if (opt.isPresent()) {
+        var eq = opt.get().getEquippedCurios()
+        for (var j = 0; j < eq.getSlots(); j++) viderGrimoire(eq.getStackInSlot(j))
+      }
+    } catch (e2) {}
+  }
+}
+
+ServerEvents.tick(function (event) {
+  var serveur = event.server
+  if (serveur.tickCount % 20 !== 7) return
+  if (!GrimoireJ || !ISpellContainerJ) return
+  var joueurs = serveur.players
+  for (var i = 0; i < joueurs.length; i++) {
+    try {
+      if (estTest(joueurs[i])) continue
+      viderGrimoiresDuJoueur(joueurs[i])
+    } catch (e) {}
+  }
+})
+
 // Après l'usage d'un parchemin / d'une page de Codex / d'un grimoire, et régulièrement : on reverrouille les sorts
 // qui ne sont pas à la classe du joueur (ceux d'une école ouverte seulement par exception).
 ItemEvents.rightClicked(function (event) {
