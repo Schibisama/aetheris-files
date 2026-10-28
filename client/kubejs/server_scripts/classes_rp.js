@@ -154,6 +154,8 @@ var SORTS_PAR_CLASSE = {
   'irons_spellbooks:cleanse': ['Paladin', 'Chromancien'],
   'irons_spellbooks:lightning_bolt': ['Électro-Sorcier', 'Aéromancien'],
   'irons_spellbooks:thunderstorm': ['Électro-Sorcier', 'Aéromancien'],
+  'iss_magicfromtheeast:cloud_ride': ['Symétriste', 'Aéromancien'],
+  'somakespells:thunder_cloud': ['Hydromancien', 'Aéromancien'],
   'apprenticecodex:feather_rush': ['Évocateur', 'Aéromancien'],
   'irons_spellbooks:charge': ['Électro-Sorcier', 'Aéromancien'],
   'monsterspellbooks:soul_form': ['Nécromancien', 'Spiritualiste'],
