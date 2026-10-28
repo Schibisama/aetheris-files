@@ -62,45 +62,77 @@ function tmAppliquer(e) {
     var Minecraft = Java.loadClass('net.minecraft.client.Minecraft')
     var I18n = Java.loadClass('net.minecraft.client.resources.language.I18n')
 
-    // Catégories dans l'ordre d'affichage (touches triées comme le fait la liste vanilla).
+    // Touches triées comme le fait la liste vanilla. Le tri est fait ici, en JavaScript (tri fusion stable) :
+    // Collections.sort ne triait pas la liste dans le jeu (le journal montrait l'ordre d'enregistrement).
     var brutes = Minecraft.getInstance().options.keyMappings
-    var touches = new ListeJava()
-    for (var z = 0; z < brutes.length; z++) touches.add(brutes[z])
-    Java.loadClass('java.util.Collections').sort(touches)
-    var cats = [], derniere = null
-    for (var k = 0; k < touches.size(); k++) {
-      var c = String(touches.get(k).getCategory())
-      if (c !== derniere) { cats.push(c); derniere = c }
+    var tab = []
+    for (var z = 0; z < brutes.length; z++) tab.push(brutes[z])
+    var fusion = function (xs) {
+      if (xs.length < 2) return xs
+      var m = Math.floor(xs.length / 2), g = fusion(xs.slice(0, m)), d = fusion(xs.slice(m)), r = [], i1 = 0, j1 = 0
+      while (i1 < g.length && j1 < d.length) { if (d[j1].compareTo(g[i1]) < 0) r.push(d[j1++]); else r.push(g[i1++]) }
+      while (i1 < g.length) r.push(g[i1++])
+      while (j1 < d.length) r.push(d[j1++])
+      return r
+    }
+    tab = fusion(tab)
+    // Catégories dans l'ordre d'affichage, avec le nombre de touches de chacune.
+    var cats = [], tailles = [], derniere = null
+    for (var k = 0; k < tab.length; k++) {
+      var c = String(tab[k].getCategory())
+      if (c !== derniere) { cats.push(c); tailles.push(0); derniere = c }
+      tailles[tailles.length - 1]++
     }
 
-    // On parcourt les entrées : chaque « CategoryEntry » ouvre la catégorie suivante, les autres entrées lui appartiennent.
+    // Blocs réellement affichés : une « CategoryEntry » suivie de ses touches.
     var entrees = liste.children()
     var toutes = new ListeJava(entrees)
-    var gardees = new ListeJava()
-    var ci = -1, masquer = false, vues = {}, nbCat = 0, nbMasquees = 0
+    var blocs = []
     for (var q = 0; q < toutes.size(); q++) {
-      var en = toutes.get(q)
+      if (String(toutes.get(q)).indexOf('CategoryEntry') >= 0) blocs.push(0)
+      else if (blocs.length > 0) blocs[blocs.length - 1]++
+    }
+    // Contrôle d'alignement : mêmes catégories, mêmes effectifs, même ordre. Sinon on ne masque rien (jamais de mauvaise cible).
+    var aligne = blocs.length === cats.length
+    for (var u = 0; aligne && u < blocs.length; u++) if (blocs[u] !== tailles[u]) aligne = false
+    if (!aligne) {
+      console.log('[touches_masquees] alignement impossible : affichées ' + JSON.stringify(blocs) + ' / attendues ' + JSON.stringify(tailles))
+      bouton.setMessage(Component.literal(tmTexte('Touches cachées : alignement impossible')))
+      return
+    }
+
+    var gardees = new ListeJava()
+    var ci = -1, masquer = false, vues = {}, nbMasquees = 0
+    for (var q2 = 0; q2 < toutes.size(); q2++) {
+      var en = toutes.get(q2)
       if (String(en).indexOf('CategoryEntry') >= 0) {
-        ci++; nbCat++
-        var nom = ci < cats.length ? I18n.get(cats[ci]) : ''
-        masquer = nom !== '' && tmMasquee(nom)
+        ci++
+        var nom = I18n.get(cats[ci])
+        masquer = tmMasquee(nom)
         vues[nom] = masquer
       }
       if (masquer) nbMasquees++
       else gardees.add(en)
     }
-    if (nbCat !== cats.length) console.log('[touches_masquees] attention : ' + nbCat + ' catégories affichées, ' + cats.length + ' attendues')
     if (!tmApercu.fait) {
       tmApercu.fait = true
-      console.log('[touches_masquees] entrées ' + toutes.size() + ', masquées ' + nbMasquees + ', catégories (true = masquée) : ' + JSON.stringify(vues))
+      console.log('[touches_masquees] ' + cats.length + ' catégories alignées, entrées ' + toutes.size() + ', masquées ' + nbMasquees + ' : ' + JSON.stringify(vues))
     }
 
     appliquer = function () {
+      var cible = tmTout ? toutes : gardees
       entrees.clear()
-      entrees.addAll(tmTout ? toutes : gardees)
+      entrees.addAll(cible)
+      var reel = liste.children().size()
+      if (reel !== cible.size()) {
+        console.log('[touches_masquees] la liste n\'a pas pris la modification (' + reel + ' / ' + cible.size() + ')')
+        bouton.setMessage(Component.literal(tmTexte('Touches cachées : modification refusée')))
+        return
+      }
       try { liste.setScrollAmount(0) } catch (x1) {}
     }
     appliquer()
+    console.log('[touches_masquees] liste après filtrage : ' + liste.children().size() + ' entrées')
   } catch (err) {
     console.log('[touches_masquees] erreur : ' + err)
     try { if (bouton) bouton.setMessage(Java.loadClass('net.minecraft.network.chat.Component').literal(tmTexte('Touches cachées : erreur (voir log)'))) } catch (x) {}
