@@ -1,5 +1,5 @@
 {
- "version": "2026-10-28T13:51:16.353Z",
+ "version": "2026-10-28T14:16:49.233Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -791,6 +791,11 @@
    "size": 116
   },
   {
+   "path": "kubejs/client_scripts/pseudo_client.js",
+   "sha1": "12bfe8ccfb5db4a4cc5374a97b1f379b61b63b5a",
+   "size": 1671
+  },
+  {
    "path": "kubejs/client_scripts/touches_masquees.js",
    "sha1": "1f06002a5f72b64b75e66f9874fd95808a1c1e50",
    "size": 3741
@@ -892,8 +897,8 @@
   },
   {
    "path": "kubejs/server_scripts/pseudo.js",
-   "sha1": "b366e3b50bf3b2c0baff7286b9b993cff71cac98",
-   "size": 8575
+   "sha1": "bfa6cc62f590ac1a8e0276de35b590f8c6cf9ece",
+   "size": 7493
   },
   {
    "path": "kubejs/server_scripts/reinit_joueur.js",

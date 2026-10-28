@@ -1,16 +1,13 @@
 // /pseudo <nom> : change le pseudo affiché au-dessus de la tête (et dans le chat et la liste des joueurs).
 // /pseudo reset : retrouve son vrai pseudo.   /pseudo joueur <joueur> <nom|reset> : modérateurs (niveau 2).
-// Principe : le vrai pseudo est masqué par une équipe dédiée au joueur (nametagVisibility never), et un texte
-// flottant (text_display) monté sur sa tête affiche le pseudo choisi. Le nom est recréé toutes les secondes
-// si besoin (changement de dimension, mort, reconnexion).
+// Principe : le joueur est placé dans une équipe dédiée (ps_xxx) dont le « nom d'affichage » est le pseudo choisi.
+// Le script client pseudo_client.js lit ce nom et le met sur la vraie plaque de nom (celle d'origine, donc elle suit
+// parfaitement le joueur : accroupi, invisible, etc.). Le chat et la liste des joueurs sont gérés ici.
 
 var PS = {
   CLE: 'pseudo',
   MIN: 3,
-  MAX: 24,
-  HAUTEUR: 0.3,        // hauteur du texte au-dessus de la tête (blocs) : à ajuster si besoin
-  FOND: 1073741824,    // fond sombre semi-transparent, comme la plaque de nom d'origine (0 = aucun fond)
-  DISTANCE: 0.6        // distance d'affichage (1.0 = ~64 blocs ; 0.6 ≈ 38 blocs, proche d'un pseudo normal)
+  MAX: 24
 }
 
 function psId(joueur) {
@@ -41,29 +38,21 @@ function psValider(serveur, joueur, brut, erreur) {
   return nom
 }
 
-function psTexteNbt(nom) {
-  // Texte JSON dans une chaîne NBT entre apostrophes.
-  return "'" + JSON.stringify({ text: nom, color: 'white' }).replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'"
+function psTexteJson(nom) {
+  return JSON.stringify({ text: nom })
 }
 
+// Ancien système (texte flottant) : on nettoie les restes éventuels.
 function psSupprimerAffichage(serveur, joueur) {
   psCmd(serveur, 'kill @e[type=minecraft:text_display,tag=' + psId(joueur) + ']')
 }
 
-function psCreerAffichage(serveur, joueur, nom) {
-  var id = psId(joueur)
-  var nbt = '{Tags:["mcrp_pseudo","' + id + '"],text:' + psTexteNbt(nom) + ',billboard:"center",background:' + PS.FOND +
-    ',see_through:0b,shadow:0b,view_range:' + PS.DISTANCE + 'f,line_width:400,' +
-    'transformation:{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],scale:[1f,1f,1f],translation:[0f,' + PS.HAUTEUR + 'f,0f]}}'
-  psCmd(serveur, 'execute at ' + joueur.username + ' run summon minecraft:text_display ~ ~ ~ ' + nbt)
-  psCmd(serveur, 'ride @e[type=minecraft:text_display,tag=' + id + ',limit=1,sort=nearest] mount ' + joueur.username)
-}
-
-function psEquipe(serveur, joueur, actif) {
+function psEquipe(serveur, joueur, actif, nom) {
   var id = psId(joueur)
   if (actif) {
     psCmd(serveur, 'team add ' + id)
-    psCmd(serveur, 'team modify ' + id + ' nametagVisibility never')
+    psCmd(serveur, 'team modify ' + id + ' nametagVisibility always')
+    psCmd(serveur, 'team modify ' + id + ' displayName ' + psTexteJson(nom))
     psCmd(serveur, 'team join ' + id + ' ' + joueur.username)
   } else {
     psCmd(serveur, 'team leave ' + joueur.username)
@@ -79,9 +68,8 @@ function psRafraichirNoms(joueur) {
 
 function psAppliquer(serveur, joueur, nom) {
   joueur.persistentData.putString(PS.CLE, nom)
-  psEquipe(serveur, joueur, true)
   psSupprimerAffichage(serveur, joueur)
-  psCreerAffichage(serveur, joueur, nom)
+  psEquipe(serveur, joueur, true, nom)
   psRafraichirNoms(joueur)
 }
 
@@ -92,34 +80,24 @@ function psRetirer(serveur, joueur) {
   psRafraichirNoms(joueur)
 }
 
-function psADuAffichage(joueur) {
-  try {
-    var id = psId(joueur)
-    var pass = joueur.getPassengers()
-    for (var i = 0; i < pass.size(); i++) {
-      if (pass.get(i).getTags().contains(id)) return true
-    }
-  } catch (e) {}
-  return false
-}
-
-// Surveillance : recrée le texte s'il a disparu (changement de dimension, mort, reconnexion...).
+// Surveillance : rétablit l'équipe si besoin (reconnexion, redémarrage, équipe retirée par une commande...).
 ServerEvents.tick(function (event) {
   var serveur = event.server
-  if (serveur.tickCount % 20 !== 11) return
+  if (serveur.tickCount % 100 !== 11) return
   var joueurs = serveur.players
   for (var i = 0; i < joueurs.length; i++) {
     try {
       var j = joueurs[i]
       var nom = psPseudo(j)
       if (!nom) continue
-      if (!psADuAffichage(j)) {
-        psSupprimerAffichage(serveur, j)
-        psEquipe(serveur, j, true)
-        psCreerAffichage(serveur, j, nom)
-      }
+      psEquipe(serveur, j, true, nom)
     } catch (e) {}
   }
+})
+
+// Nettoyage unique des anciens textes flottants.
+ServerEvents.loaded(function (event) {
+  psCmd(event.server, 'kill @e[type=minecraft:text_display,tag=mcrp_pseudo]')
 })
 
 PlayerEvents.loggedOut(function (event) {
