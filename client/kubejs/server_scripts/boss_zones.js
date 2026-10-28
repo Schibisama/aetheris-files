@@ -190,24 +190,38 @@ var bzErrBarre = false
 console.info('[boss_zones] Masquage des barres de vie actif (marge ' + BARRE_MARGE + ' blocs au-delà du rayon).')
 
 // Méthodes publiques des entités : stopSeenByPlayer retire le joueur de la barre de vie du boss, startSeenByPlayer le remet.
+// Vision : un joueur voit la barre de vie du boss seulement s'il est dans la zone (rayon + marge), si le boss est dans son champ de vision
+// (cône d'environ 70° autour de son regard) et s'il n'y a aucun bloc entre eux. Courte tolérance (0,5 s) pour éviter le clignotement.
+var VUE_SEUIL_MONTRER = 0.35, VUE_SEUIL_GARDER = 0.2, VUE_TOLERANCE_MS = 500
+var bzVu = {}
+function bzVoit(j, e, cacheeActuellement) {
+  var dx = e.x - j.x, dy = (e.y + e.getBbHeight() / 2) - j.eyeY, dz = e.z - j.z
+  var n = Math.sqrt(dx * dx + dy * dy + dz * dz)
+  if (n < 0.01) return true
+  var l = j.getLookAngle()
+  var dot = (dx * l.x() + dy * l.y() + dz * l.z()) / n
+  if (dot < (cacheeActuellement ? VUE_SEUIL_MONTRER : VUE_SEUIL_GARDER)) return false
+  try { return !!j.hasLineOfSight(e) } catch (x) { return true }
+}
+function bzAfficher(j, e, dansZone, cle) {
+  var cachee = !!bzCaches[cle]
+  var voit = dansZone && bzVoit(j, e, cachee)
+  var t = Date.now()
+  if (voit) bzVu[cle] = t
+  var montrer = voit || (dansZone && (t - (bzVu[cle] || 0) < VUE_TOLERANCE_MS))
+  if (!montrer) { e.stopSeenByPlayer(j); bzCaches[cle] = true }
+  else if (cachee) { e.startSeenByPlayer(j); delete bzCaches[cle] }
+}
+
 function bzGererBarres(server, e, b) {
   var joueurs = server.getPlayers()
   for (var i = 0; i < joueurs.size(); i++) {
     var j = joueurs.get(i)
     var dx = j.x - b.x
     var dz = j.z - b.z
-    var loin = Math.sqrt(dx * dx + dz * dz) > b.rayon + BARRE_MARGE
+    var dansZone = Math.sqrt(dx * dx + dz * dz) <= b.rayon + BARRE_MARGE
     var cle = String(e.uuid) + '|' + String(j.uuid)
-    try {
-      if (loin) {
-        e.stopSeenByPlayer(j)
-        if (!bzCaches[cle]) console.info('[boss_zones] barre retirée : ' + j.username + ' (' + Math.round(Math.sqrt(dx * dx + dz * dz)) + ' blocs) pour ' + String(e.getType()))
-        bzCaches[cle] = true
-      } else if (bzCaches[cle]) {
-        e.startSeenByPlayer(j)
-        delete bzCaches[cle]
-      }
-    } catch (x) {
+    try { bzAfficher(j, e, dansZone, cle) } catch (x) {
       if (!bzErrBarre) { bzErrBarre = true; console.error('[boss_zones] barres : ' + x) }
     }
   }

@@ -207,6 +207,29 @@ ServerEvents.tick(function (event) {
 })
 
 // ───────── Barres de vie : masquées pour les joueurs loin de la zone (toutes les 2 ticks) ─────────
+// Vision : un joueur voit la barre de vie du boss seulement s'il est dans la zone (rayon + marge), si le boss est dans son champ de vision
+// (cône d'environ 70° autour de son regard) et s'il n'y a aucun bloc entre eux. Courte tolérance (0,5 s) pour éviter le clignotement.
+var VUE_SEUIL_MONTRER = 0.35, VUE_SEUIL_GARDER = 0.2, VUE_TOLERANCE_MS = 500
+var zpVu = {}
+function zpVoit(j, e, cacheeActuellement) {
+  var dx = e.x - j.x, dy = (e.y + e.getBbHeight() / 2) - j.eyeY, dz = e.z - j.z
+  var n = Math.sqrt(dx * dx + dy * dy + dz * dz)
+  if (n < 0.01) return true
+  var l = j.getLookAngle()
+  var dot = (dx * l.x() + dy * l.y() + dz * l.z()) / n
+  if (dot < (cacheeActuellement ? VUE_SEUIL_MONTRER : VUE_SEUIL_GARDER)) return false
+  try { return !!j.hasLineOfSight(e) } catch (x) { return true }
+}
+function zpAfficher(j, e, dansZone, cle) {
+  var cachee = !!zpCaches[cle]
+  var voit = dansZone && zpVoit(j, e, cachee)
+  var t = Date.now()
+  if (voit) zpVu[cle] = t
+  var montrer = voit || (dansZone && (t - (zpVu[cle] || 0) < VUE_TOLERANCE_MS))
+  if (!montrer) { e.stopSeenByPlayer(j); zpCaches[cle] = true }
+  else if (cachee) { e.startSeenByPlayer(j); delete zpCaches[cle] }
+}
+
 var zpEntitesBarre = []
 // Liste dédiée aux barres : tous les mobs de type pirate dans un très large rayon (même hors de la boîte ou en train de mourir)
 function zpMobsBarre(niveau) {
@@ -234,12 +257,9 @@ ServerEvents.tick(function (event) {
       if (e.removed) continue
       for (var q = 0; q < js.size(); q++) {
         var j = js.get(q)
-        var loin = !zpDans(j.x, j.z, ZP.barreMarge)
+        var dansZone = zpDans(j.x, j.z, ZP.barreMarge)
         var cle = String(e.uuid) + '|' + String(j.uuid)
-        try {
-          if (loin) { e.stopSeenByPlayer(j); zpCaches[cle] = true }
-          else if (zpCaches[cle]) { e.startSeenByPlayer(j); delete zpCaches[cle] }
-        } catch (x) { if (!zpErr) { zpErr = true; console.error('[zone_pirates] barres : ' + x) } }
+        try { zpAfficher(j, e, dansZone, cle) } catch (x) { if (!zpErr) { zpErr = true; console.error('[zone_pirates] barres : ' + x) } }
       }
     }
   } catch (err) { if (!zpErr) { zpErr = true; console.error('[zone_pirates] barres : ' + err) } }
