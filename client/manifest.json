@@ -1,5 +1,5 @@
 {
- "version": "2026-10-28T13:39:58.254Z",
+ "version": "2026-10-28T13:50:37.031Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -572,43 +572,43 @@
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y17.png",
-   "sha1": "3529baabc0e62c35ad3d46bcdc40e905b6c553e7",
-   "size": 2598
+   "sha1": "b90bb9d920397e17f3d3f546d664ae8537e5aaff",
+   "size": 2754
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y18.png",
-   "sha1": "9c5913b45afd5315fc6fe64408c21606918de9c6",
-   "size": 2605
+   "sha1": "9be92359aecc4878cd3e83f2c8a4bb800b88be6a",
+   "size": 2692
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y19.png",
-   "sha1": "1ca770b5ab39098766dea0ae3909a5f494354e38",
-   "size": 2626
+   "sha1": "ff8caec900e4fdcf1811463715e84e122daf5987",
+   "size": 2806
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y20.png",
-   "sha1": "22f0c7a3ab2973b102e72da1c32a8565e60c55c0",
-   "size": 2733
+   "sha1": "9f5e7778f1dea68424ac72e72db3378e2c193295",
+   "size": 2935
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y21.png",
-   "sha1": "76dcbeb0c412d9cf2a1438e6256cd1efd68e9261",
-   "size": 2775
+   "sha1": "3357f7a9a646e0e54ec54c9447eff3e71257b3d5",
+   "size": 3128
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y22.png",
-   "sha1": "45f94b97a363e0702db62273232e52b0f1a22d4b",
-   "size": 2603
+   "sha1": "c9002e585931a944fa5ac4c2d0c62bb56aba997e",
+   "size": 2957
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y23.png",
-   "sha1": "9ae27bac973b271c107df8b69332279456788213",
-   "size": 2646
+   "sha1": "cb9b4aa034e22c7dbffe9ab59ad051db7a923d53",
+   "size": 3392
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y24.png",
-   "sha1": "08cd27c078cb16668b7abd7f37aab6a6481311b3",
-   "size": 2734
+   "sha1": "e6e908e18e3765c2845d54fa5248ed4acf5ee7d9",
+   "size": 2783
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y25.png",
@@ -697,53 +697,43 @@
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y42.png",
-   "sha1": "6bf12d4ddfb546ffd54d564541464bca4b458baa",
-   "size": 2888
+   "sha1": "6a4c3c022c5a2db5fd2b321609a4c14d57be3476",
+   "size": 2842
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y43.png",
-   "sha1": "7482867a920353e70d57c67dc4df21e99d9c520c",
-   "size": 2814
+   "sha1": "59b9c9541fd4648276018a6260e9cbd329fc6f18",
+   "size": 2926
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y44.png",
-   "sha1": "97eddb8984bca06b7450a13aa5ad73429bc49fa1",
-   "size": 2745
+   "sha1": "62c887630fc7d1a5340fa724ee823ca80306cc2f",
+   "size": 2863
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y45.png",
-   "sha1": "8eb3425dc7451eefeb860f7c4dcc3164041663de",
-   "size": 2927
+   "sha1": "749d19dea6d541268811936bc0a04e03b7d33ff6",
+   "size": 2670
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y46.png",
-   "sha1": "e480be1632e53632d9a5fcb20613b7ba05706cdd",
-   "size": 2796
+   "sha1": "2d62eef67d5db7551059cb48770de5ca630987fc",
+   "size": 2789
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y47.png",
-   "sha1": "243d9dc83d145125ea6f22bbd2c4cadd20b4e1e2",
-   "size": 2695
+   "sha1": "b6f367420097c141afeeef7608ab313ec43a7eef",
+   "size": 2928
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y48.png",
-   "sha1": "8d91d18959d5a19635aa4679e67fc0952a3a867d",
-   "size": 2802
+   "sha1": "56aefd27d65279a21cc9ef9ce875e3018c5f4664",
+   "size": 2870
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y49.png",
-   "sha1": "672784035132e9088469a5383b6f8549c8bb306f",
-   "size": 2918
-  },
-  {
-   "path": "kubejs/assets/mcrp/textures/entity/pnj_y50.png",
-   "sha1": "b34529d83d2129034cd9be17bad4d0eef6f70031",
-   "size": 2902
-  },
-  {
-   "path": "kubejs/assets/mcrp/textures/entity/pnj_y51.png",
-   "sha1": "ddd9cb78c1811441252a910c0c55bdd6a8db1ea5",
-   "size": 2837
+   "sha1": "46a02f9648c6743d4df5ff8ed2642eb165183be8",
+   "size": 2841
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/ser_aldric.png",
