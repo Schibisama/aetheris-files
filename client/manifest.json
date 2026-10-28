@@ -1,5 +1,5 @@
 {
- "version": "2026-10-28T15:31:40.090Z",
+ "version": "2026-10-28T15:38:43.641Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -874,6 +874,11 @@
    "path": "kubejs/server_scripts/end_spawn.js",
    "sha1": "1adaa6c849bfbf4a5bd568e2930b8135935441f2",
    "size": 1440
+  },
+  {
+   "path": "kubejs/server_scripts/furniture_ops.js",
+   "sha1": "9029cb0f49436e943e263473933a8b7f22eb500a",
+   "size": 2593
   },
   {
    "path": "kubejs/server_scripts/livraison_quetes.js",
