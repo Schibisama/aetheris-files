@@ -1,5 +1,5 @@
 {
- "version": "2026-10-28T13:27:13.467Z",
+ "version": "2026-10-28T13:39:35.467Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -484,6 +484,266 @@
    "path": "kubejs/assets/mcrp/textures/entity/pnj_x19.png",
    "sha1": "f359fc93518b03f0a8e7b53c742ada7aff29679f",
    "size": 4122
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y00.png",
+   "sha1": "da2648d6914d2fa2f738bcc0e887f8e8574b0384",
+   "size": 2626
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y01.png",
+   "sha1": "3cf852af6049c659225df7747abc113ddd8ba750",
+   "size": 2632
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y02.png",
+   "sha1": "15103bbef939ce8a9f569a499aece63940d232e1",
+   "size": 2662
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y03.png",
+   "sha1": "45adefb6e64b5d3fa402af0f1ffbcdce18979d13",
+   "size": 2541
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y04.png",
+   "sha1": "faef68b7acfd60c471f76c9096e84ab36c93c923",
+   "size": 2650
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y05.png",
+   "sha1": "1707896be33eefd184f6ea19b232391ec9aa9e07",
+   "size": 2767
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y06.png",
+   "sha1": "3b124b2c886768b9cf340764f2ed6479b2f199e3",
+   "size": 2776
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y07.png",
+   "sha1": "64379334fbfd392b19dea376fec0f074874533d2",
+   "size": 2552
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y08.png",
+   "sha1": "5812ce5c4a7740f566a1490c65be5fb83162e861",
+   "size": 2783
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y09.png",
+   "sha1": "02a1f6c381584151ba8d21626fb0c8697a6b2156",
+   "size": 2626
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y10.png",
+   "sha1": "f7b8f9ae928dabe3af18148f2dfbceb114050cf3",
+   "size": 2715
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y11.png",
+   "sha1": "4f6c5edc1330b4fc1cda60ea642a1ccc07723c76",
+   "size": 2766
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y12.png",
+   "sha1": "7db2d4d8e751f88fe67188354a7af15c45895e4f",
+   "size": 2874
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y13.png",
+   "sha1": "b708f286b8853a364c9b78e9a4970aa9deb366c9",
+   "size": 2877
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y14.png",
+   "sha1": "a10c914b272b2ee3ae9c9ada34ea187d03921f41",
+   "size": 2670
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y15.png",
+   "sha1": "7dabfbb36c750895ed45e08c64d6a166f9220955",
+   "size": 2791
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y16.png",
+   "sha1": "82f370e5c91bb0e27bef6e0825c46db3e2204c87",
+   "size": 2530
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y17.png",
+   "sha1": "3529baabc0e62c35ad3d46bcdc40e905b6c553e7",
+   "size": 2598
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y18.png",
+   "sha1": "9c5913b45afd5315fc6fe64408c21606918de9c6",
+   "size": 2605
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y19.png",
+   "sha1": "1ca770b5ab39098766dea0ae3909a5f494354e38",
+   "size": 2626
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y20.png",
+   "sha1": "22f0c7a3ab2973b102e72da1c32a8565e60c55c0",
+   "size": 2733
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y21.png",
+   "sha1": "76dcbeb0c412d9cf2a1438e6256cd1efd68e9261",
+   "size": 2775
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y22.png",
+   "sha1": "45f94b97a363e0702db62273232e52b0f1a22d4b",
+   "size": 2603
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y23.png",
+   "sha1": "9ae27bac973b271c107df8b69332279456788213",
+   "size": 2646
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y24.png",
+   "sha1": "08cd27c078cb16668b7abd7f37aab6a6481311b3",
+   "size": 2734
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y25.png",
+   "sha1": "c575d37f2c336f6cd9a90edf3ccbdcf0914c4f64",
+   "size": 3099
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y26.png",
+   "sha1": "ce0549e3fd22ecbe02802c4961bf612d40b16de4",
+   "size": 2886
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y27.png",
+   "sha1": "7377dd1e216e8105575a9e3072fa9b2458cc00bd",
+   "size": 2830
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y28.png",
+   "sha1": "f64a22d92955075e6ed968686286bab8c1e805d2",
+   "size": 584
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y29.png",
+   "sha1": "7d007b4abf7f6aed5bf2bebf99bdbe1bafdebbaf",
+   "size": 3038
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y30.png",
+   "sha1": "284dc255835bed76146ae1084d40d7d7cacc8766",
+   "size": 1921
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y31.png",
+   "sha1": "a5c4cae76404e8fecc9b7f1bff384d36926f18e4",
+   "size": 2737
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y32.png",
+   "sha1": "44f22c9b5108b0d9cb8cc729611401b01c081b6c",
+   "size": 2691
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y33.png",
+   "sha1": "097672fd7727fb007a460332938c818029e5e311",
+   "size": 2928
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y34.png",
+   "sha1": "c87e735839c3c7632ea456852870fa18394bce5b",
+   "size": 2925
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y35.png",
+   "sha1": "6eeecb994e96877db8e2b31262ed6927118b371c",
+   "size": 2985
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y36.png",
+   "sha1": "371c91749519065a484aca0b3ed128e3640166b5",
+   "size": 2895
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y37.png",
+   "sha1": "d74935081a0b0462eb8065013f806324013418ea",
+   "size": 2729
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y38.png",
+   "sha1": "3510c34cc86390f15a46d6c7b55a70dccc3136fb",
+   "size": 2796
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y39.png",
+   "sha1": "ae897f41d8becce9d8369b8df3605efaf6619b5b",
+   "size": 2828
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y40.png",
+   "sha1": "987de0e55ed953bb9a22121f27badcb8e2f23de2",
+   "size": 3164
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y41.png",
+   "sha1": "e83fdb6bad279795accf9f5e413f364cf12f0f0e",
+   "size": 2712
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y42.png",
+   "sha1": "6bf12d4ddfb546ffd54d564541464bca4b458baa",
+   "size": 2888
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y43.png",
+   "sha1": "7482867a920353e70d57c67dc4df21e99d9c520c",
+   "size": 2814
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y44.png",
+   "sha1": "97eddb8984bca06b7450a13aa5ad73429bc49fa1",
+   "size": 2745
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y45.png",
+   "sha1": "8eb3425dc7451eefeb860f7c4dcc3164041663de",
+   "size": 2927
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y46.png",
+   "sha1": "e480be1632e53632d9a5fcb20613b7ba05706cdd",
+   "size": 2796
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y47.png",
+   "sha1": "243d9dc83d145125ea6f22bbd2c4cadd20b4e1e2",
+   "size": 2695
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y48.png",
+   "sha1": "8d91d18959d5a19635aa4679e67fc0952a3a867d",
+   "size": 2802
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y49.png",
+   "sha1": "672784035132e9088469a5383b6f8549c8bb306f",
+   "size": 2918
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y50.png",
+   "sha1": "b34529d83d2129034cd9be17bad4d0eef6f70031",
+   "size": 2902
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/pnj_y51.png",
+   "sha1": "ddd9cb78c1811441252a910c0c55bdd6a8db1ea5",
+   "size": 2837
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/ser_aldric.png",
