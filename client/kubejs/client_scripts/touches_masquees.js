@@ -86,9 +86,19 @@ function tmAppliquer(e) {
 }
 var tmApercu = { fait: false }
 
+// Inscription directe sur le bus d'événements de NeoForge (NativeEvents.onEvent ne se déclenchait pas sur ce client).
 try {
-  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.client.event.ScreenEvent$Init$Post'), tmAppliquer)
-  console.log('[touches_masquees] chargé')
+  var TM_PRIO = Java.loadClass('net.neoforged.bus.api.EventPriority').NORMAL
+  var TM_BUS = Java.loadClass('net.neoforged.neoforge.common.NeoForge').EVENT_BUS
+  var TM_EVT = Java.loadClass('net.neoforged.neoforge.client.event.ScreenEvent$Init$Post')
+  TM_BUS.addListener(TM_PRIO, false, TM_EVT, function (e) {
+    try {
+      if (!tmApercu.ecrans) tmApercu.ecrans = 0
+      if (tmApercu.ecrans < 3) { tmApercu.ecrans++; console.log('[touches_masquees] écran ouvert : ' + e.getScreen().getClass().getName()) }
+    } catch (err0) {}
+    tmAppliquer(e)
+  })
+  console.log('[touches_masquees] chargé (bus NeoForge)')
 } catch (err) {
   console.log('[touches_masquees] événement indisponible : ' + err)
 }
