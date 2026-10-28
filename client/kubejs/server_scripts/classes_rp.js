@@ -493,6 +493,7 @@ function cmd(server, texte) {
 // du Nécromancien ouvrent l'école Nécromancie : sans ceci, tous ses autres sorts seraient découvrables).
 // Liste mise en cache par classe ; reconstruite au premier appel.
 var CACHE_SORTS_INTERDITS = {}
+var CACHE_SET_INTERDITS = {}
 function sortsInterditsDeLaClasse(classe) {
   if (CACHE_SORTS_INTERDITS[classe.nom]) return CACHE_SORTS_INTERDITS[classe.nom]
   var propres = ecolesDeLaClasse(classe)
@@ -504,8 +505,11 @@ function sortsInterditsDeLaClasse(classe) {
         var sort = tous.get(i)
         var id = String(sort.getSpellId())
         var ec = String(sort.getSchoolType().getId())
-        if (propres.indexOf(ec) !== -1) continue // école de la classe : accès normal
-        if (SORTS_PAR_CLASSE[id] && classeAutorisee(SORTS_PAR_CLASSE[id], classe.nom)) continue // sort offert à cette classe
+        if (SORTS_PAR_CLASSE[id]) {
+          if (classeAutorisee(SORTS_PAR_CLASSE[id], classe.nom)) continue // sort offert à cette classe
+        } else if (propres.indexOf(ec) !== -1) {
+          continue // école de la classe, sans règle particulière : accès normal
+        }
         liste.push(id)
       } catch (e1) {}
     }
@@ -513,6 +517,9 @@ function sortsInterditsDeLaClasse(classe) {
     console.error('[classes_rp] liste des sorts interdits indisponible : ' + e)
   }
   CACHE_SORTS_INTERDITS[classe.nom] = liste
+  var set = {}
+  for (var q = 0; q < liste.length; q++) set[liste[q]] = true
+  CACHE_SET_INTERDITS[classe.nom] = set
   return liste
 }
 
@@ -1121,6 +1128,74 @@ ServerEvents.tick(function (event) {
     try {
       if (estTest(joueurs[i])) continue
       viderGrimoiresDuJoueur(joueurs[i])
+    } catch (e) {}
+  }
+})
+
+// ───────────── Parchemins et pages de Codex : uniquement ceux de sa classe ─────────────
+// Un joueur ne peut posséder que des sorts de sa classe, quel que soit le moyen d'obtention :
+// parchemin ou page de Codex d'un autre sort -> retiré de l'inventaire dès qu'il est ramassé.
+var ParcheminJ = null, PageCodexJ = null
+try { ParcheminJ = Java.loadClass('io.redspace.ironsspellbooks.item.Scroll') } catch (e) {}
+try { PageCodexJ = Java.loadClass('com.specs.irons_spellbooks.item.CodexPageItem') } catch (e) {}
+
+function sortInterditPourJoueur(classe, id) {
+  sortsInterditsDeLaClasse(classe)
+  return CACHE_SET_INTERDITS[classe.nom][id] === true
+}
+
+function idsSortsDeLaPile(pile) {
+  var ids = []
+  try {
+    var obj = pile.getItem()
+    if (ParcheminJ && ParcheminJ.class.isInstance(obj)) {
+      var c = ISpellContainerJ.get(pile)
+      if (c) {
+        var l = c.getActiveSpells()
+        for (var i = 0; i < l.size(); i++) ids.push(String(l.get(i).getSpell().getSpellId()))
+      }
+    } else if (PageCodexJ && PageCodexJ.class.isInstance(obj)) {
+      var r = PageCodexJ.getSpellId(pile)
+      if (r) ids.push(String(r))
+    }
+  } catch (e) {}
+  return ids
+}
+
+function retirerSortsEtrangers(joueur, classe) {
+  var inv = joueur.getInventory()
+  var retire = 0
+  for (var i = 0; i < inv.getContainerSize(); i++) {
+    var pile = inv.getItem(i)
+    if (!pile || pile.isEmpty()) continue
+    var ids = idsSortsDeLaPile(pile)
+    for (var k = 0; k < ids.length; k++) {
+      if (sortInterditPourJoueur(classe, ids[k])) { pile.setCount(0); retire++; break }
+    }
+  }
+  try {
+    var curseur = joueur.containerMenu.getCarried()
+    if (curseur && !curseur.isEmpty()) {
+      var idc = idsSortsDeLaPile(curseur)
+      for (var m = 0; m < idc.length; m++) {
+        if (sortInterditPourJoueur(classe, idc[m])) { curseur.setCount(0); retire++; break }
+      }
+    }
+  } catch (e1) {}
+  if (retire > 0) joueur.tell(Text.red('Ce sort n\'appartient pas à ta classe : le parchemin s\'est dissipé.'))
+}
+
+ServerEvents.tick(function (event) {
+  var serveur = event.server
+  if (serveur.tickCount % 20 !== 13) return
+  var joueurs = serveur.players
+  for (var i = 0; i < joueurs.length; i++) {
+    try {
+      var j = joueurs[i]
+      if (estTest(j)) continue
+      var classe = classeDe(j)
+      if (!classe) continue
+      retirerSortsEtrangers(j, classe)
     } catch (e) {}
   }
 })
