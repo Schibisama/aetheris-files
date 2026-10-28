@@ -34,4 +34,11 @@ StartupEvents.registry('item', function (event) {
     .maxStackSize(1)
     .tooltip(Text.gray("Une écaille brûlante, arrachée au dragon qui a ravagé Ultgard."))
     .tooltip(Text.darkGray('À rapporter à Ulrich.'))
+
+  event.create('fragment_cumulonimbus')
+    .displayName('Fragment de Cumulonimbus')
+    .texture('kubejs:item/fragment_cumulonimbus')
+    .maxStackSize(1)
+    .tooltip(Text.gray("Un morceau de nuée orageuse, qui crépite encore dans la main."))
+    .tooltip(Text.darkGray('À rapporter à Mistral.'))
 })

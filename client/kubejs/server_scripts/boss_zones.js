@@ -77,6 +77,30 @@ var BOSSES = {
       commandeRecompense: 'classe recompense_epique %joueur%'
     }
   },
+  cumulonimbus: {
+    type: 'legendary_monsters:cloud_golem',
+    x: -125, y: 92, z: 1012,
+    rayon: 40,   // il vole : zone un peu plus large
+    aggro: 35,
+    soigneSiSort: true,
+    respawnMin: 30,
+    escorte: { type: 'legendary_monsters:hovering_hurricane', nombre: 3, rayon: 6 },   // 3 Ouragans flottants l'entourent à chaque apparition
+    quete: {
+      cle: 'cumulonimbus_quete',
+      pnj: 'Mistral',
+      accepter: "Un ultime sort d'aéromancie, voilà ce que je cherche à confectionner. Il me manque un morceau de nuage... pas n'importe lequel : le cœur du Cumulonimbus, le colosse qui trône dans les hauteurs. Trois ouragans veillent sur lui. Abats-le et rapporte-moi un fragment de sa nuée.",
+      encours: "Le Cumulonimbus gronde encore là-haut, je le sens dans le vent. Reviens quand il se sera tu.",
+      tue: "Tu as vaincu le Cumulonimbus ? Alors vite, donne-moi ce fragment de nuée !",
+      fini: "Mon sort prend forme grâce à toi. Que les vents te soient toujours favorables.",
+      rien: "Tu ne m'as encore rien promis, voyageur.",
+      vivant: "Le ciel gronde toujours : le colosse vit. Va.",
+      recompense: "Ce fragment est parfait, léger comme l'air et lourd d'orage ! Prends ce savoir : c'est le prix de ton courage.",
+      annonceMort: "Le Cumulonimbus se dissipe. Un fragment de nuée gît dans ton sac : rapporte-le à Mistral.",
+      objet: 'kubejs:fragment_cumulonimbus',
+      sansObjet: "Où est le fragment de nuée ? Sans lui, je ne puis croire que le colosse est tombé. Retrouve-le.",
+      commandeRecompense: 'classe recompense_epique %joueur%'
+    }
+  },
   dragon: {
     type: 'block_factorys_bosses:infernal_dragon',
     x: 1642, y: 207, z: 1795,
@@ -202,6 +226,33 @@ function bzSpawn(server, nom, b) {
   server.runCommandSilent('execute in minecraft:overworld run summon ' + b.type + ' ' + b.x + ' ' + b.y + ' ' + b.z +
     ' {Tags:["boss_zone","boss_' + nom + '"],PersistenceRequired:1b' + (b.nbtSpawn ? ',' + b.nbtSpawn : '') + '}')
   console.info('[boss_zones] ' + nom + ' apparaît en ' + b.x + ' ' + b.y + ' ' + b.z)
+  bzEscorte(server, nom, b)
+}
+
+// Escorte (champ "escorte") : N mobs autour du boss à chaque apparition ; les anciens survivants sont retirés d'abord. Sans butin.
+function bzRetirerEscorte(server, nom, b) {
+  try {
+    var niveau = bzNiveau(server)
+    if (!niveau || !AABB_BZ) return
+    var liste = niveau.getEntitiesWithin(new AABB_BZ(b.x - b.rayon - 40, b.y - 60, b.z - b.rayon - 40, b.x + b.rayon + 40, b.y + 60, b.z + b.rayon + 40))
+    for (var i = 0; i < liste.size(); i++) {
+      var e = liste.get(i)
+      try { if (e.tags && e.tags.contains('escorte_' + nom)) e.discard() } catch (x) {}
+    }
+  } catch (err) {}
+}
+function bzEscorte(server, nom, b) {
+  if (!b.escorte) return
+  bzRetirerEscorte(server, nom, b)
+  var n = b.escorte.nombre
+  for (var i = 0; i < n; i++) {
+    var ang = (2 * Math.PI * i) / n
+    var ex = Math.round(b.x + Math.cos(ang) * b.escorte.rayon)
+    var ez = Math.round(b.z + Math.sin(ang) * b.escorte.rayon)
+    server.runCommandSilent('execute in minecraft:overworld run summon ' + b.escorte.type + ' ' + ex + ' ' + b.y + ' ' + ez +
+      ' {Tags:["boss_escorte","escorte_' + nom + '"],PersistenceRequired:1b}')
+  }
+  console.info('[boss_zones] escorte de ' + nom + ' : ' + n + ' x ' + b.escorte.type)
 }
 
 // ───────────── Barres de vie : masquées pour les joueurs à plus de (rayon + 20) blocs du centre de la zone ─────────────
@@ -465,6 +516,7 @@ try {
     Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingDropsEvent'),
     function (ev) {
       try { if (bzEstBossDeZone(ev.getEntity())) ev.setCanceled(true) } catch (e) {}
+      try { var tg = ev.getEntity().tags; if (tg && tg.contains('boss_escorte')) ev.setCanceled(true) } catch (e) {}
     }
   )
 } catch (e) { console.error('[boss_zones] suppression du loot indisponible : ' + e) }
@@ -607,6 +659,7 @@ ServerEvents.commandRegistry(function (event) {
         var liste = niveau ? bzBoss(niveau, b, b.rayon + 40) : []
         for (var i = 0; i < liste.length; i++) liste[i].discard()
         server.persistentData.putLong(bzCle(n), Date.now() + b.respawnMin * 60 * 1000)
+        bzRetirerEscorte(server, n, b)
         return 1
       }))
     })(nom3)

@@ -110,6 +110,13 @@ LIVRAISONS.edrik_chair = lvSimple({
   recompense: "Que la lumière soit rendue à cette chair. Merci, voyageur. Reçois ce savoir de ta voie : qu'il te serve avec justice."
 })
 
+LIVRAISONS.mistral_membranes = lvSimple({
+  cle: 'mistral_membranes_quete', pnj: 'Mistral', objet: 'minecraft:phantom_membrane', nombre: 12, nom: 'membranes de fantôme', rarete: 'peu_commun',
+  accepter: "Avant de m'attaquer au Cumulonimbus, il me faut de quoi tisser des voiles de vol. Rapporte-moi douze membranes de fantôme, arrachées aux rôdeurs de la nuit, et je te remettrai un petit savoir de ta voie.",
+  encours: "Mes douze membranes de fantôme ? Les fantômes ne tombent pas tout seuls du ciel, voyageur.",
+  fini: "Mes voiles sont tissées, grâce à toi. Le vent te le revaudra.",
+  recompense: "De la belle membrane, souple et résistante. Prends ceci : un savoir de ta voie, porté par le vent."
+})
 function lvDire(joueur, q, texte) {
   joueur.tell(Text.gold('[' + q.pnj + '] ').append(Text.of(texte).gray()))
 }
