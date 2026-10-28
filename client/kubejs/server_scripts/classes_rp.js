@@ -538,7 +538,7 @@ function appliquerClasse(server, joueur, classe, reinit) {
     cmd(server, 'specs_codex spell unlock_all ' + nom)
     return
   }
-  if (reinit) cmd(server, 'specs_codex spell lock_all ' + nom)
+  if (reinit) { cmd(server, 'specs_codex spell lock_all ' + nom); try { joueur.persistentData.putString('cours_sorts', '') } catch (e) {} }
   cmd(server, 'specs_codex school lock_all ' + nom)
   cmd(server, 'specs_codex school unlock ' + nom + ' ' + classe.ecole)
   if (classe.sup) {
@@ -559,8 +559,8 @@ function appliquerClasse(server, joueur, classe, reinit) {
       // (son onglet reste caché du Codex tant qu'aucun de ses sorts n'est découvert).
       var ecole = ecoleDuSort(sort)
       if (ecole) cmd(server, 'specs_codex school unlock ' + nom + ' ' + ecole)
-      // Sorts ouverts à TOUS (liste « * ») : offerts dès le départ, même après le tirage de la classe.
-      if (SORTS_PAR_CLASSE[sort].indexOf('*') !== -1) cmd(server, 'specs_codex spell unlock ' + nom + ' ' + sort)
+      // Les sorts ouverts à TOUS (liste « * », dont Rappel) ne sont plus offerts au départ : les professeurs
+      // les donnent en classe avec /cours (voir plus bas).
     }
   }
   verrouillerSortsInterdits(server, joueur, classe)
@@ -913,10 +913,182 @@ function cmdAdminCompteur(ctx, cible) {
   return 1
 }
 
+
+// ───────────── /cours : les professeurs donnent un sort à chaque élève, dans un ordre de priorité ─────────────
+// Un professeur (opérateur) lance /cours. Chaque élève présent dans le dôme (sphère) reçoit LE PREMIER sort de son
+// ordre de priorité qu'il n'a pas encore ; celui qui a déjà le n°1 reçoit le n°2, etc. Un sort par commande.
+// L'ordre est propre à chaque classe : 1) COURS_COMMUN (Rappel en tête), 2) COURS_PAR_CLASSE (ordre voulu pour une classe),
+// 3) les autres sorts de la classe du plus courant au plus rare, 4) les sorts ouverts à tous. Les sorts de l'école Indicible
+// (Occulte / Prismatique) ne sont jamais donnés. Pour changer l'ordre : modifier COURS_COMMUN et COURS_PAR_CLASSE.
+var COURS = { X: 1088, Y: 543, Z: 1350, RAYON: 16, DIMENSION: 'minecraft:overworld' }
+var COURS_COMMUN = ['irons_spellbooks:recall']
+var COURS_PAR_CLASSE = {
+  // 'Pyromancien': ['irons_spellbooks:firebolt', 'irons_spellbooks:fireball'],
+}
+var COURS_ECOLES_EXCLUES = /eldritch|occult|ritual|prismatic/
+var COURS_CACHE = {}
+var COURS_CLE = 'cours_sorts'
+var UnlockAttachJ = null
+var coursAvertiCodex = false
+
+function coursOrdre(classe) {
+  if (COURS_CACHE[classe.nom]) return COURS_CACHE[classe.nom]
+  var ecoles = ecolesDeLaClasse(classe)
+  var cands = [], idx = {}
+  var liste = SpellRegistryJ.getEnabledSpells()
+  for (var i = 0; i < liste.size(); i++) {
+    try {
+      var sort = liste.get(i)
+      var id = String(sort.getSpellId())
+      var ecole = String(sort.getSchoolType().getId())
+      if (COURS_ECOLES_EXCLUES.test(ecole) && COURS_COMMUN.indexOf(id) < 0) continue // Indicible exclu, sauf Rappel (COURS_COMMUN)
+      var perm = SORTS_PAR_CLASSE[id]
+      var propre = perm ? classeAutorisee(perm, classe.nom) : (ecoles.indexOf(ecole) !== -1)
+      if (!propre) continue
+      var rar = 0
+      try { rar = Number(sort.getRarity(1).getValue()) } catch (e0) {}
+      var c = { id: id, rar: rar, uni: !!(perm && perm.indexOf('*') !== -1) }
+      cands.push(c); idx[id] = c
+    } catch (e) { /* sort ignoré */ }
+  }
+  var cmp = function (a, b) { return (a.rar - b.rar) || (a.id < b.id ? -1 : (a.id > b.id ? 1 : 0)) }
+  var ordre = [], vu = {}
+  var ajouter = function (id) { if (idx[id] && !vu[id]) { vu[id] = true; ordre.push(id) } }
+  for (var a = 0; a < COURS_COMMUN.length; a++) ajouter(COURS_COMMUN[a])
+  var perso = COURS_PAR_CLASSE[classe.nom] || []
+  for (var b = 0; b < perso.length; b++) ajouter(perso[b])
+  var propres = [], univ = []
+  for (var d = 0; d < cands.length; d++) (cands[d].uni ? univ : propres).push(cands[d])
+  propres.sort(cmp); univ.sort(cmp)
+  for (var e1 = 0; e1 < propres.length; e1++) ajouter(propres[e1].id)
+  for (var f = 0; f < univ.length; f++) ajouter(univ[f].id)
+  COURS_CACHE[classe.nom] = ordre
+  return ordre
+}
+
+// Le joueur a-t-il déjà découvert ce sort (Spell Codex) ? En cas d'échec de la lecture : suivi tenu par /cours.
+function coursADejaLeSort(joueur, id) {
+  try {
+    if (!UnlockAttachJ) UnlockAttachJ = Java.loadClass('com.specs.irons_spellbooks.unlock.SpellUnlockAttachments')
+    var donnees = joueur.getData(UnlockAttachJ.UNLOCKS)
+    return !!donnees.isSpellUnlocked(ResourceLocationJ.tryParse(id))
+  } catch (e) {
+    if (!coursAvertiCodex) { coursAvertiCodex = true; console.error('[cours] lecture du Spell Codex impossible, suivi interne utilisé : ' + e) }
+  }
+  try { return String(joueur.persistentData.getString(COURS_CLE)).indexOf('|' + id + '|') >= 0 } catch (e2) {}
+  return false
+}
+
+// Donne au joueur le premier sort de son ordre qu'il n'a pas. Retourne { etat: 'ok'|'tout'|'aucune_classe', id }.
+function coursDonner(server, joueur) {
+  var classe = classeDe(joueur)
+  if (!classe) return { etat: 'aucune_classe' }
+  var ordre = coursOrdre(classe)
+  var essais = 0
+  for (var i = 0; i < ordre.length && essais < 3; i++) {
+    var id = ordre[i]
+    if (coursADejaLeSort(joueur, id)) continue
+    essais++
+    cmd(server, 'specs_codex spell unlock ' + joueur.username + ' ' + id)
+    var ok = true
+    try { if (UnlockAttachJ) ok = coursADejaLeSort(joueur, id) } catch (e) {}
+    if (!ok) continue // le Codex a refusé ce sort : on passe au suivant
+    try { joueur.persistentData.putString(COURS_CLE, String(joueur.persistentData.getString(COURS_CLE)) + '|' + id + '|') } catch (e2) {}
+    return { etat: 'ok', id: id }
+  }
+  return { etat: 'tout' }
+}
+
+function coursDimensionOk(joueur) {
+  var d = null
+  try { d = String(joueur.level.dimension) } catch (e) {}
+  if (!d || d === 'undefined' || d === 'null') { try { d = String(joueur.level.getDimension()) } catch (e2) {} }
+  if (!d || d === 'undefined' || d === 'null') return true
+  return d.indexOf('overworld') >= 0
+}
+
+// Élèves (non opérateurs) dans la sphère de centre (cx, cy, cz).
+function coursEleves(server, cx, cy, cz, rayon) {
+  var res = []
+  var joueurs = server.players
+  for (var i = 0; i < joueurs.length; i++) {
+    var p = joueurs[i]
+    try {
+      if (p.hasPermissions(2)) continue
+      if (!coursDimensionOk(p)) continue
+      var dx = p.x - cx, dy = p.y - cy, dz = p.z - cz
+      if (dx * dx + dy * dy + dz * dz <= rayon * rayon) res.push(p)
+    } catch (e) {}
+  }
+  return res
+}
+
+function cmdCours(ctx, cx, cy, cz, rayon) {
+  try {
+    var server = ctx.source.server
+    var eleves = coursEleves(server, cx, cy, cz, rayon)
+    if (eleves.length === 0) {
+      retour(ctx, 'Aucun élève dans la zone (' + Math.round(cx) + ' ' + Math.round(cy) + ' ' + Math.round(cz) + ', rayon ' + rayon + '). Les opérateurs sont ignorés.')
+      return 0
+    }
+    var donnes = 0
+    for (var i = 0; i < eleves.length; i++) {
+      var el = eleves[i]
+      var r = coursDonner(server, el)
+      if (r.etat === 'ok') {
+        donnes++
+        var parts = r.id.split(':')
+        el.tell(Text.translate('mcrp.msg.cours_sort', Text.translate('spell.' + parts[0] + '.' + parts[1]).gold()).green())
+        retour(ctx, el.username + ' (' + classeDe(el).nom + ') : ' + r.id)
+      } else if (r.etat === 'tout') {
+        retour(ctx, el.username + ' : a déjà tous les sorts de la liste.')
+      } else {
+        retour(ctx, el.username + ' : pas de classe, ignoré.')
+      }
+    }
+    retour(ctx, donnes + '/' + eleves.length + ' élève(s) ont reçu un sort.')
+    return donnes
+  } catch (e) {
+    console.error('[cours] Erreur : ' + e)
+    retour(ctx, 'Erreur dans /cours (voir le journal du serveur).')
+    return 0
+  }
+}
+
+// /cours ordre <joueur> : affiche l'ordre de priorité de sa classe (✔ = sort déjà reçu).
+function cmdCoursOrdre(ctx, cible) {
+  var classe = classeDe(cible)
+  if (!classe) { retour(ctx, cible.username + ' n\'a pas de classe.'); return 0 }
+  var ordre = coursOrdre(classe)
+  retour(ctx, 'Ordre de priorité de ' + classe.nom + ' (' + ordre.length + ' sorts) :')
+  var ligne = ''
+  for (var i = 0; i < ordre.length; i++) {
+    ligne += (i + 1) + '. ' + (coursADejaLeSort(cible, ordre[i]) ? '✔ ' : '') + ordre[i] + '   '
+    if ((i + 1) % 6 === 0 || i === ordre.length - 1) { retour(ctx, ligne); ligne = '' }
+  }
+  return 1
+}
+
 ServerEvents.commandRegistry(function (event) {
   var Commands = event.commands
   var Arguments = event.arguments
   var estModo = function (source) { return source.hasPermission(2) }
+
+  // /cours : un sort pour chaque élève de la zone de cours ; /cours ici : autour du professeur ; /cours ordre <joueur>
+  event.register(
+    Commands.literal('cours')
+      .requires(estModo)
+      .executes(function (ctx) { return cmdCours(ctx, COURS.X, COURS.Y, COURS.Z, COURS.RAYON) })
+      .then(Commands.literal('ici')
+        .executes(function (ctx) {
+          var pr = ctx.source.player
+          if (!pr) { retour(ctx, 'Commande à lancer par un joueur.'); return 0 }
+          return cmdCours(ctx, pr.x, pr.y, pr.z, COURS.RAYON)
+        }))
+      .then(Commands.literal('ordre')
+        .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+          .executes(function (ctx) { return cmdCoursOrdre(ctx, Arguments.PLAYER.getResult(ctx, 'joueur')) })))
+  )
 
   event.register(
     Commands.literal('classe')
