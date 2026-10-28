@@ -1146,6 +1146,60 @@ function corrigerEcoleAffichee(liste, stack) {
   } catch (e) {}
 }
 
+// Grimoires non encore vidés (dans un coffre, JEI, le sol...) : leurs sorts d'origine seront retirés dès qu'un joueur
+// les prend ; l'infobulle ne les affiche donc pas. Un grimoire déjà traité (marque « mcrp_grimoire_vide ») montre
+// normalement les sorts que le joueur y a inscrits.
+// Iron's écrit : « N Emplacements », une ligne vide, « Appuyer sur [touche] », une ligne vide, un titre, puis un sort par ligne.
+var GrimoireC = null, CustomDataC = null, ComposantsC = null
+try {
+  GrimoireC = Java.loadClass('io.redspace.ironsspellbooks.item.SpellBook')
+  CustomDataC = Java.loadClass('net.minecraft.world.item.component.CustomData')
+  ComposantsC = Java.loadClass('net.minecraft.core.component.DataComponents')
+} catch (e) {}
+
+function grimoireMarque(stack) {
+  try {
+    var cd = stack.get(ComposantsC.CUSTOM_DATA)
+    return !!cd && cd.copyTag().getBoolean('mcrp_grimoire_vide')
+  } catch (e) { return false }
+}
+
+function masquerSortsDuGrimoire(liste, stack) {
+  try {
+    if (!GrimoireC || !GrimoireC.class.isInstance(stack.getItem())) return
+    if (grimoireMarque(stack)) return
+    var c = ISpellContainer.get(stack)
+    if (c === null || c === undefined) return
+    var actifs = c.getActiveSpells()
+    if (actifs.size() === 0) return
+    var I18n = Java.loadClass('net.minecraft.client.resources.language.I18n')
+    var modele = String(I18n.get('tooltip.irons_spellbooks.spellbook_spell_count'))
+    var fin = modele.indexOf('%s') >= 0 ? modele.substring(modele.indexOf('%s') + 2) : modele
+    var debut = -1
+    for (var i = 0; i < liste.size(); i++) {
+      var t = ''
+      try { t = String(liste.get(i).getString()) } catch (e0) { continue }
+      if (t.length > 0 && t.slice(-fin.length) === fin) { debut = i; break }
+    }
+    if (debut < 0) return
+    // Fin du bloc : la ligne vide qui précède « Équipé comme Grimoire » (ou la fin de la liste d'infobulle).
+    var noms = []
+    for (var k = 0; k < actifs.size(); k++) {
+      var id = String(actifs.get(k).getSpell().getSpellId())
+      var p = id.indexOf(':')
+      noms.push(String(I18n.get('spell.' + id.substring(0, p) + '.' + id.substring(p + 1))))
+    }
+    var dernier = -1
+    for (var j = debut + 1; j < liste.size(); j++) {
+      var tj = ''
+      try { tj = String(liste.get(j).getString()) } catch (e1) { continue }
+      for (var n = 0; n < noms.length; n++) if (tj.indexOf(noms[n]) >= 0) { dernier = j; break }
+    }
+    if (dernier < 0) return
+    for (var r = dernier; r > debut; r--) liste.remove(r)
+  } catch (e) {}
+}
+
 function infobulleSorts(event) {
   if (!SORTS_ACTIF) return
   try {
@@ -1157,6 +1211,7 @@ function infobulleSorts(event) {
     } catch (e1) {
       idObjet = String(st.getItem().builtInRegistryHolder().key().location())
     }
+    masquerSortsDuGrimoire(event.getToolTip(), st)
     if (!/scroll/.test(idObjet)) return
     for (var r = 0; r < RESTRICTIONS.length; r++) {
       if (RESTRICTIONS[r].regle.test(idObjet)) return
