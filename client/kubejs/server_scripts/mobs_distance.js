@@ -14,7 +14,7 @@ var MD = {
   ARMURE: 0.1,              // idem pour l'armure (points)
   PLAFOND: 3.0,             // plafond du bonus vie / dégâts : +300 %
   PLAFOND_ARMURE: 10,       // plafond du bonus d'armure (points)
-  FACTEUR_BOSS: 1.0,        // part du bonus reçue par les boss (1 = identique aux autres mobs ; 0.5 = moitié). Les boss de ZONE (tags boss_zone / pirate_zone) sont exclus.
+  FACTEUR_BOSS: 0.5,        // part du bonus reçue par les boss (1 = identique aux autres mobs ; 0.5 = moitié). Les boss de ZONE (tags boss_zone / pirate_zone) sont exclus.
   SEUIL_BOSS_VIE: 150,      // un mob avec au moins autant de vie de base est traité comme un boss
   // Dimensions concernées. mult = multiplicateur du bonus ; centre = point de départ (null = spawn de l'Overworld).
   // Nether : distance mesurée en blocs du Nether depuis les coordonnées du spawn de l'Overworld, bonus divisé par 8.

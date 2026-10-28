@@ -1,5 +1,5 @@
 {
- "version": "2026-10-28T00:30:44.578Z",
+ "version": "2026-10-28T00:33:03.623Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -607,7 +607,7 @@
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
-   "sha1": "83f2a771e94d4f5233137f5a1a357a2f7ffd001d",
+   "sha1": "57ca0c61fb0d2a54d0b686df9268a4eab6b25e5d",
    "size": 11624
   },
   {
