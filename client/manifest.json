@@ -1,5 +1,5 @@
 {
- "version": "2026-10-28T15:40:12.608Z",
+ "version": "2026-10-28T15:48:52.040Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -159,6 +159,81 @@
    "path": "kubejs/assets/mcrp/textures/entity/edrik.png",
    "sha1": "f024a1752dd9085080b6608ae65344f2b5e04476",
    "size": 3037
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/eleve_00.png",
+   "sha1": "dece0e16495d32694727732d2d2a48b4f96660be",
+   "size": 3270
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/eleve_01.png",
+   "sha1": "4912e049b4441f8f0b2938fee4308b61579368b1",
+   "size": 3190
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/eleve_02.png",
+   "sha1": "9d6b251fb3a65f10bd1a490f2deb5889ba6cc018",
+   "size": 3294
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/eleve_03.png",
+   "sha1": "67ef91ac0aaaf763a2551564096eaa4f16249977",
+   "size": 3244
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/eleve_04.png",
+   "sha1": "2bfdee02c9e751e62a895d5c1cef7e78a48f3b30",
+   "size": 1994
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/eleve_05.png",
+   "sha1": "2a0bd9cc8274e7159717364b598be08beaab3d79",
+   "size": 2002
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/eleve_06.png",
+   "sha1": "145774d84b8cfe8f714dd4713f198b07dd27a965",
+   "size": 1968
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/eleve_07.png",
+   "sha1": "54eea58937b8d621f840d748d090c46d994aa8a4",
+   "size": 1975
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/eleve_08.png",
+   "sha1": "9e11762c79e8a25768ff143d6f599d33e7f6fb2d",
+   "size": 2875
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/eleve_09.png",
+   "sha1": "235f74c719f9efa69a4d31740dad98cc53d806c3",
+   "size": 2709
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/eleve_10.png",
+   "sha1": "5e9bc3bb00dfb8ec5fa7d6562dd14c0bc794a487",
+   "size": 2808
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/eleve_11.png",
+   "sha1": "d4113b6a706d056a9278698b886959661ff29be5",
+   "size": 2800
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/eleve_12.png",
+   "sha1": "cc809c8e44f454763201a79242a39d9cd9d98fd2",
+   "size": 3091
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/eleve_13.png",
+   "sha1": "1c31309bad567f1a421b649c7a8cf913d7cc5376",
+   "size": 3204
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/eleve_14.png",
+   "sha1": "6eaa2942784a406758d37240e492f3215e0a069a",
+   "size": 3073
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/gorm.png",
@@ -487,253 +562,253 @@
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y00.png",
-   "sha1": "da2648d6914d2fa2f738bcc0e887f8e8574b0384",
-   "size": 2626
+   "sha1": "1ea604e7229d37228f71fe0fd5323c0c338d7090",
+   "size": 10654
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y01.png",
-   "sha1": "3cf852af6049c659225df7747abc113ddd8ba750",
-   "size": 2632
+   "sha1": "0e3d1d4d767e9193e4a0ce0d58d0f95964626f35",
+   "size": 9020
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y02.png",
-   "sha1": "15103bbef939ce8a9f569a499aece63940d232e1",
-   "size": 2662
+   "sha1": "61b28b350560966f266a7225b4c095b2b00f27f2",
+   "size": 9385
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y03.png",
-   "sha1": "45adefb6e64b5d3fa402af0f1ffbcdce18979d13",
-   "size": 2541
+   "sha1": "4aee3a82a94e441313fe8e70d66812f336ddc151",
+   "size": 8962
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y04.png",
-   "sha1": "faef68b7acfd60c471f76c9096e84ab36c93c923",
-   "size": 2650
+   "sha1": "0c8051b08df12a497da1ac45107d8785146ae8c1",
+   "size": 8971
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y05.png",
-   "sha1": "1707896be33eefd184f6ea19b232391ec9aa9e07",
-   "size": 2767
+   "sha1": "281273ad23483d314f092aa9582a7bde1bb64ff6",
+   "size": 9377
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y06.png",
-   "sha1": "3b124b2c886768b9cf340764f2ed6479b2f199e3",
-   "size": 2776
+   "sha1": "8a4aaa6d6b34003aef1eaa5d2878ee315a264053",
+   "size": 9827
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y07.png",
-   "sha1": "64379334fbfd392b19dea376fec0f074874533d2",
-   "size": 2552
+   "sha1": "77837807792004e294906c3d6201c3e34be6580e",
+   "size": 11106
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y08.png",
-   "sha1": "5812ce5c4a7740f566a1490c65be5fb83162e861",
-   "size": 2783
+   "sha1": "14da48976d324906527a1383cc3109514c9a8163",
+   "size": 11778
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y09.png",
-   "sha1": "02a1f6c381584151ba8d21626fb0c8697a6b2156",
-   "size": 2626
+   "sha1": "965d795973369abd1a2affa5d89515aee4e42796",
+   "size": 8864
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y10.png",
-   "sha1": "f7b8f9ae928dabe3af18148f2dfbceb114050cf3",
-   "size": 2715
+   "sha1": "9ae04d68e306092e1c83aea440ba098749fdf1ce",
+   "size": 8624
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y11.png",
-   "sha1": "4f6c5edc1330b4fc1cda60ea642a1ccc07723c76",
-   "size": 2766
+   "sha1": "bd6656458f7dc4bb44be35292f0a98d07b907219",
+   "size": 8074
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y12.png",
-   "sha1": "7db2d4d8e751f88fe67188354a7af15c45895e4f",
-   "size": 2874
+   "sha1": "37c77a718089c0f44e9ae01d2db8230ae83edb2c",
+   "size": 10119
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y13.png",
-   "sha1": "b708f286b8853a364c9b78e9a4970aa9deb366c9",
-   "size": 2877
+   "sha1": "bb2e158abc98bc36da77c16866cd2bd24fe5bfa5",
+   "size": 11046
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y14.png",
-   "sha1": "a10c914b272b2ee3ae9c9ada34ea187d03921f41",
-   "size": 2670
+   "sha1": "945883bcb44b0cc898557a0d87121e1c2b8891b2",
+   "size": 10391
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y15.png",
-   "sha1": "7dabfbb36c750895ed45e08c64d6a166f9220955",
-   "size": 2791
+   "sha1": "f1696eebc7d9817d2046dc1b20c08d1adf961598",
+   "size": 9004
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y16.png",
-   "sha1": "82f370e5c91bb0e27bef6e0825c46db3e2204c87",
-   "size": 2530
+   "sha1": "2d8bad92fc31e07393eb969da43a458a815017e6",
+   "size": 9915
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y17.png",
-   "sha1": "b90bb9d920397e17f3d3f546d664ae8537e5aaff",
-   "size": 2754
+   "sha1": "9a350c5c9301d7ee5971c2af2124db10e1c118f3",
+   "size": 9510
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y18.png",
-   "sha1": "9be92359aecc4878cd3e83f2c8a4bb800b88be6a",
-   "size": 2692
+   "sha1": "7d41ea0591354ac19ef341f3a09f81f14238187a",
+   "size": 9614
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y19.png",
-   "sha1": "ff8caec900e4fdcf1811463715e84e122daf5987",
-   "size": 2806
+   "sha1": "957a40a27578f37b892e90710d94245381440e8b",
+   "size": 9393
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y20.png",
-   "sha1": "9f5e7778f1dea68424ac72e72db3378e2c193295",
-   "size": 2935
+   "sha1": "455b51b92b9871f41cbd5eb92f1105456d8669bc",
+   "size": 10835
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y21.png",
-   "sha1": "3357f7a9a646e0e54ec54c9447eff3e71257b3d5",
-   "size": 3128
+   "sha1": "dd58db1cc7ce798a9a931d01656ea8875882713c",
+   "size": 9284
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y22.png",
-   "sha1": "c9002e585931a944fa5ac4c2d0c62bb56aba997e",
-   "size": 2957
+   "sha1": "649d96754cc9e8c12076b43b85fe955556258608",
+   "size": 9273
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y23.png",
-   "sha1": "cb9b4aa034e22c7dbffe9ab59ad051db7a923d53",
-   "size": 3392
+   "sha1": "9b9e6c794a31bd8a597c5ef5875c216665548dff",
+   "size": 9804
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y24.png",
-   "sha1": "e6e908e18e3765c2845d54fa5248ed4acf5ee7d9",
-   "size": 2783
+   "sha1": "a80d304b70eef2df970636af32018ca47e10e117",
+   "size": 9516
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y25.png",
-   "sha1": "c575d37f2c336f6cd9a90edf3ccbdcf0914c4f64",
-   "size": 3099
+   "sha1": "a44c611761a38c5097f4b98c321f978378a62795",
+   "size": 8703
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y26.png",
-   "sha1": "ce0549e3fd22ecbe02802c4961bf612d40b16de4",
-   "size": 2886
+   "sha1": "695201d17a27d8019ad46f07ff233e15f3755d49",
+   "size": 10919
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y27.png",
-   "sha1": "7377dd1e216e8105575a9e3072fa9b2458cc00bd",
-   "size": 2830
+   "sha1": "822441beb41db059ef6be2d5a91b074efa3d97a4",
+   "size": 9824
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y28.png",
-   "sha1": "f64a22d92955075e6ed968686286bab8c1e805d2",
-   "size": 584
+   "sha1": "482bee3c714df6e93d5e06650c9358c701b59086",
+   "size": 8389
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y29.png",
-   "sha1": "7d007b4abf7f6aed5bf2bebf99bdbe1bafdebbaf",
-   "size": 3038
+   "sha1": "ea09d34858cd51d315b7628e5b325e0f7e2284f6",
+   "size": 8865
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y30.png",
-   "sha1": "284dc255835bed76146ae1084d40d7d7cacc8766",
-   "size": 1921
+   "sha1": "1df0ea5386fa4e51cc0708d1967ceb8d431aaeea",
+   "size": 10695
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y31.png",
-   "sha1": "a5c4cae76404e8fecc9b7f1bff384d36926f18e4",
-   "size": 2737
+   "sha1": "f62b1b87624778ac90ed68a3937c27d5663081ad",
+   "size": 8405
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y32.png",
-   "sha1": "44f22c9b5108b0d9cb8cc729611401b01c081b6c",
-   "size": 2691
+   "sha1": "35f4d4504a7a7313369b1860ed37f6889d0b7d1d",
+   "size": 8379
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y33.png",
-   "sha1": "097672fd7727fb007a460332938c818029e5e311",
-   "size": 2928
+   "sha1": "ca5cf97a4fd0c54418bb887fb8d75aaef71738e1",
+   "size": 9427
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y34.png",
-   "sha1": "c87e735839c3c7632ea456852870fa18394bce5b",
-   "size": 2925
+   "sha1": "773731fb5b07ce82ebb4dd7e5a6e8a4c57818929",
+   "size": 10811
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y35.png",
-   "sha1": "6eeecb994e96877db8e2b31262ed6927118b371c",
-   "size": 2985
+   "sha1": "43db2426c3415e30597dc283bbc2c8d1ac838f95",
+   "size": 8623
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y36.png",
-   "sha1": "371c91749519065a484aca0b3ed128e3640166b5",
-   "size": 2895
+   "sha1": "0791628bdb983b54ee4ed38571e45614c617a20c",
+   "size": 10000
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y37.png",
-   "sha1": "d74935081a0b0462eb8065013f806324013418ea",
-   "size": 2729
+   "sha1": "24fad06e4775a04de03986236c27eb8e741d0e26",
+   "size": 12452
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y38.png",
-   "sha1": "3510c34cc86390f15a46d6c7b55a70dccc3136fb",
-   "size": 2796
+   "sha1": "b907c8d2406c875c45694fe995dd9315de19d8bc",
+   "size": 9953
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y39.png",
-   "sha1": "ae897f41d8becce9d8369b8df3605efaf6619b5b",
-   "size": 2828
+   "sha1": "c321c0da616eda1cfacc3552877931943ce2437e",
+   "size": 9380
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y40.png",
-   "sha1": "987de0e55ed953bb9a22121f27badcb8e2f23de2",
-   "size": 3164
+   "sha1": "332adc6412b07496e1869630ebf1a41277f1af1e",
+   "size": 9882
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y41.png",
-   "sha1": "e83fdb6bad279795accf9f5e413f364cf12f0f0e",
-   "size": 2712
+   "sha1": "896864770ed6d836484f41b38dcbb7d4cf27a6a7",
+   "size": 10498
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y42.png",
-   "sha1": "6a4c3c022c5a2db5fd2b321609a4c14d57be3476",
-   "size": 2842
+   "sha1": "f4d6b39df6cd4cad5e3e4552bb117495ba56d386",
+   "size": 10290
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y43.png",
-   "sha1": "59b9c9541fd4648276018a6260e9cbd329fc6f18",
-   "size": 2926
+   "sha1": "b915324214cd2ade852581faabec9a514da7db8b",
+   "size": 10477
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y44.png",
-   "sha1": "62c887630fc7d1a5340fa724ee823ca80306cc2f",
-   "size": 2863
+   "sha1": "f223a0f212b16c9ce4e7ec791efd936e804d3b1b",
+   "size": 9262
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y45.png",
-   "sha1": "749d19dea6d541268811936bc0a04e03b7d33ff6",
-   "size": 2670
+   "sha1": "15ddb97b4bf7485f1c785950b5fdf4b6f1e48f39",
+   "size": 9458
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y46.png",
-   "sha1": "2d62eef67d5db7551059cb48770de5ca630987fc",
-   "size": 2789
+   "sha1": "62d57a728660fa00baa6fa6ac85ee7ad2a14ff8c",
+   "size": 11117
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y47.png",
-   "sha1": "b6f367420097c141afeeef7608ab313ec43a7eef",
-   "size": 2928
+   "sha1": "66275d4cdd1d59aeaf9eee0e21288c1db301c35e",
+   "size": 8902
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y48.png",
-   "sha1": "56aefd27d65279a21cc9ef9ce875e3018c5f4664",
-   "size": 2870
+   "sha1": "3496278b39afd90ee0ed6beea92070e887501e8a",
+   "size": 8765
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/pnj_y49.png",
-   "sha1": "46a02f9648c6743d4df5ff8ed2642eb165183be8",
-   "size": 2841
+   "sha1": "f1d9460d80decd7bed48a12257181c6cbf972d97",
+   "size": 10583
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/ser_aldric.png",
