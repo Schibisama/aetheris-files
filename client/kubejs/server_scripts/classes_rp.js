@@ -914,55 +914,60 @@ function cmdAdminCompteur(ctx, cible) {
 }
 
 
-// ───────────── /cours : les professeurs donnent un sort à chaque élève, dans un ordre de priorité ─────────────
-// Un professeur (opérateur) lance /cours. Chaque élève présent dans le dôme (sphère) reçoit LE PREMIER sort de son
-// ordre de priorité qu'il n'a pas encore ; celui qui a déjà le n°1 reçoit le n°2, etc. Un sort par commande.
-// L'ordre est propre à chaque classe : 1) COURS_COMMUN (Rappel en tête), 2) COURS_PAR_CLASSE (ordre voulu pour une classe),
-// 3) les autres sorts de la classe du plus courant au plus rare, 4) les sorts ouverts à tous. Les sorts de l'école Indicible
-// (Occulte / Prismatique) ne sont jamais donnés. Pour changer l'ordre : modifier COURS_COMMUN et COURS_PAR_CLASSE.
+// ───────────── /cours : les professeurs donnent les sorts « pour tous », un par un, dans un ordre de priorité ─────────────
+// Les sorts ouverts à tous (liste « * » de SORTS_PAR_CLASSE) ne sont plus offerts au départ : un professeur (opérateur) lance
+// /cours. Chaque élève présent dans le dôme (sphère) reçoit LE PREMIER sort de COURS_ORDRE qu'il n'a pas encore : celui qui a
+// déjà le n°1 reçoit le n°2, etc. Un sort par commande et par élève. Les sorts de l'école Indicible (Occulte / Prismatique,
+// dont le Portail Prismatique) ne sont jamais donnés. Pour changer l'ordre : modifier COURS_ORDRE (les sorts « pour tous »
+// qui n'y figurent pas sont ajoutés à la fin, du plus courant au plus rare).
 var COURS = { X: 1088, Y: 543, Z: 1350, RAYON: 16, DIMENSION: 'minecraft:overworld' }
-var COURS_COMMUN = ['irons_spellbooks:recall']
-var COURS_PAR_CLASSE = {
-  // 'Pyromancien': ['irons_spellbooks:firebolt', 'irons_spellbooks:fireball'],
-}
+var COURS_ORDRE = [
+  'irons_spellbooks:recall',                    // 1. Rappel
+  'hazennstuff:parry',                          // 2. Parade
+  'apprenticecodex:mage_light',                 // 3. Lumière de Mage
+  'apprenticecodex:tamers_pocket',              // 4. Poche du Dompteur
+  'apprenticecodex:call_broom',                 // 5. Appel du Balai
+  'apprenticecodex:companion_trunk',            // 6. Coffre de Compagnon
+  'apprenticecodex:personal_shelf',             // 7. Étagère Personnelle
+  'woodwalkers_spellbooks:shapeshifting',       // 8. Métamorphose
+  'apprenticecodex:mana_mending',               // 9. Réparation de Mana
+  'apprenticecodex:manifestation_grimoire'      // 10. Grimoire de Manifestation
+]
 var COURS_ECOLES_EXCLUES = /eldritch|occult|ritual|prismatic/
-var COURS_CACHE = {}
+var COURS_CACHE = null
 var COURS_CLE = 'cours_sorts'
 var UnlockAttachJ = null
 var coursAvertiCodex = false
 
-function coursOrdre(classe) {
-  if (COURS_CACHE[classe.nom]) return COURS_CACHE[classe.nom]
-  var ecoles = ecolesDeLaClasse(classe)
-  var cands = [], idx = {}
+// Ordre de priorité (identique pour tous) : COURS_ORDRE, puis les autres sorts « pour tous », hors Indicible.
+function coursOrdre() {
+  if (COURS_CACHE) return COURS_CACHE
+  var existe = {}
   var liste = SpellRegistryJ.getEnabledSpells()
   for (var i = 0; i < liste.size(); i++) {
     try {
       var sort = liste.get(i)
       var id = String(sort.getSpellId())
-      var ecole = String(sort.getSchoolType().getId())
-      if (COURS_ECOLES_EXCLUES.test(ecole) && COURS_COMMUN.indexOf(id) < 0) continue // Indicible exclu, sauf Rappel (COURS_COMMUN)
       var perm = SORTS_PAR_CLASSE[id]
-      var propre = perm ? classeAutorisee(perm, classe.nom) : (ecoles.indexOf(ecole) !== -1)
-      if (!propre) continue
+      if (!perm || perm.indexOf('*') === -1) continue
+      var ecole = String(sort.getSchoolType().getId())
       var rar = 0
       try { rar = Number(sort.getRarity(1).getValue()) } catch (e0) {}
-      var c = { id: id, rar: rar, uni: !!(perm && perm.indexOf('*') !== -1) }
-      cands.push(c); idx[id] = c
+      existe[id] = { id: id, rar: rar, indicible: COURS_ECOLES_EXCLUES.test(ecole) }
     } catch (e) { /* sort ignoré */ }
   }
-  var cmp = function (a, b) { return (a.rar - b.rar) || (a.id < b.id ? -1 : (a.id > b.id ? 1 : 0)) }
   var ordre = [], vu = {}
-  var ajouter = function (id) { if (idx[id] && !vu[id]) { vu[id] = true; ordre.push(id) } }
-  for (var a = 0; a < COURS_COMMUN.length; a++) ajouter(COURS_COMMUN[a])
-  var perso = COURS_PAR_CLASSE[classe.nom] || []
-  for (var b = 0; b < perso.length; b++) ajouter(perso[b])
-  var propres = [], univ = []
-  for (var d = 0; d < cands.length; d++) (cands[d].uni ? univ : propres).push(cands[d])
-  propres.sort(cmp); univ.sort(cmp)
-  for (var e1 = 0; e1 < propres.length; e1++) ajouter(propres[e1].id)
-  for (var f = 0; f < univ.length; f++) ajouter(univ[f].id)
-  COURS_CACHE[classe.nom] = ordre
+  var ajouter = function (id) {
+    if (!existe[id] || vu[id]) return
+    if (existe[id].indicible && COURS_ORDRE.indexOf(id) < 0) return // Indicible exclu, sauf s'il est dans COURS_ORDRE (Rappel)
+    vu[id] = true; ordre.push(id)
+  }
+  for (var a = 0; a < COURS_ORDRE.length; a++) ajouter(COURS_ORDRE[a])
+  var reste = []
+  for (var id2 in existe) reste.push(existe[id2])
+  reste.sort(function (x, y) { return (x.rar - y.rar) || (x.id < y.id ? -1 : (x.id > y.id ? 1 : 0)) })
+  for (var f = 0; f < reste.length; f++) ajouter(reste[f].id)
+  COURS_CACHE = ordre
   return ordre
 }
 
@@ -983,7 +988,7 @@ function coursADejaLeSort(joueur, id) {
 function coursDonner(server, joueur) {
   var classe = classeDe(joueur)
   if (!classe) return { etat: 'aucune_classe' }
-  var ordre = coursOrdre(classe)
+  var ordre = coursOrdre()
   var essais = 0
   for (var i = 0; i < ordre.length && essais < 3; i++) {
     var id = ordre[i]
@@ -1055,12 +1060,12 @@ function cmdCours(ctx, cx, cy, cz, rayon) {
   }
 }
 
-// /cours ordre <joueur> : affiche l'ordre de priorité de sa classe (✔ = sort déjà reçu).
+// /cours ordre <joueur> : affiche l'ordre de priorité (✔ = sort déjà reçu par ce joueur).
 function cmdCoursOrdre(ctx, cible) {
   var classe = classeDe(cible)
   if (!classe) { retour(ctx, cible.username + ' n\'a pas de classe.'); return 0 }
-  var ordre = coursOrdre(classe)
-  retour(ctx, 'Ordre de priorité de ' + classe.nom + ' (' + ordre.length + ' sorts) :')
+  var ordre = coursOrdre()
+  retour(ctx, 'Ordre de priorité (' + ordre.length + ' sorts pour tous) :')
   var ligne = ''
   for (var i = 0; i < ordre.length; i++) {
     ligne += (i + 1) + '. ' + (coursADejaLeSort(cible, ordre[i]) ? '✔ ' : '') + ordre[i] + '   '
