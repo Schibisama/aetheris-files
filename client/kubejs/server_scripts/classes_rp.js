@@ -1076,44 +1076,49 @@ ItemEvents.rightClicked(function (event) {
   event.cancel()
 })
 
-// ───────────── Grimoires : aucun sort inscrit ─────────────
-// Un grimoire trouvé (coffre, mob...) contient des sorts : n'importe qui pourrait les utiliser hors de sa classe
-// et sans les avoir découverts. Tout grimoire est donc vidé de ses sorts (sauf pour les testeurs) ;
-// seuls restent ses emplacements. Contrôle toutes les 20 ticks : inventaire, curseur et emplacements Curios.
-var GrimoireJ = null, ISpellContainerJ = null, SpellContainerJ = null, CuriosApiJ = null
+// ───────────── Grimoires : seulement des sorts de sa classe ─────────────
+// Un grimoire trouvé (coffre, mob...) ou garni sur la table d'inscription ne garde que les sorts de la classe
+// de son porteur : les autres en sont retirés. Contrôle toutes les 20 ticks : inventaire, curseur, Curios.
+// Les testeurs sont exemptés ; un joueur sans classe garde des grimoires vides.
+var GrimoireJ = null, ISpellContainerJ = null, CuriosApiJ = null
 try {
   GrimoireJ = Java.loadClass('io.redspace.ironsspellbooks.item.SpellBook')
   ISpellContainerJ = Java.loadClass('io.redspace.ironsspellbooks.api.spells.ISpellContainer')
-  SpellContainerJ = Java.loadClass('io.redspace.ironsspellbooks.capabilities.magic.SpellContainer')
 } catch (e) {
-  console.error('[classes_rp] Vidage des grimoires indisponible : ' + e)
+  console.error('[classes_rp] Nettoyage des grimoires indisponible : ' + e)
 }
 try { CuriosApiJ = Java.loadClass('top.theillusivec4.curios.api.CuriosApi') } catch (e) { CuriosApiJ = null }
 
-function viderGrimoire(pile) {
+function nettoyerGrimoire(pile, classe) {
   try {
     if (!pile || pile.isEmpty()) return
     if (!GrimoireJ.class.isInstance(pile.getItem())) return
     var c = ISpellContainerJ.get(pile)
     if (c === null || c === undefined) return
     if (c.getActiveSpellCount() <= 0) return
-    var vide
-    try { vide = new SpellContainerJ(c.getMaxSpellCount(), c.isSpellWheel(), c.mustEquip(), c.isImproved()) }
-    catch (e0) { vide = ISpellContainerJ.create(c.getMaxSpellCount(), c.isSpellWheel(), c.mustEquip()) }
-    ISpellContainerJ.set(pile, vide)
+    var actifs = c.getActiveSpells()
+    var aRetirer = []
+    for (var i = 0; i < actifs.size(); i++) {
+      var id = String(actifs.get(i).getSpell().getSpellId())
+      if (!classe || sortInterditPourJoueur(classe, id)) aRetirer.push(Number(actifs.get(i).index()))
+    }
+    if (aRetirer.length === 0) return
+    var m = c.mutableCopy()
+    for (var k = 0; k < aRetirer.length; k++) m.removeSpellAtIndex(aRetirer[k])
+    ISpellContainerJ.set(pile, m.toImmutable())
   } catch (e) {}
 }
 
-function viderGrimoiresDuJoueur(joueur) {
+function nettoyerGrimoiresDuJoueur(joueur, classe) {
   var inv = joueur.getInventory()
-  for (var i = 0; i < inv.getContainerSize(); i++) viderGrimoire(inv.getItem(i))
-  try { viderGrimoire(joueur.containerMenu.getCarried()) } catch (e1) {}
+  for (var i = 0; i < inv.getContainerSize(); i++) nettoyerGrimoire(inv.getItem(i), classe)
+  try { nettoyerGrimoire(joueur.containerMenu.getCarried(), classe) } catch (e1) {}
   if (CuriosApiJ) {
     try {
       var opt = CuriosApiJ.getCuriosInventory(joueur)
       if (opt.isPresent()) {
         var eq = opt.get().getEquippedCurios()
-        for (var j = 0; j < eq.getSlots(); j++) viderGrimoire(eq.getStackInSlot(j))
+        for (var j = 0; j < eq.getSlots(); j++) nettoyerGrimoire(eq.getStackInSlot(j), classe)
       }
     } catch (e2) {}
   }
@@ -1127,16 +1132,16 @@ ServerEvents.tick(function (event) {
   for (var i = 0; i < joueurs.length; i++) {
     try {
       if (estTest(joueurs[i])) continue
-      viderGrimoiresDuJoueur(joueurs[i])
+      nettoyerGrimoiresDuJoueur(joueurs[i], classeDe(joueurs[i]))
     } catch (e) {}
   }
 })
 
-// ───────────── Parchemins et pages de Codex : uniquement ceux de sa classe ─────────────
-// Un joueur ne peut posséder que des sorts de sa classe, quel que soit le moyen d'obtention :
-// parchemin ou page de Codex d'un autre sort -> retiré de l'inventaire dès qu'il est ramassé.
+// ───────────── Parchemins et pages de Codex : ramassables, mais inutilisables hors classe ─────────────
+// Un joueur peut posséder n'importe quel parchemin ou page. Les sorts d'une autre classe ne peuvent ni être lancés
+// (règle de lancer plus haut), ni être inscrits dans un grimoire (grimoire nettoyé ci-dessus), ni être appris
+// par une page de Codex (clic droit annulé ci-dessous).
 var ParcheminJ = null, PageCodexJ = null
-try { ParcheminJ = Java.loadClass('io.redspace.ironsspellbooks.item.Scroll') } catch (e) {}
 try { PageCodexJ = Java.loadClass('com.specs.irons_spellbooks.item.CodexPageItem') } catch (e) {}
 
 function sortInterditPourJoueur(classe, id) {
@@ -1144,60 +1149,21 @@ function sortInterditPourJoueur(classe, id) {
   return CACHE_SET_INTERDITS[classe.nom][id] === true
 }
 
-function idsSortsDeLaPile(pile) {
-  var ids = []
+ItemEvents.rightClicked(function (event) {
   try {
-    var obj = pile.getItem()
-    if (ParcheminJ && ParcheminJ.class.isInstance(obj)) {
-      var c = ISpellContainerJ.get(pile)
-      if (c) {
-        var l = c.getActiveSpells()
-        for (var i = 0; i < l.size(); i++) ids.push(String(l.get(i).getSpell().getSpellId()))
-      }
-    } else if (PageCodexJ && PageCodexJ.class.isInstance(obj)) {
-      var r = PageCodexJ.getSpellId(pile)
-      if (r) ids.push(String(r))
+    if (!PageCodexJ) return
+    var joueur = event.player
+    var pile = event.item
+    if (!pile || pile.empty || !PageCodexJ.class.isInstance(pile.getItem())) return
+    if (estTest(joueur)) return
+    var classe = classeDe(joueur)
+    if (!classe) return
+    var r = PageCodexJ.getSpellId(pile)
+    if (r && sortInterditPourJoueur(classe, String(r))) {
+      event.cancel()
+      joueur.tell(Text.red('Ce sort n\'appartient pas à ta classe : tu ne peux pas l\'apprendre.'))
     }
   } catch (e) {}
-  return ids
-}
-
-function retirerSortsEtrangers(joueur, classe) {
-  var inv = joueur.getInventory()
-  var retire = 0
-  for (var i = 0; i < inv.getContainerSize(); i++) {
-    var pile = inv.getItem(i)
-    if (!pile || pile.isEmpty()) continue
-    var ids = idsSortsDeLaPile(pile)
-    for (var k = 0; k < ids.length; k++) {
-      if (sortInterditPourJoueur(classe, ids[k])) { pile.setCount(0); retire++; break }
-    }
-  }
-  try {
-    var curseur = joueur.containerMenu.getCarried()
-    if (curseur && !curseur.isEmpty()) {
-      var idc = idsSortsDeLaPile(curseur)
-      for (var m = 0; m < idc.length; m++) {
-        if (sortInterditPourJoueur(classe, idc[m])) { curseur.setCount(0); retire++; break }
-      }
-    }
-  } catch (e1) {}
-  if (retire > 0) joueur.tell(Text.red('Ce sort n\'appartient pas à ta classe : le parchemin s\'est dissipé.'))
-}
-
-ServerEvents.tick(function (event) {
-  var serveur = event.server
-  if (serveur.tickCount % 20 !== 13) return
-  var joueurs = serveur.players
-  for (var i = 0; i < joueurs.length; i++) {
-    try {
-      var j = joueurs[i]
-      if (estTest(j)) continue
-      var classe = classeDe(j)
-      if (!classe) continue
-      retirerSortsEtrangers(j, classe)
-    } catch (e) {}
-  }
 })
 
 // Après l'usage d'un parchemin / d'une page de Codex / d'un grimoire, et régulièrement : on reverrouille les sorts
