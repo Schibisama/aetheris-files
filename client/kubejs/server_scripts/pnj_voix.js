@@ -63,6 +63,12 @@ ItemEvents.entityInteracted(function (event) {
     var maintenant = Date.now()
     if (voixDernier[cle] && maintenant - voixDernier[cle] < VOIX_DELAI_MS) return
     voixDernier[cle] = maintenant
+    if (nom.indexOf('mcrp:pnj.') === 0) {
+      // Doublage d'une réplique (fichier mcrp/sounds/pnj) : on coupe la précédente et on joue chez le joueur, plein volume
+      event.server.runCommandSilent('stopsound ' + joueur.username + ' voice')
+      event.server.runCommandSilent('execute at ' + joueur.username + ' run playsound ' + nom + ' voice ' + joueur.username + ' ~ ~ ~ 1 1')
+      return
+    }
     event.server.runCommandSilent('playsound ' + nom + ' voice ' + joueur.username + ' ' + cible.x + ' ' + cible.y + ' ' + cible.z + ' ' + VOIX_VOLUME + ' 1')
   } catch (err) {
     console.error('[pnj_voix] ' + err)

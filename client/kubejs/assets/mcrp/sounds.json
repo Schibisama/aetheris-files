@@ -42,5 +42,237 @@
       }
     ],
     "subtitle": "mcrp.subtitle.npc_parole"
+  },
+  "pnj.capitaine_morrow__accueil": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/capitaine_morrow__accueil",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.capitaine_morrow__histoire": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/capitaine_morrow__histoire",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.capitaine_morrow__jambe": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/capitaine_morrow__jambe",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.capitaine_morrow__longuevue": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/capitaine_morrow__longuevue",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.capitaine_morrow__tresor": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/capitaine_morrow__tresor",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.hiro_vieux_sage__accueil": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/hiro_vieux_sage__accueil",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.hiro_vieux_sage__ames": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/hiro_vieux_sage__ames",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.hiro_vieux_sage__legende": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/hiro_vieux_sage__legende",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.hiro_vieux_sage__service": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/hiro_vieux_sage__service",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.hiro_vieux_sage__squelettes": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/hiro_vieux_sage__squelettes",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.maitre_du_destin__accueil": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/maitre_du_destin__accueil",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.maitre_du_destin__confirmer": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/maitre_du_destin__confirmer",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.mistral_aeromancien__accueil": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/mistral_aeromancien__accueil",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.mistral_aeromancien__sujet0": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/mistral_aeromancien__sujet0",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.mistral_aeromancien__sujet1": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/mistral_aeromancien__sujet1",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.mistral_aeromancien__sujet2": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/mistral_aeromancien__sujet2",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.pip_voyageur__accueil": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/pip_voyageur__accueil",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.pip_voyageur__algues": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/pip_voyageur__algues",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.pip_voyageur__ici": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/pip_voyageur__ici",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.pip_voyageur__remede": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/pip_voyageur__remede",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.pip_voyageur__soeur": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/pip_voyageur__soeur",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.ser_aldric__accueil": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/ser_aldric__accueil",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.ser_aldric__chasse": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/ser_aldric__chasse",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.ser_aldric__lore": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/ser_aldric__lore",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.ser_aldric__vengeance": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/ser_aldric__vengeance",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.ulrich_grand_brule__accueil": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/ulrich_grand_brule__accueil",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.ulrich_grand_brule__dragon": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/ulrich_grand_brule__dragon",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.ulrich_grand_brule__histoire": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/ulrich_grand_brule__histoire",
+        "stream": true
+      }
+    ]
+  },
+  "pnj.ulrich_grand_brule__poudre": {
+    "sounds": [
+      {
+        "name": "mcrp:pnj/ulrich_grand_brule__poudre",
+        "stream": true
+      }
+    ]
   }
 }

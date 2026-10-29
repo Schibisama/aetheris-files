@@ -1,5 +1,5 @@
 {
- "version": "2026-10-29T15:44:18.431Z",
+ "version": "2026-10-29T20:19:12.349Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -67,8 +67,8 @@
   },
   {
    "path": "kubejs/assets/mcrp/sounds.json",
-   "sha1": "adaee375881379910e5c516c0a93a8fa753c2891",
-   "size": 880
+   "sha1": "5cafcd0d685d1666390708110174cacc7003a4c3",
+   "size": 5350
   },
   {
    "path": "kubejs/assets/mcrp/sounds/npc/parole_feminine_1.ogg",
@@ -89,6 +89,151 @@
    "path": "kubejs/assets/mcrp/sounds/npc/parole_masculine_2.ogg",
    "sha1": "583a46b224d1bee5e5efcb3c690302581a3ddf85",
    "size": 83491
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/capitaine_morrow__accueil.ogg",
+   "sha1": "10579754aea99070e2b4d29a85b137008f2ebec5",
+   "size": 96852
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/capitaine_morrow__histoire.ogg",
+   "sha1": "b5c22761b9f9dd97e24ef319f337d6d2fbb47131",
+   "size": 174877
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/capitaine_morrow__jambe.ogg",
+   "sha1": "04bc6dbffcf1639d95964b336cfb890783d94cb8",
+   "size": 147230
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/capitaine_morrow__longuevue.ogg",
+   "sha1": "abee80505146c81e3a25ad32bf9f6e981e10dc1f",
+   "size": 127176
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/capitaine_morrow__tresor.ogg",
+   "sha1": "c0879950ae7200c1f785d6d56f9a717a94a22ad6",
+   "size": 206082
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/hiro_vieux_sage__accueil.ogg",
+   "sha1": "7892e87eb8ffcea35ff0591d2c0176234c083a4f",
+   "size": 114677
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/hiro_vieux_sage__ames.ogg",
+   "sha1": "dc62f38df6d46bfcf35a8a723eafd2986b7b0fc9",
+   "size": 163388
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/hiro_vieux_sage__legende.ogg",
+   "sha1": "a59d2ff31f21a0cba51bf9dfb6ac0468ce823338",
+   "size": 168163
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/hiro_vieux_sage__service.ogg",
+   "sha1": "df82aa9cd023a4890538391d5e93a942f0163a11",
+   "size": 200285
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/hiro_vieux_sage__squelettes.ogg",
+   "sha1": "4c1c4ed960d6d513598a8cd9586bdb0b4f741bdb",
+   "size": 119269
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/maitre_du_destin__accueil.ogg",
+   "sha1": "ffd7dac7eca470e8296e287399ff3df98bdc6dfc",
+   "size": 99007
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/maitre_du_destin__confirmer.ogg",
+   "sha1": "afa6bf5886e6e34fa012e0a31c59ce2e1b65fa3e",
+   "size": 155298
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/mistral_aeromancien__accueil.ogg",
+   "sha1": "abdad3ab548da53a26f2c3c27b1a627066ce88d8",
+   "size": 173056
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/mistral_aeromancien__sujet0.ogg",
+   "sha1": "98d3a1da1ef835b19db7fa31fe52290dd7aaeebe",
+   "size": 127168
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/mistral_aeromancien__sujet1.ogg",
+   "sha1": "032e82ce0c5b551fc94530dc0e6ea656cd9077b0",
+   "size": 152637
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/mistral_aeromancien__sujet2.ogg",
+   "sha1": "b63f4e75a3506584c9d08c5a63a7fd9be135fad1",
+   "size": 124702
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/pip_voyageur__accueil.ogg",
+   "sha1": "a0fb0ac25b0624e1461a574d9c8702a1c4c1391a",
+   "size": 126034
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/pip_voyageur__algues.ogg",
+   "sha1": "40af7f95d606b944d6b27e152d51c7590f43ef4b",
+   "size": 124666
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/pip_voyageur__ici.ogg",
+   "sha1": "143817ffd9d3ba9b2ca1a20b1470257ac19a418d",
+   "size": 157455
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/pip_voyageur__remede.ogg",
+   "sha1": "ddb6fbefa7ef11c859353e338f23da121e752418",
+   "size": 202679
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/pip_voyageur__soeur.ogg",
+   "sha1": "36073e291642815d09caed08be57533e87c449b0",
+   "size": 124879
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/ser_aldric__accueil.ogg",
+   "sha1": "ac5cbaedd894673931d34ef3be9b905b201f3ed2",
+   "size": 150583
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/ser_aldric__chasse.ogg",
+   "sha1": "c9df7e671c1390550a9cb120a1d9eb274af0a846",
+   "size": 143263
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/ser_aldric__lore.ogg",
+   "sha1": "db5b8cec6690f6d9283c2d6ebe86d509c8aa3fc9",
+   "size": 146963
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/ser_aldric__vengeance.ogg",
+   "sha1": "94d41f64bb179836fdd183f6834bd7f1d7cedb3a",
+   "size": 224566
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/ulrich_grand_brule__accueil.ogg",
+   "sha1": "bad77ea2ff6f4a51eaf0243da6a9644f6a593dec",
+   "size": 154917
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/ulrich_grand_brule__dragon.ogg",
+   "sha1": "74e32c0e958b2074f8ac9e3789053a98df38a394",
+   "size": 302008
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/ulrich_grand_brule__histoire.ogg",
+   "sha1": "25e6615d9f645f54e0e130136c18bdc0fd573e31",
+   "size": 249094
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/pnj/ulrich_grand_brule__poudre.ogg",
+   "sha1": "204c0e2e3c438e608f2d870cf9ab53990303b0bc",
+   "size": 219102
   },
   {
    "path": "kubejs/assets/mcrp/sounds/the_world.ogg",
@@ -1157,8 +1302,8 @@
   },
   {
    "path": "kubejs/server_scripts/pnj_voix.js",
-   "sha1": "6cbb269838fa453cb9aa4b8fc8507d60341298e2",
-   "size": 3216
+   "sha1": "41596b833f585a89b2675deaa4c574b9e56af0e2",
+   "size": 3623
   },
   {
    "path": "kubejs/server_scripts/portails_bloques.js",
