@@ -19,7 +19,8 @@ var ZP = {
     { type: 'cataclysm:hippocamtus', x: 1316, y: 62, z: -13091 }
   ],
   quete: {
-    cle: 'capitaine_jambe_quete',   // 0 rien, 1 acceptée, 3 terminée ; finit par _quete (effacée par /reinit)
+    cle: 'capitaine_jambe_quete',
+    ftb: 'B6321DE49F146985',   // tâche « parler à ce PNJ » du chapitre FTB boss_pnj   // 0 rien, 1 acceptée, 3 terminée ; finit par _quete (effacée par /reinit)
     pnj: 'Capitaine Morrow',
     accepter: "Six de mes anciens matelots gardent mon trésor, changés en monstres par la mer et la malédiction. Abats-les tous : le dernier à tomber lâchera ma jambe de bois. Rapporte-la-moi, et je te léguerai un savoir de ta voie.",
     encours: "Alors, mes six matelots ? La jambe de bois ne tombera qu'avec le dernier d'entre eux.",
@@ -358,7 +359,12 @@ function zpDire(joueur, texte) {
   joueur.tell(Text.gold('[' + ZP.quete.pnj + '] ').append(Text.of(texte).gray()))
 }
 
+function zpFtb(joueur) {
+  try { joueur.server.runCommandSilent('ftbquests change_progress ' + joueur.username + ' complete ' + ZP.quete.ftb) } catch (e) {}
+}
+
 function zpAccepter(joueur) {
+  zpFtb(joueur)
   var q = ZP.quete, d = joueur.persistentData
   var etat = d.getInt(q.cle)
   if (etat === 0) { d.putInt(q.cle, 1); zpDire(joueur, q.accepter) }
@@ -368,6 +374,7 @@ function zpAccepter(joueur) {
 }
 
 function zpRendre(server, joueur) {
+  zpFtb(joueur)
   var q = ZP.quete, d = joueur.persistentData
   var etat = d.getInt(q.cle)
   if (etat === 0) zpDire(joueur, q.rien)

@@ -18,7 +18,8 @@ var BOSSES = {
     rayon: 30,
     respawnMin: 30,
     quete: {
-      cle: 'helvar_quete',   // 0 = non commencée, 1 = acceptée, 2 = boss tué (rapport à faire), 3 = terminée
+      cle: 'helvar_quete',
+      ftb: 'EA4EE95B2BA8EFDD',   // tâche « parler à ce PNJ » du chapitre FTB boss_pnj   // 0 = non commencée, 1 = acceptée, 2 = boss tué (rapport à faire), 3 = terminée
       pnj: 'Ser Aldric',
       accepter: "Tu es plus brave que je ne l'étais. Helvar se terre dans sa tanière de pierre, au cœur des bois. Venge-moi, voyageur... et que ma honte meure avec lui.",
       encours: "Helvar vit encore. Va, et ne reviens que lorsqu'il ne sera plus.",
@@ -40,6 +41,7 @@ var BOSSES = {
     respawnMin: 30,
     quete: {
       cle: 'maledictus_quete',
+      ftb: '8E950D7F8AA48F7D',   // tâche « parler à ce PNJ » du chapitre FTB boss_pnj
       pnj: 'Hiro',
       accepter: "Une île, loin à l'est, que les marins évitent. On dit qu'elle renferme la Malédiction elle-même, devenue chair. Quiconque ose l'affronter est maudit pour l'éternité... Mais quelqu'un doit mettre fin à ce murmure. Si tu l'oses, abats-le, et rapporte-moi le sceau qu'il laissera derrière lui.",
       encours: "La Malédiction respire encore, voyageur. Je la sens jusque dans mes os. Va, et reviens quand elle se taira.",
@@ -63,6 +65,7 @@ var BOSSES = {
     respawnMin: 30,
     quete: {
       cle: 'skor_quete',
+      ftb: '47FA1CB25306622A',   // tâche « parler à ce PNJ » du chapitre FTB boss_pnj
       pnj: 'Pip',
       accepter: "Ma petite sœur Léna est malade, et le seul remède que connaisse l'herboriste demande une corne de Skor, le yéti des neiges. Je suis trop petit pour l'affronter... Toi, peut-être. Rapporte-moi sa corne, s'il te plaît !",
       encours: "Skor est toujours là-haut dans les neiges... Léna s'affaiblit chaque jour. Je t'en supplie, rapporte-moi sa corne.",
@@ -87,6 +90,7 @@ var BOSSES = {
     escorte: { type: 'legendary_monsters:hovering_hurricane', nombre: 3, rayon: 6 },   // 3 Ouragans flottants l'entourent à chaque apparition
     quete: {
       cle: 'cumulonimbus_quete',
+      ftb: '12A9728E260E75E3',   // tâche « parler à ce PNJ » du chapitre FTB boss_pnj
       pnj: 'Mistral',
       accepter: "Un ultime sort d'aéromancie, voilà ce que je cherche à confectionner. Il me manque un morceau de nuage... pas n'importe lequel : le cœur du Cumulonimbus, le colosse qui trône dans les hauteurs. Trois ouragans veillent sur lui. Abats-le et rapporte-moi un fragment de sa nuée.",
       encours: "Le Cumulonimbus gronde encore là-haut, je le sens dans le vent. Reviens quand il se sera tu.",
@@ -112,6 +116,7 @@ var BOSSES = {
     respawnMin: 30,
     quete: {
       cle: 'dragon_quete',
+      ftb: 'DE2964C993B00F77',   // tâche « parler à ce PNJ » du chapitre FTB boss_pnj
       pnj: 'Ulrich',
       accepter: "*toux rauque* Le dragon... rôde encore là où le feu ne s'éteint jamais. Abats-le... et rapporte-moi une de ses écailles. Alors je saurai... que le cauchemar a une fin.",
       encours: "*souffle court* La bête vit encore... Je sens sa chaleur jusque dans mes os. Va...",
@@ -557,7 +562,13 @@ function bqDire(joueur, q, texte) {
   joueur.tell(Text.gold('[' + q.pnj + '] ').append(Text.of(texte).gray()))
 }
 
+// Quête FTB « parler à tous les PNJ de quête de boss » : tout contact avec les boutons de quête du PNJ valide sa tâche.
+function bqFtb(joueur, q) {
+  try { if (q.ftb) joueur.server.runCommandSilent('ftbquests change_progress ' + joueur.username + ' complete ' + q.ftb) } catch (e) {}
+}
+
 function bqAccepter(joueur, q) {
+  bqFtb(joueur, q)
   var d = joueur.persistentData
   var etat = d.getInt(q.cle)
   if (etat === 0) { d.putInt(q.cle, 1); bqDire(joueur, q, q.accepter) }
@@ -568,6 +579,7 @@ function bqAccepter(joueur, q) {
 }
 
 function bqRendre(server, joueur, q) {
+  bqFtb(joueur, q)
   var d = joueur.persistentData
   var etat = d.getInt(q.cle)
   if (etat === 0) bqDire(joueur, q, q.rien)
