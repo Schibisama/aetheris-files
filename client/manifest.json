@@ -1,5 +1,5 @@
 {
- "version": "2026-10-29T00:13:06.261Z",
+ "version": "2026-10-29T00:31:15.623Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -1104,6 +1104,11 @@
    "path": "kubejs/server_scripts/classes_sons.js",
    "sha1": "ca10c6d53d6f4326fa1e7518e5dfcc00535602d2",
    "size": 1549
+  },
+  {
+   "path": "kubejs/server_scripts/decouverte_lieux.js",
+   "sha1": "94c912c921d49b9c43daedba5e8309af88155ce9",
+   "size": 2477
   },
   {
    "path": "kubejs/server_scripts/end_spawn.js",
