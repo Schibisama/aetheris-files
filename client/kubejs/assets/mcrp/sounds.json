@@ -3,7 +3,7 @@
     "sounds": [
       {
         "name": "mcrp:the_world",
-        "attenuation_distance": 48
+        "attenuation_distance": 16
       }
     ]
   },

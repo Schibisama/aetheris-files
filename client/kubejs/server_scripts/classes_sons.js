@@ -5,7 +5,7 @@
 
 var SON_MONDE_SORT = 'chronomancy:the_world_stop'
 var SON_MONDE_ID = 'mcrp:the_world'
-var SON_MONDE_VOLUME = 3.0
+var SON_MONDE_VOLUME = 1.0
 
 var sonEvenement = null
 var sonSource = null

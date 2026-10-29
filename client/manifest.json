@@ -1,5 +1,5 @@
 {
- "version": "2026-10-29T14:41:37.116Z",
+ "version": "2026-10-29T15:43:46.146Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -67,7 +67,7 @@
   },
   {
    "path": "kubejs/assets/mcrp/sounds.json",
-   "sha1": "7eb99528c47b5d4913970522e541ae3d7b29d0bd",
+   "sha1": "adaee375881379910e5c516c0a93a8fa753c2891",
    "size": 880
   },
   {
@@ -1117,7 +1117,7 @@
   },
   {
    "path": "kubejs/server_scripts/classes_sons.js",
-   "sha1": "ca10c6d53d6f4326fa1e7518e5dfcc00535602d2",
+   "sha1": "43b3c94b70b2075d9550ab4ee58bc216048d4328",
    "size": 1549
   },
   {
