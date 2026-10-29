@@ -1,5 +1,5 @@
 {
- "version": "2026-10-29T10:07:41.863Z",
+ "version": "2026-10-29T10:18:59.184Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -1052,8 +1052,8 @@
   },
   {
    "path": "kubejs/server_scripts/boss_zones.js",
-   "sha1": "caaa1574e50486ffb29b74b67e32cea7c257bb18",
-   "size": 33358
+   "sha1": "b2f7cc14cac0ea7a77f4e2b699f8254cb5ebb45a",
+   "size": 35419
   },
   {
    "path": "kubejs/server_scripts/chasse_quetes.js",

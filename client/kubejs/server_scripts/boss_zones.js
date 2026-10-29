@@ -146,6 +146,46 @@ function bzNiveau(server) {
 // ───────────── Difficulté : vie x3 et dégâts x1,5 (les seuils de phase restent en % de la vie max) ─────────────
 var BZ_VIE_MULT = 3
 var BZ_DEGATS_MULT = 1.5
+// Échelle selon le groupe : chaque joueur AU-DELÀ DU PREMIER, présent dans la zone du boss (rayon + BZ_MARGE_GROUPE blocs), ajoute
+// BZ_VIE_PAR_JOUEUR à la vie fictive et BZ_DEGATS_PAR_JOUEUR aux dégâts. BZ_JOUEURS_MAX borne le décompte.
+// Ex. à 4 joueurs : vie x3 * (1 + 0,4*3) = x6,6 ; dégâts x1,5 * (1 + 0,15*3) = x2,2.
+var BZ_VIE_PAR_JOUEUR = 0.4
+var BZ_DEGATS_PAR_JOUEUR = 0.15
+var BZ_JOUEURS_MAX = 6
+var BZ_MARGE_GROUPE = 15
+// Échelle selon l'armure PORTÉE par le joueur touché : chaque point d'armure ajoute BZ_ARMURE_COEF aux dégâts que le boss lui inflige
+// (plafonné à BZ_ARMURE_PLAFOND). Ex. 20 points d'armure : +60 % avant réduction par l'armure.
+var BZ_ARMURE_COEF = 0.03
+var BZ_ARMURE_PLAFOND = 0.6
+var bzNbJoueurs = {}   // uuid du boss -> joueurs présents dans sa zone (mis à jour à chaque tick)
+function bzCompterJoueurs(server, b) {
+  var n = 0
+  try {
+    var js = server.getPlayers()
+    for (var i = 0; i < js.size(); i++) {
+      var j = js.get(i)
+      if (j.isSpectator() || !j.isAlive()) continue
+      var dx = j.x - b.x, dz = j.z - b.z
+      if (Math.sqrt(dx * dx + dz * dz) <= b.rayon + BZ_MARGE_GROUPE) n++
+    }
+  } catch (x) {}
+  return Math.max(1, Math.min(BZ_JOUEURS_MAX, n))
+}
+function bzVieMult(e) {
+  var n = bzNbJoueurs[String(e.uuid)] || 1
+  return BZ_VIE_MULT * (1 + BZ_VIE_PAR_JOUEUR * (n - 1))
+}
+function bzDegatsMult(e) {
+  var n = bzNbJoueurs[String(e.uuid)] || 1
+  return BZ_DEGATS_MULT * (1 + BZ_DEGATS_PAR_JOUEUR * (n - 1))
+}
+function bzArmureMult(victime) {
+  var a = 0
+  try { a = victime.armorValue } catch (x) {}
+  if (!(a >= 0)) { try { a = victime.getArmorValue() } catch (y) { a = 0 } }
+  if (!(a >= 0)) a = 0
+  return 1 + Math.min(BZ_ARMURE_PLAFOND, a * BZ_ARMURE_COEF)
+}
 // Vie x3 par suivi des PV : à chaque tick, si les PV du boss ont baissé (quelle que soit la source : coup, sort, effet, pourcentage de vie...),
 // on lui rend les 2/3 de la perte. Indépendant des évènements de dégâts ; ignoré sous 0,2 PV (le mod annule alors la mort lui-même).
 var bzHpPrec = {}
@@ -157,7 +197,7 @@ function bzVieFictive(e) {
     var prec = bzHpPrec[id]
     if (prec === undefined) prec = h
     if (h < prec - 0.001 && h > 0.2 && e.isAlive()) {
-      var rendu = (prec - h) * (1 - 1 / BZ_VIE_MULT)
+      var rendu = (prec - h) * (1 - 1 / bzVieMult(e))
       var nh = Math.min(e.maxHealth, h + rendu)
       e.setHealth(nh)
       if (bzLogsVie < 15) { bzLogsVie++; console.info('[boss_zones] vie x3 : perte ' + (prec - h).toFixed(1) + ' -> ' + (prec - nh).toFixed(1) + ' (' + String(e.type) + ', ' + nh.toFixed(0) + '/' + e.maxHealth.toFixed(0) + ')') }
@@ -497,7 +537,9 @@ try {
         var att = null
         try { att = ev.getSource().actual } catch (e0) {}
         if (!att || !att.tags || !att.tags.contains('boss_zone')) return
-        ev.setAmount(ev.getAmount() * BZ_DEGATS_MULT)
+        var mult = bzDegatsMult(att)
+        try { if (ev.getEntity().isPlayer()) mult = mult * bzArmureMult(ev.getEntity()) } catch (e5) {}
+        ev.setAmount(ev.getAmount() * mult)
       } catch (e) {}
     }
   )
@@ -687,6 +729,10 @@ ServerEvents.tick(function (event) {
     for (var nom in BOSSES) {
       var b = BOSSES[nom]
       var liste = bzBoss(niveau, b, b.rayon + 40)
+      if (liste.length > 0) {
+        var nb = bzCompterJoueurs(event.server, b)
+        for (var k = 0; k < liste.length; k++) bzNbJoueurs[String(liste[k].uuid)] = nb
+      }
       for (var i = 0; i < liste.length; i++) bzVieFictive(liste[i])
     }
   } catch (err) {}
