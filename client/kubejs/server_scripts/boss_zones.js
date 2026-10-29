@@ -143,12 +143,12 @@ function bzNiveau(server) {
   try { return server.overworld() } catch (e2) {}
   return null
 }
-// ───────────── Difficulté : vie x3 et dégâts x1,5 (les seuils de phase restent en % de la vie max) ─────────────
-var BZ_VIE_MULT = 3
+// ───────────── Difficulté : vie x5 et dégâts x1,5 (les seuils de phase restent en % de la vie max) ─────────────
+var BZ_VIE_MULT = 5
 var BZ_DEGATS_MULT = 1.5
 // Échelle selon le groupe : chaque joueur AU-DELÀ DU PREMIER, présent dans la zone du boss (rayon + BZ_MARGE_GROUPE blocs), ajoute
 // BZ_VIE_PAR_JOUEUR à la vie fictive et BZ_DEGATS_PAR_JOUEUR aux dégâts. BZ_JOUEURS_MAX borne le décompte.
-// Ex. à 4 joueurs : vie x3 * (1 + 0,4*3) = x6,6 ; dégâts x1,5 * (1 + 0,15*3) = x2,2.
+// Ex. à 4 joueurs : vie x5 * (1 + 0,4*3) = x11 ; dégâts x1,5 * (1 + 0,15*3) = x2,2.
 var BZ_VIE_PAR_JOUEUR = 0.4
 var BZ_DEGATS_PAR_JOUEUR = 0.15
 var BZ_JOUEURS_MAX = 6

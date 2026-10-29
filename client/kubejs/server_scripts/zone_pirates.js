@@ -67,8 +67,36 @@ function zpMobs(niveau) {
 }
 
 // ───────────── Difficulté : vie x3 et dégâts x1,5 (les seuils de phase restent en % de la vie max) ─────────────
-var ZP_VIE_MULT = 3
+var ZP_VIE_MULT = 5
 var ZP_DEGATS_MULT = 1.5
+// Échelle selon le groupe (même principe que boss_zones.js) : chaque joueur AU-DELÀ DU PREMIER dans la zone ajoute ZP_VIE_PAR_JOUEUR
+// à la vie fictive et ZP_DEGATS_PAR_JOUEUR aux dégâts de tous les mobs de la zone ; ZP_JOUEURS_MAX borne le décompte.
+var ZP_VIE_PAR_JOUEUR = 0.4
+var ZP_DEGATS_PAR_JOUEUR = 0.15
+var ZP_JOUEURS_MAX = 6
+// Échelle selon l'armure PORTÉE par le joueur touché : chaque point d'armure ajoute ZP_ARMURE_COEF aux dégâts reçus (plafond ZP_ARMURE_PLAFOND).
+var ZP_ARMURE_COEF = 0.03
+var ZP_ARMURE_PLAFOND = 0.6
+var zpNbJoueurs = 1
+function zpCompterJoueurs(server) {
+  var n = 0
+  try {
+    var js = server.getPlayers()
+    for (var i = 0; i < js.size(); i++) {
+      var j = js.get(i)
+      if (j.isSpectator() || !j.isAlive()) continue
+      if (zpJoueurDedans(j, ZP.marge)) n++
+    }
+  } catch (x) {}
+  return Math.max(1, Math.min(ZP_JOUEURS_MAX, n))
+}
+function zpArmureMult(victime) {
+  var a = 0
+  try { a = victime.armorValue } catch (x) {}
+  if (!(a >= 0)) { try { a = victime.getArmorValue() } catch (y) { a = 0 } }
+  if (!(a >= 0)) a = 0
+  return 1 + Math.min(ZP_ARMURE_PLAFOND, a * ZP_ARMURE_COEF)
+}
 // Vie x3 par suivi des PV : à chaque tick, si les PV du boss ont baissé (quelle que soit la source : coup, sort, effet, pourcentage de vie...),
 // on lui rend les 2/3 de la perte. Indépendant des évènements de dégâts ; ignoré sous 0,2 PV (le mod annule alors la mort lui-même).
 var zpHpPrec = {}
@@ -80,7 +108,7 @@ function zpVieFictive(e) {
     var prec = zpHpPrec[id]
     if (prec === undefined) prec = h
     if (h < prec - 0.001 && h > 0.2 && e.isAlive()) {
-      var rendu = (prec - h) * (1 - 1 / ZP_VIE_MULT)
+      var rendu = (prec - h) * (1 - 1 / (ZP_VIE_MULT * (1 + ZP_VIE_PAR_JOUEUR * (zpNbJoueurs - 1))))
       var nh = Math.min(e.maxHealth, h + rendu)
       e.setHealth(nh)
       if (zpLogsVie < 15) { zpLogsVie++; console.info('[zone_pirates] vie x3 : perte ' + (prec - h).toFixed(1) + ' -> ' + (prec - nh).toFixed(1) + ' (' + String(e.type) + ', ' + nh.toFixed(0) + '/' + e.maxHealth.toFixed(0) + ')') }
@@ -296,7 +324,9 @@ try {
         var att = null
         try { att = ev.getSource().actual } catch (e0) {}
         if (!att || !att.tags || !att.tags.contains('pirate_zone')) return
-        ev.setAmount(ev.getAmount() * ZP_DEGATS_MULT)
+        var mult = ZP_DEGATS_MULT * (1 + ZP_DEGATS_PAR_JOUEUR * (zpNbJoueurs - 1))
+        try { if (ev.getEntity().isPlayer()) mult = mult * zpArmureMult(ev.getEntity()) } catch (e5) {}
+        ev.setAmount(ev.getAmount() * mult)
       } catch (e) {}
     }
   )
@@ -442,6 +472,7 @@ ServerEvents.tick(function (event) {
     var niveau = zpNiveau(event.server)
     if (!niveau || !AABB_ZP) return
     var liste = zpMobs(niveau)
+    if (liste.length > 0) zpNbJoueurs = zpCompterJoueurs(event.server)
     for (var i = 0; i < liste.length; i++) zpVieFictive(liste[i])
   } catch (err) {}
 })
