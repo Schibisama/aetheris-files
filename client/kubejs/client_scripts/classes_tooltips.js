@@ -961,7 +961,7 @@ var CLASSE_DES_SORTS = {
   'somakespells:submerge': 'Hydromancien',
   'somakespells:summon_drowned': 'Hydromancien',
   'somakespells:symmetry_empowerment': 'Symétriste',
-  'somakespells:thunder_cloud': 'Hydromancien',
+  'somakespells:thunder_cloud': 'Hydromancien / Aéromancien',
   'somakespells:tidal_dash': 'Hydromancien',
   'somakespells:tidal_grasp': 'Hydromancien',
   'somakespells:tsunami': 'Hydromancien',
