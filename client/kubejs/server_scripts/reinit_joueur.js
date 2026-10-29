@@ -5,9 +5,6 @@
 // Après le reset, le joueur n'a plus de classe : utilise /classe donner <joueur> pour en tirer une.
 // Ne touche pas : position, point de réapparition, gamemode, statistiques, cadavres (mod Corpse).
 //
-// /reinit tous            : affiche un avertissement, ne fait RIEN.
-// /reinit tous confirmer  : remet à zéro TOUS les joueurs connectés, et chaque joueur hors ligne au moment de sa
-//                           prochaine connexion (compteur « reinit_generation » du serveur). IRRÉVERSIBLE.
 
 function rzCmd(server, texte) {
   try { server.runCommandSilent(texte) } catch (e) { console.error('[reinit] ' + texte + ' -> ' + e) }
@@ -52,34 +49,6 @@ function rzReinit(server, joueur) {
   return aEffacer.length
 }
 
-var RZ_GEN = 'reinit_generation'
-
-function rzTous(server) {
-  var g = server.persistentData.getInt(RZ_GEN) + 1
-  server.persistentData.putInt(RZ_GEN, g)
-  var liste = server.players
-  var nb = 0
-  for (var i = 0; i < liste.length; i++) {
-    rzReinit(server, liste[i])
-    liste[i].persistentData.putInt(RZ_GEN, g)
-    nb++
-  }
-  return nb
-}
-
-// Joueurs hors ligne lors d'un « /reinit tous confirmer » : remis à zéro à leur prochaine connexion.
-PlayerEvents.loggedIn(function (event) {
-  try {
-    var joueur = event.player
-    var server = event.server
-    var g = server.persistentData.getInt(RZ_GEN)
-    if (joueur.persistentData.getInt(RZ_GEN) < g) {
-      rzReinit(server, joueur)
-      joueur.persistentData.putInt(RZ_GEN, g)
-    }
-  } catch (e) { console.error('[reinit] connexion : ' + e) }
-})
-
 ServerEvents.commandRegistry(function (event) {
   var Commands = event.commands
   var Arguments = event.arguments
@@ -93,21 +62,6 @@ ServerEvents.commandRegistry(function (event) {
         if (emetteur) emetteur.tell(Text.gray(cible.username + ' remis à zéro (' + nb + ' données effacées). /classe donner ' + cible.username + ' pour un nouveau tirage.'))
         return 1
       }))
-    .then(Commands.literal('tous')
-      .executes(function (ctx) {
-        var emetteur = ctx.source.player
-        if (emetteur) {
-          emetteur.tell(Text.red('ATTENTION : cette commande remet à zéro TOUS les joueurs (connectés maintenant, et chaque autre à sa prochaine connexion).'))
-          emetteur.tell(Text.red('Inventaire, classe, quêtes, sorts, succès, waystones : tout est effacé, sans retour possible.'))
-          emetteur.tell(Text.yellow('Pour confirmer : /reinit tous confirmer'))
-        }
-        return 1
-      })
-      .then(Commands.literal('confirmer')
-        .executes(function (ctx) {
-          var nb = rzTous(ctx.source.server)
-          var emetteur = ctx.source.player
-          if (emetteur) emetteur.tell(Text.gold('Remise à zéro générale : ' + nb + ' joueur(s) connecté(s) remis à zéro, les autres le seront à leur connexion.'))
-          return 1
-        }))))
+
+    )
 })
