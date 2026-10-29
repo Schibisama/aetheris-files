@@ -217,14 +217,28 @@ try {
 }
 
 // École d'un sort d'après le registre d'Iron's Spells (null si introuvable).
+var ecoleAvertie = false
 function ecoleDuSort(idSort) {
-  try {
-    var sort = SpellRegistryJ.getSpell(ResourceLocationJ.tryParse(String(idSort)))
-    if (!sort) return null
-    return String(sort.getSchoolType().getId())
-  } catch (e) {
-    return null
+  var rl = null
+  try { rl = ResourceLocationJ.tryParse(String(idSort)) } catch (e0) {}
+  // 1. API directe d'Iron's Spells ; 2. registre en secours ; 3. chargement tardif de la classe si elle manquait au démarrage.
+  var essais = [
+    function () { return SpellRegistryJ.getSpell(rl) },
+    function () { return SpellRegistryJ.REGISTRY.get(rl) },
+    function () { return Java.loadClass('io.redspace.ironsspellbooks.api.registry.SpellRegistry').getSpell(rl) }
+  ]
+  var derniere = null
+  for (var i = 0; i < essais.length; i++) {
+    try {
+      var sort = essais[i]()
+      if (sort) {
+        var id = String(sort.getSchoolType().getId())
+        if (id && id !== 'null' && id !== 'undefined') return id
+      }
+    } catch (e) { derniere = e }
   }
+  if (!ecoleAvertie) { ecoleAvertie = true; console.error('[classes_rp] école introuvable pour ' + idSort + ' (' + derniere + ') : les écoles des sorts autorisés ne seront PAS ouvertes') }
+  return null
 }
 
 function estTest(joueur) {
@@ -566,6 +580,7 @@ function appliquerClasse(server, joueur, classe, reinit) {
       // (son onglet reste caché du Codex tant qu'aucun de ses sorts n'est découvert).
       var ecole = ecoleDuSort(sort)
       if (ecole) cmd(server, 'specs_codex school unlock ' + nom + ' ' + ecole)
+      else console.error('[classes_rp] ' + nom + ' : école inconnue pour ' + sort)
       // Les sorts ouverts à TOUS (liste « * », dont Rappel) ne sont plus offerts au départ : les professeurs
       // les donnent en classe avec /cours (voir plus bas).
     }
