@@ -74,3 +74,28 @@ ItemEvents.entityInteracted(function (event) {
     console.error('[pnj_voix] ' + err)
   }
 })
+
+// /pnjvoix <joueur> <identifiant> : coupe la réplique en cours et joue mcrp:pnj.<identifiant> chez le joueur.
+// Lancée par les boutons des dialogues des PNJ (une seule commande, donc pas de souci d'ordre d'exécution).
+ServerEvents.commandRegistry(function (event) {
+  var Commands = event.commands
+  var Arguments = event.arguments
+  var autorise = function (source) {
+    try { if (source.hasPermission(2)) return true } catch (e) {}
+    try { var ent = source.entity; return !!ent && String(ent.type).indexOf('easy_npc:') === 0 } catch (e) { return false }
+  }
+  event.register(Commands.literal('pnjvoix').requires(autorise)
+    .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+      .then(Commands.argument('id', Arguments.WORD.create(event))
+        .executes(function (ctx) {
+          try {
+            var j = Arguments.PLAYER.getResult(ctx, 'joueur')
+            var id = String(Arguments.WORD.getResult(ctx, 'id'))
+            if (!/^[a-z0-9_]+$/.test(id)) return 0
+            var srv = ctx.source.server
+            srv.runCommandSilent('stopsound ' + j.username + ' voice')
+            srv.runCommandSilent('execute at ' + j.username + ' run playsound mcrp:pnj.' + id + ' voice ' + j.username + ' ~ ~ ~ 1 1')
+            return 1
+          } catch (err) { console.error('[pnjvoix] ' + err); return 0 }
+        }))))
+})

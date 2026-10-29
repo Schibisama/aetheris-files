@@ -1,5 +1,5 @@
 {
- "version": "2026-10-29T20:19:34.768Z",
+ "version": "2026-10-29T21:11:01.345Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -1302,8 +1302,8 @@
   },
   {
    "path": "kubejs/server_scripts/pnj_voix.js",
-   "sha1": "41596b833f585a89b2675deaa4c574b9e56af0e2",
-   "size": 3623
+   "sha1": "5bae509b9de54e29710399490ad40e3e9259fce3",
+   "size": 4977
   },
   {
    "path": "kubejs/server_scripts/portails_bloques.js",
