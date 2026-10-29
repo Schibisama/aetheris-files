@@ -145,6 +145,7 @@ var LV_FTB = {
   'edrik_chair_quete': '775CF9C47617FB0C',
   'gorm_morue_quete': 'DB2C1258F9D27B05',
   'brokk_fer_quete': '39988E77D4C24C54',
+  'kael_or_quete': '88116880635C5238',
   'sylvaine_roses_quete': '419F8AD44204FD67'
 }
 function lvFtb(joueur, q) {
@@ -453,26 +454,3 @@ LIVRAISONS.capitaine_longuevue = lvSimple({
   recompense: "Voilà de quoi voir venir la tempête ! Prends ce savoir de ta voie, en remerciement."
 })
 
-
-// /pnjparle <pnj> <joueur> : PNJ sans quête de livraison qui compte pour la quête FTB « parler aux PNJ des classes » (Dame Carmine).
-var PNJ_PARLE = { carmine: '88116880635C5238' }
-ServerEvents.commandRegistry(function (event) {
-  var Commands = event.commands
-  var Arguments = event.arguments
-  var parPnj = function (source) {
-    try { if (source.hasPermission(2)) return true } catch (e) {}
-    try { var ent = source.entity; return !!ent && String(ent.type).indexOf('easy_npc:') === 0 } catch (e) { return false }
-  }
-  var racine = Commands.literal('pnjparle').requires(parPnj)
-  for (var nom in PNJ_PARLE) {
-    ;(function (n) {
-      racine = racine.then(Commands.literal(n).then(Commands.argument('joueur', Arguments.PLAYER.create(event))
-        .executes(function (ctx) {
-          var j = Arguments.PLAYER.getResult(ctx, 'joueur')
-          ctx.source.server.runCommandSilent('ftbquests change_progress ' + j.username + ' complete ' + PNJ_PARLE[n])
-          return 1
-        })))
-    })(nom)
-  }
-  event.register(racine)
-})
