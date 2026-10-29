@@ -1,26 +1,16 @@
-// Aura des professeurs : bonus magiques permanents pour garder un ascendant sur les élèves.
+// Aura des professeurs : pose l'effet « Aura de professeur » (kubejs:aura_professeur, visible dans l'inventaire) aux professeurs.
+// L'effet lui-même (icône, nom, bonus magiques) est défini dans startup_scripts/aura_professeur_effet.js.
 // Qui est professeur : tout joueur opérateur (niveau 2 ou plus) si PF_OPS = true, ou tout joueur portant le tag « professeur »
 //   (/tag <joueur> add professeur  pour l'ajouter,  /tag <joueur> remove professeur  pour le retirer).
-// Les bonus sont des modificateurs d'attributs (ils suivent le joueur, se retirent seuls s'il cesse d'être professeur).
-// Valeurs : ratio de la valeur de base (0.5 = +50 %). Ajuste la table PF_BONUS puis /reload ;
-//   les bonus déjà posés sont remplacés au prochain passage (vérification toutes les 5 secondes).
-// Commande : /aura (opérateurs) : affiche si tu es professeur et les bonus actifs.
+// L'effet est infini, sans particules, et se repose seul toutes les 5 secondes (il revient après la mort ou un seau de lait).
+// Si un joueur cesse d'être professeur, l'effet lui est retiré en moins de 5 secondes.
+// Commande : /aura (opérateurs) : dit si tu es professeur et si l'effet est actif.
 // Rechargement : /reload
 
 var PF_OPS = true
 var PF_TAG = 'professeur'
-var PF_ID = 'aetheris:aura_prof'
-var PF_CLE = 'aura_prof_version'
-var PF_BONUS = [
-  { attr: 'irons_spellbooks:spell_power', valeur: 0.5 },          // dégâts et effets de tous les sorts
-  { attr: 'irons_spellbooks:max_mana', valeur: 1.0 },             // réserve de mana doublée
-  { attr: 'irons_spellbooks:mana_regen', valeur: 1.0 },           // régénération de mana doublée
-  { attr: 'irons_spellbooks:cooldown_reduction', valeur: 0.3 },   // recharges plus courtes
-  { attr: 'irons_spellbooks:cast_time_reduction', valeur: 0.3 },  // incantations plus rapides
-  { attr: 'irons_spellbooks:spell_resist', valeur: 0.3 }          // sorts reçus moins efficaces
-]
-// Change ce nombre dès que tu modifies PF_BONUS : les professeurs reçoivent alors les nouvelles valeurs
-var PF_VERSION = 1
+var PF_EFFET = 'kubejs:aura_professeur'
+var PF_CLE = 'aura_prof_posee'
 
 function pfEstProf(joueur) {
   try { if (joueur.getTags().contains(PF_TAG)) return true } catch (e0) {}
@@ -34,37 +24,23 @@ function pfCommande(joueur, texte) {
   try { joueur.server.runCommandSilent(texte) } catch (e) { console.error('[aura_professeurs] ' + texte + ' -> ' + e) }
 }
 
-function pfRetirer(joueur) {
-  var nom = String(joueur.username)
-  for (var i = 0; i < PF_BONUS.length; i++) {
-    pfCommande(joueur, 'attribute ' + nom + ' ' + PF_BONUS[i].attr + ' modifier remove ' + PF_ID)
-  }
-}
-
-function pfPoser(joueur) {
-  var nom = String(joueur.username)
-  pfRetirer(joueur)
-  for (var i = 0; i < PF_BONUS.length; i++) {
-    pfCommande(joueur, 'attribute ' + nom + ' ' + PF_BONUS[i].attr + ' modifier add ' + PF_ID + ' ' + PF_BONUS[i].valeur + ' add_multiplied_base')
-  }
-}
-
 PlayerEvents.tick(function (event) {
   try {
     var joueur = event.player
     if (!joueur || !joueur.isPlayer()) return
     if (joueur.age % 100 !== 7) return
+    var nom = String(joueur.username)
     var donnees = joueur.persistentData
-    var version = donnees.getInt(PF_CLE)
-    var prof = pfEstProf(joueur)
-    if (prof && version !== PF_VERSION) {
-      pfPoser(joueur)
-      donnees.putInt(PF_CLE, PF_VERSION)
-      console.info('[aura_professeurs] aura posée sur ' + joueur.username + ' (version ' + PF_VERSION + ')')
-    } else if (!prof && version !== 0) {
-      pfRetirer(joueur)
-      donnees.putInt(PF_CLE, 0)
-      console.info('[aura_professeurs] aura retirée de ' + joueur.username)
+    if (pfEstProf(joueur)) {
+      pfCommande(joueur, 'effect give ' + nom + ' ' + PF_EFFET + ' infinite 0 true')
+      if (!donnees.getBoolean(PF_CLE)) {
+        donnees.putBoolean(PF_CLE, true)
+        console.info('[aura_professeurs] aura posée sur ' + nom)
+      }
+    } else if (donnees.getBoolean(PF_CLE)) {
+      pfCommande(joueur, 'effect clear ' + nom + ' ' + PF_EFFET)
+      donnees.putBoolean(PF_CLE, false)
+      console.info('[aura_professeurs] aura retirée de ' + nom)
     }
   } catch (e) {
     console.error('[aura_professeurs] ' + e)
@@ -79,9 +55,9 @@ ServerEvents.commandRegistry(function (event) {
       .executes(function (ctx) {
         try {
           var joueur = ctx.source.player
-          var prof = pfEstProf(joueur)
-          var msg = prof ? 'Tu es professeur : aura active (version ' + joueur.persistentData.getInt(PF_CLE) + ').'
-                         : 'Tu n\'es pas professeur (tag « ' + PF_TAG + ' » absent' + (PF_OPS ? ', et tu n\'es pas opérateur' : '') + ').'
+          var msg = pfEstProf(joueur)
+            ? 'Tu es professeur : l\'effet « Aura de professeur » est posé sur toi.'
+            : 'Tu n\'es pas professeur (tag « ' + PF_TAG + ' » absent' + (PF_OPS ? ', et tu n\'es pas opérateur' : '') + ').'
           joueur.tell(msg)
         } catch (e) { console.error('[aura_professeurs] /aura : ' + e) }
         return 1
@@ -89,4 +65,4 @@ ServerEvents.commandRegistry(function (event) {
   )
 })
 
-console.info('[aura_professeurs] chargé (' + PF_BONUS.length + ' bonus, opérateurs ' + (PF_OPS ? 'inclus' : 'exclus') + ', tag « ' + PF_TAG + ' »).')
+console.info('[aura_professeurs] chargé (effet ' + PF_EFFET + ', opérateurs ' + (PF_OPS ? 'inclus' : 'exclus') + ', tag « ' + PF_TAG + ' »).')
