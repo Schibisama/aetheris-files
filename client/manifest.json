@@ -1,5 +1,5 @@
 {
- "version": "2026-10-29T01:06:27.601Z",
+ "version": "2026-10-29T01:14:02.864Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -1047,8 +1047,8 @@
   },
   {
    "path": "kubejs/server_scripts/balai_gele.js",
-   "sha1": "58442655df54ee4e8666d56f5eedb57c920a71cc",
-   "size": 6260
+   "sha1": "0676a65debf320cc50d9c5229c5f985308424a97",
+   "size": 5141
   },
   {
    "path": "kubejs/server_scripts/baton_neant.js",
@@ -1092,8 +1092,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "c69e692f35a757e1b20a505db48e119df167983b",
-   "size": 95931
+   "sha1": "d2593c1d86b6bcaa01c1ff4610fdd86584bca648",
+   "size": 95101
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -1107,8 +1107,8 @@
   },
   {
    "path": "kubejs/server_scripts/decouverte_lieux.js",
-   "sha1": "9ec9cb989017e5d0bbf53487bc9aa66db77ef164",
-   "size": 3316
+   "sha1": "a2b6d486cbe05cc2f2a3ba804137b36c07da83d8",
+   "size": 2540
   },
   {
    "path": "kubejs/server_scripts/end_spawn.js",
@@ -1122,8 +1122,8 @@
   },
   {
    "path": "kubejs/server_scripts/livraison_quetes.js",
-   "sha1": "fa0a375b2337b9093f50d8c6426f3702c7da34f6",
-   "size": 31775
+   "sha1": "6e54086f3151e5b5158d5578cfcae26fc472f5ad",
+   "size": 31049
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
@@ -1167,8 +1167,8 @@
   },
   {
    "path": "kubejs/server_scripts/zone_pirates.js",
-   "sha1": "7045f8fe6e7a3058ffd16d6a6169c7d8f297bea9",
-   "size": 21045
+   "sha1": "ec106f137e0f808583b6e5c6d697c2cc0cdf5b0d",
+   "size": 20630
   },
   {
    "path": "kubejs/startup_scripts/classes_effets.js",
