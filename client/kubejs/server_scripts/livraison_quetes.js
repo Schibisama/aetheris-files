@@ -125,7 +125,37 @@ function lvExec(server, joueur, commande) {
   server.runCommandSilent(commande.replace('%joueur%', joueur.username))
 }
 
+// Quête FTB « parler aux PNJ des classes » : tout contact avec les boutons de quête d'un de ces PNJ valide sa tâche (chapitre boss_pnj).
+var LV_FTB = {
+  'cls_pyromancien_quete': '5C03B6E1433D6DF9',
+  'cls_cryomancien_quete': 'FD27126F413803DA',
+  'cls_voyageur_vide_quete': '71B5C99E28972A0A',
+  'cls_evocateur_quete': '5E90E501CFFD9750',
+  'cls_chronomancien_quete': '61E6FB3291852426',
+  'cls_aeromancien_quete': '91C8A74358D5564C',
+  'cls_chromancien_quete': 'D40E139425E07199',
+  'cls_necromancien_quete': '293DA20D8859D0E5',
+  'cls_reprouve_quete': 'E7DC54EE643E13C9',
+  'cls_envouteur_quete': '10C5964DB2BE5D23',
+  'cls_esoteriste_quete': 'A5600FC47C14FC63',
+  'cls_astromancien_quete': '87A2811C8C4899F4',
+  'cls_spiritualiste_quete': '26E322751931E65D',
+  'cls_symetriste_quete': 'E409283CFDD2BA08',
+  'tobin_paratonnerre_quete': '277BF5304724C1FE',
+  'edrik_chair_quete': '775CF9C47617FB0C',
+  'gorm_morue_quete': 'DB2C1258F9D27B05',
+  'brokk_fer_quete': '39988E77D4C24C54',
+  'sylvaine_roses_quete': '419F8AD44204FD67'
+}
+function lvFtb(joueur, q) {
+  try {
+    var id = LV_FTB[q.cle]
+    if (id) joueur.server.runCommandSilent('ftbquests change_progress ' + joueur.username + ' complete ' + id)
+  } catch (e) {}
+}
+
 function lvAccepter(joueur, q) {
+  lvFtb(joueur, q)
   var d = joueur.persistentData
   var etat = d.getInt(q.cle)
   if (etat === 0) { d.putInt(q.cle, 1); lvDire(joueur, q, q.accepter) }
@@ -136,6 +166,7 @@ function lvAccepter(joueur, q) {
 }
 
 function lvRendre(server, joueur, q) {
+  lvFtb(joueur, q)
   var d = joueur.persistentData
   var etat = d.getInt(q.cle)
   if (etat === 3) lvDire(joueur, q, q.fini)
@@ -420,4 +451,28 @@ LIVRAISONS.capitaine_longuevue = lvSimple({
   encours: "Ma longue-vue ? L'horizon ne se surveille pas tout seul.",
   fini: "Ma longue-vue est à son poste. Merci, voyageur.",
   recompense: "Voilà de quoi voir venir la tempête ! Prends ce savoir de ta voie, en remerciement."
+})
+
+
+// /pnjparle <pnj> <joueur> : PNJ sans quête de livraison qui compte pour la quête FTB « parler aux PNJ des classes » (Dame Carmine).
+var PNJ_PARLE = { carmine: '88116880635C5238' }
+ServerEvents.commandRegistry(function (event) {
+  var Commands = event.commands
+  var Arguments = event.arguments
+  var parPnj = function (source) {
+    try { if (source.hasPermission(2)) return true } catch (e) {}
+    try { var ent = source.entity; return !!ent && String(ent.type).indexOf('easy_npc:') === 0 } catch (e) { return false }
+  }
+  var racine = Commands.literal('pnjparle').requires(parPnj)
+  for (var nom in PNJ_PARLE) {
+    ;(function (n) {
+      racine = racine.then(Commands.literal(n).then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+        .executes(function (ctx) {
+          var j = Arguments.PLAYER.getResult(ctx, 'joueur')
+          ctx.source.server.runCommandSilent('ftbquests change_progress ' + j.username + ' complete ' + PNJ_PARLE[n])
+          return 1
+        })))
+    })(nom)
+  }
+  event.register(racine)
 })
