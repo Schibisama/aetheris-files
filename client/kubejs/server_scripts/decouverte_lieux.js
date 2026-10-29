@@ -14,7 +14,7 @@ var DL_LIEUX = [
   { cle: 'auberge', nom: "L'auberge", ftb: 'DFB81DF82A180422', d: 20, points: [[1228, 140, 871]] },
   { cle: 'utgard', nom: "Utgard", ftb: '5F969F1A6E7C618C', d: 20, points: [[1634, 121, 1778]] },
   { cle: 'halloween', nom: "Spooky Island", ftb: '8FC9D640075FCC2E', d: 20, points: [[2934, 95, 1492]] },
-  { cle: 'morrow', nom: "Le Sculk Castle (Capitaine Morrow)", ftb: 'FB086DFEDE1589CA', d: 30, points: [[1330, 66, -12843], [1328, 66, -13094]] }
+  { cle: 'morrow', nom: "Le château du Capitaine Morrow", ftb: 'FB086DFEDE1589CA', d: 30, points: [[1330, 66, -12843], [1328, 66, -13094]] }
 ]
 
 ServerEvents.tick(function (event) {
