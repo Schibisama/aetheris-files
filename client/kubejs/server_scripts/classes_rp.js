@@ -754,19 +754,6 @@ try {
   console.error('[classes_rp] PNJ du destin indisponible : ' + e)
 }
 
-// /classe pnj : fait apparaître le PNJ à la position du modérateur.
-function cmdPnj(ctx) {
-  var joueur = ctx.source.player
-  if (!joueur) return 0
-  var n = joueur.username
-  cmd(ctx.source.server, 'execute as ' + n + ' at ' + n + ' rotated as ' + n + ' run summon minecraft:villager ~ ~ ~ ' +
-    "{NoAI:1b,Invulnerable:1b,PersistenceRequired:1b,Silent:1b,Tags:[\"" + TAG_PNJ + "\"],CustomNameVisible:1b," +
-    "CustomName:'{\"translate\":\"mcrp.pnj.nom\",\"color\":\"gold\"}'," +
-    'VillagerData:{profession:"minecraft:cleric",level:6,type:"minecraft:plains"}}')
-  retour(ctx, 'PNJ créé. Pour le retirer : /kill @e[type=minecraft:villager,tag=' + TAG_PNJ + ',limit=1,sort=nearest]')
-  return 1
-}
-
 // Sort aléatoire de la classe du joueur (rareté RARE ou EPIC), remis sous forme de parchemin.
 // /classe recompense_peu_commun <joueur> : sort UNCOMMON ; /classe recompense <joueur> : sort RARE (dernière quête du tutoriel) ; /classe recompense_epique <joueur> : sort EPIC (perm. 2).
 function sortRecompenseAleatoire(joueur, rareteNom) {
@@ -1121,9 +1108,6 @@ ServerEvents.commandRegistry(function (event) {
         .requires(estModo)
         .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
           .executes(function (ctx) { return cmdRecompense(ctx, Arguments.PLAYER.getResult(ctx, 'joueur'), 'EPIC') })))
-      .then(Commands.literal('pnj')
-        .requires(estModo)
-        .executes(function (ctx) { return cmdPnj(ctx) }))
       .then(Commands.literal('reset')
         .requires(estModo)
         .then(Commands.argument('joueur', Arguments.PLAYER.create(event))

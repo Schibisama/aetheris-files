@@ -2,7 +2,7 @@
 //  - zone d'aggro (boîte) : les mobs attaquent d'office tout joueur (survie/aventure) dedans, et lâchent l'aggro si le joueur sort ou si eux sortent de la zone ;
 //  - régénération après 5 s sans cible ; respawn 30 min après la mort du dernier ; barres de vie masquées au-delà de la zone + 10 blocs.
 // Scylla : « Act:1b » obligatoire dans le NBT du summon, sinon elle reste endormie (forme d'ancre).
-//  - /pirate accepter|rendre <joueur> (quête de la jambe de bois, PNJ ou op) ; /pirate reset <joueur> ; /pirate respawn (op) ; /boss respawn|clear pirate (op).
+//  - /pirate accepter|rendre <joueur> (quête de la jambe de bois, PNJ ou op) ; /pirate reset <joueur> ; /boss respawn|clear pirate (op).
 // Nécessite : startup_scripts/objets_quetes.js (kubejs:jambe_de_bois) + redémarrage. Rechargement du script : /reload
 
 var ZP = {
@@ -404,17 +404,7 @@ ServerEvents.commandRegistry(function (event) {
     .then(Commands.literal('rendre').requires(parPnj).then(Commands.argument('joueur', Arguments.PLAYER.create(event))
       .executes(function (ctx) { return zpRendre(ctx.source.server, Arguments.PLAYER.getResult(ctx, 'joueur')) })))
     .then(Commands.literal('reset').requires(estModo).then(Commands.argument('joueur', Arguments.PLAYER.create(event))
-      .executes(function (ctx) { Arguments.PLAYER.getResult(ctx, 'joueur').persistentData.putInt(ZP.quete.cle, 0); return 1 })))
-    .then(Commands.literal('respawn').requires(estModo)
-      .executes(function (ctx) {
-        var server = ctx.source.server
-        var niveau = zpNiveau(server)
-        var liste = niveau ? zpMobs(niveau) : []
-        for (var i = 0; i < liste.length; i++) liste[i].discard()
-        server.persistentData.putLong('pirates_respawn', 0)
-        zpSpawn(server)
-        return 1
-      })))
+      .executes(function (ctx) { Arguments.PLAYER.getResult(ctx, 'joueur').persistentData.putInt(ZP.quete.cle, 0); return 1 }))))
 })
 
 // /boss respawn pirate | /boss clear pirate (op) : même racine que les autres boss (Brigadier fusionne les deux enregistrements)

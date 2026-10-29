@@ -1,5 +1,4 @@
 // Gèle une entité (ex. un balai volant) : plus personne (sauf op) ne peut l'utiliser, la monter, la ramasser ni la frapper.
-// /geler : gèle l'entité (non-joueur) la plus proche de toi, dans un rayon de 5 blocs. /degeler : la dégèle. (op)
 // Rechargement : /reload
 var GELE_TAG = 'entite_gelee'
 
@@ -126,24 +125,4 @@ function glCible(ctx) {
   return meilleure
 }
 
-ServerEvents.commandRegistry(function (event) {
-  var Commands = event.commands
-  event.register(Commands.literal('geler').requires(function (s) { return s.hasPermission(2) }).executes(function (ctx) {
-    var e = glCible(ctx)
-    if (!e) { ctx.source.player.tell(Text.red('Aucune entité à moins de 5 blocs.')); return 0 }
-    e.addTag(GELE_TAG)
-    glMemoriser(ctx.source.server, e)
-    ctx.source.server.runCommandSilent('data merge entity ' + String(e.uuid) + ' {Invulnerable:1b,NoGravity:1b}')
-    ctx.source.player.tell(Text.gray('Gelé : ' + e.getType().toString()))
-    return 1
-  }))
-  event.register(Commands.literal('degeler').requires(function (s) { return s.hasPermission(2) }).executes(function (ctx) {
-    var e = glCible(ctx)
-    if (!e) { ctx.source.player.tell(Text.red('Aucune entité à moins de 5 blocs.')); return 0 }
-    e.removeTag(GELE_TAG)
-    glOublier(ctx.source.server, e)
-    ctx.source.server.runCommandSilent('data merge entity ' + String(e.uuid) + ' {Invulnerable:0b,NoGravity:0b}')
-    ctx.source.player.tell(Text.gray('Dégelé : ' + e.getType().toString()))
-    return 1
-  }))
-})
+// Les commandes /geler et /degeler ont été retirées ; les entités déjà gelées (tag entite_gelee) le restent.
