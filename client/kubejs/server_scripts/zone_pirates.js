@@ -67,7 +67,8 @@ function zpMobs(niveau) {
 }
 
 // ───────────── Difficulté : vie x3 et dégâts x1,5 (les seuils de phase restent en % de la vie max) ─────────────
-var ZP_VIE_MULT = 5
+var ZP_VIE_MULT = 5   // vie TOTALE visée (réelle + fictive) pour un joueur seul
+var ZP_VIE_ATTR_MAX = 1000   // part portée par la vraie vie max (attribut) : plafond Minecraft 1024. Le reste est fait par la vie fictive.
 var ZP_DEGATS_MULT = 1.5
 // Échelle selon le groupe (même principe que boss_zones.js) : chaque joueur AU-DELÀ DU PREMIER dans la zone ajoute ZP_VIE_PAR_JOUEUR
 // à la vie fictive et ZP_DEGATS_PAR_JOUEUR aux dégâts de tous les mobs de la zone ; ZP_JOUEURS_MAX borne le décompte.
@@ -101,6 +102,11 @@ function zpArmureMult(victime) {
 // on lui rend les 2/3 de la perte. Indépendant des évènements de dégâts ; ignoré sous 0,2 PV (le mod annule alors la mort lui-même).
 var zpHpPrec = {}
 var zpLogsVie = 0
+function zpVieMult(e) {
+  var reel = 1
+  try { var base = e.persistentData.getDouble('zp_buff3_base'); if (base > 0) reel = Math.max(1, e.maxHealth / base) } catch (x) {}
+  return Math.max(1, ZP_VIE_MULT * (1 + ZP_VIE_PAR_JOUEUR * (zpNbJoueurs - 1)) / reel)
+}
 function zpVieFictive(e) {
   try {
     var id = String(e.uuid)
@@ -108,7 +114,7 @@ function zpVieFictive(e) {
     var prec = zpHpPrec[id]
     if (prec === undefined) prec = h
     if (h < prec - 0.001 && h > 0.2 && e.isAlive()) {
-      var rendu = (prec - h) * (1 - 1 / (ZP_VIE_MULT * (1 + ZP_VIE_PAR_JOUEUR * (zpNbJoueurs - 1))))
+      var rendu = (prec - h) * (1 - 1 / zpVieMult(e))
       var nh = Math.min(e.maxHealth, h + rendu)
       e.setHealth(nh)
       if (zpLogsVie < 15) { zpLogsVie++; console.info('[zone_pirates] vie x3 : perte ' + (prec - h).toFixed(1) + ' -> ' + (prec - nh).toFixed(1) + ' (' + String(e.type) + ', ' + nh.toFixed(0) + '/' + e.maxHealth.toFixed(0) + ')') }
@@ -122,14 +128,20 @@ function zpVieFictive(e) {
 function zpBuff(server, e) {
   try {
     var pd = e.persistentData
-    if (pd.getInt('zp_buff2') === 1) return
-    pd.putInt('zp_buff2', 1)
-    var avant = e.maxHealth
-    var ratio = avant > 0 ? e.health / avant : 1
+    if (pd.getInt('zp_buff3') === 1) return
+    pd.putInt('zp_buff3', 1)
+    var base = e.maxHealth
+    var ratio = base > 0 ? e.health / base : 1
+    pd.putDouble('zp_buff3_base', base)
     server.runCommandSilent('attribute ' + e.uuid + ' minecraft:generic.max_health modifier remove aetheris:boss_vie')
+    var cible = Math.min(ZP_VIE_ATTR_MAX, base * ZP_VIE_MULT)
+    if (cible > base) {
+      server.runCommandSilent('attribute ' + e.uuid + ' minecraft:generic.max_health modifier add aetheris:boss_vie ' + (cible / base - 1) + ' add_multiplied_total')
+    }
     var nouv = e.maxHealth * ratio
     try { if (Math.abs(nouv - e.health) > 0.5) e.setHealth(nouv) } catch (x) {}
     zpHpPrec[String(e.uuid)] = e.health
+    console.info('[zone_pirates] vie max de ' + String(e.type) + ' : ' + base.toFixed(0) + ' -> ' + e.maxHealth.toFixed(0) + ' (visé ' + cible.toFixed(0) + ')')
   } catch (err) { console.error('[zone_pirates] buff : ' + err) }
 }
 

@@ -144,7 +144,8 @@ function bzNiveau(server) {
   return null
 }
 // ───────────── Difficulté : vie x5 et dégâts x1,5 (les seuils de phase restent en % de la vie max) ─────────────
-var BZ_VIE_MULT = 5
+var BZ_VIE_MULT = 5   // vie TOTALE visée (réelle + fictive) pour un joueur seul
+var BZ_VIE_ATTR_MAX = 1000   // part portée par la vraie vie max (attribut) : plafond Minecraft 1024. Le reste est fait par la vie fictive.
 var BZ_DEGATS_MULT = 1.5
 // Échelle selon le groupe : chaque joueur AU-DELÀ DU PREMIER, présent dans la zone du boss (rayon + BZ_MARGE_GROUPE blocs), ajoute
 // BZ_VIE_PAR_JOUEUR à la vie fictive et BZ_DEGATS_PAR_JOUEUR aux dégâts. BZ_JOUEURS_MAX borne le décompte.
@@ -173,7 +174,9 @@ function bzCompterJoueurs(server, b) {
 }
 function bzVieMult(e) {
   var n = bzNbJoueurs[String(e.uuid)] || 1
-  return BZ_VIE_MULT * (1 + BZ_VIE_PAR_JOUEUR * (n - 1))
+  var reel = 1
+  try { var base = e.persistentData.getDouble('bz_buff3_base'); if (base > 0) reel = Math.max(1, e.maxHealth / base) } catch (x) {}
+  return Math.max(1, BZ_VIE_MULT * (1 + BZ_VIE_PAR_JOUEUR * (n - 1)) / reel)
 }
 function bzDegatsMult(e) {
   var n = bzNbJoueurs[String(e.uuid)] || 1
@@ -211,14 +214,20 @@ function bzVieFictive(e) {
 function bzBuff(server, e) {
   try {
     var pd = e.persistentData
-    if (pd.getInt('bz_buff2') === 1) return
-    pd.putInt('bz_buff2', 1)
-    var avant = e.maxHealth
-    var ratio = avant > 0 ? e.health / avant : 1
+    if (pd.getInt('bz_buff3') === 1) return
+    pd.putInt('bz_buff3', 1)
+    var base = e.maxHealth
+    var ratio = base > 0 ? e.health / base : 1
+    pd.putDouble('bz_buff3_base', base)
     server.runCommandSilent('attribute ' + e.uuid + ' minecraft:generic.max_health modifier remove aetheris:boss_vie')
+    var cible = Math.min(BZ_VIE_ATTR_MAX, base * BZ_VIE_MULT)
+    if (cible > base) {
+      server.runCommandSilent('attribute ' + e.uuid + ' minecraft:generic.max_health modifier add aetheris:boss_vie ' + (cible / base - 1) + ' add_multiplied_total')
+    }
     var nouv = e.maxHealth * ratio
     try { if (Math.abs(nouv - e.health) > 0.5) e.setHealth(nouv) } catch (x) {}
     bzHpPrec[String(e.uuid)] = e.health
+    console.info('[boss_zones] vie max de ' + String(e.type) + ' : ' + base.toFixed(0) + ' -> ' + e.maxHealth.toFixed(0) + ' (visé ' + cible.toFixed(0) + ')')
   } catch (err) { console.error('[boss_zones] buff : ' + err) }
 }
 
