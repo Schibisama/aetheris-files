@@ -1,5 +1,5 @@
 {
- "version": "2026-10-29T11:17:58.569Z",
+ "version": "2026-10-29T13:38:38.121Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -52,8 +52,8 @@
   },
   {
    "path": "kubejs/assets/mcrp/sounds.json",
-   "sha1": "df8bdfcc0c755180f6b91f78c71ea40d415e8bd0",
-   "size": 583
+   "sha1": "7eb99528c47b5d4913970522e541ae3d7b29d0bd",
+   "size": 880
   },
   {
    "path": "kubejs/assets/mcrp/sounds/npc/parole_feminine_1.ogg",
