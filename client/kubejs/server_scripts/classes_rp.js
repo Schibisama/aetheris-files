@@ -982,16 +982,17 @@ function coursDonner(server, joueur) {
   var classe = classeDe(joueur)
   if (!classe) return { etat: 'aucune_classe' }
   var ordre = coursOrdre()
-  var essais = 0
-  for (var i = 0; i < ordre.length && essais < 3; i++) {
+  // Source de vérité : le suivi interne de /cours (un sort n'est noté qu'une fois donné par /cours).
+  // On ne se fie plus à la lecture du Codex, qui peut renvoyer « déjà découvert » pour des sorts jamais donnés.
+  var suivi = ''
+  try { suivi = String(joueur.persistentData.getString(COURS_CLE)) } catch (e0) {}
+  for (var i = 0; i < ordre.length; i++) {
     var id = ordre[i]
-    if (coursADejaLeSort(joueur, id)) continue
-    essais++
+    if (suivi.indexOf('|' + id + '|') >= 0) continue
+    // UN SEUL sort par appel : on le note d'abord, on le débloque, on s'arrête.
+    try { joueur.persistentData.putString(COURS_CLE, suivi + '|' + id + '|') } catch (e2) {}
     cmd(server, 'specs_codex spell unlock ' + joueur.username + ' ' + id)
-    var ok = true
-    try { if (UnlockAttachJ) ok = coursADejaLeSort(joueur, id) } catch (e) {}
-    if (!ok) continue // le Codex a refusé ce sort : on passe au suivant
-    try { joueur.persistentData.putString(COURS_CLE, String(joueur.persistentData.getString(COURS_CLE)) + '|' + id + '|') } catch (e2) {}
+    console.info('[cours] ' + joueur.username + ' reçoit ' + id + ' (n°' + (i + 1) + '/' + ordre.length + ')')
     return { etat: 'ok', id: id }
   }
   return { etat: 'tout' }
