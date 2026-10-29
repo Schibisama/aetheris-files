@@ -1,5 +1,6 @@
 // Quête FTB « Découverte des lieux » : visiter chaque lieu coche sa tâche FTB (chapitre decouverte_lieux).
 // Zone = sphère de diamètre `d` (+ tolérance) autour du point. Idempotent : si le joueur est dans la zone, la tâche est (re)cochée, aucune donnée à réinitialiser.
+// /lieux : liste des lieux découverts (✔) et restants (???). Clés « lieu_xxx_quete » : effacées par /reinit.
 // Rechargement : /reload
 
 var DL_TOLERANCE = 2
@@ -33,7 +34,7 @@ ServerEvents.tick(function (event) {
         var dx = px - p[0], dy = py - p[1], dz = pz - p[2]
         if (dx * dx + dy * dy + dz * dz > r * r) continue
         try { serveur.runCommandSilent('ftbquests change_progress ' + j.username + ' complete ' + l.ftb) } catch (e) {}
-        var cle = 'lieu_' + l.cle
+        var cle = 'lieu_' + l.cle + '_quete'
         if (!j.persistentData.getBoolean(cle)) {
           j.persistentData.putBoolean(cle, true)
           j.tell(Text.of('§6Lieu découvert : §e' + l.nom))
@@ -42,4 +43,26 @@ ServerEvents.tick(function (event) {
       }
     }
   }
+})
+
+ServerEvents.commandRegistry(function (event) {
+  var Commands = event.commands
+  event.register(Commands.literal('lieux').executes(function (ctx) {
+    var j = ctx.source.player
+    if (!j) return 0
+    var n = 0
+    var lignes = []
+    for (var k = 0; k < DL_LIEUX.length; k++) {
+      var l = DL_LIEUX[k]
+      if (j.persistentData.getBoolean('lieu_' + l.cle + '_quete')) {
+        n++
+        lignes.push(Text.green('  ✔ ').append(Text.white(l.nom)))
+      } else {
+        lignes.push(Text.darkGray('  ✘ ???'))
+      }
+    }
+    j.tell(Text.gold('Lieux découverts : ').append(Text.yellow(n + ' / ' + DL_LIEUX.length)))
+    for (var m = 0; m < lignes.length; m++) j.tell(lignes[m])
+    return 1
+  }))
 })
