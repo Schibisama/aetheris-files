@@ -1,4 +1,4 @@
-// /starter (tout le monde, une seule fois par joueur) : kit de départ.
+// /starter <joueur> (op uniquement, une seule fois par joueur) : kit de départ.
 //   - une classe aléatoire (si le joueur n'en a pas déjà une) ;
 //   - le set Wizard complet (casque, robe, jambières, bottes), teint d'une couleur aléatoire ;
 //   - un grimoire de base à 5 emplacements (Flimsy Journal, vide) ;
@@ -14,13 +14,12 @@ var STARTER_COULEURS = [
   0x2C3E9E, 0x8E44AD, 0xE91E8C, 0x5D4037, 0x9AA5AB, 0x1C1C24
 ]
 
-function starterDonner(ctx) {
-  var joueur = ctx.source.player
-  if (!joueur) return 0
+function starterDonner(ctx, joueur) {
   var server = ctx.source.server
   var n = joueur.username
+  var op = ctx.source.player
   if (joueur.persistentData.getBoolean(STARTER_CLE)) {
-    joueur.tell(Text.red('Tu as déjà reçu ton kit de départ.'))
+    if (op) op.tell(Text.red(n + ' a déjà reçu son kit de départ (/reinit pour le lui redonner).'))
     return 0
   }
   joueur.persistentData.putBoolean(STARTER_CLE, true)
@@ -47,12 +46,18 @@ function starterDonner(ctx) {
   server.runCommandSilent('give ' + n + ' irons_spellbooks:copper_spell_book')
   server.runCommandSilent('give ' + n + ' apprenticecodex:floatmount_broom')
 
+  if (op) op.tell(Text.gray('Kit de départ donné à ' + n + '.'))
   joueur.tell(Text.gold('Kit de départ reçu : set de Wizard, grimoire et balai volant. Bonne rentrée à l\'Académie !'))
   return 1
 }
 
 ServerEvents.commandRegistry(function (event) {
-  event.register(event.commands.literal('starter').executes(function (ctx) {
-    try { return starterDonner(ctx) } catch (e) { console.error('[starter] ' + e); return 0 }
-  }))
+  var Commands = event.commands
+  var Arguments = event.arguments
+  event.register(Commands.literal('starter')
+    .requires(function (source) { return source.hasPermission(2) })
+    .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+      .executes(function (ctx) {
+        try { return starterDonner(ctx, Arguments.PLAYER.getResult(ctx, 'joueur')) } catch (e) { console.error('[starter] ' + e); return 0 }
+      })))
 })
