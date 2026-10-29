@@ -1,5 +1,5 @@
 {
- "version": "2026-10-29T14:37:23.290Z",
+ "version": "2026-10-29T14:39:41.669Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -10,6 +10,16 @@
  ],
  "server": "91.197.6.164:22974",
  "files": [
+  {
+   "path": "kubejs/assets/kubejs/lang/en_us.json",
+   "sha1": "b08dc5d972a3515d536cf03b6e2caad5b5c99f0a",
+   "size": 58
+  },
+  {
+   "path": "kubejs/assets/kubejs/lang/fr_fr.json",
+   "sha1": "ce3d791677f63c35bfb5a86806e79d0d234fe2e8",
+   "size": 60
+  },
   {
    "path": "kubejs/assets/kubejs/textures/block/example_block.png",
    "sha1": "87f5ec8c26493050fc83543af8d33f2d28a98766",
@@ -49,6 +59,11 @@
    "path": "kubejs/assets/kubejs/textures/item/sceau_maledictus.png",
    "sha1": "96bf62a6209d9bc0fb9e1e6426dc24ed01961d5e",
    "size": 389
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/mob_effect/aura_professeur.png",
+   "sha1": "57605aaf458d52dd1e4a92c7656326c98713ffe9",
+   "size": 205
   },
   {
    "path": "kubejs/assets/mcrp/sounds.json",
@@ -1052,8 +1067,8 @@
   },
   {
    "path": "kubejs/server_scripts/aura_professeurs.js",
-   "sha1": "cff11def0d850ad6d3ab30126e81e316d9394dce",
-   "size": 4141
+   "sha1": "f8f2e80eda1becade658ce4290bc491b998a08c7",
+   "size": 2970
   },
   {
    "path": "kubejs/server_scripts/baton_neant.js",
@@ -1179,6 +1194,11 @@
    "path": "kubejs/server_scripts/zone_pirates.js",
    "sha1": "f7460dcae9d7054b783c1ac2714142d5b3c080cb",
    "size": 22948
+  },
+  {
+   "path": "kubejs/startup_scripts/aura_professeur_effet.js",
+   "sha1": "7d894cfb835781693331488d2400f1a3e453f8b8",
+   "size": 1798
   },
   {
    "path": "kubejs/startup_scripts/classes_effets.js",
