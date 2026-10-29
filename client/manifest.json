@@ -1,5 +1,5 @@
 {
- "version": "2026-10-29T00:59:25.608Z",
+ "version": "2026-10-29T01:06:05.858Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -1129,6 +1129,11 @@
    "path": "kubejs/server_scripts/mobs_distance.js",
    "sha1": "57ca0c61fb0d2a54d0b686df9268a4eab6b25e5d",
    "size": 11624
+  },
+  {
+   "path": "kubejs/server_scripts/pnj_parler.js",
+   "sha1": "e0eb7a0d2e6f7b51ea5086f795e6e6f89b54c3a3",
+   "size": 1839
   },
   {
    "path": "kubejs/server_scripts/pnj_voix.js",
