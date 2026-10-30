@@ -1,5 +1,5 @@
 {
- "version": "2026-10-30T13:50:32.233Z",
+ "version": "2026-10-30T13:52:54.299Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -128,6 +128,16 @@
   {
    "path": "kubejs/assets/kubejs/blockstates/rune_24.json",
    "sha1": "edf3d72c0af239d74734a52c84cb16ba575d39c6",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_25.json",
+   "sha1": "d7bb19f22668ed34e84c7b970f4d976fd82d9e46",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_26.json",
+   "sha1": "f9af8a444c150cc3103cfa712f3c59fedb320d96",
    "size": 51
   },
   {
@@ -261,6 +271,16 @@
    "size": 266
   },
   {
+   "path": "kubejs/assets/kubejs/models/block/rune_25.json",
+   "sha1": "a54882c52db841d5587af0ef851db9e1446d329a",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_26.json",
+   "sha1": "9c3ed5d66150fcf847533bd5de8a33a28228d9b8",
+   "size": 266
+  },
+  {
    "path": "kubejs/assets/kubejs/models/item/rune_01.json",
    "sha1": "5e793818fe1e1b49b687c6d955c4b630078afd30",
    "size": 86
@@ -379,6 +399,16 @@
    "path": "kubejs/assets/kubejs/models/item/rune_24.json",
    "sha1": "443f9928de32ec9ef144abae53f2f69bda58b32e",
    "size": 86
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/item/rune_25.json",
+   "sha1": "b783c0f93985db726a25bb88c289f2887e54ba50",
+   "size": 83
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/item/rune_26.json",
+   "sha1": "4b1442ab3a30e1f59c3f89502007110c1bd95f7b",
+   "size": 83
   },
   {
    "path": "kubejs/assets/kubejs/textures/block/example_block.png",
@@ -504,6 +534,16 @@
    "path": "kubejs/assets/kubejs/textures/block/rune_24.png",
    "sha1": "d7629df0f08eeb4606050dee54ff29199bda6aa5",
    "size": 2597
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_25.png",
+   "sha1": "f390ef2a63c7e556e5909ec882334b703a6f2711",
+   "size": 4457
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_26.png",
+   "sha1": "995630362711fda95ae08c37957e57638b9d0f47",
+   "size": 3744
   },
   {
    "path": "kubejs/assets/kubejs/textures/item/corne_de_skor.png",
@@ -654,6 +694,16 @@
    "path": "kubejs/assets/kubejs/textures/item/rune_24.png",
    "sha1": "d7629df0f08eeb4606050dee54ff29199bda6aa5",
    "size": 2597
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/item/rune_25.png",
+   "sha1": "f390ef2a63c7e556e5909ec882334b703a6f2711",
+   "size": 4457
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/item/rune_26.png",
+   "sha1": "995630362711fda95ae08c37957e57638b9d0f47",
+   "size": 3744
   },
   {
    "path": "kubejs/assets/kubejs/textures/item/sceau_maledictus.png",
