@@ -66,7 +66,7 @@ ServerEvents.commandRegistry(function (event) {
   var Commands = event.commands
   var Arguments = event.arguments
   event.register(Commands.literal('starter')
-    .requires(function (source) { return source.hasPermission(2) })
+    .requires(profOuOp)
     .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
       .executes(function (ctx) {
         try { return starterDonner(ctx, Arguments.PLAYER.getResult(ctx, 'joueur')) } catch (e) { console.error('[starter] ' + e); return 0 }

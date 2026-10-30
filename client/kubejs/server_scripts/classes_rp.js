@@ -1092,7 +1092,7 @@ ServerEvents.commandRegistry(function (event) {
   // /cours : un sort pour chaque élève de la zone de cours ; /cours ici : autour du professeur ; /cours ordre <joueur>
   event.register(
     Commands.literal('cours')
-      .requires(estModo)
+      .requires(profOuOp)
       .executes(function (ctx) { return cmdCours(ctx, COURS.X, COURS.Y, COURS.Z, COURS.RAYON) })
       .then(Commands.literal('ici')
         .executes(function (ctx) {
