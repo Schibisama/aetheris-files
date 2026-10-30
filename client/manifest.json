@@ -1,5 +1,5 @@
 {
- "version": "2026-10-30T15:15:02.546Z",
+ "version": "2026-10-30T15:29:07.853Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -2314,6 +2314,11 @@
    "path": "kubejs/startup_scripts/aura_professeur_effet.js",
    "sha1": "7d894cfb835781693331488d2400f1a3e453f8b8",
    "size": 1798
+  },
+  {
+   "path": "kubejs/startup_scripts/autel_sceau.js",
+   "sha1": "2cded839144ddd49e35639e8796303db4c9c8ff1",
+   "size": 2024
   },
   {
    "path": "kubejs/startup_scripts/classes_effets.js",
