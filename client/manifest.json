@@ -1,5 +1,5 @@
 {
- "version": "2026-10-30T15:29:32.867Z",
+ "version": "2026-10-30T15:47:52.832Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -1289,6 +1289,11 @@
    "path": "kubejs/assets/mcrp/textures/entity/cls_voyageur_vide.png",
    "sha1": "021eca1a2bf9485424cad1fb1b84033e94efa00d",
    "size": 4853
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/dechiffreur.png",
+   "sha1": "6b97d811a31c289a036231cc5e2416a477793cff",
+   "size": 3002
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/edrik.png",
