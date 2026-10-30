@@ -1,5 +1,5 @@
 // AUTEL DU SCEAU : tous les blocs enregistrés au démarrage (un seul fichier).
-//   1. kubejs:autel_sceau : l'autel (25 pièces dans une grille 5 x 5, centre = pièce 12). Pose : un op tient « Autel du Sceau »
+//   1. kubejs:autel_sceau : l'autel (grille de 15 x 15 blocs, 7 de haut, plusieurs centaines de pièces). Pose : un op tient « Autel du Sceau »
 //      (/give @s kubejs:autel_sceau) et fait clic droit au sol : l'autel entier se construit autour (voir server_scripts/autel_sceau_faisceaux.js).
 //   2. kubejs:rune_01 ... kubejs:rune_26 : les runes plates (alphabet inventé, rune n = lettre n) ; posées par le script ou à la main par un op.
 // Les modèles, textures, blockstates et la police des runes sont dans kubejs/assets (distribués par le launcher).
@@ -7,19 +7,39 @@
 // Remplace autel_runes.js et l'ancien autel_sceau.js (à supprimer du serveur).
 
 // ── 1. L'autel ──
+// Grille de 15 x 15 blocs sur 7 couches (507 blocs non vides). Deux blocs partagent les memes modeles :
+//   kubejs:autel_sceau      : decor sans collision (dalles, gravats, murets bas), on le traverse ;
+//   kubejs:autel_sceau_dur  : massif (piliers, socles, emetteurs), collision pleine.
+// Propriete « piece » = numero de la cellule (voir AU_CELLULES dans server_scripts/autel_sceau_faisceaux.js), booleens force / memoire / courage / orbe = etat allume.
 StartupEvents.registry('block', function (event) {
   var BooleanProperty = Java.loadClass('net.minecraft.world.level.block.state.properties.BooleanProperty')
   var IntegerProperty = Java.loadClass('net.minecraft.world.level.block.state.properties.IntegerProperty')
-  var pPiece = IntegerProperty.create('piece', 0, 24)
-  var pActif = BooleanProperty.create('actif')
+  var pPiece = IntegerProperty.create('piece', 0, 506)
+  var pForce = BooleanProperty.create('force')
+  var pMemoire = BooleanProperty.create('memoire')
+  var pCourage = BooleanProperty.create('courage')
+  var pOrbe = BooleanProperty.create('orbe')
+  var etat = function (e) {
+    e.set(pPiece, 0)
+    e.set(pForce, false)
+    e.set(pMemoire, false)
+    e.set(pCourage, false)
+    e.set(pOrbe, false)
+  }
   event.create('autel_sceau')
     .displayName('Autel du Sceau')
-    .property(pPiece)
-    .property(pActif)
-    .defaultState(function (etat) {
-      etat.set(pPiece, 12)
-      etat.set(pActif, false)
-    })
+    .property(pPiece).property(pForce).property(pMemoire).property(pCourage).property(pOrbe)
+    .defaultState(etat)
+    .noCollision()
+    .notSolid()
+    .renderType('cutout')
+    .lightLevel(0.3)
+    .unbreakable()
+    .resistance(3600000)
+  event.create('autel_sceau_dur')
+    .displayName('Autel du Sceau (massif)')
+    .property(pPiece).property(pForce).property(pMemoire).property(pCourage).property(pOrbe)
+    .defaultState(etat)
     .notSolid()
     .renderType('cutout')
     .lightLevel(0.3)
