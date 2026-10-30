@@ -1,5 +1,5 @@
 {
- "version": "2026-10-30T13:53:16.300Z",
+ "version": "2026-10-30T13:54:20.011Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -139,6 +139,11 @@
    "path": "kubejs/assets/kubejs/blockstates/rune_26.json",
    "sha1": "f9af8a444c150cc3103cfa712f3c59fedb320d96",
    "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/font/runes.json",
+   "sha1": "7d97d381cf916736354edf737d857f603548af6a",
+   "size": 10589
   },
   {
    "path": "kubejs/assets/kubejs/lang/en_us.json",
@@ -544,6 +549,136 @@
    "path": "kubejs/assets/kubejs/textures/block/rune_26.png",
    "sha1": "995630362711fda95ae08c37957e57638b9d0f47",
    "size": 3744
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_a.png",
+   "sha1": "b5e6731164201298442872511eb2fa40f8d1a342",
+   "size": 296
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_b.png",
+   "sha1": "bb8ec312a1a477be3b210d2010165fedbe277990",
+   "size": 271
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_c.png",
+   "sha1": "560f80d85c4f80877605e46068e19639d65c5157",
+   "size": 238
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_d.png",
+   "sha1": "0a0ea77fd6380771348d6db49e23314cde8e2e72",
+   "size": 226
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_e.png",
+   "sha1": "f2d5582caf1a2b8936245f33b1faefa9f21d68b5",
+   "size": 313
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_f.png",
+   "sha1": "af244e1392be8dc0cc2f1aa79c547bebe54504e6",
+   "size": 268
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_g.png",
+   "sha1": "3016b3d29ddfddd9ff4921092db73b761ef1d54a",
+   "size": 176
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_h.png",
+   "sha1": "1fecf36a332aab5278518511440989422342fc9a",
+   "size": 243
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_i.png",
+   "sha1": "f32a1bb70166c04216d2f795704fbf88c32dbacd",
+   "size": 298
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_j.png",
+   "sha1": "329811ea1d4aeba10f915c8e063b148409ae9e15",
+   "size": 278
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_k.png",
+   "sha1": "52ce8250dff7527811932f54fc258be4c77cdb3a",
+   "size": 262
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_l.png",
+   "sha1": "b26a24c51f7ad63bb47ffe7c095b97eb019fa5c2",
+   "size": 260
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_m.png",
+   "sha1": "8be05cae3ca7e4c255c02199fa07754a246cd09d",
+   "size": 249
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_n.png",
+   "sha1": "17dd1f3be5ef91d0c0d087cf1593247799ca8040",
+   "size": 299
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_o.png",
+   "sha1": "c616556b56ce2ea23897b4ff9b85c95cb1b2f158",
+   "size": 181
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_p.png",
+   "sha1": "ebf4d0013ef9d58f4d06ea5b1143a1418c872f9d",
+   "size": 274
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_q.png",
+   "sha1": "e54f96253999baafc66ac96e56997f3c31e6c2f8",
+   "size": 255
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_r.png",
+   "sha1": "50a19cc7475d8103d925eefaf3bb85d2140540ca",
+   "size": 188
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_s.png",
+   "sha1": "c548bb981ac4b1ab505367e8ca8e9c4552929269",
+   "size": 194
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_t.png",
+   "sha1": "13fd38021b709b3e294b6afb62689d4c2d1fa193",
+   "size": 199
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_u.png",
+   "sha1": "18c59e37bf3801f68ca631bde81c2110c2480cc6",
+   "size": 271
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_v.png",
+   "sha1": "6aa9ce9992b38ea092196242489a3ba94a6a2e7b",
+   "size": 269
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_w.png",
+   "sha1": "e30f914508d5872654011dc1653418ed940da270",
+   "size": 244
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_x.png",
+   "sha1": "2c61305cd535d4691ebb1e5c30cb4a50c29759bb",
+   "size": 212
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_y.png",
+   "sha1": "e4d7e7edffbe018945b427095dde82eb4587fed8",
+   "size": 268
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/rune_z.png",
+   "sha1": "351ba369091a695090bb364f474039f448fef4e1",
+   "size": 243
   },
   {
    "path": "kubejs/assets/kubejs/textures/item/corne_de_skor.png",

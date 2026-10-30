@@ -1,0 +1,752 @@
+{
+ "providers": [
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_a.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "a"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_a.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "A"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_a.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "à"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_a.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "â"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_a.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "ä"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_a.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "À"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_a.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "Â"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_a.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "Ä"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_b.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "b"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_b.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "B"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_c.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "c"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_c.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "C"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_c.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "ç"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_c.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "Ç"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_d.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "d"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_d.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "D"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_e.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "e"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_e.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "E"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_e.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "é"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_e.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "è"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_e.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "ê"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_e.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "ë"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_e.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "É"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_e.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "È"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_e.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "Ê"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_e.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "Ë"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_f.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "f"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_f.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "F"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_g.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "g"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_g.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "G"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_h.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "h"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_h.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "H"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_i.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "i"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_i.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "I"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_i.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "î"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_i.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "ï"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_i.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "Î"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_i.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "Ï"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_j.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "j"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_j.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "J"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_k.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "k"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_k.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "K"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_l.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "l"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_l.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "L"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_m.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "m"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_m.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "M"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_n.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "n"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_n.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "N"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_o.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "o"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_o.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "O"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_o.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "ô"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_o.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "ö"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_o.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "Ô"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_o.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "Ö"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_p.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "p"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_p.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "P"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_q.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "q"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_q.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "Q"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_r.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "r"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_r.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "R"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_s.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "s"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_s.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "S"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_t.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "t"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_t.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "T"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_u.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "u"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_u.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "U"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_u.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "ù"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_u.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "û"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_u.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "ü"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_u.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "Ù"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_u.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "Û"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_u.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "Ü"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_v.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "v"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_v.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "V"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_w.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "w"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_w.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "W"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_x.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "x"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_x.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "X"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_y.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "y"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_y.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "Y"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_z.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "z"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/rune_z.png",
+   "ascent": 8,
+   "height": 10,
+   "chars": [
+    "Z"
+   ]
+  },
+  {
+   "type": "space",
+   "advances": {
+    " ": 5
+   }
+  },
+  {
+   "type": "reference",
+   "id": "minecraft:default"
+  }
+ ]
+}
