@@ -1068,7 +1068,19 @@ var CLASSES_PARTAGEES = {
  'somakespells:comforting_lullaby': 'Évocateur / Chromancien',
  'somakespells:jingle_bell': 'Évocateur / Chromancien',
  'somakespells:resonant_pulse': 'Évocateur / Chromancien',
- 'somakespells:slumber_melody': 'Évocateur / Chromancien'
+ 'somakespells:slumber_melody': 'Évocateur / Chromancien',
+ 'apprenticecodex:terra_resonance': 'Géomancien / Druide',
+ 'apprenticecodex:thermal_slice': 'Pyromancien / Technomancien',
+ 'apprenticecodex:auto_magnet': 'Technomancien / Électro-Sorcier',
+ 'apprenticecodex:long_stride': 'Électro-Sorcier / Voyageur du Vide',
+ 'apprenticecodex:mirage_avoidance': 'Électro-Sorcier / Voyageur du Vide',
+ 'apprenticecodex:servant_gaze': 'Technomancien / Voyageur du Vide',
+ 'hazennstuff:counterspell_spider_lily': 'Géomancien / Druide',
+ 'hazennstuff:soul_seekers': 'Nécromancien / Envoûteur',
+ 'irons_spellbooks:black_hole': 'Voyageur du Vide / Astromancien',
+ 'irons_spellbooks:starfall': 'Voyageur du Vide / Astromancien',
+ 'iss_magicfromtheeast:cloud_ride': 'Symétriste / Aéromancien',
+ 'somakespells:thunder_cloud': 'Hydromancien / Aéromancien'
 }
 function classeDuSort(id) {
   if (CLASSES_PARTAGEES[id]) return CLASSES_PARTAGEES[id]
