@@ -1,5 +1,5 @@
 {
- "version": "2026-10-30T20:16:08.348Z",
+ "version": "2026-10-30T20:53:36.090Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -12,13 +12,13 @@
  "files": [
   {
    "path": "kubejs/assets/kubejs/blockstates/autel_sceau_dur.json",
-   "sha1": "41661c1fe9a26911168517fbca5c0033e31fc0a7",
-   "size": 52206
+   "sha1": "ac3cd69000a8e8f0e1ee6189329f39174402f3b2",
+   "size": 31060
   },
   {
    "path": "kubejs/assets/kubejs/blockstates/autel_sceau.json",
-   "sha1": "41661c1fe9a26911168517fbca5c0033e31fc0a7",
-   "size": 52206
+   "sha1": "ac3cd69000a8e8f0e1ee6189329f39174402f3b2",
+   "size": 31060
   },
   {
    "path": "kubejs/assets/kubejs/blockstates/rune_01.json",
@@ -181,34 +181,14 @@
    "size": 3041
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c100_courage_off.json",
-   "sha1": "f6c60d3e404570f2b3103178ab28ceff46b16867",
-   "size": 357
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c100_courage.json",
-   "sha1": "99b1161893af9b8ba984e32d6aa6a29b76954390",
-   "size": 357
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c100.json",
-   "sha1": "dc933cb9795a4d8399174fc3064fcd96e5cd71c4",
-   "size": 2168
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c101_courage_off.json",
-   "sha1": "fdf5844e098efa0ad1e3348410da7acce3cfe7b6",
-   "size": 356
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c101_courage.json",
-   "sha1": "77dbebe0e915632140378baece94409d188ba804",
-   "size": 358
+   "sha1": "ddc25147b1c5ba6198cad92a1f2dcf66bad0d807",
+   "size": 2429
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c101.json",
-   "sha1": "c7be57261d0385807c16ba745c77db4bad1aa905",
-   "size": 1437
+   "sha1": "17be27dd84baf13c86ee8b9466259dc7f29c74fc",
+   "size": 1697
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c102.json",
@@ -241,34 +221,14 @@
    "size": 4171
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c108_memoire_off.json",
-   "sha1": "8214da28200eb11c71bed54fc37bac528131b1c0",
-   "size": 258
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c108_memoire.json",
-   "sha1": "e3e4401a234756cf56ed6851da1b57b107c4a3f6",
-   "size": 258
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c108.json",
-   "sha1": "be90c86993cb598799e11b84210d14d4b2a92964",
-   "size": 2432
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c109_memoire_off.json",
-   "sha1": "fd35fbcf93e7eac213b08a25862b54359453bb0a",
-   "size": 257
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c109_memoire.json",
-   "sha1": "d2ab376badcf18edf24a854c2aab2ab09087af2c",
-   "size": 257
+   "sha1": "354962a524290d7513b21602c6561eebb077b3ba",
+   "size": 2594
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c109.json",
-   "sha1": "47009e39a80beee349f1d2016bd58100904caa80",
-   "size": 1577
+   "sha1": "3b12cbe07b1e6f785d6f3930e0b86b111400166e",
+   "size": 1738
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c11.json",
@@ -301,34 +261,14 @@
    "size": 1469
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c115_courage_off.json",
-   "sha1": "7fdc450d8c0ccd5861b82c94cc64e0a283b86a8c",
-   "size": 311
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c115_courage.json",
-   "sha1": "22c84c5d587cd70162684279b058878229b5607d",
-   "size": 312
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c115.json",
-   "sha1": "f3c503483865865e48a2527c34c2c214ba1a840f",
-   "size": 2690
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c116_courage_off.json",
-   "sha1": "57f9e210324490793a15d1cf3962f1d822cc8f0c",
-   "size": 311
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c116_courage.json",
-   "sha1": "d6f4175de8ebdcc93f2e86dacae984507d8f8b8b",
-   "size": 312
+   "sha1": "f2d469cf7240bfa26ec1cdf2b01c7abc4c546634",
+   "size": 2905
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c116.json",
-   "sha1": "6158ec349fcee24944638dac7cfa728b7cd38ac8",
-   "size": 2396
+   "sha1": "f99575dc442f9753a9b302489426c5a9f2181078",
+   "size": 2611
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c117.json",
@@ -366,34 +306,14 @@
    "size": 2726
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c123_memoire_off.json",
-   "sha1": "2208034bc8a26a3b0e825eda614c1f2551256c55",
-   "size": 309
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c123_memoire.json",
-   "sha1": "35d7b1c3a761c929da9deecda59bd953bcecbbca",
-   "size": 309
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c123.json",
-   "sha1": "f3949ae1f2c6d1db7aab91fa80112730ec792daa",
-   "size": 2392
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c124_memoire_off.json",
-   "sha1": "834207f2f3e7ad0d34f8f1893d92cbd8fe572175",
-   "size": 309
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c124_memoire.json",
-   "sha1": "207f43e04b2df835d98f364d95413ffc0de7c4d3",
-   "size": 309
+   "sha1": "adcc1322f018ffb09fa20b40a1f724edf3c3564d",
+   "size": 2605
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c124.json",
-   "sha1": "ac8ec44d9b48fc546d6d0cb11375ffbb870e3918",
-   "size": 1740
+   "sha1": "93f8b262d4c188e0ea278cc2b30c6fc0f515eabb",
+   "size": 1953
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c125.json",
@@ -426,34 +346,14 @@
    "size": 2417
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c130_courage_off.json",
-   "sha1": "ef46b14a7802607f926539bb75e9a0f379db3584",
-   "size": 356
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c130_courage.json",
-   "sha1": "cee7e2dd5800034f44c6ccc628fceba4d8e7ac67",
-   "size": 358
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c130.json",
-   "sha1": "4347e657761c6dc9d93cdf7c05acd756cfe3c428",
-   "size": 2743
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c131_courage_off.json",
-   "sha1": "9615f03a018ed9dfea397ee998287364083cb7d8",
-   "size": 357
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c131_courage.json",
-   "sha1": "09c1d2fffddab78d8228d1ef2ceeff70124f9493",
-   "size": 357
+   "sha1": "8399e654465761347509c54b07f41635469cea90",
+   "size": 3003
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c131.json",
-   "sha1": "b808b79753b5571eb648562273fe2881b3d2b431",
-   "size": 2386
+   "sha1": "dd1cb12ecd13dcba609fba957822ebc3e4ec4c56",
+   "size": 2647
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c132.json",
@@ -1131,49 +1031,19 @@
    "size": 304
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c254_force_off.json",
-   "sha1": "1993ada3a3c443475c5abd49e3243097eac24eef",
-   "size": 303
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c254_force.json",
-   "sha1": "c5c3a814aa54f9dce2f0eb3b588017d92577ae30",
-   "size": 303
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c254.json",
-   "sha1": "58af3611a4a2b20ee69cc6229dcc73e3c23d7e52",
-   "size": 560
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c255_force_off.json",
-   "sha1": "fe84b78dda359989a5325c395bb6330316871441",
-   "size": 254
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c255_force.json",
-   "sha1": "8167e6b76febaf9b97299dcf96ce343d79596ced",
-   "size": 254
+   "sha1": "b7f9b42fd260ad0d790b149a0a422e347d79eaef",
+   "size": 767
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c255.json",
-   "sha1": "3580828cb6c6a69af9160a1c5b1f3478dfa88327",
-   "size": 514
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c256_force_off.json",
-   "sha1": "1a3a7d1d2c458ee1afcd25b6c97bfb92651785fd",
-   "size": 304
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c256_force.json",
-   "sha1": "b0350c2314fcc433053f588e2f441f6d1ad3b279",
-   "size": 304
+   "sha1": "94f788ccfa2f59a1980b5b6c69043e9b7cf06737",
+   "size": 672
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c256.json",
-   "sha1": "82d163eedf03dabff4c7c616233b51b8124dce3b",
-   "size": 564
+   "sha1": "acdcd69c5a656dffc4fb8f4308e812c65785073c",
+   "size": 772
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c257.json",
@@ -1221,49 +1091,19 @@
    "size": 908
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c265_force_off.json",
-   "sha1": "0de893ea5e32ca1eafb584ce11301c1e862a893b",
-   "size": 302
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c265_force.json",
-   "sha1": "27c90909d02d128acf065ce1fabc0c6977eb1f17",
-   "size": 302
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c265.json",
-   "sha1": "91aedad66336dd00619f5c2930e5b9cdda62ceaf",
-   "size": 889
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c266_force_off.json",
-   "sha1": "1e56dcf3ac151f29ab11afb42455124f5adb8704",
-   "size": 252
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c266_force.json",
-   "sha1": "05f1c2d00d6fb40aec9f40016e53b808a01b9b66",
-   "size": 252
+   "sha1": "fcfa75dd97f064f76fc7b33c6b8c41dcb0c699b2",
+   "size": 1095
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c266.json",
-   "sha1": "d7979dd1c38fb26a23ba0c49521fb1288d694465",
-   "size": 992
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c267_force_off.json",
-   "sha1": "bc895aa91b6c7332c32619d8fc5ffa6ef7c852da",
-   "size": 301
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c267_force.json",
-   "sha1": "b22725013d158dec5f65ac2b83d59729c0836fda",
-   "size": 301
+   "sha1": "72c49a93e82a84904d938ab4a70a09ba3c63ee33",
+   "size": 1148
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c267.json",
-   "sha1": "4a92982bf4950bf9f2f4f8dc44f5d4f52d267861",
-   "size": 1196
+   "sha1": "1ca2a04aa6183453b68ac47a0d9b5e6b7e839f04",
+   "size": 1401
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c268.json",
@@ -1351,34 +1191,14 @@
    "size": 650
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c283_memoire_off.json",
-   "sha1": "1f4dff37e183590d55f8e0f9711c8861497dd5cb",
-   "size": 304
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c283_memoire.json",
-   "sha1": "0eb0c4119e5e557e360fdd01f282bb8dce7456a5",
-   "size": 304
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c283.json",
-   "sha1": "e1fc0ad78fb9b8a54204ed92c80b7156bf5235f3",
-   "size": 303
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c284_memoire_off.json",
-   "sha1": "6f03dba150b0744bc2a99737595e2bead1fedabc",
-   "size": 302
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c284_memoire.json",
-   "sha1": "0f9349eea07774a209ec4c18b5ed48683cb73068",
-   "size": 302
+   "sha1": "322df7d05610bc34822541921f300b377095d943",
+   "size": 511
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c284.json",
-   "sha1": "cd4228d9fb88bdfbd0982dfbb6f1d5db27ae4454",
-   "size": 676
+   "sha1": "b8374218351af173e4b76e30ca0fca9735da9c95",
+   "size": 882
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c285.json",
@@ -1426,34 +1246,14 @@
    "size": 315
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c293_memoire_off.json",
-   "sha1": "97073b11d00a84fb2da730ee03bf64402dfd65ce",
-   "size": 253
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c293_memoire.json",
-   "sha1": "2ee56fe8ca3e68bc596ae83b942f45bad880fc98",
-   "size": 253
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c293.json",
-   "sha1": "16181ea0e954fae463aa0016d58861a543462530",
-   "size": 510
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c294_memoire_off.json",
-   "sha1": "b1b29e74e16dc599d8cc0cc1b70706f907118555",
-   "size": 252
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c294_memoire.json",
-   "sha1": "4ff4835815390e800c275f44141ebd3e1c9e48ef",
-   "size": 252
+   "sha1": "ea6814c66275b54d37efbb985784cf1414cd3a40",
+   "size": 667
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c294.json",
-   "sha1": "588206ac0181155a1909537e96b2039cce683d6f",
-   "size": 990
+   "sha1": "6580562cd2c3a092c6c4ae5693257c2375336453",
+   "size": 1146
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c295.json",
@@ -1506,34 +1306,14 @@
    "size": 355
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c303_memoire_off.json",
-   "sha1": "7df5c9df19055de92dd9523a68d5b2f0757c5de6",
-   "size": 303
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c303_memoire.json",
-   "sha1": "69b95b95718e604e2899e3bf16160843c86363a5",
-   "size": 303
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c303.json",
-   "sha1": "df0317468fd3736f03423af7a2cc33cbe55dfe03",
-   "size": 302
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c304_memoire_off.json",
-   "sha1": "c9ca4325e577af9b8501114129e76395800e7354",
-   "size": 303
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c304_memoire.json",
-   "sha1": "6a8e84d90fc19cce5248715fd33a8fd25eeaffed",
-   "size": 303
+   "sha1": "4904d3e3b427d46c7dae18ea55ae7b0890bc18be",
+   "size": 509
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c304.json",
-   "sha1": "72eda45c8adc9ce71086ef5a14809c2ea087158c",
-   "size": 678
+   "sha1": "d9bb65146f65ec4b09377bab579401d34ba9996e",
+   "size": 885
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c305.json",
@@ -2276,19 +2056,9 @@
    "size": 779
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c439_memoire_off.json",
-   "sha1": "3e08f6c483703912799fe45f870a1ab2d612e51f",
-   "size": 308
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c439_memoire.json",
-   "sha1": "e56ca70025228ec943cacfc8a545e68a2ebe9a19",
-   "size": 308
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c439.json",
-   "sha1": "7c83c7ec7da95a19742e9f98e9a6d8034df2450a",
-   "size": 576
+   "sha1": "e407312dec491d22ca1f1a7934530c2c33aba0b4",
+   "size": 788
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c44.json",
@@ -2296,19 +2066,9 @@
    "size": 1511
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c440_memoire_off.json",
-   "sha1": "06c6ab53a887c11ce9c2049b060d1561af8aaa8f",
-   "size": 307
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c440_memoire.json",
-   "sha1": "71a3ee2c516d949f986717686091348c6b32aab4",
-   "size": 307
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c440.json",
-   "sha1": "b532d53552af22e34be5c1c1d99ffe4a1eb04a2a",
-   "size": 576
+   "sha1": "89144eef8a2cb0ba1dce015f5451054b55afa1d9",
+   "size": 787
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c441.json",
@@ -2336,34 +2096,14 @@
    "size": 1056
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c446_memoire_off.json",
-   "sha1": "20e847cf168c341567c80e6642d7f0b4d9cbedff",
-   "size": 257
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c446_memoire.json",
-   "sha1": "0836f932a63a5fa3eb1499afdbfcaf320b038ab7",
-   "size": 257
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c446.json",
-   "sha1": "83d66b97a86f63f1a0fd3c3fc94528349994594f",
-   "size": 476
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c447_memoire_off.json",
-   "sha1": "40762b2faedf5d3d05374e93a1c7086426960084",
-   "size": 256
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c447_memoire.json",
-   "sha1": "a4a88ff71fda5c2a9ddc47b8fb1aa6a0c694e8f6",
-   "size": 661
+   "sha1": "00c03ae63fe38a19ed42a8579451e0aa4dab41df",
+   "size": 637
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c447.json",
-   "sha1": "b65c440f82f9fcb5f3724510a3a00a898ccf8864",
-   "size": 476
+   "sha1": "8a6dfa2f9aa4c8a65519da0cfc432103cc20f5d8",
+   "size": 636
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c448.json",
@@ -2396,34 +2136,14 @@
    "size": 855
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c453_memoire_off.json",
-   "sha1": "d345e1d7f7d20a7e16e6cb2068d0c537df5eeabe",
-   "size": 306
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c453_memoire.json",
-   "sha1": "289af9f16ce9cb4d6f3fd6f8630ab9cee1a889da",
-   "size": 306
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c453.json",
-   "sha1": "eda04103d7849b1bb7a21dfae8992c20b0ffead4",
-   "size": 572
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c454_memoire_off.json",
-   "sha1": "fbd6e306fcb5a35e3c0eda0ced3db856deed5ce3",
-   "size": 305
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c454_memoire.json",
-   "sha1": "77c85762a4cd0001464abfff1eef42d26789c750",
-   "size": 305
+   "sha1": "947f61d952eeaeb094e63b3700b4bd98cf0d4e49",
+   "size": 782
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c454.json",
-   "sha1": "ae245e98fed1ec0e631954103b880fe82291873a",
-   "size": 572
+   "sha1": "581194a128aee0cbe24cae0653389919a448b4d2",
+   "size": 781
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c455.json",
@@ -2501,19 +2221,9 @@
    "size": 400
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c469_force_off.json",
-   "sha1": "33d802d90cd94f670f5351452654c73a17810db8",
-   "size": 355
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c469_force.json",
-   "sha1": "c15a155f931e4c8fc3249b75fb6c7f5b2a96272a",
-   "size": 355
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c469.json",
-   "sha1": "3ba8ee1f72183a7e35145e1c0b01ec8ff9678482",
-   "size": 582
+   "sha1": "66f9a8dd38b527250d9d31ffea6e67b54a612412",
+   "size": 841
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c47.json",
@@ -2521,154 +2231,54 @@
    "size": 1231
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c470_force_off.json",
-   "sha1": "9bb426591d29219ad10e0c11ae50384bdd3fafc6",
-   "size": 311
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c470_force.json",
-   "sha1": "581d0b9f22560d35363472a705973e1e6140dbe8",
-   "size": 311
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c470.json",
-   "sha1": "57348d32e199b206eec9791ec19bd37bc41eec25",
-   "size": 482
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c471_force_off.json",
-   "sha1": "4594523a719b0123ac1d033513cb28bf2acd9793",
-   "size": 353
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c471_force.json",
-   "sha1": "b57ab657d7f486a3bcac2281e0443efe81b2f7a1",
-   "size": 353
+   "sha1": "e41397101fa039ff8827e92a6f952a01794d95d3",
+   "size": 697
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c471.json",
-   "sha1": "a4e9bab84f7b0309dbc0c1832a20391ddd44595b",
-   "size": 580
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c472_force_off.json",
-   "sha1": "bd74cfdb25c281f2425826ba22bb3325367dc7f2",
-   "size": 354
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c472_force.json",
-   "sha1": "3bcf1d9a4b72fd5664fb5f3c7050fc9467daff75",
-   "size": 354
+   "sha1": "f641525b7181cd90a446b809298c843370b39a6d",
+   "size": 837
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c472.json",
-   "sha1": "deb3736ee7d39cb4b8a5fa1109d12eec2436f877",
-   "size": 580
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c473_force_off.json",
-   "sha1": "6d38c0ef4532a01c79750c134b9455db821ec0cd",
-   "size": 310
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c473_force.json",
-   "sha1": "a812350b3209518969382b0b04a813af4d586f3b",
-   "size": 715
+   "sha1": "4cc28b1824d7333effbdc0bd482a27f622eddd7d",
+   "size": 838
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c473.json",
-   "sha1": "0b5f09cfbde1fb4cd28bb1edc03dce5dfeb3edb4",
-   "size": 480
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c474_force_off.json",
-   "sha1": "4df0433c04afd0825d4785ade3bff3eceeb1ad44",
-   "size": 352
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c474_force.json",
-   "sha1": "b45aa4312fd9552394c1038d579df3d6320d7734",
-   "size": 352
+   "sha1": "1a7ca267e1d357c666bcdc56307cd76d3aae28c2",
+   "size": 694
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c474.json",
-   "sha1": "48913b07ac8994b0b543d81d8f657d1973d432f7",
-   "size": 578
+   "sha1": "0467dfeb5115bba40c2d62db67a0a9db0a978a12",
+   "size": 834
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c475_memoire_off.json",
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c475.json",
    "sha1": "db0280ea78e992b59eb105f7e47afc8a9e1de897",
    "size": 304
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c475_memoire.json",
-   "sha1": "2de0530d03159704b841b65288a00cfbbadce184",
-   "size": 304
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c475.json",
-   "sha1": "bb57460980702e2a9a0132fb2d34d2e6c82a8ead",
-   "size": 97
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c476_memoire_off.json",
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c476.json",
    "sha1": "4bcab2d182b28a0bdee1085deb65e956163282fd",
    "size": 303
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c476_memoire.json",
-   "sha1": "00b27158f0fa77865443c2eae502b4b1550dce9e",
-   "size": 303
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c476.json",
-   "sha1": "bb57460980702e2a9a0132fb2d34d2e6c82a8ead",
-   "size": 97
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c477_orb_off.json",
-   "sha1": "8d424cc7f220e892e8ba324bda433dae26e534ca",
-   "size": 308
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c477_orb_on.json",
-   "sha1": "137ddf7f93b44b9378776b934df709eee8255ea8",
-   "size": 314
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c477.json",
-   "sha1": "081c854dd6bca35060490ed135f22bfb56b3c906",
-   "size": 878
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c478_orb_off.json",
-   "sha1": "f18b685fe435f9cf15028ee86c9bbefe861cef57",
-   "size": 258
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c478_orb_on.json",
-   "sha1": "3a71da23419610d165099c5f694ee5edba25c6a2",
-   "size": 262
+   "sha1": "b6aa910748be6d0f216ed13617205b33da1abca3",
+   "size": 1090
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c478.json",
-   "sha1": "a13cbff03b90f07f37493f1cbc39d5b7b6555866",
-   "size": 471
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c479_orb_off.json",
-   "sha1": "f51d87b8ee8979c148eb9a885b4df02a87d8f43b",
-   "size": 306
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c479_orb_on.json",
-   "sha1": "26d5a60bf2120b3ed2523c6d6880703621d5b051",
-   "size": 312
+   "sha1": "2bf4e3d19e1234e96ac3f6283d4806a1333357e3",
+   "size": 633
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c479.json",
-   "sha1": "8ad9827fcedea89385692173b4979d5081e5a58f",
-   "size": 874
+   "sha1": "1af7f695f32bbd6e55d7e78ba1016478179e45a2",
+   "size": 1084
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c48.json",
@@ -2676,154 +2286,54 @@
    "size": 2362
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c480_courage_off.json",
-   "sha1": "d62f0acd9c8cca74101012a119aebdc0921fe820",
-   "size": 353
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c480_courage.json",
-   "sha1": "347b9b400ab08fb685cbf5c333c5afd96903e4e7",
-   "size": 353
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c480.json",
-   "sha1": "826e10270845fb490a9b38222623639847ea9bc6",
-   "size": 312
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c481_courage_off.json",
-   "sha1": "afe38f77fdba8fd8cd3c4aa4fe469a7c09075db9",
-   "size": 352
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c481_courage.json",
-   "sha1": "2d17b6dab5c572e800661d0a79f81bfd74586ced",
-   "size": 352
+   "sha1": "6cddbe8c0bd53210a15572b5e4d4108baaada4e3",
+   "size": 569
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c481.json",
-   "sha1": "4ad60fe903d62cffc2bd499ecccc0a7863a53f00",
-   "size": 312
+   "sha1": "c1febf32502c0e4a152394206ed32e78c4b4e75e",
+   "size": 568
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c482_memoire_off.json",
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c482.json",
    "sha1": "19de35326c1f0a30020713e354668807b8c8b2f4",
    "size": 253
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c482_memoire.json",
-   "sha1": "837d497cc19ccf0b6c2f3f672f766fb8db40c9e5",
-   "size": 253
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c482.json",
-   "sha1": "bb57460980702e2a9a0132fb2d34d2e6c82a8ead",
-   "size": 97
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c483_memoire_off.json",
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c483.json",
    "sha1": "3ba74d7d7e267f0ade03daecf03b4c882fa89488",
    "size": 252
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c483_memoire.json",
-   "sha1": "e9dd4f0602a18fba2245b053e4c7c19824ad556b",
-   "size": 252
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c483.json",
-   "sha1": "bb57460980702e2a9a0132fb2d34d2e6c82a8ead",
-   "size": 97
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c484_orb_off.json",
-   "sha1": "42f2618404eb2a9a578b76bfae38d8dfbff177b1",
-   "size": 257
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c484_orb_on.json",
-   "sha1": "db451c90cd3638ade38085c41b6ab5d74e1b915f",
-   "size": 261
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c484.json",
-   "sha1": "c9ed2365b0863010ab923b215f44f2d6b706b6a2",
-   "size": 469
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c485_orb_off.json",
-   "sha1": "53648c2ffd1c9d9b42d92d3f9a3fdb9b6859a18f",
-   "size": 201
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c485_orb_on.json",
-   "sha1": "b7741b06267ff486873eec60cd662dfbd725c019",
-   "size": 203
+   "sha1": "24e25108d675aa4c21a1fc2f0cb59534ebe0144d",
+   "size": 630
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c485.json",
-   "sha1": "71098b1d8909125617a3034fa339593e880cf283",
-   "size": 362
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c486_orb_off.json",
-   "sha1": "02b5ec06ce00397d3b09207cdd20d02605aff8ba",
-   "size": 255
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c486_orb_on.json",
-   "sha1": "1535427b5d8faccade5d9b1335c67cd7d4b2656a",
-   "size": 259
+   "sha1": "8b639677f2ca3f9ff8f604530931cb41854e7240",
+   "size": 467
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c486.json",
-   "sha1": "5c1105d4af2d7802ca1efb8ff59d4d46c154311e",
-   "size": 466
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c487_courage_off.json",
-   "sha1": "0222f5bdc6777f6f47c66a57f34f77f3c36c367e",
-   "size": 308
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c487_courage.json",
-   "sha1": "a4442f581da8095cdf66563ba0db34d5f39b7c3f",
-   "size": 714
+   "sha1": "0c962e4ea5321d1974cc682e22d8d94d07051f3f",
+   "size": 625
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c487.json",
-   "sha1": "b611627cebbaea2cf8fedc14437382df8c4572a6",
-   "size": 258
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c488_courage_off.json",
-   "sha1": "0ef0633bda3405352d7172b4b7ff91afabd6bf63",
-   "size": 307
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c488_courage.json",
-   "sha1": "ceecc2ff9bff9768e3ddda3569adc4417a3d1efb",
-   "size": 307
+   "sha1": "ad4661bc4b20e1d1acef2c7e8deb42963081d4c3",
+   "size": 470
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c488.json",
-   "sha1": "37ed3d959b9652416613ca337cb254f2c9a1d3e9",
-   "size": 258
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c489_memoire_off.json",
-   "sha1": "4bf2249d1ff25a741be2467e537c5b5e48d11752",
-   "size": 302
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c489_memoire.json",
-   "sha1": "f42564616a1fdb7f8a0e72c514f7af9ea1754e41",
-   "size": 302
+   "sha1": "ae963e95fd4c9b8448552927d6a35a1a0c2d40a4",
+   "size": 469
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c489.json",
-   "sha1": "bb57460980702e2a9a0132fb2d34d2e6c82a8ead",
-   "size": 97
+   "sha1": "4bf2249d1ff25a741be2467e537c5b5e48d11752",
+   "size": 302
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c49.json",
@@ -2831,94 +2341,34 @@
    "size": 2646
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c490_memoire_off.json",
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c490.json",
    "sha1": "4efda81493f0e86ce1404cee302b3d9eb761df5a",
    "size": 301
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c490_memoire.json",
-   "sha1": "55b38ad70e3ff078551fa32b86a1ac20e1341706",
-   "size": 301
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c490.json",
-   "sha1": "bb57460980702e2a9a0132fb2d34d2e6c82a8ead",
-   "size": 97
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c491_orb_off.json",
-   "sha1": "815d5ec12d741030cd7da6caa69d2b1aa4d08af6",
-   "size": 306
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c491_orb_on.json",
-   "sha1": "4f9f516b2f81a8d22f66acfb56c05bce50bfef58",
-   "size": 312
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c491.json",
-   "sha1": "83534139db02d991ea28c67f3f2713ee9634b51b",
-   "size": 874
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c492_orb_off.json",
-   "sha1": "f4cb2850b41f329a96262b4e1649ae5d2b0a0ef0",
-   "size": 256
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c492_orb_on.json",
-   "sha1": "c788690666847ac9e0377af8811a0bf9249f6596",
-   "size": 260
+   "sha1": "2653bfd5eceeea002538c16f617ff98dddc5fe3e",
+   "size": 1084
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c492.json",
-   "sha1": "1f1db3bc63d8417143212572135f913121b4ef3f",
-   "size": 468
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c493_orb_off.json",
-   "sha1": "ca88578d8cfc302dc897cbb2ac1f097bf83f1833",
-   "size": 304
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c493_orb_on.json",
-   "sha1": "abb033a2086e3eb9af9d02694d5b8dd70c9a7ac7",
-   "size": 310
+   "sha1": "e5012d6f0c13d1e8aadeec5b99c445ed0ba38e27",
+   "size": 628
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c493.json",
-   "sha1": "7f9b2d439ad661c69ae49edbbda99b90e298c84d",
-   "size": 907
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c494_courage_off.json",
-   "sha1": "7754a018ac69f40a5e32ce716734613f2d6013f0",
-   "size": 351
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c494_courage.json",
-   "sha1": "10a63c3b0337224643860660b67eb65bd3d4c0a4",
-   "size": 351
+   "sha1": "410153cd87d683150c483ca58e483e54f4fe3d0d",
+   "size": 1115
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c494.json",
-   "sha1": "f51e6ad7c48c41f2845333c14a3619cce548f485",
-   "size": 313
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c495_courage_off.json",
-   "sha1": "c7ef8892515abfa53e56aa7cb0114b64bce2cfee",
-   "size": 350
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c495_courage.json",
-   "sha1": "e05900b1f533b163d7080e3d5355174a2cf2c2b8",
-   "size": 350
+   "sha1": "bcc83635c2b07f48690b7c0734e2576771268d17",
+   "size": 568
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c495.json",
-   "sha1": "d2f50714f4ebf1d02b5f0cfec02561465a8754a8",
-   "size": 313
+   "sha1": "136c2fc067d3d6bb699be0713b9a687d0c0d9c47",
+   "size": 567
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c496.json",
@@ -2926,49 +2376,19 @@
    "size": 774
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c497_orb_off.json",
-   "sha1": "a58a5fd9fde1cdcc24816419b95354c8323c34a0",
-   "size": 305
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c497_orb_on.json",
-   "sha1": "04e910befae005e96153e3ccee8784fd321c266f",
-   "size": 311
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c497.json",
-   "sha1": "e579a6011189662d6671631dbfdde5cb3bea6278",
-   "size": 406
+   "sha1": "606ed2e4c1d6f1ba03bce40ba366767822bd3c3d",
+   "size": 615
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c498_orb_off.json",
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c498.json",
    "sha1": "f8d474cbc4bc216f7a282e53d47f973f2a4c8736",
    "size": 255
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c498_orb_on.json",
-   "sha1": "bce39ba5568db4432ecd9f32ab50d815811f332d",
-   "size": 259
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c498.json",
-   "sha1": "bb57460980702e2a9a0132fb2d34d2e6c82a8ead",
-   "size": 97
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c499_orb_off.json",
-   "sha1": "33966e0d9c09bd1e4c4d4ab1d13d03bcdee9bbb5",
-   "size": 303
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c499_orb_on.json",
-   "sha1": "dcc58f0ec5933214bbf9f53971047f797e74fa80",
-   "size": 309
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c499.json",
-   "sha1": "ac93cd9a9fa629da8ee00a96ca1150fb44e61b7f",
-   "size": 404
+   "sha1": "8b0a5aea5da5e50baf268b314da9f13bafd1e7e4",
+   "size": 611
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c5.json",
@@ -2981,94 +2401,34 @@
    "size": 1965
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c500_orb_off.json",
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c500.json",
    "sha1": "32213386c80f33f0272fb1a718532f7d89420e7d",
    "size": 254
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c500_orb_on.json",
-   "sha1": "59746072681b93c808aea43a96167e22a4f9e698",
-   "size": 258
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c500.json",
-   "sha1": "bb57460980702e2a9a0132fb2d34d2e6c82a8ead",
-   "size": 97
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c501_orb_off.json",
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c501.json",
    "sha1": "d272def0a338c17ebff9579410eeaee4fefc48a5",
    "size": 2310
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c501_orb_on.json",
-   "sha1": "bb2167317b751914a2868775be7a5d84e6a136f1",
-   "size": 2360
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c501.json",
-   "sha1": "bb57460980702e2a9a0132fb2d34d2e6c82a8ead",
-   "size": 97
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c502_orb_off.json",
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c502.json",
    "sha1": "13409c37287873398a645bb99f08a6c6c6f2300a",
    "size": 252
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c502_orb_on.json",
-   "sha1": "4747f7e9be5f6243cd875b834176408cd48b9d98",
-   "size": 256
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c502.json",
-   "sha1": "bb57460980702e2a9a0132fb2d34d2e6c82a8ead",
-   "size": 97
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c503_orb_off.json",
-   "sha1": "ef1109f311d8d9b180d0f8bc52830ffb9bccfbbb",
-   "size": 303
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c503_orb_on.json",
-   "sha1": "b805afe94487e886ad5d21575443ab2eb7ec0457",
-   "size": 309
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c503.json",
-   "sha1": "74e6528f3238e307ab0d29f1d2c76f0afaa50154",
-   "size": 404
+   "sha1": "a7d63b3579eba2e3f6c1f30a3ee387964c6ca68e",
+   "size": 611
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c504_orb_off.json",
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c504.json",
    "sha1": "b5b9cacd9b831c04216e7f8c9075611d11b7abaa",
    "size": 253
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c504_orb_on.json",
-   "sha1": "a261d7f52b5ea26c19b35135cd62ad5e0efc0e43",
-   "size": 257
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c504.json",
-   "sha1": "bb57460980702e2a9a0132fb2d34d2e6c82a8ead",
-   "size": 97
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c505_orb_off.json",
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c505.json",
    "sha1": "0e3d0dcae2a5ff43450ae3d09d9f92dc0527d028",
    "size": 301
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c505_orb_on.json",
-   "sha1": "3a87605dc122f56c2bfdc6bd5db3ecb17d8a4a2e",
-   "size": 307
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c505.json",
-   "sha1": "bb57460980702e2a9a0132fb2d34d2e6c82a8ead",
-   "size": 97
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c506.json",
@@ -3076,49 +2436,184 @@
    "size": 437
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c51_force_off.json",
-   "sha1": "ecc3a14e28c54e476f106241ed812faffd2e9d36",
-   "size": 309
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c507.json",
+   "sha1": "f81d2a1a28e336f94b1b8bf0b5786c6e211f8246",
+   "size": 3357
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c51_force.json",
-   "sha1": "91e2bfd4067cbd122bd031bc7331599a6076ab69",
-   "size": 309
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c508.json",
+   "sha1": "01da811a3efae0df3592181adce63dbfe6982e41",
+   "size": 1871
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c509.json",
+   "sha1": "4288c553140359cb62671100b7f0a2e00f054547",
+   "size": 2262
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c51.json",
-   "sha1": "9abb0b4dd573ad62ea0f25670b09345db5a669c8",
-   "size": 3144
+   "sha1": "ddae8613080fc7c63719c19446256dd77a2f9bb4",
+   "size": 3357
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c52_force_off.json",
-   "sha1": "1dfc0eb255b586dabf21a8bbabfb8db817efbce2",
-   "size": 259
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c510.json",
+   "sha1": "5d2fe113c78da4a95b83b32f7c4684b381951f87",
+   "size": 2517
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c52_force.json",
-   "sha1": "24e39377a38e56239069919fa6a3a5fcfe33cc65",
-   "size": 259
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c511.json",
+   "sha1": "884ee37465b078c7bd20b0e19cf359a2162eccb4",
+   "size": 2747
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c512.json",
+   "sha1": "57b3cc9e3c93f9316fa9f427ba4df97e9b81eba2",
+   "size": 1659
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c513.json",
+   "sha1": "7200643877b80cd4efac886b5b1b1a9732b4e014",
+   "size": 2420
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c514.json",
+   "sha1": "067685d307b0b277a52b13d3c2837dfd75906a98",
+   "size": 1463
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c515.json",
+   "sha1": "bf83a2bd6b0809192af847acb7c8a825a3482070",
+   "size": 2429
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c516.json",
+   "sha1": "7a3dd077b87f445344d40f7c2f76d5035bc41109",
+   "size": 1699
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c517.json",
+   "sha1": "f389fe5f29eb921b77b6dddfc3e8a0acf8c6f934",
+   "size": 2594
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c518.json",
+   "sha1": "388995347ae12d74ac65e4176b7c77b765b83950",
+   "size": 1738
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c519.json",
+   "sha1": "08be7135f58e70b1546a912044905556770c1f22",
+   "size": 2906
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c52.json",
-   "sha1": "73cd82627562407ba1d4430e7371c8830a5b7730",
-   "size": 1708
+   "sha1": "b1fe486aa0854f8d84bd843263d9621d178d1ca8",
+   "size": 1871
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c53_force_off.json",
-   "sha1": "bf8ca85aa1b3921abb1cebcb14774bd09edddf8b",
-   "size": 310
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c520.json",
+   "sha1": "5627eb716a7934523eb76abe971ee869ad5887c0",
+   "size": 2612
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c53_force.json",
-   "sha1": "aaa14ffdf9ff73d90074bcad5e27687a0bf504e9",
-   "size": 310
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c521.json",
+   "sha1": "6873f86224bb1e2ecdb9ed95fe42825fbd8e576b",
+   "size": 2605
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c522.json",
+   "sha1": "76e6ab804932cf80f21e48bad89bcdb8533b1119",
+   "size": 1953
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c523.json",
+   "sha1": "909b2b7b4ce7e01cff42757d5852dd827e332f40",
+   "size": 3005
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c524.json",
+   "sha1": "925d15d5b30363bf729230ef64a08fe3da7bf381",
+   "size": 2647
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c525.json",
+   "sha1": "dfe793494d8df10ebcbb71208d8390d8d760ebe9",
+   "size": 767
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c526.json",
+   "sha1": "e285caff942e9c7aa4cfd10f91df4a557cefee38",
+   "size": 672
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c527.json",
+   "sha1": "3780ff06027c754dbab44548900157ed808b2d30",
+   "size": 772
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c528.json",
+   "sha1": "ea5005abf3c3b6eb442885108c39998c8d179b1c",
+   "size": 1095
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c529.json",
+   "sha1": "37184ac838751779a2af16f648b21760648e8020",
+   "size": 1148
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c53.json",
-   "sha1": "c5ec49590897d0daf756dcf8e4d7bf498ab27145",
-   "size": 2048
+   "sha1": "098cf6854bc795e858b5ed5fd6bb56464ba03be0",
+   "size": 2262
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c530.json",
+   "sha1": "b672ceff6d9c3695a60ac8184fa94930171ad217",
+   "size": 1401
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c531.json",
+   "sha1": "94f363b84acb0a56527182f75ef0c8cefd271b1b",
+   "size": 511
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c532.json",
+   "sha1": "9e4fc310b34e4ce00e69db006ffa36663269d38b",
+   "size": 882
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c533.json",
+   "sha1": "fd5dc29f6d3a3ce266f01632a7b9f0a05ed24f40",
+   "size": 667
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c534.json",
+   "sha1": "f76ad3ce9974d4c4c8281cb9e5a80060150ec0b2",
+   "size": 1146
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c535.json",
+   "sha1": "e1fe6f61b810ef6be6069c7b987be99bd2bc53ac",
+   "size": 509
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c536.json",
+   "sha1": "d89054e0e4658d3d6821d749a55d7caa4b34f03c",
+   "size": 885
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c537.json",
+   "sha1": "ead1200b1c1618498a35c21da0a193fae62c5665",
+   "size": 788
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c538.json",
+   "sha1": "805a65eb598006f37e4be0d812fad8e9887fa7de",
+   "size": 787
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c539.json",
+   "sha1": "55856ad5dab960ede3c22002a547b0ae6345429d",
+   "size": 637
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c54.json",
@@ -3126,9 +2621,109 @@
    "size": 3823
   },
   {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c540.json",
+   "sha1": "01b851b985880f4f352a4c5af24a1a5ecc5dc031",
+   "size": 1041
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c541.json",
+   "sha1": "7a812a99dbde31520b0aefe7ce75c322a3c3efb8",
+   "size": 782
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c542.json",
+   "sha1": "4966581287fc06766fc1e7cbf559be24b36e5454",
+   "size": 781
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c543.json",
+   "sha1": "347ff24d36d57b609df7c772dc9ddb6880707ca7",
+   "size": 841
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c544.json",
+   "sha1": "0fc51d738d500ea9dcf58e6c36e7c692213aa03a",
+   "size": 697
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c545.json",
+   "sha1": "e8a5b9522d2b46afa3e8a4adcdad443a73a2ccc6",
+   "size": 837
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c546.json",
+   "sha1": "f48357aacb42850a4fbb75ead56ab2e8edb82ba1",
+   "size": 838
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c547.json",
+   "sha1": "12309a50ca668f4e74e9c4b5a98e3ebfc18e8ba2",
+   "size": 1099
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c548.json",
+   "sha1": "febb36b1da024492216302474f203d5b77bdbc91",
+   "size": 834
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c549.json",
+   "sha1": "2de0530d03159704b841b65288a00cfbbadce184",
+   "size": 304
+  },
+  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c55.json",
    "sha1": "463f56d45b0568a0fc4b4bf5c46e62e5b15b51c0",
    "size": 4655
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c550.json",
+   "sha1": "00b27158f0fa77865443c2eae502b4b1550dce9e",
+   "size": 303
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c551.json",
+   "sha1": "2c115a55513d4666a37cb3d718d841efd10474d9",
+   "size": 1096
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c552.json",
+   "sha1": "2a18480bfe2c4ca52d6a32cda3edc11b891f4823",
+   "size": 637
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c553.json",
+   "sha1": "40aca65e4fbe13aefc09bf595280c80d4755e834",
+   "size": 1090
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c554.json",
+   "sha1": "7856ae56cc2a12fbad78a9c8eacfc2b647f8afcd",
+   "size": 569
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c555.json",
+   "sha1": "7c67471be71df28ff87ccf3833b3087f9c9f81f9",
+   "size": 568
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c556.json",
+   "sha1": "837d497cc19ccf0b6c2f3f672f766fb8db40c9e5",
+   "size": 253
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c557.json",
+   "sha1": "e9dd4f0602a18fba2245b053e4c7c19824ad556b",
+   "size": 252
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c558.json",
+   "sha1": "4ad0c27ee98f1d0117ee5458e961f99fa4ddedd1",
+   "size": 634
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c559.json",
+   "sha1": "9e7c3c50ce57c4aa554cd3633d51a1bc8ee6b35e",
+   "size": 469
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c56.json",
@@ -3136,9 +2731,104 @@
    "size": 1663
   },
   {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c560.json",
+   "sha1": "88d095f7f659c04892652820c2c51f2924e1311b",
+   "size": 629
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c561.json",
+   "sha1": "abdbbea40695f8e354eb8591b9fdfa105c95bd9f",
+   "size": 876
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c562.json",
+   "sha1": "5e9fd851f1789701190f999bd21d7cc7137ceaa8",
+   "size": 469
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c563.json",
+   "sha1": "f42564616a1fdb7f8a0e72c514f7af9ea1754e41",
+   "size": 302
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c564.json",
+   "sha1": "55b38ad70e3ff078551fa32b86a1ac20e1341706",
+   "size": 301
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c565.json",
+   "sha1": "97aaa5ec6a71d25b31c0c3a85dad273d6558c9c6",
+   "size": 1090
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c566.json",
+   "sha1": "459f1051427bfd778bc169d25298370813f54821",
+   "size": 632
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c567.json",
+   "sha1": "6c67483640ad56657291268bb5bb11dc3cf6f657",
+   "size": 1121
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c568.json",
+   "sha1": "496e08a03d8ca2d0f034e46cd029726e99362617",
+   "size": 568
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c569.json",
+   "sha1": "bd5fb7767b4c3bb94e63d097def8d88fa4748d97",
+   "size": 567
+  },
+  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c57.json",
    "sha1": "c937a2ff4f3329d30947d997836da49e028def4a",
    "size": 2225
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c570.json",
+   "sha1": "481e6be6d5225da99a37c0f40a091e40fed6ec22",
+   "size": 621
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c571.json",
+   "sha1": "bce39ba5568db4432ecd9f32ab50d815811f332d",
+   "size": 259
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c572.json",
+   "sha1": "6bdb5e6a2dba8318ada8391c16b17bfa395bb754",
+   "size": 617
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c573.json",
+   "sha1": "59746072681b93c808aea43a96167e22a4f9e698",
+   "size": 258
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c574.json",
+   "sha1": "bb2167317b751914a2868775be7a5d84e6a136f1",
+   "size": 2360
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c575.json",
+   "sha1": "4747f7e9be5f6243cd875b834176408cd48b9d98",
+   "size": 256
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c576.json",
+   "sha1": "ec7f06db4acc3cbbd47aed72e2de7e3787089dbe",
+   "size": 617
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c577.json",
+   "sha1": "a261d7f52b5ea26c19b35135cd62ad5e0efc0e43",
+   "size": 257
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c578.json",
+   "sha1": "3a87605dc122f56c2bfdc6bd5db3ecb17d8a4a2e",
+   "size": 307
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c58.json",
@@ -3186,49 +2876,19 @@
    "size": 2780
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c66_force_off.json",
-   "sha1": "c10439eb8e221e814f2a82a35384b87f9762c96d",
-   "size": 308
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c66_force.json",
-   "sha1": "bdd872c8f6ae8fa7882fbe8e76eb41309310c70c",
-   "size": 308
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c66.json",
-   "sha1": "43d2858be3edd1e4b354f9c812ce6689fea5e21a",
-   "size": 2305
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c67_force_off.json",
-   "sha1": "4a424cd8dee58f14849c1de7dc0e9ae20750e8a8",
-   "size": 257
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c67_force.json",
-   "sha1": "f8f305729fe9c38fef190268bd88258114139118",
-   "size": 257
+   "sha1": "7e8265f567f725995f12ede3f6c4d7edadf16ccd",
+   "size": 2517
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c67.json",
-   "sha1": "bcc30b9e50ea7e862c7d8bb27869e2cab9a88c96",
-   "size": 2586
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c68_force_off.json",
-   "sha1": "d5d3c78b9f1f56e53d73bf694c7db21f5e612708",
-   "size": 307
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c68_force.json",
-   "sha1": "e765796608145c0a890817ccb51422a8c99c34e4",
-   "size": 307
+   "sha1": "eaf443406fd4902316a2daa38ac460fd11f8a97a",
+   "size": 2747
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c68.json",
-   "sha1": "75b7b489b236f7571b6d4df2753e1a8899b50742",
-   "size": 1448
+   "sha1": "e28549a198e3edf94fa563716dc70734c4d4bc85",
+   "size": 1659
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c69.json",
@@ -3366,34 +3026,14 @@
    "size": 755
   },
   {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c93_memoire_off.json",
-   "sha1": "3092164ffba071166b3bc1d84800d353f708c78f",
-   "size": 310
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c93_memoire.json",
-   "sha1": "414d92cfcfd8a7d96acd58ee4e6d47b44473fa90",
-   "size": 310
-  },
-  {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c93.json",
-   "sha1": "d3e1862fbe3699d71c0dc0e2e222b825147d96c9",
-   "size": 2206
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c94_memoire_off.json",
-   "sha1": "ff1c3d67a162183b8d36e4b3abd6b1cb44f7bd84",
-   "size": 308
-  },
-  {
-   "path": "kubejs/assets/kubejs/models/block/autel_sceau_c94_memoire.json",
-   "sha1": "2dfa71a66b780575193caa77a95aff9854f012cb",
-   "size": 308
+   "sha1": "85f4ff4c9c0401a4caa0eeceba960cd456bcaaee",
+   "size": 2420
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c94.json",
-   "sha1": "e0e19d6084a654086b3117de3803f355aff38da3",
-   "size": 1251
+   "sha1": "44c38f85d5b5bbf5bc75b43f30729b43ab59bf0d",
+   "size": 1463
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c95.json",
@@ -5422,8 +5062,8 @@
   },
   {
    "path": "kubejs/startup_scripts/autel_sceau.js",
-   "sha1": "dd183b696e02a98e99a77cb9db404be3d76d00ee",
-   "size": 3097
+   "sha1": "b1d9a67ad09d7900d2f66f185b37a48af4373da3",
+   "size": 2601
   },
   {
    "path": "kubejs/startup_scripts/classes_effets.js",

@@ -1,1 +1,0 @@
-{"textures":{"0":"kubejs:block/autel_sceau","particle":"kubejs:block/autel_sceau"},"elements":[{"from":[0,12.5,11.0],"to":[1.0,15.5,16],"faces":{"north":{"uv":[4.0,3.2,4.0833,3.4],"texture":"#0"},"east":{"uv":[5.0833,3.2,5.5,3.4],"texture":"#0"},"up":{"uv":[5.4167,3.2,5.5,3.5333],"texture":"#0"},"down":{"uv":[5.4167,4.0667,5.5,4.4],"texture":"#0"}}}]}

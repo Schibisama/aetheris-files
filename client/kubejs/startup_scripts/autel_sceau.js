@@ -10,25 +10,14 @@
 // Grille de 15 x 15 blocs sur 7 couches (507 blocs non vides). Deux blocs partagent les memes modeles :
 //   kubejs:autel_sceau      : decor sans collision (dalles, gravats, murets bas), on le traverse ;
 //   kubejs:autel_sceau_dur  : massif (piliers, socles, emetteurs), collision pleine.
-// Propriete « piece » = numero de la cellule (voir AU_CELLULES dans server_scripts/autel_sceau_faisceaux.js), booleens force / memoire / courage / orbe = etat allume.
+// Propriete « piece » = numero du modele (0..506 = cellules eteintes, 507..578 = variantes allumees des emetteurs et de l'orbe ; voir AU_CELLULES dans server_scripts/autel_sceau_faisceaux.js). 579 etats par bloc seulement.
 StartupEvents.registry('block', function (event) {
-  var BooleanProperty = Java.loadClass('net.minecraft.world.level.block.state.properties.BooleanProperty')
   var IntegerProperty = Java.loadClass('net.minecraft.world.level.block.state.properties.IntegerProperty')
-  var pPiece = IntegerProperty.create('piece', 0, 506)
-  var pForce = BooleanProperty.create('force')
-  var pMemoire = BooleanProperty.create('memoire')
-  var pCourage = BooleanProperty.create('courage')
-  var pOrbe = BooleanProperty.create('orbe')
-  var etat = function (e) {
-    e.set(pPiece, 0)
-    e.set(pForce, false)
-    e.set(pMemoire, false)
-    e.set(pCourage, false)
-    e.set(pOrbe, false)
-  }
+  var pPiece = IntegerProperty.create('piece', 0, 578)
+  var etat = function (e) { e.set(pPiece, 0) }
   event.create('autel_sceau')
     .displayName('Autel du Sceau')
-    .property(pPiece).property(pForce).property(pMemoire).property(pCourage).property(pOrbe)
+    .property(pPiece)
     .defaultState(etat)
     .noCollision()
     .notSolid()
@@ -38,7 +27,7 @@ StartupEvents.registry('block', function (event) {
     .resistance(3600000)
   event.create('autel_sceau_dur')
     .displayName('Autel du Sceau (massif)')
-    .property(pPiece).property(pForce).property(pMemoire).property(pCourage).property(pOrbe)
+    .property(pPiece)
     .defaultState(etat)
     .notSolid()
     .renderType('cutout')
