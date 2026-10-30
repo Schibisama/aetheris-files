@@ -1,5 +1,5 @@
 {
- "version": "2026-10-30T13:36:27.962Z",
+ "version": "2026-10-30T13:43:50.588Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -11,6 +11,126 @@
  "server": "91.197.6.164:22974",
  "files": [
   {
+   "path": "kubejs/assets/kubejs/blockstates/rune_01.json",
+   "sha1": "851def4a0464eed3215a3617ebe7329c61076beb",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_02.json",
+   "sha1": "e6bf7409612ac9a8125f091a80e87855cd5726a2",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_03.json",
+   "sha1": "883fd4cc7ed42470127a256ad4f3ada199b7c2e8",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_04.json",
+   "sha1": "46c9d881095724ade2852b7090884b319810a62f",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_05.json",
+   "sha1": "8ff51f57638b0baa0f62075c50145e93f0b4dca6",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_06.json",
+   "sha1": "931f2514557f218e729e170ae04fff3b16c89763",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_07.json",
+   "sha1": "64fa2938fa4c295f57a3f3ba145ceaaa67de4e14",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_08.json",
+   "sha1": "0c597c44b105e6355b4b98c2ade5f5b96c7d1b1e",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_09.json",
+   "sha1": "c7acdf1fb8dc8604a9e05e5877053316be0a982c",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_10.json",
+   "sha1": "8344f58b568ff4edb73255676286385bfa480b02",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_11.json",
+   "sha1": "53630de91d7a9818bd968b6b7a27030f5fe90b80",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_12.json",
+   "sha1": "3752c68cd03af502510b7db3fbddff38736023ad",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_13.json",
+   "sha1": "5942cc0b5fb66c3d16b394064961d74ab2142d3d",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_14.json",
+   "sha1": "1f145975c5df163833ce39e07e3f97981a2c6600",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_15.json",
+   "sha1": "f1327899ac2dc3e57b06bf4f49862ed028bdc099",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_16.json",
+   "sha1": "4c78ae987a9a3f0a182f15c870730c28321adb1b",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_17.json",
+   "sha1": "f519b4849f1fe7f54e3970d8e8b86998609edab5",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_18.json",
+   "sha1": "474979356b7b616fbd51c0150da09b8b2af4c99d",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_19.json",
+   "sha1": "87f599b172b1aa3fcf1bd5345739f541df6e3a61",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_20.json",
+   "sha1": "b19087d72eb765f8cd6c83975fe65adfa20f0af6",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_21.json",
+   "sha1": "548109bf0e86c10771ff546cbd6b2fe162894fc9",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_22.json",
+   "sha1": "a277fa301518e52a8b2d18f8ee57eb1ad83b9c78",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_23.json",
+   "sha1": "9399493fac3ec74ebe7180ae2551438e1e85d6e0",
+   "size": 51
+  },
+  {
+   "path": "kubejs/assets/kubejs/blockstates/rune_24.json",
+   "sha1": "edf3d72c0af239d74734a52c84cb16ba575d39c6",
+   "size": 51
+  },
+  {
    "path": "kubejs/assets/kubejs/lang/en_us.json",
    "sha1": "b08dc5d972a3515d536cf03b6e2caad5b5c99f0a",
    "size": 58
@@ -21,9 +141,249 @@
    "size": 60
   },
   {
+   "path": "kubejs/assets/kubejs/models/block/rune_01.json",
+   "sha1": "7a98d379e4a0443538ce8bfcc16f03f10c7669f2",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_02.json",
+   "sha1": "dc38f398e1313fe89c1f5cd4900a63175156b76b",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_03.json",
+   "sha1": "8e5d1627ddbc02aa1197f5b3b3e9efba26c4696e",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_04.json",
+   "sha1": "5c48875f987fe53f351960109774f72bf4785065",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_05.json",
+   "sha1": "36e055aa327fd0eafe883ee394ae9ac0854ba0e3",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_06.json",
+   "sha1": "6b01c708d34f02b8cd5619505934e7eec98ba562",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_07.json",
+   "sha1": "da911833d31d98d8d66ed46e11a23e9709f708c2",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_08.json",
+   "sha1": "40ae32cedbee3882ce093576a6e1ba7d21650ea7",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_09.json",
+   "sha1": "968978a5aac8e74ef82feadb8442338069a644f0",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_10.json",
+   "sha1": "2ec1db091c04188e4573f426e04aac50871632a6",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_11.json",
+   "sha1": "6a4ab8e19713603f0c3d6fa001675c69c7ce9520",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_12.json",
+   "sha1": "0a6ae69d83103a8bf9bf55dfe71b723987d6422a",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_13.json",
+   "sha1": "bf7730a83e9eb5bf66f22512cf798d8c5f975a31",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_14.json",
+   "sha1": "4e737086d143afb0dcc2fdd48ce0e787801d9a07",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_15.json",
+   "sha1": "430877081600d4b51fd0221836b83a98d41d620d",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_16.json",
+   "sha1": "67057d206e97945bba58ff7ec5c312304af7e4a1",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_17.json",
+   "sha1": "b08259ed3c9b22f7bcbd342b2c238c198000a3c5",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_18.json",
+   "sha1": "7aed48928b97ff1f0f5415e69740a22df8166af5",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_19.json",
+   "sha1": "bf991865253ffd33da8fa46b53da53d26d9ad8e1",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_20.json",
+   "sha1": "8c834f1b64c5e8d84b14d1b051c35f7bc4902f6d",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_21.json",
+   "sha1": "976e2555909cddccae29a31944a5fdcdb2f78926",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_22.json",
+   "sha1": "2e079d3ea1cab7a202a12fef7fb17f912bbb1ef5",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_23.json",
+   "sha1": "131b9878fe7e9184c6585622dd854d7f4f5a0830",
+   "size": 266
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/rune_24.json",
+   "sha1": "0c556138c1869c623bffed77fefd1821953c979c",
+   "size": 266
+  },
+  {
    "path": "kubejs/assets/kubejs/textures/block/example_block.png",
    "sha1": "87f5ec8c26493050fc83543af8d33f2d28a98766",
    "size": 247
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_01.png",
+   "sha1": "145d6d7f1709813e6b5220d3c3394ef75c7fd7fe",
+   "size": 10660
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_02.png",
+   "sha1": "6084f45216c295ce12a37a525714b2872dd950a0",
+   "size": 9094
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_03.png",
+   "sha1": "6ff1e389e49d93eee2f86245836fad7dca5c1bce",
+   "size": 9519
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_04.png",
+   "sha1": "4a6aae3f48ce65b017ff333cebf9b275288a0e24",
+   "size": 7931
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_05.png",
+   "sha1": "fffb86022c829d9cd850e68a0513a4fb6c9e8d7b",
+   "size": 8453
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_06.png",
+   "sha1": "e33b745e250f679a03238131eb674d46b69b0337",
+   "size": 10141
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_07.png",
+   "sha1": "ff39e7cb70481ac9bdaf9436e78b0c1f7feea3be",
+   "size": 10335
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_08.png",
+   "sha1": "38711ab9c0b08ededdbf1eea21c1a82962c5996a",
+   "size": 9502
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_09.png",
+   "sha1": "05241b15decfdfd0092fe30b5ea6d38a486618a0",
+   "size": 11573
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_10.png",
+   "sha1": "327a1ea9eae0f682bcd51ed9d77939d72041beab",
+   "size": 9354
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_11.png",
+   "sha1": "4acbff31a8ddbbe2176a8d97e79586bf099152f1",
+   "size": 10521
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_12.png",
+   "sha1": "b5b08c256a1f4991770c7ab5b20f734bef4ffd27",
+   "size": 9940
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_13.png",
+   "sha1": "e1a8d1dc8a44c7bb96eec20027497f2adb2b6091",
+   "size": 8914
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_14.png",
+   "sha1": "e910bf8f9deac86678b69e37f694b6e226a6a5f6",
+   "size": 10959
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_15.png",
+   "sha1": "0e404325b705ee1a2ac393c8a5a7bf0b0980c78f",
+   "size": 8046
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_16.png",
+   "sha1": "292fe09667cf44acd27e34b561fdd467bb9810da",
+   "size": 10542
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_17.png",
+   "sha1": "e5495b2d75745e5962c1d204545aebd10ea10e7d",
+   "size": 8221
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_18.png",
+   "sha1": "e7b090536a2473c722828e75569fdbb8709f07a7",
+   "size": 9320
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_19.png",
+   "sha1": "37b1b83c4094c38c038bb610ef6cd7e8af2d2997",
+   "size": 10252
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_20.png",
+   "sha1": "6af7a84c40f4c397a4b7b4fe5cc92571964bc672",
+   "size": 8249
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_21.png",
+   "sha1": "21a99d42b0b8e733f80302ff148390a3dcaf7bef",
+   "size": 9207
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_22.png",
+   "sha1": "4327320410a46d3eeb40b032223a75b69574e9c5",
+   "size": 8891
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_23.png",
+   "sha1": "95b783f988e83f8295b1858b86a30e26eb6aead5",
+   "size": 9864
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/rune_24.png",
+   "sha1": "16fd1915c874487b1c02e1f7862ec784721578cf",
+   "size": 8738
   },
   {
    "path": "kubejs/assets/kubejs/textures/item/corne_de_skor.png",
