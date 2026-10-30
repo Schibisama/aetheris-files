@@ -97,23 +97,32 @@ ServerEvents.commandRegistry(function (event) {
   racine = racine.then(Commands.literal('tous').executes(function (ctx) {
     var j = ctx.source.player
     if (!j) { console.info('[livres] /livre tous : à lancer par un joueur'); return 0 }
-    var serveur = ctx.source.server
-    var TAILLE = 9 // livres par shulker : commandes courtes, donc fiables
-    var nb = 0, echecs = 0
+    var TAILLE = 9 // livres par shulker
+    var shulkers = 0, livres = 0, erreurs = 0
     for (var debut = 0; debut < LIV_DONNEES.length; debut += TAILLE) {
+      var fin = Math.min(debut + TAILLE, LIV_DONNEES.length)
       var objets = []
-      for (var i = debut; i < Math.min(debut + TAILLE, LIV_DONNEES.length); i++) {
-        var b = LIV_DONNEES[i]
-        objets.push('{slot:' + (i - debut) + ',item:{id:"minecraft:written_book",count:1,components:{"minecraft:written_book_content":' + livContenu(b) + '}}}')
+      for (var i = debut; i < fin; i++) {
+        objets.push('{slot:' + (i - debut) + ',item:{id:"minecraft:written_book",count:1,components:{"minecraft:written_book_content":' + livContenu(LIV_DONNEES[i]) + '}}}')
       }
-      var res = 0
-      try { res = serveur.runCommandSilent('give ' + j.username + ' minecraft:shulker_box[container=[' + objets.join(',') + ']]') } catch (e) { console.error('[livres] ' + e) }
-      if (res > 0) nb++
-      else { echecs++; console.error('[livres] /livre tous : la commande a échoué pour le lot ' + (debut / TAILLE + 1)) }
+      try {
+        // Item.of lève une erreur lisible si le texte est invalide (contrairement à une commande /give silencieuse)
+        j.give(Item.of('minecraft:shulker_box[container=[' + objets.join(',') + ']]'))
+        shulkers++; livres += fin - debut
+      } catch (e) {
+        console.error('[livres] shulker ' + (debut / TAILLE + 1) + ' refusé : ' + e)
+        // repli : les livres de ce lot un par un
+        for (var k = debut; k < fin; k++) {
+          try { j.give(Item.of(livItem(LIV_DONNEES[k]))); livres++ }
+          catch (e2) { erreurs++; console.error('[livres] livre « ' + LIV_DONNEES[k][0] + ' » refusé : ' + e2) }
+        }
+      }
     }
-    if (echecs === 0) j.tell(Text.gold('Tous les livres t\'ont été donnés (' + nb + ' shulkers).'))
-    else j.tell(Text.red(nb + ' shulker(s) donnés, ' + echecs + ' échec(s) : voir le journal du serveur (lignes [livres]).'))
-    return nb
+    var msg = livres + '/' + LIV_DONNEES.length + ' livres donnés (' + shulkers + ' shulkers)'
+    if (erreurs === 0) j.tell(Text.gold(msg + '.'))
+    else j.tell(Text.red(msg + ', ' + erreurs + ' refusé(s) : voir le journal ([livres]).'))
+    console.info('[livres] /livre tous : ' + msg + ', erreurs ' + erreurs)
+    return livres
   }))
 
   racine = racine.then(Commands.literal('remplir')
