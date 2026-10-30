@@ -20,13 +20,18 @@ function livNoms(t) {
 }
 
 function livEsc(s) {
-  return livNoms(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\r?\n/g, '\n')  // vrai saut de ligne : le SNBT 1.21.1 refuse l'échappement \\n
+  return livNoms(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\r?\n/g, ' ')
+}
+
+// Page = composant JSON dans une chaîne SNBT entre apostrophes (le SNBT 1.21.1 refuse \n, le JSON l'accepte)
+function livPage(t) {
+  return "'" + JSON.stringify({ text: livNoms(t) }).replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'"
 }
 
 // Composant « written_book_content » en SNBT
 function livContenu(b) {
   var pages = []
-  for (var i = 0; i < b[3].length; i++) pages.push('"' + livEsc(b[3][i]) + '"')
+  for (var i = 0; i < b[3].length; i++) pages.push(livPage(b[3][i]))
   return '{title:"' + livEsc(b[1]) + '",author:"' + livEsc(b[2]) + '",pages:[' + pages.join(',') + ']}'
 }
 
