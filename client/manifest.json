@@ -1,5 +1,5 @@
 {
- "version": "2026-10-30T15:07:40.800Z",
+ "version": "2026-10-30T15:14:37.158Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -2137,8 +2137,8 @@
   },
   {
    "path": "kubejs/client_scripts/classes_langue_messages.js",
-   "sha1": "008cfeac4be7845b8e7fcaa2982d2998b11e7ddb",
-   "size": 7222
+   "sha1": "0cb97dca89acbe01d0f2db3da20cb7718f19ed43",
+   "size": 11832
   },
   {
    "path": "kubejs/client_scripts/classes_langue.js",
