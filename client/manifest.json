@@ -1,5 +1,5 @@
 {
- "version": "2026-10-30T23:41:53.261Z",
+ "version": "2026-10-30T23:46:00.786Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -5022,8 +5022,8 @@
   },
   {
    "path": "kubejs/server_scripts/professeur.js",
-   "sha1": "d2a1fa8a98396b5783f3089614f9ad5caf2a28b6",
-   "size": 8401
+   "sha1": "0924c41ca66fff8d2d7ad866f0e1f8a9ed867fd5",
+   "size": 8842
   },
   {
    "path": "kubejs/server_scripts/pseudo.js",
