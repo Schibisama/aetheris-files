@@ -95,34 +95,29 @@ ServerEvents.commandRegistry(function (event) {
   })
 
   racine = racine.then(Commands.literal('tous').executes(function (ctx) {
-    var j = ctx.source.player
-    if (!j) { console.info('[livres] /livre tous : à lancer par un joueur'); return 0 }
-    var TAILLE = 9 // livres par shulker
-    var shulkers = 0, livres = 0, erreurs = 0
-    for (var debut = 0; debut < LIV_DONNEES.length; debut += TAILLE) {
-      var fin = Math.min(debut + TAILLE, LIV_DONNEES.length)
-      var objets = []
-      for (var i = debut; i < fin; i++) {
-        objets.push('{slot:' + (i - debut) + ',item:{id:"minecraft:written_book",count:1,components:{"minecraft:written_book_content":' + livContenu(LIV_DONNEES[i]) + '}}}')
-      }
-      try {
-        // Item.of lève une erreur lisible si le texte est invalide (contrairement à une commande /give silencieuse)
-        j.give(Item.of('minecraft:shulker_box[container=[' + objets.join(',') + ']]'))
-        shulkers++; livres += fin - debut
-      } catch (e) {
-        console.error('[livres] shulker ' + (debut / TAILLE + 1) + ' refusé : ' + e)
-        // repli : les livres de ce lot un par un
-        for (var k = debut; k < fin; k++) {
-          try { j.give(Item.of(livItem(LIV_DONNEES[k]))); livres++ }
-          catch (e2) { erreurs++; console.error('[livres] livre « ' + LIV_DONNEES[k][0] + ' » refusé : ' + e2) }
+    try {
+      var j = ctx.source.player
+      if (!j) { console.info('[livres] /livre tous : à lancer par un joueur'); return 0 }
+      var nom = String(j.username)
+      var srv = ctx.source.server
+      var TAILLE = 9
+      var shulkers = 0
+      for (var debut = 0; debut < LIV_DONNEES.length; debut += TAILLE) {
+        var fin = Math.min(debut + TAILLE, LIV_DONNEES.length)
+        var objets = []
+        for (var i = debut; i < fin; i++) {
+          objets.push('{slot:' + (i - debut) + ',item:{id:"minecraft:written_book",count:1,components:{"minecraft:written_book_content":' + livContenu(LIV_DONNEES[i]) + '}}}')
         }
+        srv.runCommandSilent('give ' + nom + ' minecraft:shulker_box[container=[' + objets.join(',') + ']]')
+        shulkers++
       }
+      j.tell(Text.gold(LIV_DONNEES.length + ' livres envoyés dans ' + shulkers + ' shulkers.'))
+      console.info('[livres] /livre tous : ' + shulkers + ' shulkers donnés à ' + nom)
+      return 1
+    } catch (e) {
+      console.error('[livres] /livre tous ERREUR : ' + e + ' | ' + (e && e.stack))
+      return 0
     }
-    var msg = livres + '/' + LIV_DONNEES.length + ' livres donnés (' + shulkers + ' shulkers)'
-    if (erreurs === 0) j.tell(Text.gold(msg + '.'))
-    else j.tell(Text.red(msg + ', ' + erreurs + ' refusé(s) : voir le journal ([livres]).'))
-    console.info('[livres] /livre tous : ' + msg + ', erreurs ' + erreurs)
-    return livres
   }))
 
   racine = racine.then(Commands.literal('remplir')
