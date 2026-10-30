@@ -36,6 +36,7 @@ ItemEvents.entityInteracted(function (event) {
       var e = PP_TABLE[i]
       if (!ppCommence(nom, e.pnj)) continue
       joueur.server.runCommandSilent('ftbquests change_progress ' + joueur.username + ' complete ' + e.id)
+      try { if (typeof autelPnj === 'function') autelPnj(joueur.server, e.pnj) } catch (eA) {}   // étape Mémoire de l'Autel du Sceau
     }
   } catch (err) {
     console.error('[pnj_parler] ' + err)

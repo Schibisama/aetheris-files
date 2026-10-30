@@ -1,5 +1,5 @@
 {
- "version": "2026-10-30T02:12:44.364Z",
+ "version": "2026-10-30T13:19:13.139Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -1262,8 +1262,8 @@
   },
   {
    "path": "kubejs/server_scripts/decouverte_lieux.js",
-   "sha1": "a2b6d486cbe05cc2f2a3ba804137b36c07da83d8",
-   "size": 2540
+   "sha1": "040a6db5eec068604dfdf6e35dd0e575d60b9b9f",
+   "size": 2674
   },
   {
    "path": "kubejs/server_scripts/end_spawn.js",
@@ -1292,8 +1292,8 @@
   },
   {
    "path": "kubejs/server_scripts/pnj_parler.js",
-   "sha1": "e0eb7a0d2e6f7b51ea5086f795e6e6f89b54c3a3",
-   "size": 1839
+   "sha1": "d25824579d0011da2657b8b34edb4386bc177cd7",
+   "size": 1975
   },
   {
    "path": "kubejs/server_scripts/pnj_voix.js",
