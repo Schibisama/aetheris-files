@@ -24,6 +24,20 @@ function pfCommande(joueur, texte) {
   try { joueur.server.runCommandSilent(texte) } catch (e) { console.error('[aura_professeurs] ' + texte + ' -> ' + e) }
 }
 
+// Pose l'effet sans particules MAIS avec l'icône (la commande « effect give ... true » masque aussi l'icône).
+function pfPoser(joueur) {
+  var MEI = Java.loadClass('net.minecraft.world.effect.MobEffectInstance')
+  var RL = Java.loadClass('net.minecraft.resources.ResourceLocation')
+  var BI = Java.loadClass('net.minecraft.core.registries.BuiltInRegistries')
+  var h = BI.MOB_EFFECT.getHolder(RL.parse(PF_EFFET))
+  if (!h.isPresent()) { console.error('[aura_professeurs] effet introuvable : ' + PF_EFFET); return }
+  var holder = h.get()
+  var cur = joueur.getEffect(holder)
+  if (cur != null && cur.showIcon() && !cur.isVisible() && cur.isInfiniteDuration()) return
+  joueur.removeEffect(holder)
+  joueur.addEffect(new MEI(holder, -1, 0, false, false, true))
+}
+
 PlayerEvents.tick(function (event) {
   try {
     var joueur = event.player
@@ -32,7 +46,7 @@ PlayerEvents.tick(function (event) {
     var nom = String(joueur.username)
     var donnees = joueur.persistentData
     if (pfEstProf(joueur)) {
-      pfCommande(joueur, 'effect give ' + nom + ' ' + PF_EFFET + ' infinite 0 true')
+      try { pfPoser(joueur) } catch (e3) { console.error('[aura_professeurs] pose : ' + e3) }
       if (!donnees.getBoolean(PF_CLE)) {
         donnees.putBoolean(PF_CLE, true)
         console.info('[aura_professeurs] aura posée sur ' + nom)
