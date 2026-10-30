@@ -390,6 +390,7 @@ EntityEvents.death(function (event) {
         ' {Item:{id:"kubejs:jambe_de_bois",count:1},PickupDelay:20,Glowing:1b,Invulnerable:1b,Age:-32768s}')
       try { server.tell(Text.gold('[Sculk Castle] ').append(Text.gray('Le dernier gardien s\'effondre... quelque chose de bois roule sur le sol.'))) } catch (x) {}
       console.info('[zone_pirates] dernier mort : la jambe de bois est tombée.')
+      try { if (typeof autelBossTue === 'function') autelBossTue(server, 'pirates') } catch (eA) { console.error('[zone_pirates] autel : ' + eA) }   // étape Force de l'Autel du Sceau
     }
   } catch (err) {
     console.error('[zone_pirates] mort : ' + err)

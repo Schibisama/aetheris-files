@@ -393,6 +393,7 @@ function bzMort(server, nom, b, e, src) {
   }
   delete bzDernierCoup[cle]
   console.info('[boss_zones] ' + nom + ' vaincu' + (tueur ? ' par ' + tueur.username : ' (aucun joueur identifié)'))
+  try { if (typeof autelBossTue === 'function') autelBossTue(server, nom) } catch (eA) { console.error('[boss_zones] autel : ' + eA) }   // étape Force de l'Autel du Sceau
   if (!b.quete || !tueur || !tueur.isPlayer()) return
   if (tueur.persistentData.getInt(b.quete.cle) === 1) {
     tueur.persistentData.putInt(b.quete.cle, 2)
