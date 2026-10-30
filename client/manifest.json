@@ -1,5 +1,5 @@
 {
- "version": "2026-10-30T01:26:21.800Z",
+ "version": "2026-10-30T01:26:51.524Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -1211,11 +1211,6 @@
    "size": 4922
   },
   {
-   "path": "kubejs/server_scripts/aura_professeurs.js",
-   "sha1": "b99bd96f7e24eed008d385a791f18c4e07972f17",
-   "size": 3747
-  },
-  {
    "path": "kubejs/server_scripts/baton_neant.js",
    "sha1": "06a11e67662b847ed6461679464b838e8d2287ee",
    "size": 3208
@@ -1312,8 +1307,8 @@
   },
   {
    "path": "kubejs/server_scripts/professeur.js",
-   "sha1": "fbf0e32e44923dc0f649709c16dcc0f894cc9f27",
-   "size": 3345
+   "sha1": "a1500fd9ff02a112ce05fa4c12476b00e4dbe207",
+   "size": 6668
   },
   {
    "path": "kubejs/server_scripts/pseudo.js",

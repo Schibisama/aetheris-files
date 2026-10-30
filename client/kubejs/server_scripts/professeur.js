@@ -1,10 +1,68 @@
-// /professeur : gère le rôle « professeur » (tag « professeur », déjà utilisé par aura_professeurs.js pour l'Aura de professeur).
+// Rôle « professeur » : tag « professeur » + Aura de professeur + commandes.
 //   /professeur donner <joueur>   : donne le rôle (opérateurs uniquement)
 //   /professeur retirer <joueur>  : retire le rôle
 //   /professeur liste             : liste les professeurs connectés
+//   /aura                         : (opérateurs) dit si tu es professeur et si l'effet est actif
 // Un professeur peut utiliser /cours (+ ici, ordre) et /starter sans être opérateur.
 // Pour ouvrir une autre commande aux professeurs : remplacer son « requires » par  profOuOp  (voir /cours dans classes_rp.js).
-// Rechargement : /reload
+// Aura : effet kubejs:aura_professeur (défini dans startup_scripts/aura_professeur_effet.js), infini, sans particules,
+//   icône visible dans l'inventaire, reposé toutes les 5 secondes. Sont professeurs : les joueurs ayant le tag « professeur »
+//   et, si PF_OPS = true, tous les opérateurs. Retiré en moins de 5 s quand on cesse de l'être.
+// Remplace aura_professeurs.js (à supprimer du serveur). Rechargement : /reload
+
+var PF_OPS = true
+var PF_TAG = 'professeur'
+var PF_EFFET = 'kubejs:aura_professeur'
+var PF_CLE = 'aura_prof_posee'
+
+function pfEstProf(joueur) {
+  try { if (joueur.getTags().contains(PF_TAG)) return true } catch (e0) {}
+  if (!PF_OPS) return false
+  try { if (joueur.hasPermissions(2)) return true } catch (e1) {}
+  try { if (joueur.op) return true } catch (e2) {}
+  return false
+}
+
+function pfCommande(joueur, texte) {
+  try { joueur.server.runCommandSilent(texte) } catch (e) { console.error('[aura_professeurs] ' + texte + ' -> ' + e) }
+}
+
+// Pose l'effet sans particules MAIS avec l'icône (la commande « effect give ... true » masque aussi l'icône).
+function pfPoser(joueur) {
+  var MEI = Java.loadClass('net.minecraft.world.effect.MobEffectInstance')
+  var RL = Java.loadClass('net.minecraft.resources.ResourceLocation')
+  var BI = Java.loadClass('net.minecraft.core.registries.BuiltInRegistries')
+  var h = BI.MOB_EFFECT.getHolder(RL.parse(PF_EFFET))
+  if (!h.isPresent()) { console.error('[aura_professeurs] effet introuvable : ' + PF_EFFET); return }
+  var holder = h.get()
+  var cur = joueur.getEffect(holder)
+  if (cur != null && cur.showIcon() && !cur.isVisible() && cur.isInfiniteDuration()) return
+  joueur.removeEffect(holder)
+  joueur.addEffect(new MEI(holder, -1, 0, false, false, true))
+}
+
+PlayerEvents.tick(function (event) {
+  try {
+    var joueur = event.player
+    if (!joueur || !joueur.isPlayer()) return
+    if (joueur.age % 100 !== 7) return
+    var nom = String(joueur.username)
+    var donnees = joueur.persistentData
+    if (pfEstProf(joueur)) {
+      try { pfPoser(joueur) } catch (e3) { console.error('[aura_professeurs] pose : ' + e3) }
+      if (!donnees.getBoolean(PF_CLE)) {
+        donnees.putBoolean(PF_CLE, true)
+        console.info('[aura_professeurs] aura posée sur ' + nom)
+      }
+    } else if (donnees.getBoolean(PF_CLE)) {
+      pfCommande(joueur, 'effect clear ' + nom + ' ' + PF_EFFET)
+      donnees.putBoolean(PF_CLE, false)
+      console.info('[aura_professeurs] aura retirée de ' + nom)
+    }
+  } catch (e) {
+    console.error('[aura_professeurs] ' + e)
+  }
+})
 
 var PROF_TAG = 'professeur'
 
@@ -75,4 +133,22 @@ ServerEvents.commandRegistry(function (event) {
   )
 })
 
-console.info('[professeur] /professeur donner|retirer|liste chargé (op).')
+ServerEvents.commandRegistry(function (event) {
+  var Commands = event.commands
+  event.register(
+    Commands.literal('aura')
+      .requires(function (source) { return source.hasPermission(2) })
+      .executes(function (ctx) {
+        try {
+          var joueur = ctx.source.player
+          var msg = pfEstProf(joueur)
+            ? 'Tu es professeur : l\'effet « Aura de professeur » est posé sur toi.'
+            : 'Tu n\'es pas professeur (tag « ' + PF_TAG + ' » absent' + (PF_OPS ? ', et tu n\'es pas opérateur' : '') + ').'
+          joueur.tell(msg)
+        } catch (e) { console.error('[aura_professeurs] /aura : ' + e) }
+        return 1
+      })
+  )
+})
+
+console.info('[professeur] chargé : /professeur donner|retirer|liste, /aura, effet ' + PF_EFFET + ' (opérateurs ' + (PF_OPS ? 'inclus' : 'exclus') + ').')
