@@ -8,6 +8,7 @@
 // Aura : effet kubejs:aura_professeur (défini dans startup_scripts/aura_professeur_effet.js), infini, sans particules,
 //   icône visible dans l'inventaire, reposé toutes les 5 secondes. Sont professeurs : les joueurs ayant le tag « professeur »
 //   et, si PF_OPS = true, tous les opérateurs. Retiré en moins de 5 s quand on cesse de l'être.
+//   Doublée (niveau II) dès que l'étape Courage de l'autel est débloquée (autel_sceau_faisceaux.js).
 // Remplace aura_professeurs.js (à supprimer du serveur). Rechargement : /reload
 
 var PF_OPS = true
@@ -35,10 +36,13 @@ function pfPoser(joueur) {
   var h = BI.MOB_EFFECT.getHolder(RL.parse(PF_EFFET))
   if (!h.isPresent()) { console.error('[aura_professeurs] effet introuvable : ' + PF_EFFET); return }
   var holder = h.get()
+  // Aura doublée (niveau II) tant que l'étape Courage de l'autel est débloquée (chapitre 3)
+  var niveau = 0
+  try { if (typeof auDebloquee === 'function' && auDebloquee(joueur.server, 'courage')) niveau = 1 } catch (eN) {}
   var cur = joueur.getEffect(holder)
-  if (cur != null && cur.showIcon() && !cur.isVisible() && cur.isInfiniteDuration()) return
+  if (cur != null && cur.showIcon() && !cur.isVisible() && cur.isInfiniteDuration() && cur.getAmplifier() === niveau) return
   joueur.removeEffect(holder)
-  joueur.addEffect(new MEI(holder, -1, 0, false, false, true))
+  joueur.addEffect(new MEI(holder, -1, niveau, false, false, true))
 }
 
 PlayerEvents.tick(function (event) {
