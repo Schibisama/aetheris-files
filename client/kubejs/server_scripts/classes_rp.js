@@ -579,10 +579,9 @@ function appliquerClasse(server, joueur, classe, reinit) {
       // On ouvre seulement son école pour qu'il puisse le lancer une fois découvert
       // (son onglet reste caché du Codex tant qu'aucun de ses sorts n'est découvert).
       var ecole = ecoleDuSort(sort)
-      // On n'ouvre QUE les écoles de la classe : un sort partagé (ex. Nuage d'Orage, Hydro + Aéro) s'affiche alors
-      // uniquement dans l'onglet de la classe du joueur (table du mod Codex Regroup) et se lance grâce à l'autorisation de classe.
-      if (!ecole) console.error('[classes_rp] ' + nom + ' : école inconnue pour ' + sort)
-      else if (ecolesDeLaClasse(classe).indexOf(ecole) !== -1) cmd(server, 'specs_codex school unlock ' + nom + ' ' + ecole)
+      // École d'origine du sort ouverte : sans elle le Codex ne l'affiche pas (vérifié en jeu le 30/10).
+      if (ecole) cmd(server, 'specs_codex school unlock ' + nom + ' ' + ecole)
+      else console.error('[classes_rp] ' + nom + ' : école inconnue pour ' + sort)
       // Les sorts ouverts à TOUS (liste « * », dont Rappel) ne sont plus offerts au départ : les professeurs
       // les donnent en classe avec /cours (voir plus bas).
     }
