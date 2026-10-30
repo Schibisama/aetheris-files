@@ -60,33 +60,35 @@ function pfPoser(joueur) {
   joueur.addEffect(new MEI(holder, -1, niveau, false, false, true))
 }
 
-PlayerEvents.tick(function (event) {
-  try {
-    var joueur = event.player
-    if (!joueur || !joueur.isPlayer()) return
-    if (joueur.age % 100 !== 7) return
-    var nom = String(joueur.username)
-    var donnees = joueur.persistentData
-    if (pfEstProf(joueur)) {
-      try { pfPoser(joueur) } catch (e3) { console.error('[aura_professeurs] pose : ' + e3) }
-      if (!donnees.getBoolean(PF_CLE)) {
-        donnees.putBoolean(PF_CLE, true)
-        console.info('[aura_professeurs] aura posée sur ' + nom)
-        try { pfAfficherStats(joueur) } catch (eS) { console.error('[aura_professeurs] stats : ' + eS) }
-      }
-    } else if (donnees.getBoolean(PF_CLE)) {
-      pfCommande(joueur, 'effect clear ' + nom + ' ' + PF_EFFET)
-      donnees.putBoolean(PF_CLE, false)
-      console.info('[aura_professeurs] aura retirée de ' + nom)
+function pfTraiter(joueur) {
+  var nom = String(joueur.username)
+  var donnees = joueur.persistentData
+  if (pfEstProf(joueur)) {
+    try { pfPoser(joueur) } catch (e3) { console.error('[aura_professeurs] pose : ' + e3) }
+    if (!donnees.getBoolean(PF_CLE)) {
+      donnees.putBoolean(PF_CLE, true)
+      console.info('[aura_professeurs] aura posée sur ' + nom)
     }
-  } catch (e) {
-    console.error('[aura_professeurs] ' + e)
+  } else if (donnees.getBoolean(PF_CLE)) {
+    pfCommande(joueur, 'effect clear ' + nom + ' ' + PF_EFFET)
+    donnees.putBoolean(PF_CLE, false)
+    console.info('[aura_professeurs] aura retirée de ' + nom)
   }
+}
+// Toutes les 5 secondes (compteur du serveur, plus fiable que l'âge du joueur)
+ServerEvents.tick(function (event) {
+  try {
+    var sv = event.server
+    if (sv.tickCount % 100 !== 7) return
+    var js = sv.players
+    for (var i = 0; i < js.length; i++) {
+      try { pfTraiter(js[i]) } catch (e) { console.error('[aura_professeurs] ' + e) }
+    }
+  } catch (e2) { console.error('[aura_professeurs] tick : ' + e2) }
 })
-
-// À la connexion d'un professeur : rappel des stats de son aura.
+// Pose immédiate à la connexion
 PlayerEvents.loggedIn(function (e) {
-  try { if (pfEstProf(e.player)) pfAfficherStats(e.player) } catch (err) { console.error('[aura_professeurs] connexion : ' + err) }
+  try { pfTraiter(e.player) } catch (err) { console.error('[aura_professeurs] connexion pose : ' + err) }
 })
 
 var PROF_TAG = 'professeur'

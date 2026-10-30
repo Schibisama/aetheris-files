@@ -1,5 +1,5 @@
 {
- "version": "2026-10-30T23:35:37.588Z",
+ "version": "2026-10-30T23:41:21.896Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -162,8 +162,8 @@
   },
   {
    "path": "kubejs/assets/kubejs/lang/fr_fr.json",
-   "sha1": "ce3d791677f63c35bfb5a86806e79d0d234fe2e8",
-   "size": 60
+   "sha1": "79a955a8c8971746366fa113c6947a602882e9ac",
+   "size": 62
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau_c0.json",
@@ -5022,8 +5022,8 @@
   },
   {
    "path": "kubejs/server_scripts/professeur.js",
-   "sha1": "aa1021172439ceb7475b86a58edd9c3c8c37ee48",
-   "size": 8366
+   "sha1": "d2a1fa8a98396b5783f3089614f9ad5caf2a28b6",
+   "size": 8401
   },
   {
    "path": "kubejs/server_scripts/pseudo.js",
