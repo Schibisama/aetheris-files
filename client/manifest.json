@@ -1,5 +1,5 @@
 {
- "version": "2026-10-30T15:48:14.041Z",
+ "version": "2026-10-30T16:37:40.733Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -327,8 +327,8 @@
   },
   {
    "path": "kubejs/assets/kubejs/models/block/autel_sceau.json",
-   "sha1": "0f8a833949f1cbe9102927985f7735ae8195d718",
-   "size": 208528
+   "sha1": "37a48551089dfb4678f67daa9cde893fea713623",
+   "size": 208677
   },
   {
    "path": "kubejs/assets/kubejs/models/block/rune_01.json",

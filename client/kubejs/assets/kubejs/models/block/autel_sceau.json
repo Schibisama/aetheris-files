@@ -17989,7 +17989,11 @@
     225,
     0
    ],
-   "scale": 0.6,
+   "scale": [
+    0.6,
+    0.6,
+    0.6
+   ],
    "translation": [
     0,
     -1,
@@ -17997,13 +18001,25 @@
    ]
   },
   "ground": {
-   "scale": 0.3
+   "scale": [
+    0.3,
+    0.3,
+    0.3
+   ]
   },
   "fixed": {
-   "scale": 0.4
+   "scale": [
+    0.4,
+    0.4,
+    0.4
+   ]
   },
   "thirdperson_righthand": {
-   "scale": 0.25
+   "scale": [
+    0.25,
+    0.25,
+    0.25
+   ]
   },
   "firstperson_righthand": {
    "rotation": [
@@ -18011,7 +18027,11 @@
     45,
     0
    ],
-   "scale": 0.25
+   "scale": [
+    0.25,
+    0.25,
+    0.25
+   ]
   }
  }
 }
