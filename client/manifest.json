@@ -1,5 +1,5 @@
 {
- "version": "2026-10-30T23:46:25.101Z",
+ "version": "2026-10-30T23:52:43.236Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -5226,9 +5226,9 @@
    "size": 410948
   },
   {
-   "path": "mods/codexregroup-1.0.4.jar",
-   "sha1": "297cf3d93cf1ab1d772734513fd4e5763c60c8d3",
-   "size": 9594
+   "path": "mods/codexregroup-1.0.5.jar",
+   "sha1": "efcfc4311a8c8936f80e32ce720844c6763da894",
+   "size": 14249
   },
   {
    "path": "mods/colormagic-1.3.0.jar",
