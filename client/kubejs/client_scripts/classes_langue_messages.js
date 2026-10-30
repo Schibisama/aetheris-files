@@ -44,6 +44,11 @@ var MSG_FR = {
   'mcrp.rarete.rare': 'rare',
   'mcrp.rarete.epic': 'épique',
   'mcrp.rarete.legendary': 'légendaire',
+  'mcrp.autel.sceau_force': "Le sceau de la force s'est brisé",
+  'mcrp.autel.sceau_memoire': "Le sceau de la mémoire s'est brisé",
+  'mcrp.autel.sceau_courage': "Le sceau du courage s'est brisé",
+  'mcrp.autel.sceaux_brises': 'Les trois sceaux sont brisés',
+  'mcrp.autel.sceaux_compte': '%s / 3',
   'mcrp.msg.recompense_repli': 'Les arcanes te font un don : un parchemin de %s, un des sorts les plus puissants de ta classe.',
   'mcrp.msg.recompense_aucun': "Aucun sort n'a pu t'être remis (as-tu reçu une classe ?). Préviens un modérateur.",
   'mcrp.msg.cours_sort': "Le professeur t'enseigne un nouveau sort : %s."
@@ -79,6 +84,11 @@ var MSG_EN = {
   'mcrp.rarete.rare': 'rare',
   'mcrp.rarete.epic': 'epic',
   'mcrp.rarete.legendary': 'legendary',
+  'mcrp.autel.sceau_force': 'The seal of strength has broken',
+  'mcrp.autel.sceau_memoire': 'The seal of memory has broken',
+  'mcrp.autel.sceau_courage': 'The seal of courage has broken',
+  'mcrp.autel.sceaux_brises': 'All three seals are broken',
+  'mcrp.autel.sceaux_compte': '%s / 3',
   'mcrp.msg.recompense_repli': 'The arcane grants you a gift: a scroll of %s, one of the most powerful spells of your class.',
   'mcrp.msg.recompense_aucun': "No spell could be given to you (do you have a class?). Tell a moderator.",
   'mcrp.msg.cours_sort': "Your professor teaches you a new spell: %s."

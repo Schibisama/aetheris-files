@@ -1,5 +1,5 @@
 {
- "version": "2026-10-30T14:37:47.130Z",
+ "version": "2026-10-30T14:59:02.108Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -10,6 +10,11 @@
  ],
  "server": "91.197.6.164:22974",
  "files": [
+  {
+   "path": "kubejs/assets/kubejs/blockstates/autel_sceau.json",
+   "sha1": "b70f3c7b7400aa16a322d8706ca992df86003bd5",
+   "size": 3837
+  },
   {
    "path": "kubejs/assets/kubejs/blockstates/rune_01.json",
    "sha1": "851def4a0464eed3215a3617ebe7329c61076beb",
@@ -156,6 +161,176 @@
    "size": 60
   },
   {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p0.json",
+   "sha1": "fcbd422770d9313e6688c0efe625ae99a4bd3139",
+   "size": 7950
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p1.json",
+   "sha1": "a1db57330bfa8ab0da52465017e9c792b008216e",
+   "size": 6926
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p10.json",
+   "sha1": "1b2e5f820737a09fd4afffd50510d703ce9ec289",
+   "size": 9316
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p11_memoire_off.json",
+   "sha1": "18109772f8b285902e9d66549eeb286224ddbf05",
+   "size": 1777
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p11_memoire.json",
+   "sha1": "93cfcfb4a81b3e5f181a42fc735d4aa3b31f39e3",
+   "size": 2721
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p11.json",
+   "sha1": "bd8877aa1bc9d635ee7ca19425cad59672c7ae3a",
+   "size": 10311
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p12_orb_off.json",
+   "sha1": "4a381b448b8d485621f35d2cca6a67ddbe7db5ff",
+   "size": 1829
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p12_orb_on.json",
+   "sha1": "01e205cefa8e2d8f0b633b7acb47963cdc1d9de0",
+   "size": 1909
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p12.json",
+   "sha1": "aef66902f63fb82f02fc24280809a5fcf8a1bc78",
+   "size": 28316
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p13_courage_off.json",
+   "sha1": "3034018182d92a8b7c3b52a4858b508dbe81e588",
+   "size": 1777
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p13_courage.json",
+   "sha1": "d8d5ba48e4048499b04379260d0211a756ce89aa",
+   "size": 2718
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p13.json",
+   "sha1": "93f7726bdf2c5ab39f51b5213fbea068d1f05dbc",
+   "size": 12581
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p14.json",
+   "sha1": "5a5a2095620735fcf4259f9df0109433ae36e683",
+   "size": 6303
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p15.json",
+   "sha1": "41de47b5f113570859b3a6994185361ef089286b",
+   "size": 14592
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p16.json",
+   "sha1": "57109545c14203e9c0978660d5babf9aa9b4543e",
+   "size": 8200
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p17.json",
+   "sha1": "874444e3560d7e2adbaa85d5b5ebf72403fc0339",
+   "size": 9719
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p18.json",
+   "sha1": "7069b0002aa73b423d34ef46c602979cd61c8d7d",
+   "size": 9759
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p19.json",
+   "sha1": "d86ffb7e501464cf5efe59b492cc31f773cb7c42",
+   "size": 6092
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p2.json",
+   "sha1": "398cea4da13d120a3b4f7fef56db46710a629078",
+   "size": 8642
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p20.json",
+   "sha1": "6137102549def8695f075932439942782bbb5288",
+   "size": 8464
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p21.json",
+   "sha1": "05bf79d0304aa85db00560f058ca08ac57075156",
+   "size": 6813
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p22.json",
+   "sha1": "d04b6a6f1982715c92b1dfe60d0ac5227232400b",
+   "size": 11328
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p23.json",
+   "sha1": "3a63162a6b1f145d26e56427bba29e5bd70bfccf",
+   "size": 10174
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p24.json",
+   "sha1": "d18259aaf3a5c50f225ca754f8620ea9213b5cf4",
+   "size": 11017
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p3.json",
+   "sha1": "74fccbeb5c4aa243fa3f1494b01513bef01c2dd1",
+   "size": 8860
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p4.json",
+   "sha1": "cdd8e4e908a1d1eada93ec3a3c9c06c1b0a68d0b",
+   "size": 11025
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p5.json",
+   "sha1": "0bd623b0a049cce749fadac87377808862dab35a",
+   "size": 6840
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p6.json",
+   "sha1": "4e2763cd0948859cf95f0afc7d1f582e46b4d323",
+   "size": 10571
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p7_force_off.json",
+   "sha1": "c2fad90201da487647a8384f7a23a1955e7de4a1",
+   "size": 1773
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p7_force.json",
+   "sha1": "d9a6ecc8f626a08d8cdff4235257a63d9e107380",
+   "size": 2683
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p7.json",
+   "sha1": "f531b13a2721008b5be0735733bc6388c3998062",
+   "size": 13738
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p8.json",
+   "sha1": "411527499a2c54f58f0e977c5846cfad625f98c5",
+   "size": 11625
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau_p9.json",
+   "sha1": "92b918f2f90ce434db8b4ed66e859be20c59d740",
+   "size": 7954
+  },
+  {
+   "path": "kubejs/assets/kubejs/models/block/autel_sceau.json",
+   "sha1": "0f8a833949f1cbe9102927985f7735ae8195d718",
+   "size": 208528
+  },
+  {
    "path": "kubejs/assets/kubejs/models/block/rune_01.json",
    "sha1": "7a98d379e4a0443538ce8bfcc16f03f10c7669f2",
    "size": 266
@@ -286,6 +461,11 @@
    "size": 266
   },
   {
+   "path": "kubejs/assets/kubejs/models/item/autel_sceau.json",
+   "sha1": "00b34c0c0ddc0897e2469fde9e121c281826c7a2",
+   "size": 41
+  },
+  {
    "path": "kubejs/assets/kubejs/models/item/rune_01.json",
    "sha1": "5e793818fe1e1b49b687c6d955c4b630078afd30",
    "size": 86
@@ -414,6 +594,11 @@
    "path": "kubejs/assets/kubejs/models/item/rune_26.json",
    "sha1": "4b1442ab3a30e1f59c3f89502007110c1bd95f7b",
    "size": 83
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/block/autel_sceau.png",
+   "sha1": "8aeadf68b9e4d07c05c2fabbd872960a66ed4a6c",
+   "size": 15359
   },
   {
    "path": "kubejs/assets/kubejs/textures/block/example_block.png",
@@ -1952,8 +2137,8 @@
   },
   {
    "path": "kubejs/client_scripts/classes_langue_messages.js",
-   "sha1": "74124a6a14b4ff8458c1d586c624c506f07bad43",
-   "size": 5841
+   "sha1": "997548f3f8091f7b318229106b6070cb48d699e9",
+   "size": 6435
   },
   {
    "path": "kubejs/client_scripts/classes_langue.js",

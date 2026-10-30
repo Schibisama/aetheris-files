@@ -1,0 +1,151 @@
+{
+ "credit": "Autel du Sceau - Aetheris",
+ "texture_size": [
+  64,
+  80
+ ],
+ "textures": {
+  "0": "kubejs:block/autel_sceau",
+  "particle": "kubejs:block/autel_sceau"
+ },
+ "elements": [
+  {
+   "name": "emetteur_force_plaque_eteinte",
+   "from": [
+    5.0,
+    25.5,
+    9.0
+   ],
+   "to": [
+    11.0,
+    26.5,
+    15.0
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      16,
+      16,
+      22.0,
+      17.0
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      16,
+      16,
+      22.0,
+      17.0
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      16,
+      16,
+      22.0,
+      17.0
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      16,
+      16,
+      22.0,
+      17.0
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      16,
+      16,
+      22.0,
+      22.0
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      16,
+      16,
+      22.0,
+      22.0
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "rune_force_eteinte",
+   "from": [
+    2.0,
+    5.0,
+    4.0
+   ],
+   "to": [
+    14.0,
+    6.3,
+    7.0
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      16,
+      16,
+      28.0,
+      17.3
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      16,
+      16,
+      28.0,
+      17.3
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      16,
+      16,
+      19.0,
+      17.3
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      16,
+      16,
+      19.0,
+      17.3
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      16,
+      16,
+      28.0,
+      19.0
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      16,
+      16,
+      28.0,
+      19.0
+     ],
+     "texture": "#0"
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,276 @@
+{
+ "multipart": [
+  {
+   "when": {
+    "piece": "0"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p0"
+   }
+  },
+  {
+   "when": {
+    "piece": "1"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p1"
+   }
+  },
+  {
+   "when": {
+    "piece": "2"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p2"
+   }
+  },
+  {
+   "when": {
+    "piece": "3"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p3"
+   }
+  },
+  {
+   "when": {
+    "piece": "4"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p4"
+   }
+  },
+  {
+   "when": {
+    "piece": "5"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p5"
+   }
+  },
+  {
+   "when": {
+    "piece": "6"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p6"
+   }
+  },
+  {
+   "when": {
+    "piece": "7"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p7"
+   }
+  },
+  {
+   "when": {
+    "piece": "8"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p8"
+   }
+  },
+  {
+   "when": {
+    "piece": "9"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p9"
+   }
+  },
+  {
+   "when": {
+    "piece": "10"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p10"
+   }
+  },
+  {
+   "when": {
+    "piece": "11"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p11"
+   }
+  },
+  {
+   "when": {
+    "piece": "12"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p12"
+   }
+  },
+  {
+   "when": {
+    "piece": "13"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p13"
+   }
+  },
+  {
+   "when": {
+    "piece": "14"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p14"
+   }
+  },
+  {
+   "when": {
+    "piece": "15"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p15"
+   }
+  },
+  {
+   "when": {
+    "piece": "16"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p16"
+   }
+  },
+  {
+   "when": {
+    "piece": "17"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p17"
+   }
+  },
+  {
+   "when": {
+    "piece": "18"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p18"
+   }
+  },
+  {
+   "when": {
+    "piece": "19"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p19"
+   }
+  },
+  {
+   "when": {
+    "piece": "20"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p20"
+   }
+  },
+  {
+   "when": {
+    "piece": "21"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p21"
+   }
+  },
+  {
+   "when": {
+    "piece": "22"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p22"
+   }
+  },
+  {
+   "when": {
+    "piece": "23"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p23"
+   }
+  },
+  {
+   "when": {
+    "piece": "24"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p24"
+   }
+  },
+  {
+   "when": {
+    "piece": "7",
+    "actif": "true"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p7_force"
+   }
+  },
+  {
+   "when": {
+    "piece": "7",
+    "actif": "false"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p7_force_off"
+   }
+  },
+  {
+   "when": {
+    "piece": "11",
+    "actif": "true"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p11_memoire"
+   }
+  },
+  {
+   "when": {
+    "piece": "11",
+    "actif": "false"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p11_memoire_off"
+   }
+  },
+  {
+   "when": {
+    "piece": "13",
+    "actif": "true"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p13_courage"
+   }
+  },
+  {
+   "when": {
+    "piece": "13",
+    "actif": "false"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p13_courage_off"
+   }
+  },
+  {
+   "when": {
+    "piece": "12",
+    "actif": "true"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p12_orb_on"
+   }
+  },
+  {
+   "when": {
+    "piece": "12",
+    "actif": "false"
+   },
+   "apply": {
+    "model": "kubejs:block/autel_sceau_p12_orb_off"
+   }
+  }
+ ]
+}

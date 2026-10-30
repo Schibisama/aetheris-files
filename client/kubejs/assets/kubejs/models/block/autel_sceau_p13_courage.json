@@ -1,0 +1,232 @@
+{
+ "credit": "Autel du Sceau - Aetheris",
+ "texture_size": [
+  64,
+  80
+ ],
+ "textures": {
+  "0": "kubejs:block/autel_sceau",
+  "particle": "kubejs:block/autel_sceau"
+ },
+ "elements": [
+  {
+   "name": "emetteur_courage_plaque",
+   "from": [
+    1.0,
+    24.5,
+    5.0
+   ],
+   "to": [
+    7.0,
+    25.5,
+    11.0
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      32,
+      32,
+      38.0,
+      33.0
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      32,
+      32,
+      38.0,
+      33.0
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      32,
+      32,
+      38.0,
+      33.0
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      32,
+      32,
+      38.0,
+      33.0
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      32,
+      32,
+      38.0,
+      38.0
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      32,
+      32,
+      38.0,
+      38.0
+     ],
+     "texture": "#0"
+    }
+   },
+   "shade": false
+  },
+  {
+   "name": "cristal_courage",
+   "from": [
+    2.5,
+    20.7,
+    6.5
+   ],
+   "to": [
+    5.5,
+    24.3,
+    9.5
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      32,
+      32,
+      35.0,
+      35.6
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      32,
+      32,
+      35.0,
+      35.6
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      32,
+      32,
+      35.0,
+      35.6
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      32,
+      32,
+      35.0,
+      35.6
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      32,
+      32,
+      35.0,
+      35.0
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      32,
+      32,
+      35.0,
+      35.0
+     ],
+     "texture": "#0"
+    }
+   },
+   "rotation": {
+    "angle": 45,
+    "axis": "y",
+    "origin": [
+     4.0,
+     20.7,
+     8.0
+    ]
+   },
+   "shade": false
+  },
+  {
+   "name": "rune_courage_allumee",
+   "from": [
+    9.0,
+    4.0,
+    2.0
+   ],
+   "to": [
+    12.0,
+    4.8,
+    14.0
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      32,
+      32,
+      35.0,
+      32.8
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      32,
+      32,
+      35.0,
+      32.8
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      32,
+      32,
+      44.0,
+      32.8
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      32,
+      32,
+      44.0,
+      32.8
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      32,
+      32,
+      35.0,
+      44.0
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      32,
+      32,
+      35.0,
+      44.0
+     ],
+     "texture": "#0"
+    }
+   },
+   "shade": false
+  }
+ ]
+}
