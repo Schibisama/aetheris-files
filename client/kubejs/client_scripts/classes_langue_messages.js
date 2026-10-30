@@ -43,6 +43,7 @@ var MSG_FR = {
   'mcrp.rarete.uncommon': 'peu commun',
   'mcrp.rarete.rare': 'rare',
   'mcrp.rarete.epic': 'épique',
+  'mcrp.rarete.legendary': 'légendaire',
   'mcrp.msg.recompense_repli': 'Les arcanes te font un don : un parchemin de %s, un des sorts les plus puissants de ta classe.',
   'mcrp.msg.recompense_aucun': "Aucun sort n'a pu t'être remis (as-tu reçu une classe ?). Préviens un modérateur.",
   'mcrp.msg.cours_sort': "Le professeur t'enseigne un nouveau sort : %s."
@@ -77,6 +78,7 @@ var MSG_EN = {
   'mcrp.rarete.uncommon': 'uncommon',
   'mcrp.rarete.rare': 'rare',
   'mcrp.rarete.epic': 'epic',
+  'mcrp.rarete.legendary': 'legendary',
   'mcrp.msg.recompense_repli': 'The arcane grants you a gift: a scroll of %s, one of the most powerful spells of your class.',
   'mcrp.msg.recompense_aucun': "No spell could be given to you (do you have a class?). Tell a moderator.",
   'mcrp.msg.cours_sort': "Your professor teaches you a new spell: %s."

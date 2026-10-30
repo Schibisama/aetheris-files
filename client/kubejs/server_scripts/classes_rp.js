@@ -812,7 +812,7 @@ function sortRecompenseAleatoire(joueur, rareteNom) {
 function cmdRecompense(ctx, cible, rareteNom) {
   try {
     rareteNom = rareteNom || 'RARE'
-    var texteRarete = Text.translate(rareteNom === 'EPIC' ? 'mcrp.rarete.epic' : (rareteNom === 'UNCOMMON' ? 'mcrp.rarete.uncommon' : 'mcrp.rarete.rare'))
+    var texteRarete = Text.translate(rareteNom === 'LEGENDARY' ? 'mcrp.rarete.legendary' : (rareteNom === 'EPIC' ? 'mcrp.rarete.epic' : (rareteNom === 'UNCOMMON' ? 'mcrp.rarete.uncommon' : 'mcrp.rarete.rare')))
     var choix = sortRecompenseAleatoire(cible, rareteNom)
     if (!choix) {
       cible.tell(Text.translate('mcrp.msg.recompense_aucun').red())
@@ -1125,6 +1125,10 @@ ServerEvents.commandRegistry(function (event) {
         .requires(estModo)
         .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
           .executes(function (ctx) { return cmdRecompense(ctx, Arguments.PLAYER.getResult(ctx, 'joueur'), 'EPIC') })))
+      .then(Commands.literal('recompense_legendaire')
+        .requires(estModo)
+        .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+          .executes(function (ctx) { return cmdRecompense(ctx, Arguments.PLAYER.getResult(ctx, 'joueur'), 'LEGENDARY') })))
       .then(Commands.literal('reset')
         .requires(estModo)
         .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
