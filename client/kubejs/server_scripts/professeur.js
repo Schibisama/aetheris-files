@@ -16,7 +16,10 @@ var PF_TAG = 'professeur'
 var PF_EFFET = 'kubejs:aura_professeur'
 var PF_CLE = 'aura_prof_posee'
 
+// Tag « non_professeur » : un opérateur qui l'a n'est PAS professeur (posé par /professeur retirer, enlevé par /professeur donner).
+var PF_TAG_NON = 'non_professeur'
 function pfEstProf(joueur) {
+  try { if (joueur.getTags().contains(PF_TAG_NON)) return false } catch (eN) {}
   try { if (joueur.getTags().contains(PF_TAG)) return true } catch (e0) {}
   if (!PF_OPS) return false
   try { if (joueur.hasPermissions(2)) return true } catch (e1) {}
@@ -117,15 +120,17 @@ ServerEvents.commandRegistry(function (event) {
     try {
       var cible = Arguments.PLAYER.getResult(ctx, 'joueur')
       var nom = String(cible.username)
-      var deja = cible.getTags().contains(PROF_TAG)
+      var deja = pfEstProf(cible)
       if (ajouter) {
         if (deja) { dire(ctx, nom + ' est déjà professeur.'); return 0 }
+        cible.server.runCommandSilent('tag ' + nom + ' remove ' + PF_TAG_NON)
         cible.server.runCommandSilent('tag ' + nom + ' add ' + PROF_TAG)
         cible.tell(Text.gold('Tu es désormais professeur à l\'Académie : /cours et /starter te sont ouverts.'))
         dire(ctx, nom + ' est maintenant professeur.')
       } else {
         if (!deja) { dire(ctx, nom + ' n\'est pas professeur.'); return 0 }
         cible.server.runCommandSilent('tag ' + nom + ' remove ' + PROF_TAG)
+        cible.server.runCommandSilent('tag ' + nom + ' add ' + PF_TAG_NON)   // pour un opérateur : le retire vraiment du rôle
         cible.tell(Text.gray('Tu n\'es plus professeur.'))
         dire(ctx, nom + ' n\'est plus professeur.')
       }
