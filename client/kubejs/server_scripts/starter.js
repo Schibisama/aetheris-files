@@ -14,6 +14,16 @@ var STARTER_COULEURS = [
   0x2C3E9E, 0x8E44AD, 0xE91E8C, 0x5D4037, 0x9AA5AB, 0x1C1C24
 ]
 
+// Affiche aux AUTRES joueurs : CLASSE en grand, « X est devenu Classe » en petit (starter uniquement, pas les reroll).
+function starterAnnonceAutres(server, joueur, classe) {
+  var n = joueur.username
+  var cible = '@a[name=!' + n + ']'
+  var cle = cleClasse(classe.nom)
+  cmd(server, 'title ' + cible + ' times 20 80 20')
+  cmd(server, 'title ' + cible + ' subtitle {"translate":"mcrp.sous_titre.devenu","color":"gray","with":[{"selector":"' + n + '"},{"translate":"' + cle + '","color":"yellow"}]}')
+  cmd(server, 'title ' + cible + ' title {"translate":"' + cle + '","color":"gold","bold":true}')
+}
+
 function starterDonner(ctx, joueur) {
   var server = ctx.source.server
   var n = joueur.username
@@ -32,6 +42,7 @@ function starterDonner(ctx, joueur) {
       joueur.persistentData.putBoolean(CLE_TEST, false)
       appliquerClasse(server, joueur, nouvelle, true)
       annoncer(server, joueur, nouvelle, "Les arcanes t'ont choisi.")
+      starterAnnonceAutres(server, joueur, nouvelle)
     }
   } catch (e) { console.error('[starter] classe : ' + e) }
 

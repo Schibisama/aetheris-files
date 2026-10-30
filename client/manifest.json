@@ -1,5 +1,5 @@
 {
- "version": "2026-10-30T01:10:13.713Z",
+ "version": "2026-10-30T01:21:43.144Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -1167,8 +1167,8 @@
   },
   {
    "path": "kubejs/client_scripts/classes_langue_messages.js",
-   "sha1": "91147bc29b067b8016e85dbbdee37fe0476cf6d5",
-   "size": 5663
+   "sha1": "5fcfe21c4fff4bc6bd44c87cb9f17a2b5adfcc36",
+   "size": 5759
   },
   {
    "path": "kubejs/client_scripts/classes_langue.js",
@@ -1327,8 +1327,8 @@
   },
   {
    "path": "kubejs/server_scripts/starter.js",
-   "sha1": "7984c78a0227308cd24eab53ce4c67957025b733",
-   "size": 2839
+   "sha1": "add92cfbfd8d75587222550a80106f2a1639e013",
+   "size": 3498
   },
   {
    "path": "kubejs/server_scripts/worldstop_portee.js",
