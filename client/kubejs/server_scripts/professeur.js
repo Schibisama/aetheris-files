@@ -24,6 +24,21 @@ function pfEstProf(joueur) {
   return false
 }
 
+// Bonus de l'aura (doit rester identique à AURA_BONUS de startup_scripts/aura_professeur_effet.js) : [libellé, valeur]
+var PF_BONUS = [
+  ['Puissance des sorts', 0.5], ['Mana maximum', 1.0], ['Régénération de mana', 1.0],
+  ['Réduction des recharges', 0.3], ['Rapidité d\'incantation', 0.3], ['Résistance aux sorts', 0.3]
+]
+// Affiche les stats de l'aura dans le chat (niveau II = bonus doublés pendant l'étape Courage).
+function pfAfficherStats(joueur) {
+  var niveau = 0
+  try { if (typeof auDebloquee === 'function' && auDebloquee(joueur.server, 'courage')) niveau = 1 } catch (e) {}
+  joueur.tell(Text.gold('✦ Aura de professeur').bold().append(Text.of(niveau ? '  (niveau II : bonus doublés)' : '  (niveau I)').gray()))
+  for (var i = 0; i < PF_BONUS.length; i++) {
+    joueur.tell(Text.of('  + ' + Math.round(PF_BONUS[i][1] * (niveau + 1) * 100) + ' % ').green().append(Text.of(PF_BONUS[i][0]).gray()))
+  }
+}
+
 function pfCommande(joueur, texte) {
   try { joueur.server.runCommandSilent(texte) } catch (e) { console.error('[aura_professeurs] ' + texte + ' -> ' + e) }
 }
@@ -57,6 +72,7 @@ PlayerEvents.tick(function (event) {
       if (!donnees.getBoolean(PF_CLE)) {
         donnees.putBoolean(PF_CLE, true)
         console.info('[aura_professeurs] aura posée sur ' + nom)
+        try { pfAfficherStats(joueur) } catch (eS) { console.error('[aura_professeurs] stats : ' + eS) }
       }
     } else if (donnees.getBoolean(PF_CLE)) {
       pfCommande(joueur, 'effect clear ' + nom + ' ' + PF_EFFET)
@@ -66,6 +82,11 @@ PlayerEvents.tick(function (event) {
   } catch (e) {
     console.error('[aura_professeurs] ' + e)
   }
+})
+
+// À la connexion d'un professeur : rappel des stats de son aura.
+PlayerEvents.loggedIn(function (e) {
+  try { if (pfEstProf(e.player)) pfAfficherStats(e.player) } catch (err) { console.error('[aura_professeurs] connexion : ' + err) }
 })
 
 var PROF_TAG = 'professeur'
@@ -141,13 +162,12 @@ ServerEvents.commandRegistry(function (event) {
   var Commands = event.commands
   event.register(
     Commands.literal('aura')
-      .requires(function (source) { return source.hasPermission(2) })
+      .requires(function (source) { try { return source.hasPermission(2) || (source.player && source.player.getTags().contains(PF_TAG)) } catch (e) { return false } })
       .executes(function (ctx) {
         try {
           var joueur = ctx.source.player
-          var msg = pfEstProf(joueur)
-            ? 'Tu es professeur : l\'effet « Aura de professeur » est posé sur toi.'
-            : 'Tu n\'es pas professeur (tag « ' + PF_TAG + ' » absent' + (PF_OPS ? ', et tu n\'es pas opérateur' : '') + ').'
+          if (pfEstProf(joueur)) { pfAfficherStats(joueur); return 1 }
+          var msg = 'Tu n\'es pas professeur (tag « ' + PF_TAG + ' » absent' + (PF_OPS ? ', et tu n\'es pas opérateur' : '') + ').'
           joueur.tell(msg)
         } catch (e) { console.error('[aura_professeurs] /aura : ' + e) }
         return 1
