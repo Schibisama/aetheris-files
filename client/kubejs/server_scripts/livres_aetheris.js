@@ -20,7 +20,7 @@ function livNoms(t) {
 }
 
 function livEsc(s) {
-  return livNoms(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n')
+  return livNoms(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\r?\n/g, '\n')  // vrai saut de ligne : le SNBT 1.21.1 refuse l'échappement \\n
 }
 
 // Composant « written_book_content » en SNBT
@@ -89,7 +89,7 @@ ServerEvents.commandRegistry(function (event) {
     racine = racine.then(Commands.literal(b[0]).executes(function (ctx) {
       var j = ctx.source.player
       if (!j) return 0
-      ctx.source.server.runCommandSilent('give ' + j.username + ' ' + livItem(b))
+      ctx.source.server.runCommand('give ' + j.username + ' ' + livItem(b))
       return 1
     }))
   })
@@ -108,7 +108,7 @@ ServerEvents.commandRegistry(function (event) {
         for (var i = debut; i < fin; i++) {
           objets.push('{slot:' + (i - debut) + ',item:{id:"minecraft:written_book",count:1,components:{"minecraft:written_book_content":' + livContenu(LIV_DONNEES[i]) + '}}}')
         }
-        srv.runCommandSilent('give ' + nom + ' minecraft:shulker_box[container=[' + objets.join(',') + ']]')
+        srv.runCommand('give ' + nom + ' minecraft:shulker_box[container=[' + objets.join(',') + ']]')
         shulkers++
       }
       j.tell(Text.gold(LIV_DONNEES.length + ' livres envoyés dans ' + shulkers + ' shulkers.'))
