@@ -96,20 +96,24 @@ ServerEvents.commandRegistry(function (event) {
 
   racine = racine.then(Commands.literal('tous').executes(function (ctx) {
     var j = ctx.source.player
-    if (!j) return 0
+    if (!j) { console.info('[livres] /livre tous : à lancer par un joueur'); return 0 }
     var serveur = ctx.source.server
-    var nb = 0
-    for (var debut = 0; debut < LIV_DONNEES.length; debut += 27) {
+    var TAILLE = 9 // livres par shulker : commandes courtes, donc fiables
+    var nb = 0, echecs = 0
+    for (var debut = 0; debut < LIV_DONNEES.length; debut += TAILLE) {
       var objets = []
-      for (var i = debut; i < Math.min(debut + 27, LIV_DONNEES.length); i++) {
+      for (var i = debut; i < Math.min(debut + TAILLE, LIV_DONNEES.length); i++) {
         var b = LIV_DONNEES[i]
         objets.push('{slot:' + (i - debut) + ',item:{id:"minecraft:written_book",count:1,components:{"minecraft:written_book_content":' + livContenu(b) + '}}}')
       }
-      serveur.runCommandSilent('give ' + j.username + ' minecraft:shulker_box[container=[' + objets.join(',') + ']]')
-      nb++
+      var res = 0
+      try { res = serveur.runCommandSilent('give ' + j.username + ' minecraft:shulker_box[container=[' + objets.join(',') + ']]') } catch (e) { console.error('[livres] ' + e) }
+      if (res > 0) nb++
+      else { echecs++; console.error('[livres] /livre tous : la commande a échoué pour le lot ' + (debut / TAILLE + 1)) }
     }
-    j.tell(Text.gold('Tous les livres t\'ont été donnés (' + nb + ' shulkers).'))
-    return 1
+    if (echecs === 0) j.tell(Text.gold('Tous les livres t\'ont été donnés (' + nb + ' shulkers).'))
+    else j.tell(Text.red(nb + ' shulker(s) donnés, ' + echecs + ' échec(s) : voir le journal du serveur (lignes [livres]).'))
+    return nb
   }))
 
   racine = racine.then(Commands.literal('remplir')
