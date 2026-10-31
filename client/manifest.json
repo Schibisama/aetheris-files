@@ -1,5 +1,5 @@
 {
- "version": "2026-10-31T01:16:12.904Z",
+ "version": "2026-10-31T01:18:30.115Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6034,6 +6034,26 @@
    "path": "mods/yet_another_config_lib_v3-3.8.2+1.21.1-neoforge.jar",
    "sha1": "fe270c9f6e0a8142cf316944087f5109cef08bbb",
    "size": 1118651
+  },
+  {
+   "path": "shaderpacks/BSL_v8.4.02.2.zip",
+   "sha1": "9520800a655b9665c9fb9d93535a78a990e0d57c",
+   "size": 1108441
+  },
+  {
+   "path": "shaderpacks/photon_v1.2a.zip",
+   "sha1": "6ad7e57f22ceb5530b168d077414abc8387c9b04",
+   "size": 3737845
+  },
+  {
+   "path": "shaderpacks/Sildurs_Vibrant_Shaders_v1.51_Extreme-VL.zip",
+   "sha1": "871e4a5b6aa77f8d6693b63c070f81b8bba62b01",
+   "size": 142239
+  },
+  {
+   "path": "shaderpacks/Solas_Shader_V3.1b.zip",
+   "sha1": "d92c721e575f645bc00a796c0511ec6729b59745",
+   "size": 1301763
   }
  ]
 }
