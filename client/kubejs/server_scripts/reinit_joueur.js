@@ -23,7 +23,7 @@ function rzReinit(server, joueur) {
   rzCmd(server, 'xp set ' + n + ' 0 points')
   rzCmd(server, 'effect clear ' + n)
   rzCmd(server, 'advancement revoke ' + n + ' everything')
-  rzCmd(server, 'ftbquests change_progress ' + n + ' reset file')
+  ftbReinitialiser(joueur)
   rzCmd(server, 'specs_codex spell lock_all ' + n)
   rzCmd(server, 'specs_codex school lock_all ' + n)
   rzCmd(server, 'recipe take ' + n + ' *')

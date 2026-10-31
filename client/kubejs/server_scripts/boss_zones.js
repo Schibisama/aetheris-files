@@ -616,7 +616,7 @@ function bqDire(joueur, q, texte) {
 
 // Quête FTB « parler à tous les PNJ de quête de boss » : tout contact avec les boutons de quête du PNJ valide sa tâche.
 function bqFtb(joueur, q) {
-  try { if (q.ftb) joueur.server.runCommandSilent('ftbquests change_progress ' + joueur.username + ' complete ' + q.ftb) } catch (e) {}
+  try { if (q.ftb) ftbCompleter(joueur, q.ftb) } catch (e) {}
 }
 
 function bqAccepter(joueur, q) {

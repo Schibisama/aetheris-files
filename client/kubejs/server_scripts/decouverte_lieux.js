@@ -33,7 +33,7 @@ ServerEvents.tick(function (event) {
         var p = l.points[m]
         var dx = px - p[0], dy = py - p[1], dz = pz - p[2]
         if (dx * dx + dy * dy + dz * dz > r * r) continue
-        try { serveur.runCommandSilent('ftbquests change_progress ' + j.username + ' complete ' + l.ftb) } catch (e) {}
+        try { ftbCompleter(j, l.ftb) } catch (e) {}
         try { if (typeof autelLieu === 'function') autelLieu(serveur, l.cle) } catch (eA) {}   // étape Mémoire de l'Autel du Sceau
         var cle = 'lieu_' + l.cle + '_quete'
         if (!j.persistentData.getBoolean(cle)) {

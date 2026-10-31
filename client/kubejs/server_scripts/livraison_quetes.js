@@ -151,7 +151,7 @@ var LV_FTB = {
 function lvFtb(joueur, q) {
   try {
     var id = LV_FTB[q.cle]
-    if (id) joueur.server.runCommandSilent('ftbquests change_progress ' + joueur.username + ' complete ' + id)
+    if (id) ftbCompleter(joueur, id)
   } catch (e) {}
 }
 

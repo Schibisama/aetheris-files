@@ -403,7 +403,7 @@ function zpDire(joueur, texte) {
 }
 
 function zpFtb(joueur) {
-  try { joueur.server.runCommandSilent('ftbquests change_progress ' + joueur.username + ' complete ' + ZP.quete.ftb) } catch (e) {}
+  try { ftbCompleter(joueur, ZP.quete.ftb) } catch (e) {}
 }
 
 function zpAccepter(joueur) {

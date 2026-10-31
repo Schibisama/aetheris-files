@@ -1,5 +1,5 @@
 {
- "version": "2026-10-30T23:53:07.780Z",
+ "version": "2026-10-31T00:25:24.478Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -4932,8 +4932,8 @@
   },
   {
    "path": "kubejs/server_scripts/boss_zones.js",
-   "sha1": "38f5c4182cfda3d5ec1de48f7b0757dc713adeaf",
-   "size": 36417
+   "sha1": "70b21c40be224ad7b09a41fe45b55f94212b4114",
+   "size": 36343
   },
   {
    "path": "kubejs/server_scripts/chasse_quetes.js",
@@ -4977,13 +4977,18 @@
   },
   {
    "path": "kubejs/server_scripts/decouverte_lieux.js",
-   "sha1": "040a6db5eec068604dfdf6e35dd0e575d60b9b9f",
-   "size": 2674
+   "sha1": "b297b3ea3e55609382490aab78fc14c27ef45d3e",
+   "size": 2606
   },
   {
    "path": "kubejs/server_scripts/end_spawn.js",
    "sha1": "1adaa6c849bfbf4a5bd568e2930b8135935441f2",
    "size": 1440
+  },
+  {
+   "path": "kubejs/server_scripts/ftb_aide.js",
+   "sha1": "a2ab2a24affc0b963c8f45fb18f6042030ed2d45",
+   "size": 2299
   },
   {
    "path": "kubejs/server_scripts/furniture_ops.js",
@@ -4992,8 +4997,8 @@
   },
   {
    "path": "kubejs/server_scripts/livraison_quetes.js",
-   "sha1": "6e54086f3151e5b5158d5578cfcae26fc472f5ad",
-   "size": 31049
+   "sha1": "08bcd059ee8424afb24370c44981b031d94ba524",
+   "size": 30975
   },
   {
    "path": "kubejs/server_scripts/livres_aetheris.js",
@@ -5007,8 +5012,8 @@
   },
   {
    "path": "kubejs/server_scripts/pnj_parler.js",
-   "sha1": "d25824579d0011da2657b8b34edb4386bc177cd7",
-   "size": 1975
+   "sha1": "c95a37e177ecf8f75b77fa6573f6d97c0a243822",
+   "size": 2013
   },
   {
    "path": "kubejs/server_scripts/pnj_voix.js",
@@ -5032,8 +5037,8 @@
   },
   {
    "path": "kubejs/server_scripts/reinit_joueur.js",
-   "sha1": "f19f1ac18111ff160db817f0afee2b80d8c1c078",
-   "size": 3111
+   "sha1": "d567c38d4852738071117ee266e2013096542df6",
+   "size": 3072
   },
   {
    "path": "kubejs/server_scripts/rtp.js",
@@ -5052,8 +5057,8 @@
   },
   {
    "path": "kubejs/server_scripts/zone_pirates.js",
-   "sha1": "cbe6e0c1289e6fb7488ad9eaae6ab5717a6026e7",
-   "size": 23133
+   "sha1": "7d4772173484fd4997f28a28055eba5b268e41b8",
+   "size": 23059
   },
   {
    "path": "kubejs/startup_scripts/aura_professeur_effet.js",
