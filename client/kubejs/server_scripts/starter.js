@@ -49,8 +49,16 @@ function starterDonner(ctx, joueur) {
   // 2. Set Wizard teint
   var rgb = STARTER_COULEURS[Math.floor(Math.random() * STARTER_COULEURS.length)]
   var pieces = ['helmet', 'chestplate', 'leggings', 'boots']
+  // Équipé directement sur le joueur ; si l'emplacement d'armure est déjà occupé, la pièce est donnée dans l'inventaire.
+  var emplacements = { helmet: 'armor.head', chestplate: 'armor.chest', leggings: 'armor.legs', boots: 'armor.feet' }
+  var indexArmure = { boots: 0, leggings: 1, chestplate: 2, helmet: 3 }
   for (var i = 0; i < pieces.length; i++) {
-    server.runCommandSilent('give ' + n + ' irons_spellbooks:wizard_' + pieces[i] + '[minecraft:dyed_color={rgb:' + rgb + '}]')
+    var piece = pieces[i]
+    var objet = 'irons_spellbooks:wizard_' + piece + '[minecraft:dyed_color={rgb:' + rgb + '}]'
+    var libre = false
+    try { libre = joueur.inventory.armor.get(indexArmure[piece]).isEmpty() } catch (eA) {}
+    if (libre) server.runCommandSilent('item replace entity ' + n + ' ' + emplacements[piece] + ' with ' + objet)
+    else server.runCommandSilent('give ' + n + ' ' + objet)
   }
 
   // 3. Grimoire de base (5 emplacements) et 4. balai volant

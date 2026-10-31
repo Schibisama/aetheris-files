@@ -1,5 +1,5 @@
 {
- "version": "2026-10-31T01:22:48.727Z",
+ "version": "2026-10-31T01:24:16.930Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -5252,8 +5252,8 @@
   },
   {
    "path": "kubejs/server_scripts/starter.js",
-   "sha1": "d353057c28eacd335f2a8db18fd0a1b92a76190d",
-   "size": 3880
+   "sha1": "6f4372ad98fdf074c9cc1d1545e6cf03529281b1",
+   "size": 4480
   },
   {
    "path": "kubejs/server_scripts/worldstop_portee.js",
