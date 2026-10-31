@@ -1,0 +1,1 @@
+{"textures":{"0":"kubejs:block/autel_cthulhu","1":"kubejs:block/autel_sceau","particle":"kubejs:block/autel_sceau"},"elements":[{"from":[4.0,0,0],"to":[16,2,16],"faces":{"west":{"uv":[5.0769,0.0,5.6923,0.4],"texture":"#1"},"up":{"uv":[4.0,0.8615,4.4615,1.3538],"texture":"#1"}}}]}
