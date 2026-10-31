@@ -1,5 +1,5 @@
 {
- "version": "2026-10-31T00:32:05.474Z",
+ "version": "2026-10-31T01:15:51.866Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -10,6 +10,211 @@
  ],
  "server": "91.197.6.164:22974",
  "files": [
+  {
+   "path": "emotes/California Girls (Dance).emotecraft",
+   "sha1": "4fc061c7b5efab4d45265e13e34c8f0fcad163da",
+   "size": 58305
+  },
+  {
+   "path": "emotes/Coma 2.emotecraft",
+   "sha1": "47eddce840d69c1d2de4149070608c35f01648c7",
+   "size": 50098
+  },
+  {
+   "path": "emotes/cooks in a cauldron (option 1).emotecraft",
+   "sha1": "b557cad2d6da9f2d84ae144cbbbbd1eed1f646db",
+   "size": 30239
+  },
+  {
+   "path": "emotes/cool sit.emotecraft",
+   "sha1": "b1e0ea87f4fcecaffccf19a5e9245dad1f13971b",
+   "size": 32018
+  },
+  {
+   "path": "emotes/Crunches (Sport).emotecraft",
+   "sha1": "26f200c1b3a1fd68696d15a66e9c0433702e1b27",
+   "size": 48431
+  },
+  {
+   "path": "emotes/Doomed.emotecraft",
+   "sha1": "1f0fd1ba3887fed09984a37b59661269af2dd462",
+   "size": 63182
+  },
+  {
+   "path": "emotes/Drink water.emotecraft",
+   "sha1": "18abac92dfe3e4ddc65f1447e72ccaf889623d1a",
+   "size": 43558
+  },
+  {
+   "path": "emotes/ENA is crawling.emotecraft",
+   "sha1": "1be59767c3bab9c48b4d9a14e0891f8bfde2ccbe",
+   "size": 97112
+  },
+  {
+   "path": "emotes/Fatigue.emotecraft",
+   "sha1": "dfe2518c93b5c939900e321132308504cb203e85",
+   "size": 83614
+  },
+  {
+   "path": "emotes/Fight on penis swords.emotecraft",
+   "sha1": "a4cc0ace4b28a2bd88b102359ceb8944ddf111ad",
+   "size": 82255
+  },
+  {
+   "path": "emotes/Fold hands in front.emotecraft",
+   "sha1": "53185e5dd62eba934553fc6f0b7c42a4fcbc360c",
+   "size": 53500
+  },
+  {
+   "path": "emotes/Foot Tapping (Dance).emotecraft",
+   "sha1": "9ce39d63263a1e7bc802f9eedc5435b3a99bce34",
+   "size": 203040
+  },
+  {
+   "path": "emotes/Furry.emotecraft",
+   "sha1": "1cbd772aa167a07c1abdd1980b85f12f6196266c",
+   "size": 21482
+  },
+  {
+   "path": "emotes/Get scared.emotecraft",
+   "sha1": "461dea58e3ae877e2cf6e509227fe7583c6fb15f",
+   "size": 67487
+  },
+  {
+   "path": "emotes/Headpat.emotecraft",
+   "sha1": "28f7b8fade7f4c7c324b93f9bb661cc272e2ce25",
+   "size": 71756
+  },
+  {
+   "path": "emotes/Hopelessness.emotecraft",
+   "sha1": "887073a7a1465f43a932286b57d190f732101893",
+   "size": 111997
+  },
+  {
+   "path": "emotes/Hug.emotecraft",
+   "sha1": "3f23147ad7b60d982e2658073e178affdb1ce6e3",
+   "size": 73152
+  },
+  {
+   "path": "emotes/Incomprehension.emotecraft",
+   "sha1": "724a30af209fe57ff67a5c83d69bf24ec6c1b88a",
+   "size": 65948
+  },
+  {
+   "path": "emotes/Jiggle your ass (Dance).emotecraft",
+   "sha1": "c8afdba3e6e00d66cdd514812feb66e9505999ed",
+   "size": 81524
+  },
+  {
+   "path": "emotes/Jumpstyle (Dance).emotecraft",
+   "sha1": "e98494c3aca26cf0bef40ba3ae5d896b8d76eaba",
+   "size": 98375
+  },
+  {
+   "path": "emotes/Kaworu Pose (Multiverse) (Evangelion).emotecraft",
+   "sha1": "77c805cc7eb3bfab3e70672ab057c4ddb0bd1791",
+   "size": 88090
+  },
+  {
+   "path": "emotes/Knock on the door (Halloween 2022).emotecraft",
+   "sha1": "c9d7bde3df2ac6a2bd75f3ae1e57d59a3bc34ca0",
+   "size": 16053
+  },
+  {
+   "path": "emotes/Lay on back.emotecraft",
+   "sha1": "5483008ef115ac12972241a3b2b14f8cfaaaf249",
+   "size": 13664
+  },
+  {
+   "path": "emotes/Macarena (Dance).emotecraft",
+   "sha1": "9754fde7eec6878b73dc91f2f56e22d1c19c9194",
+   "size": 41712
+  },
+  {
+   "path": "emotes/OmniMan Thicc Sit Permanent.emotecraft",
+   "sha1": "ea522325281b5ea2967a36ed5af7eef73ca83974",
+   "size": 120492
+  },
+  {
+   "path": "emotes/Phit Hon (Dance).emotecraft",
+   "sha1": "ac06226269529aa1ba192a7ff311478d733dbf3d",
+   "size": 56344
+  },
+  {
+   "path": "emotes/Rat Dance 1.2.emotecraft",
+   "sha1": "52c0abe05f99f27e9e201832720e998d4c0003f5",
+   "size": 75993
+  },
+  {
+   "path": "emotes/Running in Fear (Nightmares) (Movement).emotecraft",
+   "sha1": "1c0584f13b395f822e49f862f197c4b281faae21",
+   "size": 81832
+  },
+  {
+   "path": "emotes/Search.emotecraft",
+   "sha1": "15fd37993aeb96919a67e268c1c1a1acf7e238cd",
+   "size": 70710
+  },
+  {
+   "path": "emotes/Sit with arms crossed.emotecraft",
+   "sha1": "b6aa3dfec47620fd482a7c789f9c46b9a34a90ac",
+   "size": 58514
+  },
+  {
+   "path": "emotes/Sitting with knees to the chest.emotecraft",
+   "sha1": "88619878019ccf04101bdced9bc79d371feed738",
+   "size": 109012
+  },
+  {
+   "path": "emotes/Spider-Man Pose (2 Variant) (Multiverse) (Marvel).emotecraft",
+   "sha1": "c6f85aa8939dba6777884f2e3efbb0add1e2ca81",
+   "size": 57176
+  },
+  {
+   "path": "emotes/Ta da!.emotecraft",
+   "sha1": "86b8bca3d738b18e6238ee44a67230a38f2ad4c4",
+   "size": 60771
+  },
+  {
+   "path": "emotes/Thinking.emotecraft",
+   "sha1": "f2982fa22d17214cd5ef2e3d6ed557a5899a8983",
+   "size": 127540
+  },
+  {
+   "path": "emotes/To laugh.emotecraft",
+   "sha1": "025ffa2e222d7af28ec1abb654c42dce6bb2dd67",
+   "size": 33835
+  },
+  {
+   "path": "emotes/To sit.emotecraft",
+   "sha1": "8e3584ffb025c91cc399e0bcbaeb6500a03a8791",
+   "size": 46964
+  },
+  {
+   "path": "emotes/Twerk (Dance).emotecraft",
+   "sha1": "8735487a5665f4844485486532f8c629b47c6216",
+   "size": 59234
+  },
+  {
+   "path": "emotes/Unknown Run (Nightmares) (Movement).emotecraft",
+   "sha1": "042c4db949ff47eb437e6a2b57053942c8b14326",
+   "size": 50784
+  },
+  {
+   "path": "emotes/Unknown Walk (Nightmares) (Movement).emotecraft",
+   "sha1": "892fd14cc603e48dbd24924957309824dec64030",
+   "size": 61325
+  },
+  {
+   "path": "emotes/Wash your hands.emotecraft",
+   "sha1": "2e5aa874a1ba74eb585e32c04c3e5a54e8615805",
+   "size": 83355
+  },
+  {
+   "path": "emotes/Writing.emotecraft",
+   "sha1": "9661323e3f000c9e46a73bec41cc29035f85fa0c",
+   "size": 50062
+  },
   {
    "path": "kubejs/assets/kubejs/blockstates/autel_sceau_dur.json",
    "sha1": "ac3cd69000a8e8f0e1ee6189329f39174402f3b2",
