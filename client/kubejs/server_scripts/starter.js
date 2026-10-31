@@ -1,6 +1,7 @@
 // /starter <joueur> (op uniquement, une seule fois par joueur) : kit de départ.
 //   - une classe aléatoire (si le joueur n'en a pas déjà une) ;
-//   - le set Wizard complet (casque, robe, jambières, bottes), teint d'une couleur aléatoire ;
+//   - le set Wizard complet (capuche OU chapeau de sorcier au hasard, robe, jambières, bottes), teint d'une couleur aléatoire
+//     (mêmes 12 teintes pour la capuche et le chapeau), équipé directement ;
 //   - un grimoire de base à 5 emplacements (Flimsy Journal, vide) ;
 //   - un balai volant (Broom of Floatmount) ;
 //   et rien d'autre.
@@ -54,7 +55,9 @@ function starterDonner(ctx, joueur) {
   var indexArmure = { boots: 0, leggings: 1, chestplate: 2, helmet: 3 }
   for (var i = 0; i < pieces.length; i++) {
     var piece = pieces[i]
-    var objet = 'irons_spellbooks:wizard_' + piece + '[minecraft:dyed_color={rgb:' + rgb + '}]'
+    var idObjet = 'irons_spellbooks:wizard_' + piece
+    if (piece === 'helmet' && Math.random() < 0.5) idObjet = 'irons_spellbooks:wizard_hat'   // chapeau de sorcier au lieu de la capuche (1 chance sur 2)
+    var objet = idObjet + '[minecraft:dyed_color={rgb:' + rgb + '}]'
     var libre = false
     try { libre = joueur.inventory.armor.get(indexArmure[piece]).isEmpty() } catch (eA) {}
     if (libre) server.runCommandSilent('item replace entity ' + n + ' ' + emplacements[piece] + ' with ' + objet)
