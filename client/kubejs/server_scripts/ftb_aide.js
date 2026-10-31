@@ -3,20 +3,11 @@
 // Utilisée par pnj_parler.js, boss_zones.js, zone_pirates.js, livraison_quetes.js, decouverte_lieux.js, reinit_joueur.js.
 // ftbCompleter(joueur, idHex) -> true si fait ; ftbReinitialiser(joueur) -> true si fait. Rechargement : /reload
 
-var FTB_CACHE = null
-
-function ftbNormaliser(s) { return String(s).toUpperCase().replace(/^0+/, '') }
-
 function ftbObjet(file, idHex) {
-  if (!FTB_CACHE || FTB_CACHE.file !== file) {
-    var carte = {}
-    var tous = file.getAllObjects()
-    for (var i = 0; i < tous.length; i++) {
-      try { carte[ftbNormaliser(tous[i].getCodeString())] = tous[i] } catch (e) {}
-    }
-    FTB_CACHE = { file: file, carte: carte }
-  }
-  return FTB_CACHE.carte[ftbNormaliser(idHex)] || null
+  var QOB = Java.loadClass('dev.ftb.mods.ftbquests.quest.QuestObjectBase')
+  var id = QOB.parseHexId(String(idHex))
+  if (!id.isPresent()) return null
+  return file.getBase(id.get())
 }
 
 function ftbCompleter(joueur, idHex) {
@@ -26,7 +17,6 @@ function ftbCompleter(joueur, idHex) {
     var file = SQF.INSTANCE
     if (!file) { console.error('[ftb_aide] fichier de quêtes indisponible'); return false }
     var obj = ftbObjet(file, idHex)
-    if (!obj) { FTB_CACHE = null; obj = ftbObjet(file, idHex) }
     if (!obj) { console.error('[ftb_aide] objet de quête introuvable : ' + idHex); return false }
     var donnees = file.getTeamData(joueur)
     if (!donnees.isPresent()) { console.error('[ftb_aide] pas de données d\'équipe pour ' + joueur.username); return false }

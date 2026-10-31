@@ -1,5 +1,5 @@
 {
- "version": "2026-10-31T00:25:44.923Z",
+ "version": "2026-10-31T00:31:45.629Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -4987,8 +4987,8 @@
   },
   {
    "path": "kubejs/server_scripts/ftb_aide.js",
-   "sha1": "a2ab2a24affc0b963c8f45fb18f6042030ed2d45",
-   "size": 2299
+   "sha1": "351c44f0529d01544448a08a945f33e97ccae1f8",
+   "size": 1976
   },
   {
    "path": "kubejs/server_scripts/furniture_ops.js",
