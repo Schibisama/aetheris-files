@@ -554,6 +554,8 @@ function verrouillerSortsInterdits(server, joueur, classe) {
 // À la simple reconnexion (reinit = false) on garde la progression du joueur.
 function appliquerClasse(server, joueur, classe, reinit) {
   var nom = joueur.username
+  // Quête FTB « L'éveil » (chapitre Bienvenue) : cochée dès qu'une classe est attribuée
+  try { if (typeof ftbCompleter === 'function') ftbCompleter(joueur, '7C4CFD68DA0E88CA') } catch (eQ) { console.error('[classes_rp] quête éveil : ' + eQ) }
   if (estTest(joueur)) { // mode testeur : tout est ouvert
     cmd(server, 'specs_codex school unlock_all ' + nom)
     cmd(server, 'specs_codex spell unlock_all ' + nom)

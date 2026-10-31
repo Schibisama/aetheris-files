@@ -72,3 +72,13 @@ ServerEvents.commandRegistry(function (event) {
         try { return starterDonner(ctx, Arguments.PLAYER.getResult(ctx, 'joueur')) } catch (e) { console.error('[starter] ' + e); return 0 }
       })))
 })
+
+// Joueurs qui ont déjà une classe : la quête FTB « L'éveil » est cochée à la connexion (rattrapage)
+PlayerEvents.loggedIn(function (e) {
+  try {
+    var j = e.player
+    j.server.scheduleInTicks(60, function () {
+      try { if (classeDe(j) && typeof ftbCompleter === 'function') ftbCompleter(j, '7C4CFD68DA0E88CA') } catch (e2) {}
+    })
+  } catch (err) { console.error('[starter] rattrapage éveil : ' + err) }
+})
