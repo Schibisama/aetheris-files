@@ -126,6 +126,33 @@ function traiterWizard(event, id) {
   return true
 }
 
+// ───────────── Armure de professeur (couronne Pyrium Battlemage + veste / pantalon / bottes de Hazel) ─────────────
+// Mêmes stats que le set Wizard des élèves (armure 1/3/2/1, +25 mana, +5 % puissance des sorts), avec par pièce
+// +1 point d'armure et +25 de mana max en plus (donc +50 de mana au total par pièce). Tous les autres bonus d'origine sont retirés.
+var PROF_ARMURE = {
+  'hazennstuff:pyrium_battlemage_helmet': { armure: 2, groupe: 'HEAD' },
+  'hazennstuff:hazel_chestplate':         { armure: 4, groupe: 'CHEST' },
+  'hazennstuff:hazel_leggings':           { armure: 3, groupe: 'LEGS' },
+  'hazennstuff:hazel_boots':              { armure: 2, groupe: 'FEET' }
+}
+var PROF_MANA = 50
+var PROF_PUISSANCE = 0.05
+
+function traiterProf(event, id) {
+  var def = PROF_ARMURE[id]
+  if (!def) return false
+  var hArmure = holderAttribut('minecraft:generic.armor')
+  var hMana = holderAttribut('irons_spellbooks:max_mana')
+  var hPuissance = holderAttribut('irons_spellbooks:spell_power')
+  event.removeIf(function (entree) { return true })
+  var groupe = EF.Groupe[def.groupe]
+  var cle = id.split(':')[1]
+  if (hArmure) event.addModifier(hArmure, new EF.Modif(EF.RL.parse('classes_rp:prof_armure_' + cle), def.armure, EF.Op.ADD_VALUE), groupe)
+  if (hMana) event.addModifier(hMana, new EF.Modif(EF.RL.parse('classes_rp:prof_mana_' + cle), PROF_MANA, EF.Op.ADD_VALUE), groupe)
+  if (hPuissance) event.addModifier(hPuissance, new EF.Modif(EF.RL.parse('classes_rp:prof_puissance_' + cle), PROF_PUISSANCE, EF.Op.ADD_MULTIPLIED_BASE), groupe)
+  return true
+}
+
 // ───────────── Plafond de protection ─────────────
 // Toute pièce d'armure (ou bouclier) d'un mod est ramenée au plus à la protection du diamant, afin que
 // l'équipement des classes soit à peu près équivalent. L'équipement vanilla n'est pas touché.
@@ -185,7 +212,7 @@ try {
       try {
         var pile = event.getItemStack()
         var id = String(EF.itemReg.getKey(pile.getItem()))
-        if (!traiterWizard(event, id)) plafonner(event, id)
+        if (!traiterWizard(event, id) && !traiterProf(event, id)) plafonner(event, id)
       } catch (err) {
         if (!EF.erreurs) EF.erreurs = 0
         if (EF.erreurs++ < 5) console.error('[classes_effets] ' + err)

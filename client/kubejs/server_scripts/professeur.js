@@ -4,7 +4,7 @@
 //   /professeur liste             : liste les professeurs connectés
 //   /aura                         : (opérateurs) dit si tu es professeur et si l'effet est actif
 // Un professeur peut utiliser /cours (+ ici, ordre) et /starter sans être opérateur.
-// /professeur donner équipe aussi le kit de professeur : veste/pantalon/bottes de Hazel + couronne Pyrium Battlemage.
+// Kit de professeur : /starter professeur <joueur> (voir starter.js).
 // Pour ouvrir une autre commande aux professeurs : remplacer son « requires » par  profOuOp  (voir /cours dans classes_rp.js).
 // Aura : effet kubejs:aura_professeur (défini dans startup_scripts/aura_professeur_effet.js), infini, sans particules,
 //   icône visible dans l'inventaire, reposé toutes les 5 secondes. Sont professeurs : les joueurs ayant le tag « professeur »
@@ -40,25 +40,6 @@ function pfAfficherStats(joueur) {
   joueur.tell(Text.gold('✦ Aura de professeur').bold().append(Text.of(niveau ? '  (niveau II : bonus doublés)' : '  (niveau I)').gray()))
   for (var i = 0; i < PF_BONUS.length; i++) {
     joueur.tell(Text.of('  + ' + Math.round(PF_BONUS[i][1] * (niveau + 1) * 100) + ' % ').green().append(Text.of(PF_BONUS[i][0]).gray()))
-  }
-}
-
-// Kit de professeur, équipé à l'attribution du rôle : veste, pantalon et bottes de Hazel + couronne de Pyrium Battlemage.
-// Si un emplacement d'armure est déjà occupé, la pièce est donnée dans l'inventaire.
-var PF_KIT = [
-  { id: 'hazennstuff:pyrium_battlemage_helmet', slot: 'armor.head', index: 3 },
-  { id: 'hazennstuff:hazel_chestplate', slot: 'armor.chest', index: 2 },
-  { id: 'hazennstuff:hazel_leggings', slot: 'armor.legs', index: 1 },
-  { id: 'hazennstuff:hazel_boots', slot: 'armor.feet', index: 0 }
-]
-function pfDonnerKit(joueur) {
-  var nom = String(joueur.username)
-  for (var i = 0; i < PF_KIT.length; i++) {
-    var p = PF_KIT[i]
-    var libre = false
-    try { libre = joueur.inventory.armor.get(p.index).isEmpty() } catch (e) {}
-    if (libre) joueur.server.runCommandSilent('item replace entity ' + nom + ' ' + p.slot + ' with ' + p.id)
-    else joueur.server.runCommandSilent('give ' + nom + ' ' + p.id)
   }
 }
 
@@ -146,7 +127,6 @@ ServerEvents.commandRegistry(function (event) {
         cible.server.runCommandSilent('tag ' + nom + ' remove ' + PF_TAG_NON)
         cible.server.runCommandSilent('tag ' + nom + ' add ' + PROF_TAG)
         cible.tell(Text.gold('Tu es désormais professeur à l\'Académie : /cours et /starter te sont ouverts.'))
-        try { pfDonnerKit(cible) } catch (eK) { console.error('[professeur] kit : ' + eK) }
         dire(ctx, nom + ' est maintenant professeur.')
       } else {
         if (!deja) { dire(ctx, nom + ' n\'est pas professeur.'); return 0 }

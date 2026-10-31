@@ -73,11 +73,46 @@ function starterDonner(ctx, joueur) {
   return 1
 }
 
+// /starter professeur <joueur> : kit de professeur, équipé directement : couronne Pyrium Battlemage + veste, pantalon et bottes de Hazel.
+// Si un emplacement d'armure est déjà occupé, la pièce est donnée dans l'inventaire. Une seule fois par joueur (clé effacée par /reinit).
+var STARTER_PROF_CLE = 'starter_prof_pris'
+var STARTER_PROF_KIT = [
+  { id: 'hazennstuff:pyrium_battlemage_helmet', slot: 'armor.head', index: 3 },
+  { id: 'hazennstuff:hazel_chestplate', slot: 'armor.chest', index: 2 },
+  { id: 'hazennstuff:hazel_leggings', slot: 'armor.legs', index: 1 },
+  { id: 'hazennstuff:hazel_boots', slot: 'armor.feet', index: 0 }
+]
+function starterDonnerProf(ctx, joueur) {
+  var server = ctx.source.server
+  var n = joueur.username
+  var op = ctx.source.player
+  if (joueur.persistentData.getBoolean(STARTER_PROF_CLE)) {
+    if (op) op.tell(Text.red(n + ' a déjà reçu le kit de professeur (/reinit pour le lui redonner).'))
+    return 0
+  }
+  joueur.persistentData.putBoolean(STARTER_PROF_CLE, true)
+  for (var i = 0; i < STARTER_PROF_KIT.length; i++) {
+    var p = STARTER_PROF_KIT[i]
+    var libre = false
+    try { libre = joueur.inventory.armor.get(p.index).isEmpty() } catch (e) {}
+    if (libre) server.runCommandSilent('item replace entity ' + n + ' ' + p.slot + ' with ' + p.id)
+    else server.runCommandSilent('give ' + n + ' ' + p.id)
+  }
+  if (op) op.tell(Text.gray('Kit de professeur donné à ' + n + '.'))
+  joueur.tell(Text.gold('Kit de professeur reçu : couronne de Pyrium et armure de Hazel.'))
+  return 1
+}
+
 ServerEvents.commandRegistry(function (event) {
   var Commands = event.commands
   var Arguments = event.arguments
   event.register(Commands.literal('starter')
     .requires(profOuOp)
+    .then(Commands.literal('professeur')
+      .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+        .executes(function (ctx) {
+          try { return starterDonnerProf(ctx, Arguments.PLAYER.getResult(ctx, 'joueur')) } catch (e) { console.error('[starter] prof : ' + e); return 0 }
+        })))
     .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
       .executes(function (ctx) {
         try { return starterDonner(ctx, Arguments.PLAYER.getResult(ctx, 'joueur')) } catch (e) { console.error('[starter] ' + e); return 0 }

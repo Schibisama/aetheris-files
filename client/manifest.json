@@ -1,5 +1,5 @@
 {
- "version": "2026-10-31T01:41:46.800Z",
+ "version": "2026-10-31T01:47:07.552Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -5102,8 +5102,8 @@
   },
   {
    "path": "kubejs/client_scripts/classes_tooltips.js",
-   "sha1": "9913384e0ffcf11798b3f3559cd6e978b2861a12",
-   "size": 82456
+   "sha1": "151f5fbe84ca5ec2ef4ca7deb2f109f38c03d0bf",
+   "size": 82412
   },
   {
    "path": "kubejs/client_scripts/main.js",
@@ -5172,8 +5172,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "7df9a6501923fb732fdda1fea7df3639c4a02dd0",
-   "size": 97278
+   "sha1": "1c33dd02486b7c41ad99475ca6e7c24bf004b8ae",
+   "size": 96892
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -5237,8 +5237,8 @@
   },
   {
    "path": "kubejs/server_scripts/professeur.js",
-   "sha1": "9365590e7237e20ac7d1918cf4b8cc20693886aa",
-   "size": 9996
+   "sha1": "26059da908f13e917bfa06fde2b8d12f6fa686d6",
+   "size": 8913
   },
   {
    "path": "kubejs/server_scripts/pseudo.js",
@@ -5257,8 +5257,8 @@
   },
   {
    "path": "kubejs/server_scripts/starter.js",
-   "sha1": "a830ccf018410b9cf5089157cd24672e51d93793",
-   "size": 4772
+   "sha1": "d68ef7f8b6d2e4068dd74e551e36cf10d48180f6",
+   "size": 6633
   },
   {
    "path": "kubejs/server_scripts/worldstop_portee.js",
@@ -5282,13 +5282,13 @@
   },
   {
    "path": "kubejs/startup_scripts/classes_effets.js",
-   "sha1": "3088814c1fcab4572e44b1f58ba68f51498f7f72",
-   "size": 9394
+   "sha1": "5c79df40c7beaa0db9a18340021abdde9dc7498e",
+   "size": 11040
   },
   {
    "path": "kubejs/startup_scripts/classes_equip_ecoles.js",
-   "sha1": "bd11faade40971ac05328d37049d8d8de095429a",
-   "size": 41573
+   "sha1": "0cd85c295913bc676f3fc7a64ae9a703cdc187df",
+   "size": 41529
   },
   {
    "path": "kubejs/startup_scripts/classes_niveaux.js",
@@ -5441,9 +5441,9 @@
    "size": 410948
   },
   {
-   "path": "mods/codexregroup-1.0.5.jar",
-   "sha1": "efcfc4311a8c8936f80e32ce720844c6763da894",
-   "size": 14249
+   "path": "mods/codexregroup-1.0.6.jar",
+   "sha1": "9c19fe77f3b5f539c6e099705879f7a4b4c9980b",
+   "size": 17380
   },
   {
    "path": "mods/colormagic-1.3.0.jar",
