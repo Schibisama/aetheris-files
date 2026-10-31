@@ -660,8 +660,12 @@ function messageRestriction(r, sujet) {
   return Text.translate('mcrp.msg.reserve', Text.translate(sujet), liste)
 }
 
+// Armure de Hazel (veste, pantalon, bottes) : désactivée pour les classes, réservée aux professeurs (voir professeur.js)
+var ARMURE_PROFESSEUR = /^hazennstuff:(hazel_chestplate|hazel_leggings|hazel_boots)$/
+
 function autorise(joueur, idObjet) {
   if (estTest(joueur)) return true
+  try { if (ARMURE_PROFESSEUR.test(idObjet) && typeof pfEstProf === 'function' && pfEstProf(joueur)) return true } catch (eP) {}
   var r = restriction(idObjet)
   if (!r) return true
   var classe = classeDe(joueur)
