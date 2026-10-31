@@ -4,6 +4,8 @@
 //   - retirés des coffres et conteneurs à leur ouverture (butin des structures) ;
 //   - jamais produits par la pêche, le troc, l'archéologie, les chambres d'épreuve (objets au sol) ni vendus par les PNJ ;
 //   - masqués dans JEI (tag c:hidden_from_recipe_viewers, géré nativement par JEI/EMI/REI).
+// Parchemins des sorts désactivés (SORTS_DESACTIVES de classes_rp.js) : dans les coffres, butins de mobs et objets au sol,
+// ils sont remplacés par un parchemin d'un autre sort de la même école (même niveau si possible).
 // À placer dans : <instance>/kubejs/server_scripts/classes_desactives.js  (puis /reload)
 // Dépend de restriction() et estTest() de classes_rp.js (même portée globale).
 
@@ -17,6 +19,56 @@ function desactEstDesactive(id) {
   var res = !!(r && r.classes.length === 0)
   DESACT_CACHE[id] = res
   return res
+}
+
+
+// ───────────── Parchemins de sorts désactivés ─────────────
+var DESACT_ISC = null
+var DESACT_SR = null
+
+function desactSortDuParchemin(pile) {
+  if (String(pile.id) !== 'irons_spellbooks:scroll') return null
+  try {
+    if (!DESACT_ISC) DESACT_ISC = Java.loadClass('io.redspace.ironsspellbooks.api.spells.ISpellContainer')
+    var d = DESACT_ISC.get(pile).getSpellAtIndex(0)
+    var sp = d.getSpell()
+    return { id: String(sp.getSpellId()), niveau: d.getLevel(), ecole: String(sp.getSchoolType().getId()) }
+  } catch (e) { return null }
+}
+
+function desactParcheminInterdit(pile) {
+  var s = desactSortDuParchemin(pile)
+  if (!s) return false
+  try { return SORTS_DESACTIVES.indexOf(s.id) !== -1 } catch (e) { return false }
+}
+
+// Parchemin de remplacement : un sort actif, trouvable en butin, non désactivé, de la même école si possible.
+function desactRemplacant(pile) {
+  try {
+    var s = desactSortDuParchemin(pile)
+    if (!s) return null
+    if (!DESACT_SR) DESACT_SR = Java.loadClass('io.redspace.ironsspellbooks.api.registry.SpellRegistry')
+    var tous = DESACT_SR.getEnabledSpells()
+    var memeEcole = [], autres = []
+    for (var i = 0; i < tous.size(); i++) {
+      var sp = tous.get(i)
+      var id = String(sp.getSpellId())
+      if (id === s.id || SORTS_DESACTIVES.indexOf(id) !== -1) continue
+      try { if (!sp.allowLooting()) continue } catch (e1) {}
+      if (String(sp.getSchoolType().getId()) === s.ecole) memeEcole.push(sp)
+      else autres.push(sp)
+    }
+    var liste = memeEcole.length ? memeEcole : autres
+    if (!liste.length) return null
+    var choix = liste[Math.floor(Math.random() * liste.length)]
+    var niveau = Math.max(choix.getMinLevel(), Math.min(s.niveau, choix.getMaxLevel()))
+    var neuf = Item.of('irons_spellbooks:scroll')
+    DESACT_ISC.set(neuf, DESACT_ISC.createScrollContainer(choix, niveau, neuf))
+    return neuf
+  } catch (e) {
+    console.error('[classes_desactives] Parchemin de remplacement : ' + e)
+    return null
+  }
 }
 
 // ───────────── Recettes ─────────────
@@ -63,7 +115,12 @@ function desactButinMobs(event) {
       var entite = it.next()
       var pile = entite.getItem()
       if (!pile || pile.isEmpty()) continue
-      if (desactEstDesactive(pile.id)) it.remove()
+      if (desactEstDesactive(pile.id)) { it.remove(); continue }
+      if (desactParcheminInterdit(pile)) {
+        var neufMob = desactRemplacant(pile)
+        if (neufMob) entite.setItem(neufMob)
+        else it.remove()
+      }
     }
   } catch (e) {
     console.error('[classes_desactives] Butin des mobs : ' + e)
@@ -131,6 +188,12 @@ function desactNettoyerConteneur(event) {
       if (slot.isSameInventory(repere)) continue
       var pile = slot.getItem()
       if (!pile || pile.isEmpty()) continue
+      if (desactParcheminInterdit(pile)) {
+        var neuf = desactRemplacant(pile)
+        slot.set(neuf ? neuf : vide)
+        retires++
+        continue
+      }
       if (!desactEstDesactive(pile.id)) continue
       slot.set(vide)
       retires++
@@ -166,7 +229,12 @@ function desactObjetAuSol(event) {
     if (entite.getOwner() != null) return
     var pile = entite.getItem()
     if (!pile || pile.isEmpty()) return
-    if (desactEstDesactive(pile.id)) event.setCanceled(true)
+    if (desactEstDesactive(pile.id)) { event.setCanceled(true); return }
+    if (desactParcheminInterdit(pile)) {
+      var neufSol = desactRemplacant(pile)
+      if (neufSol) entite.setItem(neufSol)
+      else event.setCanceled(true)
+    }
   } catch (e) {
     console.error('[classes_desactives] Objet au sol : ' + e)
   }

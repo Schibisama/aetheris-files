@@ -195,7 +195,8 @@ var SORTS_DESACTIVES = [
   'apprenticecodex:linear_build',
   'apprenticecodex:manifestation_grimoire',
   'hazennstuff:call_forth_terraprisma',
-  'hazennstuff:terraprismic_barrage'
+  'hazennstuff:terraprismic_barrage',
+  'hazennstuff:fiery_dagger'
 ]
 
 function classeAutorisee(permis, nomClasse) {

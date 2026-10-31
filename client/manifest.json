@@ -1,5 +1,5 @@
 {
- "version": "2026-10-31T16:37:51.837Z",
+ "version": "2026-10-31T23:54:23.043Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -219,6 +219,11 @@
    "path": "kubejs/assets/hazennstuff/geo/armor/pyrium_battlemage_armor.geo.json",
    "sha1": "35bdc7983b4264902adb81f9bc135a541eb73dc7",
    "size": 4387
+  },
+  {
+   "path": "kubejs/assets/hazennstuff/textures/armor/pyrium_battlemage_armor.png",
+   "sha1": "df0d895177758cb0a4085a9ef4ebae36fbe3dba8",
+   "size": 4328
   },
   {
    "path": "kubejs/assets/kubejs/blockstates/autel_sceau_dur.json",
@@ -5997,8 +6002,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_desactives.js",
-   "sha1": "31e48d1c27bdaea49ca2b95b4d2e350c06b38a24",
-   "size": 7212
+   "sha1": "69531df017e1111a5481a3addf6bae7de00744b6",
+   "size": 10011
   },
   {
    "path": "kubejs/server_scripts/classes_dump_armes.js",
@@ -6012,8 +6017,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "1c33dd02486b7c41ad99475ca6e7c24bf004b8ae",
-   "size": 96892
+   "sha1": "e6673ac3e362fc6fffcf64a94d53164ca3d261ca",
+   "size": 96922
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
