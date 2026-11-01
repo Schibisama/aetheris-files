@@ -298,3 +298,101 @@ try {
 } catch (err) {
   console.log('[recherche_codex] indisponible : ' + err)
 }
+
+// ───────── Conflits de touches ─────────
+// À chaque connexion, les touches restées à leur réglage d'origine qui tombent sur la même touche qu'une autre (dans le même
+// contexte : en jeu / dans un menu) sont réglées automatiquement, en GARDANT LA MÊME LETTRE :
+//   - la plus importante garde la touche telle quelle (ordre : Minecraft, puis TC_PRIORITE, puis le reste) ;
+//   - les suivantes passent en Alt + touche, puis Ctrl + touche si Alt est déjà pris ;
+//   - une touche d'une catégorie masquée (créatif, JEI, FTB…) en conflit est simplement désassignée.
+// Une touche que le joueur a modifiée lui-même n'est jamais touchée. Le bilan est écrit dans le journal du jeu ([touches]).
+var TC_PRIORITE = ['irons_spellbooks', 'spell_actionbar', 'specs', 'apprenticecodex', 'plasmovoice', 'emotecraft', 'xaero', 'bettercombat',
+  'waystones', 'carryon', 'immersive_melodies', 'corpse', 'walkers', 'curios']
+
+function tcNamespace(km) {
+  var t = String(km.getName()) + ' ' + String(km.getCategory())
+  var m = t.match(/key(?:s|\.categories|\.category)?\.([a-z0-9_]+)\./)
+  return m ? m[1] : t
+}
+function tcRang(km) {
+  var cat = String(km.getCategory())
+  if (/^key\.categories\.(movement|gameplay|inventory|multiplayer|misc|ui)$/.test(cat)) return 0
+  var t = (String(km.getName()) + ' ' + cat).toLowerCase()
+  for (var i = 0; i < TC_PRIORITE.length; i++) if (t.indexOf(TC_PRIORITE[i]) >= 0) return 1 + i
+  return 100
+}
+function tcConflit(a, b) {
+  try {
+    if (!a.getKey().equals(b.getKey())) return false
+    if (String(a.getKey()) === String(Java.loadClass('com.mojang.blaze3d.platform.InputConstants').UNKNOWN)) return false
+    if (!(a.getKeyConflictContext().conflicts(b.getKeyConflictContext()) || b.getKeyConflictContext().conflicts(a.getKeyConflictContext()))) return false
+    return String(a.getKeyModifier()) === String(b.getKeyModifier())
+  } catch (e) { return false }
+}
+
+function tcRegler() {
+  var Minecraft = Java.loadClass('net.minecraft.client.Minecraft')
+  var KeyMapping = Java.loadClass('net.minecraft.client.KeyMapping')
+  var KeyModifier = Java.loadClass('net.neoforged.neoforge.client.settings.KeyModifier')
+  var InputConstants = Java.loadClass('com.mojang.blaze3d.platform.InputConstants')
+  var I18n = Java.loadClass('net.minecraft.client.resources.language.I18n')
+  var mc = Minecraft.getInstance()
+  var brutes = mc.options.keyMappings, tous = []
+  for (var i = 0; i < brutes.length; i++) tous.push(brutes[i])
+  var nomDe = function (km) { return I18n.get(km.getName()) + ' (' + I18n.get(km.getCategory()) + ')' }
+  var libre = function (km) {
+    for (var j = 0; j < tous.length; j++) if (tous[j] !== km && tcConflit(km, tous[j])) return false
+    return true
+  }
+  var changes = []
+  // On traite les touches de la moins prioritaire à la plus prioritaire : c'est la moins importante qui cède la place.
+  var ordre = tous.slice().sort(function (a, b) { return tcRang(b) - tcRang(a) })
+  for (var k = 0; k < ordre.length; k++) {
+    var km = ordre[k]
+    try {
+      if (!km.isDefault()) continue
+      if (String(km.getKey()) === String(InputConstants.UNKNOWN)) continue
+      var autre = null
+      for (var j2 = 0; j2 < tous.length; j2++) {
+        var o = tous[j2]
+        if (o === km || !tcConflit(km, o)) continue
+        if (tcRang(o) < tcRang(km) || (tcRang(o) === tcRang(km) && tous.indexOf(o) < tous.indexOf(km))) { autre = o; break }
+      }
+      if (!autre) continue
+      var touche = km.getKey()
+      var cat = I18n.get(km.getCategory())
+      if (typeof tmMasquee === 'function' && tmMasquee(cat)) {
+        km.setKeyModifierAndCode(KeyModifier.NONE, InputConstants.UNKNOWN)
+        changes.push(nomDe(km) + ' : désassignée (conflit avec ' + nomDe(autre) + ')')
+        continue
+      }
+      var regle = false, mods = [KeyModifier.ALT, KeyModifier.CONTROL]
+      for (var m = 0; m < mods.length && !regle; m++) {
+        km.setKeyModifierAndCode(mods[m], touche)
+        if (libre(km)) { regle = true; changes.push(nomDe(km) + ' : ' + String(km.getTranslatedKeyMessage().getString())) }
+      }
+      if (!regle) {
+        km.setKeyModifierAndCode(KeyModifier.NONE, InputConstants.UNKNOWN)
+        changes.push(nomDe(km) + ' : désassignée (Alt et Ctrl déjà pris)')
+      }
+    } catch (err) { console.log('[touches] ' + err) }
+  }
+  if (changes.length > 0) {
+    KeyMapping.resetMapping()
+    mc.options.save()
+    for (var c = 0; c < changes.length; c++) console.log('[touches] ' + changes[c])
+    try { mc.player.displayClientMessage(Java.loadClass('net.minecraft.network.chat.Component').literal('§6[Aetheris] §7' + changes.length + ' touches en conflit ont été réglées (Alt/Ctrl + même touche). Voir Options > Contrôles.'), false) } catch (e2) {}
+  }
+  // Liste complète des touches dans le journal, pour la doc
+  for (var t = 0; t < tous.length; t++) {
+    try {
+      var cat2 = I18n.get(tous[t].getCategory())
+      if (typeof tmMasquee === 'function' && tmMasquee(cat2)) continue
+      console.log('[touches] liste | ' + cat2 + ' | ' + I18n.get(tous[t].getName()) + ' | ' + String(tous[t].getTranslatedKeyMessage().getString()))
+    } catch (e3) {}
+  }
+}
+
+ClientEvents.loggedIn(function (e) {
+  try { tcRegler() } catch (err) { console.log('[touches] erreur : ' + err) }
+})
