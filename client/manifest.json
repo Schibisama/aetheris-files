@@ -1,5 +1,5 @@
 {
- "version": "2026-11-01T21:48:42.147Z",
+ "version": "2026-11-01T21:55:43.157Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6122,8 +6122,8 @@
   },
   {
    "path": "kubejs/server_scripts/armures_butin.js",
-   "sha1": "3277530c4fa1fa6213de46b7604cc47a095f02f0",
-   "size": 8650
+   "sha1": "6cc5264f4685c2e9665244f3ba0ca81a931804e1",
+   "size": 8666
   },
   {
    "path": "kubejs/server_scripts/baton_neant.js",
@@ -6147,8 +6147,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_desactives.js",
-   "sha1": "69531df017e1111a5481a3addf6bae7de00744b6",
-   "size": 10011
+   "sha1": "4cbfcdf09b01fc34edd48ee66f5f89897f9a0ad2",
+   "size": 11789
   },
   {
    "path": "kubejs/server_scripts/classes_dump_armes.js",
