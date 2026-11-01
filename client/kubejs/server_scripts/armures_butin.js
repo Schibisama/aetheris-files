@@ -11,13 +11,53 @@ var AR_MOBS = true
 // Autres objets rendus plus rares dans les COFFRES (même principe : filtrés une fois, à la première ouverture ; LootR : par joueur).
 // [motif (expression sur l'identifiant), part retirée]. 0.75 = 75 % retirés. Modifier ici pour régler.
 var AR_AUTRES = [
-  [/^specs_irons_spellbooks:codex_page$/, 0.75],                         // pages de codex
   [/^minecraft:enchanted_golden_apple$/, 0.8],                            // pommes dorées enchantées
   [/^minecraft:totem_of_undying$/, 0.6],                                  // totems d'immortalité
   [/^minecraft:(netherite_ingot|netherite_scrap|netherite_upgrade_smithing_template)$/, 0.6],   // netherite
   [/^irons_spellbooks:(?!copper_|iron_)[a-z_]*spell_book$/, 0.6],         // grimoires supérieurs (sauf cuivre et fer)
   [/^irons_spellbooks:[a-z_]*upgrade_orb$/, 0.5]                          // orbes d'amélioration
 ]
+// Pages de Codex : AR_CODEX_TAUX des pages sont retirées ; parmi celles qui restent, une page de sort rare, épique ou légendaire
+// n'est gardée telle quelle qu'1 fois sur 5 (AR_CODEX_GARDE_RARE) ; sinon elle devient la page d'un sort commun ou peu commun
+// (même école si possible, sort actif, trouvable en butin et non désactivé). Même principe que parchemins_coffres.js.
+var AR_CODEX_TAUX = 0.75
+var AR_CODEX_GARDE_RARE = 0.2
+var AR_PAGE = null, AR_SR = null, AR_CATALOGUE = null
+function arRareteSort(sp) { try { return String(sp.getMinRarity()).toUpperCase() } catch (e) { return 'COMMON' } }
+function arSortListable(sp) {
+  try { if (!sp.allowLooting()) return false } catch (e) {}
+  try { if (typeof SORTS_DESACTIVES !== 'undefined' && SORTS_DESACTIVES.indexOf(String(sp.getSpellId())) !== -1) return false } catch (e2) {}
+  try { if (AR_CATALOGUE && !AR_CATALOGUE.isListed(sp)) return false } catch (e3) {}
+  return true
+}
+// Retourne : null = garder la page, 'retirer', ou une nouvelle pile (page remplacée)
+function arPageCodex(pile) {
+  if (Math.random() < AR_CODEX_TAUX) return 'retirer'
+  try {
+    if (!AR_PAGE) AR_PAGE = Java.loadClass('com.specs.irons_spellbooks.item.CodexPageItem')
+    if (!AR_SR) AR_SR = Java.loadClass('io.redspace.ironsspellbooks.api.registry.SpellRegistry')
+    if (!AR_CATALOGUE) { try { AR_CATALOGUE = Java.loadClass('com.specs.irons_spellbooks.catalog.SpellCatalog') } catch (eC) {} }
+    var id = AR_PAGE.getSpellId(pile)
+    if (!id) return null
+    var sp = AR_SR.getSpell(id)
+    var r = arRareteSort(sp)
+    if (r !== 'RARE' && r !== 'EPIC' && r !== 'LEGENDARY') return null
+    if (Math.random() < AR_CODEX_GARDE_RARE) return null
+    var ecole = String(sp.getSchoolType().getId())
+    var tous = AR_SR.getEnabledSpells(), meme = [], autres = []
+    for (var i = 0; i < tous.size(); i++) {
+      var s2 = tous.get(i)
+      var r2 = arRareteSort(s2)
+      if (r2 !== 'COMMON' && r2 !== 'UNCOMMON') continue
+      if (!arSortListable(s2)) continue
+      if (String(s2.getSchoolType().getId()) === ecole) meme.push(s2); else autres.push(s2)
+    }
+    var choix = meme.length > 0 ? meme : autres
+    if (choix.length === 0) return 'retirer'
+    return AR_PAGE['createFor(io.redspace.ironsspellbooks.api.spells.AbstractSpell)'](choix[Math.floor(Math.random() * choix.length)])
+  } catch (e) { console.error('[armures_butin] page de codex : ' + e); return null }
+}
+
 function arTauxAutre(pile) {
   var id = String(pile.id)
   for (var i = 0; i < AR_AUTRES.length; i++) if (AR_AUTRES[i][0].test(id)) return AR_AUTRES[i][1]
@@ -91,6 +131,12 @@ function arFiltrerConteneur(event) {
       if (slot.isSameInventory(repere)) continue
       var pile = slot.getItem()
       if (!pile || pile.isEmpty()) continue
+      if (String(pile.id) === 'specs_irons_spellbooks:codex_page') {
+        var res = arPageCodex(pile)
+        if (res === 'retirer') { slot.set(vide); retires++; vus++ }
+        else if (res) { slot.set(res); vus++ }
+        continue
+      }
       var taux = arEstArmure(pile) ? arTaux(pile) : arTauxAutre(pile)
       if (taux <= 0) continue
       vus++
