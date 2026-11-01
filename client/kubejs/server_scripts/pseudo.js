@@ -90,7 +90,9 @@ ServerEvents.tick(function (event) {
       var j = joueurs[i]
       var nom = psPseudo(j)
       if (!nom) continue
-      psEquipe(serveur, j, true, nom)
+      var equipe = null
+      try { equipe = j.getTeam() } catch (eT) {}
+      if (!equipe || String(equipe.getName()) !== psId(j)) { psEquipe(serveur, j, true, nom); psRafraichirNoms(j) }
     } catch (e) {}
   }
 })
@@ -104,13 +106,30 @@ PlayerEvents.loggedOut(function (event) {
   try { psSupprimerAffichage(event.server, event.player) } catch (e) {}
 })
 
+// Reconnexion : le pseudo enregistré (persistentData du joueur, gardé tant qu'on ne fait pas /pseudo reset ni /reinit)
+// est remis tout de suite, puis réappliqué deux fois après le chargement complet du joueur.
 PlayerEvents.loggedIn(function (event) {
   try {
+    var serveur = event.server
     var j = event.player
-    if (psPseudo(j)) {
-      event.server.scheduleInTicks(40, function () { psRafraichirNoms(j) })
+    var nom = psPseudo(j)
+    if (!nom) return
+    psEquipe(serveur, j, true, nom)
+    psRafraichirNoms(j)
+    var reappliquer = function () {
+      try {
+        var jj = serveur.getPlayerList().getPlayer(j.getUUID())
+        if (!jj) return
+        var n2 = psPseudo(jj)
+        if (!n2) return
+        psEquipe(serveur, jj, true, n2)
+        psRafraichirNoms(jj)
+      } catch (e2) {}
     }
-  } catch (e) {}
+    serveur.scheduleInTicks(20, reappliquer)
+    serveur.scheduleInTicks(100, reappliquer)
+    j.tell(Text.gray('Ton pseudo : ').append(Text.white(nom)).append(Text.gray(' (/pseudo reset pour reprendre ton vrai nom)')))
+  } catch (e) { console.error('[pseudo] connexion : ' + e) }
 })
 
 // Nom affiché dans le chat et dans la liste des joueurs.
