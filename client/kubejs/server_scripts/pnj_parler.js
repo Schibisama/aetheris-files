@@ -43,3 +43,29 @@ ItemEvents.entityInteracted(function (event) {
     console.error('[pnj_parler] ' + err)
   }
 })
+
+// ── Chef Cuisinier : /chef oui|non <joueur> (lancée par les boutons du PNJ) ──
+// Easy NPC exécute ses commandes avec un niveau de permission limité : un « give » direct échoue, d'où cette commande.
+ServerEvents.commandRegistry(function (event) {
+  var Commands = event.commands
+  var Arguments = event.arguments
+  var parPnj = function (source) {
+    try { if (source.hasPermission(2)) return true } catch (e) {}
+    try { var ent = source.entity; return !!ent && String(ent.type).indexOf('easy_npc:') === 0 } catch (e2) { return false }
+  }
+  var plats = { oui: 'farmersdelight:egg_sandwich', non: 'farmersdelight:barbecue_stick' }
+  var racine = Commands.literal('chef').requires(parPnj)
+  for (var rep in plats) {
+    ;(function (r) {
+      racine = racine.then(Commands.literal(r).then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+        .executes(function (ctx) {
+          try {
+            var j = Arguments.PLAYER.getResult(ctx, 'joueur')
+            ctx.source.server.runCommandSilent('give ' + j.username + ' ' + plats[r] + ' 1')
+            return 1
+          } catch (e) { console.error('[chef] ' + e); return 0 }
+        })))
+    })(rep)
+  }
+  event.register(racine)
+})
