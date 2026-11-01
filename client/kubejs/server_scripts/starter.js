@@ -115,6 +115,11 @@ ServerEvents.tags('item', function (event) {
   event.add('minecraft:dyeable', ['hazennstuff:hazel_helmet', 'hazennstuff:hazel_chestplate', 'hazennstuff:hazel_leggings', 'hazennstuff:hazel_boots', 'hazennstuff:pyrium_battlemage_helmet'])
 })
 
+// Carry On : les balais ne peuvent pas être attrapés et transportés
+ServerEvents.tags('entity_type', function (event) {
+  event.add('carryon:entity_blacklist', ['apprenticecodex:floatmount_broom', 'apprenticecodex:hoverride_broom'])
+})
+
 ServerEvents.commandRegistry(function (event) {
   var Commands = event.commands
   var Arguments = event.arguments
