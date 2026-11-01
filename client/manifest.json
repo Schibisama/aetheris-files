@@ -1,5 +1,5 @@
 {
- "version": "2026-11-01T19:51:04.745Z",
+ "version": "2026-11-01T20:09:40.369Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6237,8 +6237,8 @@
   },
   {
    "path": "kubejs/server_scripts/pseudo.js",
-   "sha1": "bfa6cc62f590ac1a8e0276de35b590f8c6cf9ece",
-   "size": 7493
+   "sha1": "08900185ad696c18084d134f2204828b957f4678",
+   "size": 8446
   },
   {
    "path": "kubejs/server_scripts/reinit_joueur.js",
