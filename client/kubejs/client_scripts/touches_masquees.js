@@ -1,5 +1,6 @@
 // Côté client : masque dans « Contrôles » les catégories de touches inutiles aux joueurs.
 // Les touches restent actives ; elles ne sont simplement plus listées.
+// Ajoute aussi une barre de recherche de sorts dans le Codex (Spell Codex de Specs) : voir en bas du fichier.
 // Pour masquer/afficher une catégorie, modifier TM_MASQUER (fragments du nom affiché, en minuscules, sans accents).
 var TM_MASQUER = [
   'mode creatif', 'creative mode',
@@ -153,4 +154,106 @@ try {
   console.log('[touches_masquees] chargé')
 } catch (err) {
   console.log('[touches_masquees] événement indisponible : ' + err)
+}
+
+// ── Barre de recherche de sorts dans le Codex (Spell Codex de Specs) ──
+// Tape un mot : le Codex n'affiche plus que les sorts dont le nom (ou l'identifiant) le contient. Sans accents, majuscules ignorées.
+// Fonctionnement : on ajoute temporairement les sorts qui ne correspondent pas à la liste noire du Codex côté client
+// (ClientModConfigCache), puis on remet la liste d'origine à la fermeture du Codex. Rien n'est envoyé au serveur.
+var CR = { boite: null, texte: '', origine: null, actif: false, err: false }
+var CR_CACHE = null, CR_SR = null, CR_SET = null, CR_MAP = null
+
+function crEstCodex(ecran) { return ecran && String(ecran).indexOf('SpecsSpellHudScreen') !== -1 }
+function crLog(m) { if (!CR.err) { CR.err = true; console.error('[recherche_codex] ' + m) } }
+function crClasses() {
+  if (CR_CACHE) return
+  CR_CACHE = Java.loadClass('com.specs.irons_spellbooks.config.ClientModConfigCache')
+  CR_SR = Java.loadClass('io.redspace.ironsspellbooks.api.registry.SpellRegistry')
+  CR_SET = Java.loadClass('java.util.HashSet')
+  CR_MAP = Java.loadClass('java.util.HashMap')
+}
+function crSauver() {
+  if (CR.origine) return
+  CR.origine = {
+    bl: new CR_SET(CR_CACHE.blacklistView()), sbl: new CR_SET(CR_CACHE.schoolBlacklistView()),
+    sc: new CR_MAP(CR_CACHE.schoolCostsView()), spc: new CR_MAP(CR_CACHE.spellCostsView()),
+    r: CR_CACHE.respecRefundPercent(), ic: CR_CACHE.includeCreativeSpells(), ai: CR_CACHE.allowImbuedWeaponCasting(), s: CR_CACHE.defaultActionbarSlots()
+  }
+}
+function crAppliquer(bl) {
+  var o = CR.origine
+  CR_CACHE.apply(bl, new CR_SET(o.sbl), new CR_MAP(o.sc), new CR_MAP(o.spc), o.r, o.ic, o.ai, o.s)
+}
+function crRestaurer() {
+  try {
+    if (!CR.origine) return
+    if (CR.actif) crAppliquer(new CR_SET(CR.origine.bl))
+  } catch (e) { crLog('restauration : ' + e) }
+  CR.origine = null
+  CR.actif = false
+}
+function crNomSort(sp) {
+  var n = ''
+  try { n = String(Text.translate(sp.getComponentId()).getString()) } catch (e) {}
+  return tmNorm(n.replace(/§./g, '') + ' ' + String(sp.getSpellResource()))
+}
+function crFiltrer(texte) {
+  try {
+    crClasses()
+    CR.texte = String(texte || '')
+    var mot = tmNorm(CR.texte).trim()
+    if (!mot) { if (CR.actif) { crAppliquer(new CR_SET(CR.origine.bl)); CR.actif = false } return }
+    crSauver()
+    var bl = new CR_SET(CR.origine.bl)
+    var tous = CR_SR.getEnabledSpells()
+    for (var i = 0; i < tous.size(); i++) {
+      var sp = tous.get(i)
+      if (crNomSort(sp).indexOf(mot) === -1) bl.add(sp.getSpellResource())
+    }
+    crAppliquer(bl)
+    CR.actif = true
+  } catch (e) { crLog('filtre : ' + e) }
+}
+
+try {
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.client.event.ScreenEvent$Init$Post'), function (e) {
+    try {
+      var ecran = e.getScreen()
+      if (!crEstCodex(ecran)) return
+      var mc = Java.loadClass('net.minecraft.client.Minecraft').getInstance()
+      var EditBox = Java.loadClass('net.minecraft.client.gui.components.EditBox')
+      var larg = 140
+      var x = ecran.getGuiLeft()
+      var y = ecran.getGuiTop() - 16
+      if (y < 2) y = ecran.height - 18
+      var boite = new EditBox(mc.font, x, y, larg, 14, Text.of('Recherche'))
+      boite.setMaxLength(40)
+      boite.setHint(Text.of('Rechercher un sort...').gray())
+      boite.setValue(CR.texte)
+      boite.setResponder(function (t) { crFiltrer(t) })
+      e.addListener(boite)
+      CR.boite = boite
+      if (CR.texte) crFiltrer(CR.texte)
+    } catch (err) { crLog('barre : ' + err) }
+  })
+  // Tant que la barre a le focus, les touches vont au texte (sinon « E » fermerait le Codex). Échap fonctionne toujours.
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.client.event.ScreenEvent$KeyPressed$Pre'), function (e) {
+    try {
+      if (!CR.boite || !crEstCodex(e.getScreen()) || !CR.boite.isFocused()) return
+      if (e.getKeyCode() === 256) return
+      CR.boite.keyPressed(e.getKeyCode(), e.getScanCode(), e.getModifiers())
+      e.setCanceled(true)
+    } catch (err) { crLog('touches : ' + err) }
+  })
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.client.event.ScreenEvent$Closing'), function (e) {
+    try {
+      if (!crEstCodex(e.getScreen())) return
+      crRestaurer()
+      CR.boite = null
+      CR.texte = ''
+    } catch (err) { crLog('fermeture : ' + err) }
+  })
+  console.log('[recherche_codex] barre de recherche du Codex prête')
+} catch (err) {
+  console.log('[recherche_codex] indisponible : ' + err)
 }
