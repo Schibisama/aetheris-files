@@ -5,7 +5,8 @@
 // Commandes (op) :
 //   /livre liste                          : liste des livres (identifiant et titre)
 //   /livre <identifiant>                  : te donne ce livre
-//   /livre tous                           : te donne tous les livres (dans des shulkers)
+//   /livre tous                           : te donne tous les livres de base (dans des shulkers)
+//   /livre runique                        : te donne tous les livres en runes (dans des shulkers)
 //   /livre remplir <x> <y> <z>            : remplit le conteneur (coffre, tonneau, étagère sculptée) avec des livres au hasard
 //   /livre bibliotheque <x1> <y1> <z1> <x2> <y2> <z2> : remplit au hasard TOUS les coffres, tonneaux et étagères sculptées de la zone
 // Les noms du personnel sont modifiables ici (LV_NOMS) : un seul endroit pour tout changer.
@@ -100,7 +101,7 @@ ServerEvents.commandRegistry(function (event) {
     var j = ctx.source.player
     if (!j) return 0
     j.tell(Text.gold('Livres disponibles (' + LIV_DONNEES.length + ') :'))
-    for (var i = 0; i < LIV_DONNEES.length; i++) j.tell(Text.gray(' ' + LIV_DONNEES[i][0] + ' — ').append(Text.white(livNoms(LIV_DONNEES[i][1]))))
+    for (var i = 0; i < LIV_DONNEES.length; i++) j.tell(Text.gray(' ' + LIV_DONNEES[i][0] + ' — ').append(Text.white(livNoms(LIV_DONNEES[i][1]) + (LIV_DONNEES[i][4] ? ' (runes)' : ''))))
     return 1
   }))
 
@@ -113,30 +114,39 @@ ServerEvents.commandRegistry(function (event) {
     }))
   })
 
-  racine = racine.then(Commands.literal('tous').executes(function (ctx) {
+  // Donne une liste de livres rangés dans des shulkers (9 livres par shulker).
+  var livShulkers = function (ctx, liste, quoi) {
     try {
       var j = ctx.source.player
-      if (!j) { console.info('[livres] /livre tous : à lancer par un joueur'); return 0 }
+      if (!j) { console.info('[livres] /livre ' + quoi + ' : à lancer par un joueur'); return 0 }
       var nom = String(j.username)
       var srv = ctx.source.server
       var TAILLE = 9
       var shulkers = 0
-      for (var debut = 0; debut < LIV_DONNEES.length; debut += TAILLE) {
-        var fin = Math.min(debut + TAILLE, LIV_DONNEES.length)
+      for (var debut = 0; debut < liste.length; debut += TAILLE) {
+        var fin = Math.min(debut + TAILLE, liste.length)
         var objets = []
         for (var i = debut; i < fin; i++) {
-          objets.push('{slot:' + (i - debut) + ',item:{id:"minecraft:written_book",count:1,components:{"minecraft:written_book_content":' + livContenu(LIV_DONNEES[i]) + '}}}')
+          objets.push('{slot:' + (i - debut) + ',item:{id:"minecraft:written_book",count:1,components:{"minecraft:written_book_content":' + livContenu(liste[i]) + '}}}')
         }
         srv.runCommand('give ' + nom + ' minecraft:shulker_box[container=[' + objets.join(',') + ']]')
         shulkers++
       }
-      j.tell(Text.gold(LIV_DONNEES.length + ' livres envoyés dans ' + shulkers + ' shulkers.'))
-      console.info('[livres] /livre tous : ' + shulkers + ' shulkers donnés à ' + nom)
+      j.tell(Text.gold(liste.length + ' livres envoyés dans ' + shulkers + ' shulker' + (shulkers > 1 ? 's' : '') + '.'))
+      console.info('[livres] /livre ' + quoi + ' : ' + shulkers + ' shulkers donnés à ' + nom)
       return 1
     } catch (e) {
-      console.error('[livres] /livre tous ERREUR : ' + e + ' | ' + (e && e.stack))
+      console.error('[livres] /livre ' + quoi + ' ERREUR : ' + e + ' | ' + (e && e.stack))
       return 0
     }
+  }
+
+  // /livre tous : les livres de base ; /livre runique : les livres en runes (« Pages gravées »).
+  racine = racine.then(Commands.literal('tous').executes(function (ctx) {
+    return livShulkers(ctx, LIV_DONNEES.filter(function (b) { return !b[4] }), 'tous')
+  }))
+  racine = racine.then(Commands.literal('runique').executes(function (ctx) {
+    return livShulkers(ctx, LIV_DONNEES.filter(function (b) { return !!b[4] }), 'runique')
   }))
 
   racine = racine.then(Commands.literal('remplir')
