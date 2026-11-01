@@ -73,7 +73,9 @@ function starterDonner(ctx, joueur) {
   return 1
 }
 
-// /starter professeur <joueur> : kit de professeur, équipé directement : couronne Pyrium Battlemage + veste, pantalon et bottes de Hazel.
+// /starter professeur <joueur> : kit de professeur, équipé directement : couronne Pyrium Battlemage + veste, pantalon et bottes de Hazel,
+// teintes d'une couleur aléatoire (mêmes 12 teintes que les élèves). La tenue de Hazel est teignable comme une armure de cuir
+// (tag minecraft:dyeable ci-dessous ; rendu teint côté client : pseudo_client.js). Les ornements dorés gardent leur couleur.
 // Si un emplacement d'armure est déjà occupé, la pièce est donnée dans l'inventaire. Une seule fois par joueur (clé effacée par /reinit).
 var STARTER_PROF_CLE = 'starter_prof_pris'
 var STARTER_PROF_KIT = [
@@ -91,17 +93,24 @@ function starterDonnerProf(ctx, joueur) {
     return 0
   }
   joueur.persistentData.putBoolean(STARTER_PROF_CLE, true)
+  var rgbProf = STARTER_COULEURS[Math.floor(Math.random() * STARTER_COULEURS.length)]
   for (var i = 0; i < STARTER_PROF_KIT.length; i++) {
     var p = STARTER_PROF_KIT[i]
+    var objet = p.id.indexOf('hazennstuff:hazel_') === 0 ? p.id + '[minecraft:dyed_color={rgb:' + rgbProf + '}]' : p.id
     var libre = false
     try { libre = joueur.inventory.armor.get(p.index).isEmpty() } catch (e) {}
-    if (libre) server.runCommandSilent('item replace entity ' + n + ' ' + p.slot + ' with ' + p.id)
-    else server.runCommandSilent('give ' + n + ' ' + p.id)
+    if (libre) server.runCommandSilent('item replace entity ' + n + ' ' + p.slot + ' with ' + objet)
+    else server.runCommandSilent('give ' + n + ' ' + objet)
   }
   if (op) op.tell(Text.gray('Kit de professeur donné à ' + n + '.'))
-  joueur.tell(Text.gold('Kit de professeur reçu : couronne de Pyrium et armure de Hazel.'))
+  joueur.tell(Text.gold('Kit de professeur reçu : couronne de Pyrium et armure de Hazel (teignable à l\'établi avec des colorants).'))
   return 1
 }
+
+// Tenue de Hazel teignable : on l'ajoute au tag des objets teignables (teinture à l'établi, comme le cuir ; lavable au chaudron).
+ServerEvents.tags('item', function (event) {
+  event.add('minecraft:dyeable', ['hazennstuff:hazel_helmet', 'hazennstuff:hazel_chestplate', 'hazennstuff:hazel_leggings', 'hazennstuff:hazel_boots'])
+})
 
 ServerEvents.commandRegistry(function (event) {
   var Commands = event.commands
