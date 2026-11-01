@@ -10,6 +10,8 @@ function ftbObjet(file, idHex) {
   return file.getBase(id.get())
 }
 
+var FTB_SIGNALES = {}   // identifiants de quête introuvables déjà signalés (évite de remplir la console)
+
 function ftbCompleter(joueur, idHex) {
   try {
     var SQF = Java.loadClass('dev.ftb.mods.ftbquests.quest.ServerQuestFile')
@@ -17,7 +19,7 @@ function ftbCompleter(joueur, idHex) {
     var file = SQF.INSTANCE
     if (!file) { console.error('[ftb_aide] fichier de quêtes indisponible'); return false }
     var obj = ftbObjet(file, idHex)
-    if (!obj) { console.error('[ftb_aide] objet de quête introuvable : ' + idHex); return false }
+    if (!obj) { if (!FTB_SIGNALES[idHex]) { FTB_SIGNALES[idHex] = true; console.error('[ftb_aide] objet de quête introuvable (signalé une seule fois) : ' + idHex) } return false }
     var donnees = file.getTeamData(joueur)
     if (!donnees.isPresent()) { console.error('[ftb_aide] pas de données d\'équipe pour ' + joueur.username); return false }
     obj.forceProgress(donnees.get(), new PC(obj, joueur.uuid).setReset(false))

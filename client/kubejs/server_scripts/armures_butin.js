@@ -1,4 +1,4 @@
-// Armures plus rares dans le butin : chaque pièce d'armure trouvée a une chance d'être retirée.
+// Armures (et objets trop forts : voir AR_AUTRES) plus rares dans le butin : chaque pièce trouvée a une chance d'être retirée.
 //   - coffres et conteneurs (vanilla, structures, LootR) : filtrés UNE seule fois par coffre (et par joueur pour LootR),
 //     à la première ouverture ; les coffres déjà filtrés (ou posés et ouverts par un joueur) ne perdent plus rien ;
 //   - butin des mobs : même chance de retrait (les joueurs ne sont jamais touchés).
@@ -8,6 +8,21 @@
 var AR_TAUX_VANILLA = 0.5
 var AR_TAUX_MOD = 0.7
 var AR_MOBS = true
+// Autres objets rendus plus rares dans les COFFRES (même principe : filtrés une fois, à la première ouverture ; LootR : par joueur).
+// [motif (expression sur l'identifiant), part retirée]. 0.75 = 75 % retirés. Modifier ici pour régler.
+var AR_AUTRES = [
+  [/^specs_irons_spellbooks:codex_page$/, 0.75],                         // pages de codex
+  [/^minecraft:enchanted_golden_apple$/, 0.8],                            // pommes dorées enchantées
+  [/^minecraft:totem_of_undying$/, 0.6],                                  // totems d'immortalité
+  [/^minecraft:(netherite_ingot|netherite_scrap|netherite_upgrade_smithing_template)$/, 0.6],   // netherite
+  [/^irons_spellbooks:(?!copper_|iron_)[a-z_]*spell_book$/, 0.6],         // grimoires supérieurs (sauf cuivre et fer)
+  [/^irons_spellbooks:[a-z_]*upgrade_orb$/, 0.5]                          // orbes d'amélioration
+]
+function arTauxAutre(pile) {
+  var id = String(pile.id)
+  for (var i = 0; i < AR_AUTRES.length; i++) if (AR_AUTRES[i][0].test(id)) return AR_AUTRES[i][1]
+  return 0
+}
 var AR_CLE = 'armures_coffres_filtres'
 
 var AR_CLASSE_ARMURE = null
@@ -75,11 +90,13 @@ function arFiltrerConteneur(event) {
       var slot = menu.getSlot(i)
       if (slot.isSameInventory(repere)) continue
       var pile = slot.getItem()
-      if (!pile || pile.isEmpty() || !arEstArmure(pile)) continue
+      if (!pile || pile.isEmpty()) continue
+      var taux = arEstArmure(pile) ? arTaux(pile) : arTauxAutre(pile)
+      if (taux <= 0) continue
       vus++
-      if (Math.random() < arTaux(pile)) { slot.set(vide); retires++ }
+      if (Math.random() < taux) { slot.set(vide); retires++ }
     }
-    if (vus > 0) console.info('[armures_butin] ' + retires + '/' + vus + ' pièce(s) d\'armure retirée(s) (' + cle + ')')
+    if (vus > 0) console.info('[armures_butin] ' + retires + '/' + vus + ' objet(s) filtré(s) retiré(s) (' + cle + ')')
   } catch (e) {
     console.error('[armures_butin] Conteneur : ' + e)
   }
