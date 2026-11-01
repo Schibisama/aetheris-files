@@ -5,6 +5,11 @@
 //   /aura                         : (opérateurs) dit si tu es professeur et si l'effet est actif
 // Un professeur peut utiliser /cours (+ ici, ordre) et /starter sans être opérateur.
 // Kit de professeur : /starter professeur <joueur> (voir starter.js).
+// Avertissements (professeurs et opérateurs) :
+//   /warn <joueur> [raison]   : +1 avertissement ; au 3e, 10 min de retenue (téléporté en salle de retenue, porte bloquée pour lui)
+//   /warn voir <joueur>       : nombre d'avertissements et retenue en cours
+//   /warn retirer <joueur>    : retire un avertissement
+//   /warn liberer <joueur>    : met fin à la retenue tout de suite
 // Pour ouvrir une autre commande aux professeurs : remplacer son « requires » par  profOuOp  (voir /cours dans classes_rp.js).
 // Aura : effet kubejs:aura_professeur (défini dans startup_scripts/aura_professeur_effet.js), infini, sans particules,
 //   icône visible dans l'inventaire, reposé toutes les 5 secondes. Sont professeurs : les joueurs ayant le tag « professeur »
@@ -183,4 +188,115 @@ ServerEvents.commandRegistry(function (event) {
   )
 })
 
-console.info('[professeur] chargé : /professeur donner|retirer|liste, /aura, effet ' + PF_EFFET + ' (opérateurs ' + (PF_OPS ? 'inclus' : 'exclus') + ').')
+// ── Avertissements et retenue ──
+var WARN_MAX = 3
+var WARN_RETENUE_MS = 10 * 60 * 1000                 // 10 minutes (temps réel, continue même déconnecté)
+var WARN_DIM = 'minecraft:overworld'
+var WARN_SALLE = [1086.5, 510, 1353.5]               // point de téléportation de la retenue
+var WARN_PORTE = { x1: 1085, x2: 1088, y1: 510, y2: 522, z: 1365 }   // porte invisible (bloque seulement l'élève en retenue)
+var WARN_FUITE = 40                                  // au-delà de cette distance de la salle, l'élève est ramené
+var WARN_K_N = 'warn_n'
+var WARN_K_FIN = 'retenue_fin'
+
+function warnNb(j) { return j.persistentData.getInt(WARN_K_N) }
+function warnFin(j) { return j.persistentData.getDouble(WARN_K_FIN) }
+function warnEnRetenue(j) { return warnFin(j) > Date.now() }
+function warnVersSalle(j) {
+  j.server.runCommandSilent('execute in ' + WARN_DIM + ' run tp ' + j.username + ' ' + WARN_SALLE[0] + ' ' + WARN_SALLE[1] + ' ' + WARN_SALLE[2])
+}
+function warnMinutes(j) { return Math.max(1, Math.ceil((warnFin(j) - Date.now()) / 60000)) }
+function warnFinRetenue(j, parOp) {
+  j.persistentData.remove(WARN_K_FIN)
+  j.tell(Text.green(parOp ? 'Ta retenue a été levée par un professeur. Tu peux sortir.' : 'Ta retenue est terminée. Tu peux sortir.'))
+}
+function warnRetenue(j) {
+  j.persistentData.putInt(WARN_K_N, 0)
+  j.persistentData.putDouble(WARN_K_FIN, Date.now() + WARN_RETENUE_MS)
+  warnVersSalle(j)
+  j.tell(Text.red('Retenue : 10 minutes. La porte ne s\'ouvrira pour toi qu\'à la fin.'))
+}
+
+// Porte invisible et anti-fuite, vérifiées 4 fois par seconde pour les élèves en retenue
+ServerEvents.tick(function (event) {
+  var sv = event.server
+  if (sv.tickCount % 5 !== 0) return
+  sv.players.forEach(function (j) {
+    try {
+      var fin = warnFin(j)
+      if (!fin) return
+      if (fin <= Date.now()) { warnFinRetenue(j, false); return }
+      var dim = String(j.level.dimension)
+      var dx = j.x - WARN_SALLE[0], dz = j.z - WARN_SALLE[2]
+      if (dim !== WARN_DIM || Math.sqrt(dx * dx + dz * dz) > WARN_FUITE || Math.abs(j.y - WARN_SALLE[1]) > WARN_FUITE) { warnVersSalle(j); return }
+      var p = WARN_PORTE
+      if (j.x > p.x1 - 0.5 && j.x < p.x2 + 1.5 && j.y > p.y1 - 2 && j.y < p.y2 + 1 && j.z > p.z - 0.35) {
+        j.teleportTo(j.x, j.y, p.z - 0.4)
+        j.setStatusMessage(Text.red('La porte est fermée pour toi. Encore ' + warnMinutes(j) + ' min.'))
+      }
+    } catch (e) { console.error('[warn] retenue : ' + e) }
+  })
+})
+// Un élève qui se reconnecte pendant sa retenue y retourne
+PlayerEvents.loggedIn(function (e) {
+  try { if (warnEnRetenue(e.player)) { warnVersSalle(e.player); e.player.tell(Text.red('Ta retenue n\'est pas finie : encore ' + warnMinutes(e.player) + ' min.')) } } catch (err) { console.error('[warn] connexion : ' + err) }
+})
+
+ServerEvents.commandRegistry(function (event) {
+  var Commands = event.commands
+  var Arguments = event.arguments
+  function dire(ctx, texte) {
+    try { if (ctx.source.player) ctx.source.player.tell(Text.gray(texte)) } catch (e) {}
+    console.info('[warn] ' + texte)
+  }
+  function cible(ctx) { return Arguments.PLAYER.getResult(ctx, 'joueur') }
+  function avertir(ctx, raison) {
+    try {
+      var j = cible(ctx)
+      var n = warnNb(j) + 1
+      j.persistentData.putInt(WARN_K_N, n)
+      var msg = 'Ton professeur t\'a mis un avertissement, tu en as ' + n + '/' + WARN_MAX + ', au bout du 3ème tu auras 10 min de retenue.'
+      j.tell(Text.red(msg))
+      if (raison) j.tell(Text.gray('Raison : ' + raison))
+      j.server.runCommandSilent('playsound minecraft:block.note_block.bass master ' + j.username + ' ~ ~ ~ 1 0.6')
+      dire(ctx, j.username + ' : avertissement ' + n + '/' + WARN_MAX + (raison ? ' (' + raison + ')' : '') + '.')
+      if (n >= WARN_MAX) { warnRetenue(j); dire(ctx, j.username + ' part en retenue pour 10 minutes.') }
+      return 1
+    } catch (e) { console.error('[warn] ' + e); dire(ctx, 'Erreur (voir les logs).'); return 0 }
+  }
+  event.register(
+    Commands.literal('warn')
+      .requires(profOuOp)
+      .then(Commands.literal('voir')
+        .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+          .executes(function (ctx) {
+            var j = cible(ctx)
+            dire(ctx, j.username + ' : ' + warnNb(j) + '/' + WARN_MAX + ' avertissement(s)' + (warnEnRetenue(j) ? ', en retenue (encore ' + warnMinutes(j) + ' min)' : '') + '.')
+            return 1
+          })))
+      .then(Commands.literal('retirer')
+        .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+          .executes(function (ctx) {
+            var j = cible(ctx)
+            var n = Math.max(0, warnNb(j) - 1)
+            j.persistentData.putInt(WARN_K_N, n)
+            j.tell(Text.green('Un avertissement t\'a été retiré : tu en as ' + n + '/' + WARN_MAX + '.'))
+            dire(ctx, j.username + ' : ' + n + '/' + WARN_MAX + ' avertissement(s).')
+            return 1
+          })))
+      .then(Commands.literal('liberer')
+        .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+          .executes(function (ctx) {
+            var j = cible(ctx)
+            if (!warnEnRetenue(j)) { dire(ctx, j.username + ' n\'est pas en retenue.'); return 0 }
+            warnFinRetenue(j, true)
+            dire(ctx, j.username + ' est libéré de sa retenue.')
+            return 1
+          })))
+      .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+        .executes(function (ctx) { return avertir(ctx, '') })
+        .then(Commands.argument('raison', Arguments.GREEDY_STRING.create(event))
+          .executes(function (ctx) { return avertir(ctx, String(Arguments.GREEDY_STRING.getResult(ctx, 'raison'))) })))
+  )
+})
+
+console.info('[professeur] chargé : /professeur donner|retirer|liste, /aura, /warn, effet ' + PF_EFFET + ' (opérateurs ' + (PF_OPS ? 'inclus' : 'exclus') + ').')
