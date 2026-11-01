@@ -1,5 +1,5 @@
 {
- "version": "2026-11-01T22:05:26.880Z",
+ "version": "2026-11-01T23:34:53.447Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6122,8 +6122,8 @@
   },
   {
    "path": "kubejs/server_scripts/armures_butin.js",
-   "sha1": "6cc5264f4685c2e9665244f3ba0ca81a931804e1",
-   "size": 8666
+   "sha1": "b6eb91c5d1b2dde78d2ecf09f65be4546c0dd4e8",
+   "size": 8667
   },
   {
    "path": "kubejs/server_scripts/baton_neant.js",
