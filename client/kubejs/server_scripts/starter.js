@@ -35,18 +35,18 @@ var STARTER_GUIDE_PAGES = [
   "Plasmo Voice :\nouvrir les paramètres du chat vocal de proximité. Règle ton micro avant de parler !\n\nBonne rentrée, et bonne chance."
 ]
 var STARTER_REGLEMENT_PAGES = [
-  "Règlement de l'Académie d'Aetheris\n\nTout élève admis entre ces murs s'engage à respecter les articles qui suivent. Nul n'est censé ignorer le règlement.",
-  "Art. 1 - Le rôle\n\nTu es un élève de l'Académie. Joue ton personnage, en jeu comme dans le chat. Les histoires hors rôle se racontent ailleurs.",
-  "Art. 2 - Le respect\n\nRespecte les professeurs, la surveillante, l'équipe et tes camarades. Insultes, harcèlement et provocations n'ont pas leur place ici.",
-  "Art. 3 - Les professeurs\n\nEn cours, on écoute et on suit les consignes. Les professeurs enseignent les sorts : sois présent, attentif et à l'heure.",
-  "Art. 4 - Les avertissements\n\nUn professeur peut te donner un avertissement. Au troisième, c'est dix minutes de retenue, et la porte de la salle reste close pour toi.",
-  "Art. 5 - Les combats\n\nOn ne frappe pas un camarade sans raison. Les différends se règlent en duel, au Colisée, devant un professeur.",
-  "Art. 6 - Les biens d'autrui\n\nNe vole pas, ne casse pas, ne détruis pas ce que d'autres ont construit ou rangé. Ce qui n'est pas à toi n'est pas à toi.",
-  "Art. 7 - Les lieux protégés\n\nL'Académie, le village et les grands lieux sont protégés. Pour bâtir, éloigne-toi des zones construites.",
-  "Art. 8 - La triche\n\nTriche, mods interdits et exploitation de bugs sont bannis. Si tu trouves un bug, signale-le à l'équipe sans en profiter.",
-  "Art. 9 - Le chat vocal\n\nParle avec respect et sans bruit inutile. Coupe ton micro si tu n'es pas disponible.",
-  "Art. 10 - Les secrets\n\nL'Académie garde des mystères. Ne dévoile pas les solutions des quêtes aux autres : laisse chacun les découvrir.",
-  "Le règlement complet se trouve sur le Discord.\n\nEn cas de doute, demande à un professeur.\n\nSigné : la Direction de l'Académie."
+  "Règlement de l'Académie\n\nCher élève, bienvenue entre nos murs. Lis ce livre avec attention. Ou au moins, fais semblant devant la surveillante.",
+  "Article 1\n\nTu es un élève de l'Académie. Tiens ton rôle, porte ta robe avec fierté et n'oublie jamais d'où tu viens. Même si tu ne t'en souviens plus.",
+  "Article 2\n\nLe Directeur Véhuit voit tout. S'il ne le voit pas, la surveillante Poutou le voit. Et elle le note dans son carnet.",
+  "Article 3\n\nEn cours, on écoute les professeurs Yaga et Trogneux. Un élève attentif apprend des sorts. Un élève dissipé apprend à éteindre ses sourcils.",
+  "Article 4\n\nTrois avertissements, et c'est la retenue. Là-bas t'attend le Surveillant de retenue. Personne n'en revient tout à fait le même.",
+  "Article 5\n\nOn ne lance pas de sort sur un camarade dans les couloirs. Les querelles se règlent en duel, au Colisée, devant tout le monde. C'est plus classe.",
+  "Article 6\n\nCe qui n'est pas à toi n'est pas à toi. Le coffre du voisin, la maison du voisin, le goûter du voisin : on n'y touche pas.",
+  "Article 7\n\nLes murs de l'Académie et du village sont sous protection ancienne. Inutile de les casser : ils ne se laisseront pas faire.",
+  "Article 8\n\nTricher, c'est renoncer à la magie. Un élève qui trouve une faille dans le monde la signale aux professeurs, au lieu d'en abuser.",
+  "Article 9\n\nL'île a ses secrets. Ne gâche pas les mystères de tes camarades : laisse-les se perdre, chercher et trouver par eux-mêmes.",
+  "Article 10\n\nAmuse-toi, fais-toi des amis, et prends soin des nouveaux. L'Académie est une famille. Une famille bizarre, mais une famille.",
+  "Fait à l'Académie, par ordre du Directeur.\n\nP.-S. : le règlement complet est affiché sur le Discord. Il est plus long. Et moins drôle."
 ]
 function starterLivre(server, n, titre, auteur, textes) {
   var pages = []
