@@ -1,5 +1,5 @@
 {
- "version": "2026-11-01T01:17:35.714Z",
+ "version": "2026-11-01T01:33:31.654Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -5006,6 +5006,21 @@
    "size": 56464
   },
   {
+   "path": "kubejs/assets/mcrp/textures/entity/anselme.png",
+   "sha1": "77b2f261e9579a6639e113ce04c64115625316aa",
+   "size": 3148
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/bastien.png",
+   "sha1": "05bdc21fb0c993d638dc011a935638fce46f0b74",
+   "size": 3132
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/bertin.png",
+   "sha1": "43149e3155029710f7e03d2eb135ae468b238635",
+   "size": 5942
+  },
+  {
    "path": "kubejs/assets/mcrp/textures/entity/brokk.png",
    "sha1": "352f68465b5c2674b0a20341bb1a5d1277fd7a7d",
    "size": 5390
@@ -5321,6 +5336,41 @@
    "size": 2735
   },
   {
+   "path": "kubejs/assets/mcrp/textures/entity/eleve_aurore.png",
+   "sha1": "1065a3eae5728735c727f998aded1ffb40bfc366",
+   "size": 2660
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/eleve_clemence.png",
+   "sha1": "764025ba349e9bd8394c1caf562e5b931ed9bb44",
+   "size": 2284
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/eleve_lise.png",
+   "sha1": "8edf97da57fbca0e1598242627d978f81e3e53c1",
+   "size": 2302
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/eleve_lyra.png",
+   "sha1": "c21782a46a1ab0af3999b32a662b2d1f29dcf1d3",
+   "size": 2429
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/eleve_noemie.png",
+   "sha1": "9065edf811fb33d65f21f68ef33097d7b7201d9e",
+   "size": 2693
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/evrard.png",
+   "sha1": "a94f7518167b9bc971b04540d35d872bca163eb3",
+   "size": 3056
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/gauvain.png",
+   "sha1": "f45f917ae97d158068498055012f85ad7785ac44",
+   "size": 3036
+  },
+  {
    "path": "kubejs/assets/mcrp/textures/entity/gorm.png",
    "sha1": "4e94d8adfe8969ffbdde51fc050f7d08ed0a244a",
    "size": 1459
@@ -5329,6 +5379,11 @@
    "path": "kubejs/assets/mcrp/textures/entity/hiro.png",
    "sha1": "a3092753362fb880ef57177eef5ce6c6781a94ab",
    "size": 3726
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/isolde.png",
+   "sha1": "eb51eb0734c748110f669fc24c122d17fbe8af74",
+   "size": 5402
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/kael.png",
@@ -5349,6 +5404,21 @@
    "path": "kubejs/assets/mcrp/textures/entity/maitre_du_destin.png",
    "sha1": "8d60be4e890d2128d1687c1a9acd9aea13fd2c41",
    "size": 5426
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/masque_pale.png",
+   "sha1": "707e58d783891cf30a2803e89b4f3ca9498acd65",
+   "size": 5476
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/mathurin.png",
+   "sha1": "a67d382407484f527f09256ccf8085205206ca13",
+   "size": 6079
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/mira.png",
+   "sha1": "ecb5ea807de96159fbdc647fc5fca09f3125494d",
+   "size": 2869
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/mistral.png",
@@ -5901,9 +5971,19 @@
    "size": 10583
   },
   {
+   "path": "kubejs/assets/mcrp/textures/entity/rhea.png",
+   "sha1": "0c6707d576b509e478b51e654cb9adbcc6ba2c6d",
+   "size": 2713
+  },
+  {
    "path": "kubejs/assets/mcrp/textures/entity/ser_aldric.png",
    "sha1": "6d5ea117aa2615e5eaec961b929f1cb6be974526",
    "size": 5069
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/surveillant_retenue.png",
+   "sha1": "63895514e7e1fceeb4f42eed399524663cc1da42",
+   "size": 2711
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/sylvaine.png",
@@ -5992,8 +6072,8 @@
   },
   {
    "path": "kubejs/server_scripts/chasse_quetes.js",
-   "sha1": "e5de8f82600d16dfe5c99f893496a61e405bdb66",
-   "size": 7230
+   "sha1": "b919f2934cf2877ebdbd03e1ebdb074e20c095bb",
+   "size": 23313
   },
   {
    "path": "kubejs/server_scripts/classes_boosts.js",
