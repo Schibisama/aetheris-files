@@ -160,9 +160,21 @@ try {
 // Tape un mot : le Codex n'affiche plus que les sorts dont le nom (ou l'identifiant) le contient. Sans accents, majuscules ignorées.
 // Fonctionnement : on ajoute temporairement les sorts qui ne correspondent pas à la liste noire du Codex côté client
 // (ClientModConfigCache), puis on remet la liste d'origine à la fermeture du Codex. Rien n'est envoyé au serveur.
-var CR = { boite: null, texte: '', origine: null, actif: false, err: false }
+var CR = { cadre: null, boite: null, texte: '', origine: null, actif: false, err: false }
 var CR_CACHE = null, CR_SR = null, CR_SET = null, CR_MAP = null
 
+// Couleurs du Codex (fond violet très sombre, liseré doré)
+var CR_FOND = (0xF0140E1C | 0), CR_OR = (0xFFB8914E | 0), CR_OR_SOMBRE = (0xFF5E4A2A | 0), CR_OR_CLAIR = 0xE8CC8A
+function crTrouverRespec(ecran) {
+  try {
+    var enfants = ecran.children()
+    for (var i = 0; i < enfants.size(); i++) {
+      var w = enfants.get(i)
+      try { if (String(w.getMessage().getString()).toLowerCase().indexOf('respec') !== -1) return w } catch (e) {}
+    }
+  } catch (e2) { crLog('respec : ' + e2) }
+  return null
+}
 function crEstCodex(ecran) { return ecran && String(ecran).indexOf('SpecsSpellHudScreen') !== -1 }
 function crLog(m) { if (!CR.err) { CR.err = true; console.error('[recherche_codex] ' + m) } }
 function crClasses() {
@@ -222,19 +234,41 @@ try {
       if (!crEstCodex(ecran)) return
       var mc = Java.loadClass('net.minecraft.client.Minecraft').getInstance()
       var EditBox = Java.loadClass('net.minecraft.client.gui.components.EditBox')
-      var larg = 140
-      var x = ecran.getGuiLeft()
-      var y = ecran.getGuiTop() - 16
-      if (y < 2) y = ecran.height - 18
-      var boite = new EditBox(mc.font, x, y, larg, 14, Text.of('Recherche'))
+      // Placement : juste au-dessus du bouton « Respec », dans le cadre du Codex (repli : au-dessus du Codex)
+      var respec = crTrouverRespec(ecran)
+      var larg = 140, haut = 12, x, y
+      if (respec) {
+        larg = respec.getWidth(); x = respec.getX(); y = respec.getY() - haut - 3
+      } else {
+        x = ecran.getGuiLeft(); y = ecran.getGuiTop() - 16
+        if (y < 2) y = ecran.height - 18
+      }
+      CR.cadre = { x: x, y: y, l: larg, h: haut }
+      var boite = new EditBox(mc.font, x + 4, y + 2, larg - 8, haut - 2, Text.of('Recherche'))
+      boite.setBordered(false)                 // le cadre est dessiné à la main, aux couleurs du Codex
+      boite.setTextColor(CR_OR_CLAIR)
       boite.setMaxLength(40)
-      boite.setHint(Text.of('Rechercher un sort...').gray())
+      boite.setHint(Java.loadClass('net.minecraft.network.chat.Component').literal('Rechercher un sort...').withColor(0x8C7A55))
       boite.setValue(CR.texte)
       boite.setResponder(function (t) { crFiltrer(t) })
       e.addListener(boite)
       CR.boite = boite
       if (CR.texte) crFiltrer(CR.texte)
     } catch (err) { crLog('barre : ' + err) }
+  })
+  // Cadre de la barre, dessiné par-dessus le Codex, puis la barre elle-même au premier plan
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.client.event.ScreenEvent$Render$Post'), function (e) {
+    try {
+      if (!CR.boite || !CR.cadre || !crEstCodex(e.getScreen())) return
+      var g = e.getGuiGraphics(), c = CR.cadre
+      var or = CR.boite.isFocused() ? CR_OR : CR_OR_SOMBRE
+      g.pose().pushPose()
+      g.pose().translate(0, 0, 300)
+      g.fill(c.x, c.y, c.x + c.l, c.y + c.h, or)
+      g.fill(c.x + 1, c.y + 1, c.x + c.l - 1, c.y + c.h - 1, CR_FOND)
+      CR.boite.render(g, e.getMouseX(), e.getMouseY(), e.getPartialTick())
+      g.pose().popPose()
+    } catch (err) { crLog('rendu : ' + err) }
   })
   // Tant que la barre a le focus, les touches vont au texte (sinon « E » fermerait le Codex). Échap fonctionne toujours.
   NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.client.event.ScreenEvent$KeyPressed$Pre'), function (e) {
@@ -250,6 +284,7 @@ try {
       if (!crEstCodex(e.getScreen())) return
       crRestaurer()
       CR.boite = null
+      CR.cadre = null
       CR.texte = ''
     } catch (err) { crLog('fermeture : ' + err) }
   })
