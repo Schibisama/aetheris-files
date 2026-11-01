@@ -1,5 +1,5 @@
 {
- "version": "2026-10-31T23:55:04.278Z",
+ "version": "2026-11-01T00:04:55.917Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -5957,8 +5957,8 @@
   },
   {
    "path": "kubejs/client_scripts/pseudo_client.js",
-   "sha1": "aec4885fbfb7c78d17cb71dab11a0c4181144346",
-   "size": 1869
+   "sha1": "162266c5e10c80a55ec904b3a746b5ba803e938c",
+   "size": 3071
   },
   {
    "path": "kubejs/client_scripts/touches_masquees.js",
