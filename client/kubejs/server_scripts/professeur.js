@@ -299,4 +299,25 @@ ServerEvents.commandRegistry(function (event) {
   )
 })
 
-console.info('[professeur] chargé : /professeur donner|retirer|liste, /aura, /warn, effet ' + PF_EFFET + ' (opérateurs ' + (PF_OPS ? 'inclus' : 'exclus') + ').')
+// /annonce <message> : message dans le chat de tout le monde, en bleu clair et en gras (professeurs et opérateurs)
+ServerEvents.commandRegistry(function (event) {
+  var Commands = event.commands
+  var Arguments = event.arguments
+  event.register(
+    Commands.literal('annonce')
+      .requires(profOuOp)
+      .then(Commands.argument('message', Arguments.GREEDY_STRING.create(event))
+        .executes(function (ctx) {
+          try {
+            var msg = String(Arguments.GREEDY_STRING.getResult(ctx, 'message'))
+            var sv = ctx.source.server
+            sv.runCommandSilent('tellraw @a ' + JSON.stringify({ text: msg, color: 'aqua', bold: true }))
+            sv.runCommandSilent('execute as @a at @s run playsound minecraft:block.note_block.bell master @s ~ ~ ~ 0.6 1.2')
+            console.info('[annonce] ' + msg)
+            return 1
+          } catch (e) { console.error('[annonce] ' + e); return 0 }
+        }))
+  )
+})
+
+console.info('[professeur] chargé : /professeur donner|retirer|liste, /aura, /warn, /annonce, effet ' + PF_EFFET + ' (opérateurs ' + (PF_OPS ? 'inclus' : 'exclus') + ').')
