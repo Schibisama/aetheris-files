@@ -189,8 +189,16 @@ ItemEvents.rightClicked(function (e) {
 
 // ── Déroulement (vérifié chaque tick) ──
 ServerEvents.tick(function (event) {
-  if (!DUEL) return
   var sv = event.server
+  // Sans duel en cours (par exemple après un /reload pendant un duel), personne ne doit rester figé : on libère, toutes les 5 s.
+  if (!DUEL) {
+    if (sv.tickCount % 100 !== 7) return
+    var js = sv.players
+    for (var q = 0; q < js.length; q++) {
+      try { if (js[q].persistentData.getBoolean('duel_fige')) { duLiberer(sv, String(js[q].username)); console.info('[duel] ' + js[q].username + ' libéré (plus de duel en cours)') } } catch (eL) {}
+    }
+    return
+  }
   try {
     var ecoule = sv.tickCount - DUEL.t
     if (DUEL.phase === 'decompte') {
