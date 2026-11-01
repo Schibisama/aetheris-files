@@ -4,7 +4,7 @@
 //     (mêmes 12 teintes pour la capuche et le chapeau), équipé directement ;
 //   - un grimoire de base à 5 emplacements (Flimsy Journal, vide) ;
 //   - un balai volant (Broom of Floatmount) ;
-//   et rien d'autre.
+//   - le livre « Guide des contrôles » et 32 durums (farmersdelight:mutton_wrap).
 // Clé « starter_pris_quete » : effacée par /reinit (le joueur peut alors redemander son kit).
 // Dépend de classes_rp.js (classeDe, tirer, appliquerClasse, annoncer, CLE, CLE_TEST).
 // Rechargement : /reload
@@ -23,6 +23,24 @@ function starterAnnonceAutres(server, joueur, classe) {
   cmd(server, 'title ' + cible + ' times 20 80 20')
   cmd(server, 'title ' + cible + ' subtitle {"translate":"mcrp.sous_titre.devenu","color":"gray","with":[{"selector":"' + n + '"},{"translate":"' + cle + '","color":"yellow"}]}')
   cmd(server, 'title ' + cible + ' title {"translate":"' + cle + '","color":"gold","bold":true}')
+}
+
+// Livre « Guide des contrôles » + 32 durums (wraps de mouton), donnés dans les deux kits (élève et professeur).
+var STARTER_GUIDE_PAGES = [
+  "Bienvenue à l'Académie !\n\nCe livre liste les contrôles les plus utiles. Choisis la touche de chacun comme tu veux dans Options > Commandes.",
+  "Iron's Spells, Spellbook :\nlancer un sort.\n\nTab gauche + molette :\nchanger de sort une fois le grimoire équipé.",
+  "Spell Actionbar, Open Scroll Actionbar :\nouvrir le codex de sorts et le grimoire.\n\nSimply Swords, Use Mainhand Ability :\nutiliser le pouvoir de l'arme tenue en main.",
+  "Dodge Roll :\nfaire une roulade d'esquive.\n\nCarry On :\nporter un bloc, un coffre ou un joueur (main vide, accroupi + clic droit).",
+  "Emotecraft, Menu Emote :\nouvrir la roue des emotes.\n\nBorrow Emote :\nfaire une emote à deux.",
+  "Plasmo Voice :\nouvrir les paramètres du chat vocal de proximité. Règle ton micro avant de parler !\n\nBonne rentrée, et bonne chance."
+]
+function starterGuide(server, n) {
+  var pages = []
+  for (var i = 0; i < STARTER_GUIDE_PAGES.length; i++) {
+    pages.push("'" + JSON.stringify({ text: STARTER_GUIDE_PAGES[i] }).replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'")
+  }
+  server.runCommandSilent('give ' + n + ' minecraft:written_book[written_book_content={title:"Guide des contrôles",author:"L\'Académie",pages:[' + pages.join(',') + ']}]')
+  server.runCommandSilent('give ' + n + ' farmersdelight:mutton_wrap 32')
 }
 
 function starterDonner(ctx, joueur) {
@@ -67,9 +85,10 @@ function starterDonner(ctx, joueur) {
   // 3. Grimoire de base (5 emplacements) et 4. balai volant
   server.runCommandSilent('give ' + n + ' irons_spellbooks:copper_spell_book')
   server.runCommandSilent('give ' + n + ' apprenticecodex:floatmount_broom')
+  starterGuide(server, n)
 
   if (op) op.tell(Text.gray('Kit de départ donné à ' + n + '.'))
-  joueur.tell(Text.gold('Kit de départ reçu : set de Wizard, grimoire et balai volant. Bonne rentrée à l\'Académie !'))
+  joueur.tell(Text.gold('Kit de départ reçu : set de Wizard, grimoire, balai volant, guide des contrôles et 32 durums. Bonne rentrée à l\'Académie !'))
   return 1
 }
 
@@ -105,8 +124,9 @@ function starterDonnerProf(ctx, joueur) {
   // Même grimoire et même balai que les élèves
   server.runCommandSilent('give ' + n + ' irons_spellbooks:copper_spell_book')
   server.runCommandSilent('give ' + n + ' apprenticecodex:floatmount_broom')
+  starterGuide(server, n)
   if (op) op.tell(Text.gray('Kit de professeur donné à ' + n + '.'))
-  joueur.tell(Text.gold('Kit de professeur reçu : couronne de Pyrium et armure de Hazel (teignables à l\'établi), grimoire et balai volant.'))
+  joueur.tell(Text.gold('Kit de professeur reçu : couronne de Pyrium et armure de Hazel (teignables à l\'établi), grimoire, balai volant, guide des contrôles et 32 durums.'))
   return 1
 }
 
