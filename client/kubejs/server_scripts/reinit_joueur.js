@@ -1,7 +1,7 @@
 // /reinit <joueur> (op) : remise à zéro COMPLÈTE d'un joueur, comme s'il venait d'arriver.
 // Efface : inventaire, armure, main secondaire, curios, coffre de l'Ender, XP, effets, succès, recettes débloquées,
 // progression des quêtes FTB, classe + compteur de changements, sorts découverts, quêtes de chasse, de boss et de livraison,
-// lieux découverts, pseudo, waystones découvertes.
+// lieux découverts, pseudo, waystones découvertes, kits de départ (élève et professeur), avertissements et retenue.
 // Après le reset, le joueur n'a plus de classe : utilise /classe donner <joueur> pour en tirer une.
 // Ne touche pas : position, point de réapparition, gamemode, statistiques, cadavres (mod Corpse).
 //
@@ -11,7 +11,7 @@ function rzCmd(server, texte) {
 }
 
 function rzCleAEffacer(cle) {
-  return /^(classe_|chasse_|cours_|pseudo|lieu_|bz_)/.test(cle) || /_quete$/.test(cle)
+  return /^(classe_|chasse_|cours_|pseudo|lieu_|bz_|starter_|warn_|retenue_)/.test(cle) || /_quete$/.test(cle)
 }
 
 function rzReinit(server, joueur) {

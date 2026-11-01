@@ -260,13 +260,19 @@ try {
   NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.client.event.ScreenEvent$Render$Post'), function (e) {
     try {
       if (!CR.boite || !CR.cadre || !crEstCodex(e.getScreen())) return
-      var g = e.getGuiGraphics(), c = CR.cadre
+      var g = e.getGuiGraphics(), c = CR.cadre, ecran = e.getScreen()
       var or = CR.boite.isFocused() ? CR_OR : CR_OR_SOMBRE
+      // Le Codex dessine son contenu réduit pour tenir à l'écran (CodexGuiFit) : on applique la même mise à l'échelle,
+      // sinon le cadre n'est pas dessiné au même endroit que la barre (qui, elle, est dans l'espace du Codex).
+      var lw = ecran.getGuiLeft() + ecran.getXSize(), lh = ecran.getYSize() + 54
+      var ech = Math.min(1, Math.min(Math.max(1, ecran.width) / Math.max(1, lw), Math.max(1, ecran.height) / Math.max(1, lh)))
+      var ox = (ecran.width - lw * ech) * 0.5, oy = (ecran.height - lh * ech) * 0.5
       g.pose().pushPose()
-      g.pose().translate(0, 0, 300)
+      g.pose().translate(ox, oy, 300)
+      if (Math.abs(ech - 1) > 0.001) g.pose().scale(ech, ech, 1)
       g.fill(c.x, c.y, c.x + c.l, c.y + c.h, or)
       g.fill(c.x + 1, c.y + 1, c.x + c.l - 1, c.y + c.h - 1, CR_FOND)
-      CR.boite.render(g, e.getMouseX(), e.getMouseY(), e.getPartialTick())
+      CR.boite.render(g, Math.floor((e.getMouseX() - ox) / ech), Math.floor((e.getMouseY() - oy) / ech), e.getPartialTick())
       g.pose().popPose()
     } catch (err) { crLog('rendu : ' + err) }
   })
