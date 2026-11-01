@@ -1,5 +1,5 @@
 {
- "version": "2026-11-01T17:08:26.817Z",
+ "version": "2026-11-01T17:20:53.348Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6001,6 +6001,41 @@
    "size": 5069
   },
   {
+   "path": "kubejs/assets/mcrp/textures/entity/spooky_ambre.png",
+   "sha1": "aaecf809b7c2e90b5e6d70c83a1e6b1513c7cca1",
+   "size": 1794
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/spooky_babette.png",
+   "sha1": "76d071a29098f995341eb74c606962733d18543b",
+   "size": 1426
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/spooky_lumi.png",
+   "sha1": "cbfa42d80f1ae43170e9783e67c39089eedd0614",
+   "size": 1272
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/spooky_ophelie.png",
+   "sha1": "1f4365f85e7fec6da4d6cb3c9c1f581c57d4cbc1",
+   "size": 1698
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/spooky_pantin.png",
+   "sha1": "09d0f77e223b582ccc6fe8978576e51c04f7b00a",
+   "size": 1507
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/spooky_pirouette.png",
+   "sha1": "49a892660dc5d47fda36f09e00f400e082b85a9b",
+   "size": 1772
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/spooky_roi_citrouille.png",
+   "sha1": "06350620f2cb0a75f6604302c415084af0ad5a1b",
+   "size": 3086
+  },
+  {
    "path": "kubejs/assets/mcrp/textures/entity/surveillant_retenue.png",
    "sha1": "63895514e7e1fceeb4f42eed399524663cc1da42",
    "size": 2711
@@ -6092,8 +6127,8 @@
   },
   {
    "path": "kubejs/server_scripts/chasse_quetes.js",
-   "sha1": "b919f2934cf2877ebdbd03e1ebdb074e20c095bb",
-   "size": 23313
+   "sha1": "8f14d37477bc466d131f95c53bf58c8b4278249a",
+   "size": 26704
   },
   {
    "path": "kubejs/server_scripts/classes_boosts.js",
@@ -6157,8 +6192,8 @@
   },
   {
    "path": "kubejs/server_scripts/livraison_quetes.js",
-   "sha1": "08bcd059ee8424afb24370c44981b031d94ba524",
-   "size": 30975
+   "sha1": "96ce37468b9aa9b906d3f5125be48b0ea02d2a5c",
+   "size": 33904
   },
   {
    "path": "kubejs/server_scripts/livres_aetheris.js",

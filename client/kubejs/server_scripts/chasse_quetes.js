@@ -373,6 +373,50 @@ function chEnregistrer(event, q) {
   event.register(racine)
 }
 
+// ── Spooky Island ──
+CHASSES.push({
+  commande: 'araignees', nom: "Babette", cible: 20, libelle: "Araignées",
+  types: ["minecraft:spider", "minecraft:cave_spider"],
+  recompenses: [["minecraft:emerald", 12], ["irons_spellbooks:uncommon_ink", 4]],
+  cleEtat: 'chasse_araignees_etat', cleKills: 'chasse_araignees_kills',
+  texteDejaFait: "Plus une seule araignée sous mon lit ! Tu es mon héros.",
+  texteEnCours: "Ta chasse continue : {n}/{cible} araignées écrasées. Il en reste, je les entends gratter.",
+  texteAccepte: "Je suis déguisée en fantôme pour faire peur aux araignées, mais ça ne marche pas ! Écrase-en {cible}, des grandes ou des petites des grottes, et reviens me voir.",
+  texteNonCommence: "Tu ne m'as encore rien promis.",
+  textePasFini: "Pas encore : {n}/{cible} araignées. J'en ai encore vu une ce matin !",
+  texteTermine: "Tu les as toutes eues ? Merci, merci ! Tiens, voici mes économies et de l'encre que j'ai trouvée.",
+  texteAccomplie: "Les araignées sont écrasées. Reviens voir Babette.",
+  texteDette: "Tu as déjà eu tes bonbons. Enfin, mes émeraudes."
+})
+CHASSES.push({
+  commande: 'morts_vivants', nom: "Lumi", cible: 25, libelle: "Morts-vivants",
+  types: ["minecraft:zombie", "minecraft:husk", "minecraft:zombie_villager", "minecraft:drowned"],
+  recompenses: [["minecraft:emerald", 16], ["irons_spellbooks:uncommon_ink", 4]],
+  cleEtat: 'chasse_morts_vivants_etat', cleKills: 'chasse_morts_vivants_kills',
+  texteDejaFait: "L'île est redevenue calme. Enfin, calme pour une île hantée.",
+  texteEnCours: "Ta chasse continue : {n}/{cible} morts-vivants renvoyés au repos.",
+  texteAccepte: "Bouh ! ... Non ? Bon. Les zombies envahissent l'île et ils font honte aux vrais fantômes comme moi. Renvoie-en {cible} au repos : zombies, noyés, momies du désert, tout compte.",
+  texteNonCommence: "Tu ne m'as encore rien promis. Je le saurais, je passe à travers les murs.",
+  textePasFini: "Pas encore : {n}/{cible} morts-vivants. J'en entends encore grogner.",
+  texteTermine: "Merci ! Les morts qui marchent, c'est d'un mauvais goût. Prends ces émeraudes et cette encre, moi je ne peux pas les tenir.",
+  texteAccomplie: "Les morts-vivants sont au repos. Reviens voir Lumi.",
+  texteDette: "Tu as déjà ta récompense. Je n'ai plus rien, je suis un fantôme."
+})
+CHASSES.push({
+  commande: 'sorcieres', nom: "Le Roi Citrouille", cible: 8, libelle: "Sorcières",
+  types: ["minecraft:witch"],
+  recompenses: [["minecraft:emerald", 24], ["irons_spellbooks:rare_ink", 2]],
+  cleEtat: 'chasse_sorcieres_etat', cleKills: 'chasse_sorcieres_kills',
+  texteDejaFait: "Mon royaume est en paix. Le Roi Citrouille n'oublie jamais ses fidèles.",
+  texteEnCours: "Ta chasse continue : {n}/{cible} sorcières vaincues.",
+  texteAccepte: "Des sorcières volent les citrouilles de mon royaume pour leurs potions infâmes ! Abats-en {cible}, et ton roi te couvrira d'or. Enfin, d'émeraudes.",
+  texteNonCommence: "Tu n'as encore rien juré à ton roi.",
+  textePasFini: "Pas encore : {n}/{cible} sorcières. Mes champs sont encore pillés !",
+  texteTermine: "Victoire ! Mon royaume est sauvé. Reçois la gratitude royale : des émeraudes et une encre rare.",
+  texteAccomplie: "Les sorcières sont vaincues. Reviens voir le Roi Citrouille.",
+  texteDette: "Le trésor royal t'a déjà récompensé. Il ne reste que des graines."
+})
+
 ServerEvents.commandRegistry(function (event) {
   for (var i = 0; i < CHASSES.length; i++) chEnregistrer(event, CHASSES[i])
 })

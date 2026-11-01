@@ -117,6 +117,35 @@ LIVRAISONS.mistral_membranes = lvSimple({
   fini: "Mes voiles sont tissées, grâce à toi. Le vent te le revaudra.",
   recompense: "De la belle membrane, souple et résistante. Prends ceci : un savoir de ta voie, porté par le vent."
 })
+// ── Spooky Island ──
+LIVRAISONS.spooky_citrouilles = lvSimple({
+  cle: 'spooky_citrouilles_quete', pnj: 'Ambre', objet: 'minecraft:pumpkin', nombre: 32, nom: 'citrouilles', rarete: 'peu_commun',
+  accepter: "La fête approche et mes champs ont été pillés ! Il me faut trente-deux citrouilles, entières, pas sculptées. Rapporte-les-moi et je te donnerai un petit savoir de ta voie.",
+  encours: "Alors, mes trente-deux citrouilles ? Sans elles, pas de lanternes pour la fête.",
+  fini: "Toutes mes lanternes brillent grâce à toi. Reviens me voir quand il fera nuit, c'est magnifique.",
+  recompense: "Trente-deux belles citrouilles ! Les lanternes vont être superbes. Tiens, un savoir de ta voie, avec un peu de magie d'Halloween dedans."
+})
+LIVRAISONS.spooky_jonglage = lvSimple({
+  cle: 'spooky_jonglage_quete', pnj: 'Pirouette', objet: 'minecraft:slime_ball', nombre: 24, nom: 'boules de slime', rarete: 'peu_commun',
+  accepter: "Hi hi ! Mes balles de jonglage ont roulé dans la mer ! Il m'en faut de nouvelles, des qui rebondissent. Vingt-quatre boules de slime, et je te fais un tour de magie... un vrai !",
+  encours: "Mes vingt-quatre boules de slime ? Je jongle avec des citrouilles en attendant, et ça fait mal aux mains.",
+  fini: "Mon spectacle est prêt grâce à toi ! Tu as ta place au premier rang, pour toujours.",
+  recompense: "Oh, elles rebondissent ! Parfait, parfait ! Voilà ton tour de magie, promis : un savoir de ta voie. Ta-daaa !"
+})
+LIVRAISONS.spooky_fil = lvSimple({
+  cle: 'spooky_fil_quete', pnj: 'Le Pantin', objet: 'minecraft:string', nombre: 48, nom: 'ficelles', rarete: 'peu_commun',
+  accepter: "Mes coutures lâchent. Bientôt, mon bras va tomber. Encore. Apporte-moi quarante-huit ficelles pour que je me recouse, et je te donnerai quelque chose que j'ai trouvé dans mon rembourrage.",
+  encours: "Mes quarante-huit ficelles ? Je perds mon rembourrage à chaque pas.",
+  fini: "Je suis tout neuf, ou presque. Si tu entends mes coutures craquer la nuit, ce n'est rien. Ce n'est jamais rien.",
+  recompense: "Ah... je me sens mieux. Tiens, voici ce que j'avais dans le ventre : un savoir de ta voie. Ne demande pas comment il est arrivé là."
+})
+LIVRAISONS.spooky_yeux = lvSimple({
+  cle: 'spooky_yeux_quete', pnj: 'Sœur Ophélie', objet: 'minecraft:spider_eye', nombre: 24, nom: "yeux d'araignée", rarete: 'rare',
+  accepter: "Mes patients ont besoin de remèdes, et mes remèdes ont besoin d'yeux d'araignée. Vingt-quatre, bien frais. Rapporte-les-moi et tu seras soigné... à ma façon. Avec un savoir de ta voie.",
+  encours: "Mes vingt-quatre yeux d'araignée ? Mes patients ne vont pas attendre éternellement. Enfin, certains si.",
+  fini: "Mes remèdes sont prêts. Reviens me voir si tu es blessé. Ou si tu ne l'es pas encore.",
+  recompense: "Merveilleux, ils me regardent encore. Voici ta récompense : un savoir de ta voie. Il ne pique presque pas."
+})
 function lvDire(joueur, q, texte) {
   joueur.tell(Text.gold('[' + q.pnj + '] ').append(Text.of(texte).gray()))
 }
