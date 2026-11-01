@@ -1,5 +1,5 @@
 {
- "version": "2026-11-01T10:26:16.304Z",
+ "version": "2026-11-01T13:42:09.830Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6157,8 +6157,8 @@
   },
   {
    "path": "kubejs/server_scripts/livres_aetheris.js",
-   "sha1": "a14f3db713fd8d981d19694a0912bd85da179426",
-   "size": 42653
+   "sha1": "3347f52a9557b219be4c5ee9b25b9e253528ad0d",
+   "size": 48121
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
