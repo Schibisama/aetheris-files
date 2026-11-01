@@ -44,7 +44,7 @@ ItemEvents.entityInteracted(function (event) {
   }
 })
 
-// ── Chef Cuisinier : /chef oui|non <joueur> (lancée par les boutons du PNJ) ──
+// ── Chef Cuisinier : /chef oui|non <joueur> ; Gardien des balais : /pnjdon balai <joueur> (lancées par les boutons des PNJ) ──
 // Easy NPC exécute ses commandes avec un niveau de permission limité : un « give » direct échoue, d'où cette commande.
 ServerEvents.commandRegistry(function (event) {
   var Commands = event.commands
@@ -68,4 +68,21 @@ ServerEvents.commandRegistry(function (event) {
     })(rep)
   }
   event.register(racine)
+
+  // /pnjdon <objet> <joueur> : objets donnés par des PNJ (même principe que /chef)
+  var dons = { balai: 'apprenticecodex:floatmount_broom' }
+  var don = Commands.literal('pnjdon').requires(parPnj)
+  for (var o in dons) {
+    ;(function (k) {
+      don = don.then(Commands.literal(k).then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+        .executes(function (ctx) {
+          try {
+            var j = Arguments.PLAYER.getResult(ctx, 'joueur')
+            ctx.source.server.runCommandSilent('give ' + j.username + ' ' + dons[k] + ' 1')
+            return 1
+          } catch (e) { console.error('[pnjdon] ' + e); return 0 }
+        })))
+    })(o)
+  }
+  event.register(don)
 })

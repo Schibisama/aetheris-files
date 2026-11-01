@@ -1,5 +1,5 @@
 {
- "version": "2026-11-01T21:28:03.807Z",
+ "version": "2026-11-01T21:34:53.896Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -5391,6 +5391,11 @@
    "size": 3056
   },
   {
+   "path": "kubejs/assets/mcrp/textures/entity/gardien_balais.png",
+   "sha1": "241f7246d23e5b5586628d605f498316931500ae",
+   "size": 2795
+  },
+  {
    "path": "kubejs/assets/mcrp/textures/entity/gauvain.png",
    "sha1": "f45f917ae97d158068498055012f85ad7785ac44",
    "size": 3036
@@ -6217,8 +6222,8 @@
   },
   {
    "path": "kubejs/server_scripts/pnj_parler.js",
-   "sha1": "7d7d93aed8486fa0a7169e6dc0eb9928cf448876",
-   "size": 3231
+   "sha1": "6aedc5c8a279cbf6d45ae12ff48f1e08ae27da6e",
+   "size": 3974
   },
   {
    "path": "kubejs/server_scripts/pnj_voix.js",
