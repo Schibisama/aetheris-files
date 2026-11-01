@@ -1,5 +1,5 @@
 {
- "version": "2026-11-01T01:33:51.810Z",
+ "version": "2026-11-01T02:19:11.456Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6042,8 +6042,8 @@
   },
   {
    "path": "kubejs/client_scripts/touches_masquees.js",
-   "sha1": "a20871e22bd28dce8ca1cc8f07a0d20be41d83f9",
-   "size": 11576
+   "sha1": "aed865c680d036e94cb4e89cd2d0f0bff873afdd",
+   "size": 13420
   },
   {
    "path": "kubejs/client_scripts/worldstop_portee_client.js",
