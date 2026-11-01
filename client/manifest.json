@@ -1,5 +1,5 @@
 {
- "version": "2026-11-01T16:54:22.014Z",
+ "version": "2026-11-01T17:08:26.817Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6129,6 +6129,11 @@
    "path": "kubejs/server_scripts/classes_sons.js",
    "sha1": "43b3c94b70b2075d9550ab4ee58bc216048d4328",
    "size": 1549
+  },
+  {
+   "path": "kubejs/server_scripts/colisee_duel.js",
+   "sha1": "3fb9d71cd5dfd47a094495c0675313aefe03f254",
+   "size": 13779
   },
   {
    "path": "kubejs/server_scripts/decouverte_lieux.js",
