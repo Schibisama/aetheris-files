@@ -1,5 +1,5 @@
 {
- "version": "2026-11-01T20:09:40.369Z",
+ "version": "2026-11-01T21:28:03.807Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6117,8 +6117,8 @@
   },
   {
    "path": "kubejs/server_scripts/armures_butin.js",
-   "sha1": "e83f42204950b20bc75e5cc90c8335754c5eb789",
-   "size": 4922
+   "sha1": "092f59de846bb2f0bd94e963331d5b9ccc852fda",
+   "size": 6076
   },
   {
    "path": "kubejs/server_scripts/baton_neant.js",
@@ -6187,8 +6187,8 @@
   },
   {
    "path": "kubejs/server_scripts/ftb_aide.js",
-   "sha1": "351c44f0529d01544448a08a945f33e97ccae1f8",
-   "size": 1976
+   "sha1": "6a9e3f36c1a57c91baae0cfd5051ce49475a2ee9",
+   "size": 2171
   },
   {
    "path": "kubejs/server_scripts/furniture_ops.js",
