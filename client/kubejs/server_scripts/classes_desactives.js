@@ -4,8 +4,8 @@
 //   - retirés des coffres et conteneurs à leur ouverture (butin des structures) ;
 //   - jamais produits par la pêche, le troc, l'archéologie, les chambres d'épreuve (objets au sol) ni vendus par les PNJ ;
 //   - masqués dans JEI (tag c:hidden_from_recipe_viewers, géré nativement par JEI/EMI/REI).
-// Parchemins des sorts désactivés (SORTS_DESACTIVES de classes_rp.js) : dans les coffres, butins de mobs et objets au sol,
-// ils sont remplacés par un parchemin d'un autre sort de la même école (même niveau si possible).
+// Parchemins ET pages de Codex des sorts désactivés (SORTS_DESACTIVES) et des sorts appris en cours (/cours) : dans les coffres,
+// butins de mobs et objets au sol, ils sont remplacés par ceux d'un autre sort de la même école (même niveau si possible).
 // À placer dans : <instance>/kubejs/server_scripts/classes_desactives.js  (puis /reload)
 // Dépend de restriction() et estTest() de classes_rp.js (même portée globale).
 
@@ -26,47 +26,79 @@ function desactEstDesactive(id) {
 var DESACT_ISC = null
 var DESACT_SR = null
 
+// Sorts interdits en butin : sorts désactivés (SORTS_DESACTIVES) ET sorts appris en cours (/cours, coursOrdre() de classes_rp.js).
+// Leurs parchemins et leurs pages de Codex trouvés en butin sont remplacés par ceux d'un autre sort de la même école.
+var DESACT_COURS = null
+function desactSortsCours() {
+  if (DESACT_COURS) return DESACT_COURS
+  var set = {}
+  try { var o = coursOrdre(); for (var i = 0; i < o.length; i++) set[String(o[i])] = true; DESACT_COURS = set } catch (e) { return set }
+  return DESACT_COURS
+}
+function desactSortInterdit(id) {
+  id = String(id)
+  try { if (SORTS_DESACTIVES.indexOf(id) !== -1) return true } catch (e) {}
+  return desactSortsCours()[id] === true
+}
+
+var DESACT_PAGE = null, DESACT_CATALOGUE = null
+// Sort d'un parchemin ou d'une page de Codex : { id, niveau, ecole, page } ou null
 function desactSortDuParchemin(pile) {
-  if (String(pile.id) !== 'irons_spellbooks:scroll') return null
+  var objet = String(pile.id)
   try {
-    if (!DESACT_ISC) DESACT_ISC = Java.loadClass('io.redspace.ironsspellbooks.api.spells.ISpellContainer')
-    var d = DESACT_ISC.get(pile).getSpellAtIndex(0)
-    var sp = d.getSpell()
-    return { id: String(sp.getSpellId()), niveau: d.getLevel(), ecole: String(sp.getSchoolType().getId()) }
-  } catch (e) { return null }
+    if (!DESACT_SR) DESACT_SR = Java.loadClass('io.redspace.ironsspellbooks.api.registry.SpellRegistry')
+    if (objet === 'irons_spellbooks:scroll') {
+      if (!DESACT_ISC) DESACT_ISC = Java.loadClass('io.redspace.ironsspellbooks.api.spells.ISpellContainer')
+      var d = DESACT_ISC.get(pile).getSpellAtIndex(0)
+      var sp = d.getSpell()
+      return { id: String(sp.getSpellId()), niveau: d.getLevel(), ecole: String(sp.getSchoolType().getId()), page: false }
+    }
+    if (objet === 'specs_irons_spellbooks:codex_page') {
+      if (!DESACT_PAGE) DESACT_PAGE = Java.loadClass('com.specs.irons_spellbooks.item.CodexPageItem')
+      var rl = DESACT_PAGE.getSpellId(pile)
+      if (!rl) return null
+      var sp2 = DESACT_SR.getSpell(rl)
+      return { id: String(sp2.getSpellId()), niveau: 1, ecole: String(sp2.getSchoolType().getId()), page: true }
+    }
+  } catch (e) {}
+  return null
 }
 
 function desactParcheminInterdit(pile) {
   var s = desactSortDuParchemin(pile)
   if (!s) return false
-  try { return SORTS_DESACTIVES.indexOf(s.id) !== -1 } catch (e) { return false }
+  return desactSortInterdit(s.id)
 }
 
-// Parchemin de remplacement : un sort actif, trouvable en butin, non désactivé, de la même école si possible.
+// Remplaçant : un sort actif, trouvable en butin, ni désactivé ni appris en cours, de la même école si possible.
+// Parchemin -> parchemin (même niveau si possible) ; page de Codex -> page de Codex.
 function desactRemplacant(pile) {
   try {
     var s = desactSortDuParchemin(pile)
     if (!s) return null
     if (!DESACT_SR) DESACT_SR = Java.loadClass('io.redspace.ironsspellbooks.api.registry.SpellRegistry')
+    if (s.page && !DESACT_CATALOGUE) { try { DESACT_CATALOGUE = Java.loadClass('com.specs.irons_spellbooks.catalog.SpellCatalog') } catch (eC) {} }
     var tous = DESACT_SR.getEnabledSpells()
     var memeEcole = [], autres = []
     for (var i = 0; i < tous.size(); i++) {
       var sp = tous.get(i)
       var id = String(sp.getSpellId())
-      if (id === s.id || SORTS_DESACTIVES.indexOf(id) !== -1) continue
+      if (id === s.id || desactSortInterdit(id)) continue
       try { if (!sp.allowLooting()) continue } catch (e1) {}
+      if (s.page && DESACT_CATALOGUE) { try { if (!DESACT_CATALOGUE.isListed(sp)) continue } catch (e2) {} }
       if (String(sp.getSchoolType().getId()) === s.ecole) memeEcole.push(sp)
       else autres.push(sp)
     }
     var liste = memeEcole.length ? memeEcole : autres
     if (!liste.length) return null
     var choix = liste[Math.floor(Math.random() * liste.length)]
+    if (s.page) return DESACT_PAGE['createFor(io.redspace.ironsspellbooks.api.spells.AbstractSpell)'](choix)
     var niveau = Math.max(choix.getMinLevel(), Math.min(s.niveau, choix.getMaxLevel()))
     var neuf = Item.of('irons_spellbooks:scroll')
     DESACT_ISC.set(neuf, DESACT_ISC.createScrollContainer(choix, niveau, neuf))
     return neuf
   } catch (e) {
-    console.error('[classes_desactives] Parchemin de remplacement : ' + e)
+    console.error('[classes_desactives] Remplacement : ' + e)
     return null
   }
 }

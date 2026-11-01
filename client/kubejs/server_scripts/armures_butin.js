@@ -26,7 +26,7 @@ var AR_PAGE = null, AR_SR = null, AR_CATALOGUE = null
 function arRareteSort(sp) { try { return String(sp.getMinRarity()).toUpperCase() } catch (e) { return 'COMMON' } }
 function arSortListable(sp) {
   try { if (!sp.allowLooting()) return false } catch (e) {}
-  try { if (typeof SORTS_DESACTIVES !== 'undefined' && SORTS_DESACTIVES.indexOf(String(sp.getSpellId())) !== -1) return false } catch (e2) {}
+  try { if (typeof desactSortInterdit === 'function' && desactSortInterdit(sp.getSpellId())) return false } catch (e2) {}   // désactivés et sorts de cours
   try { if (AR_CATALOGUE && !AR_CATALOGUE.isListed(sp)) return false } catch (e3) {}
   return true
 }
