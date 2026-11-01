@@ -18,10 +18,10 @@ var AR_AUTRES = [
   [/^irons_spellbooks:[a-z_]*upgrade_orb$/, 0.5]                          // orbes d'amélioration
 ]
 // Pages de Codex : AR_CODEX_TAUX des pages sont retirées ; parmi celles qui restent, une page de sort rare, épique ou légendaire
-// n'est gardée telle quelle qu'1 fois sur 5 (AR_CODEX_GARDE_RARE) ; sinon elle devient la page d'un sort commun ou peu commun
+// n'est gardée telle quelle qu'1 fois sur 20 (AR_CODEX_GARDE_RARE) ; sinon elle devient la page d'un sort commun ou peu commun
 // (même école si possible, sort actif, trouvable en butin et non désactivé). Même principe que parchemins_coffres.js.
-var AR_CODEX_TAUX = 0.75
-var AR_CODEX_GARDE_RARE = 0.2
+var AR_CODEX_TAUX = 0.9
+var AR_CODEX_GARDE_RARE = 0.05
 var AR_PAGE = null, AR_SR = null, AR_CATALOGUE = null
 function arRareteSort(sp) { try { return String(sp.getMinRarity()).toUpperCase() } catch (e) { return 'COMMON' } }
 function arSortListable(sp) {
