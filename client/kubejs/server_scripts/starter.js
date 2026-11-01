@@ -4,7 +4,7 @@
 //     (mêmes 12 teintes pour la capuche et le chapeau), équipé directement ;
 //   - un grimoire de base à 5 emplacements (Flimsy Journal, vide) ;
 //   - un balai volant (Broom of Floatmount) ;
-//   - le livre « Guide des contrôles » et 32 durums (farmersdelight:mutton_wrap).
+//   - les livres « Règlement de l'Académie » et « Guide des contrôles », et 32 durums (farmersdelight:mutton_wrap).
 // Clé « starter_pris_quete » : effacée par /reinit (le joueur peut alors redemander son kit).
 // Dépend de classes_rp.js (classeDe, tirer, appliquerClasse, annoncer, CLE, CLE_TEST).
 // Rechargement : /reload
@@ -25,7 +25,7 @@ function starterAnnonceAutres(server, joueur, classe) {
   cmd(server, 'title ' + cible + ' title {"translate":"' + cle + '","color":"gold","bold":true}')
 }
 
-// Livre « Guide des contrôles » + 32 durums (wraps de mouton), donnés dans les deux kits (élève et professeur).
+// Livres « Règlement de l'Académie » et « Guide des contrôles » + 32 durums (wraps de mouton), donnés dans les deux kits (élève et professeur).
 var STARTER_GUIDE_PAGES = [
   "Bienvenue à l'Académie !\n\nCe livre liste les contrôles les plus utiles. Choisis la touche de chacun comme tu veux dans Options > Commandes.",
   "Iron's Spells, Spellbook :\nlancer un sort.\n\nTab gauche + molette :\nchanger de sort une fois le grimoire équipé.",
@@ -34,12 +34,30 @@ var STARTER_GUIDE_PAGES = [
   "Emotecraft, Menu Emote :\nouvrir la roue des emotes.\n\nBorrow Emote :\nfaire une emote à deux.",
   "Plasmo Voice :\nouvrir les paramètres du chat vocal de proximité. Règle ton micro avant de parler !\n\nBonne rentrée, et bonne chance."
 ]
-function starterGuide(server, n) {
+var STARTER_REGLEMENT_PAGES = [
+  "Règlement de l'Académie d'Aetheris\n\nTout élève admis entre ces murs s'engage à respecter les articles qui suivent. Nul n'est censé ignorer le règlement.",
+  "Art. 1 - Le rôle\n\nTu es un élève de l'Académie. Joue ton personnage, en jeu comme dans le chat. Les histoires hors rôle se racontent ailleurs.",
+  "Art. 2 - Le respect\n\nRespecte les professeurs, la surveillante, l'équipe et tes camarades. Insultes, harcèlement et provocations n'ont pas leur place ici.",
+  "Art. 3 - Les professeurs\n\nEn cours, on écoute et on suit les consignes. Les professeurs enseignent les sorts : sois présent, attentif et à l'heure.",
+  "Art. 4 - Les avertissements\n\nUn professeur peut te donner un avertissement. Au troisième, c'est dix minutes de retenue, et la porte de la salle reste close pour toi.",
+  "Art. 5 - Les combats\n\nOn ne frappe pas un camarade sans raison. Les différends se règlent en duel, au Colisée, devant un professeur.",
+  "Art. 6 - Les biens d'autrui\n\nNe vole pas, ne casse pas, ne détruis pas ce que d'autres ont construit ou rangé. Ce qui n'est pas à toi n'est pas à toi.",
+  "Art. 7 - Les lieux protégés\n\nL'Académie, le village et les grands lieux sont protégés. Pour bâtir, éloigne-toi des zones construites.",
+  "Art. 8 - La triche\n\nTriche, mods interdits et exploitation de bugs sont bannis. Si tu trouves un bug, signale-le à l'équipe sans en profiter.",
+  "Art. 9 - Le chat vocal\n\nParle avec respect et sans bruit inutile. Coupe ton micro si tu n'es pas disponible.",
+  "Art. 10 - Les secrets\n\nL'Académie garde des mystères. Ne dévoile pas les solutions des quêtes aux autres : laisse chacun les découvrir.",
+  "Le règlement complet se trouve sur le Discord.\n\nEn cas de doute, demande à un professeur.\n\nSigné : la Direction de l'Académie."
+]
+function starterLivre(server, n, titre, auteur, textes) {
   var pages = []
-  for (var i = 0; i < STARTER_GUIDE_PAGES.length; i++) {
-    pages.push("'" + JSON.stringify({ text: STARTER_GUIDE_PAGES[i] }).replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'")
+  for (var i = 0; i < textes.length; i++) {
+    pages.push("'" + JSON.stringify({ text: textes[i] }).replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'")
   }
-  server.runCommandSilent('give ' + n + ' minecraft:written_book[written_book_content={title:"Guide des contrôles",author:"L\'Académie",pages:[' + pages.join(',') + ']}]')
+  server.runCommandSilent('give ' + n + ' minecraft:written_book[written_book_content={title:' + JSON.stringify(titre) + ',author:' + JSON.stringify(auteur) + ',pages:[' + pages.join(',') + ']}]')
+}
+function starterGuide(server, n) {
+  starterLivre(server, n, 'Règlement de l\'Académie', 'La Direction', STARTER_REGLEMENT_PAGES)
+  starterLivre(server, n, 'Guide des contrôles', 'L\'Académie', STARTER_GUIDE_PAGES)
   server.runCommandSilent('give ' + n + ' farmersdelight:mutton_wrap 32')
 }
 
@@ -88,7 +106,7 @@ function starterDonner(ctx, joueur) {
   starterGuide(server, n)
 
   if (op) op.tell(Text.gray('Kit de départ donné à ' + n + '.'))
-  joueur.tell(Text.gold('Kit de départ reçu : set de Wizard, grimoire, balai volant, guide des contrôles et 32 durums. Bonne rentrée à l\'Académie !'))
+  joueur.tell(Text.gold('Kit de départ reçu : set de Wizard, grimoire, balai volant, règlement, guide des contrôles et 32 durums. Bonne rentrée à l\'Académie !'))
   return 1
 }
 
@@ -126,7 +144,7 @@ function starterDonnerProf(ctx, joueur) {
   server.runCommandSilent('give ' + n + ' apprenticecodex:floatmount_broom')
   starterGuide(server, n)
   if (op) op.tell(Text.gray('Kit de professeur donné à ' + n + '.'))
-  joueur.tell(Text.gold('Kit de professeur reçu : couronne de Pyrium et armure de Hazel (teignables à l\'établi), grimoire, balai volant, guide des contrôles et 32 durums.'))
+  joueur.tell(Text.gold('Kit de professeur reçu : couronne de Pyrium et armure de Hazel (teignables à l\'établi), grimoire, balai volant, règlement, guide des contrôles et 32 durums.'))
   return 1
 }
 
