@@ -1,5 +1,5 @@
 {
- "version": "2026-11-01T02:25:00.786Z",
+ "version": "2026-11-01T02:26:44.847Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -5016,6 +5016,16 @@
    "size": 7523
   },
   {
+   "path": "kubejs/assets/mcrp/textures/armor/pyrium_ornements.png",
+   "sha1": "439b4ead9a01c18cca60e8ac5052cbd632e4c834",
+   "size": 1082
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/armor/pyrium_tissu.png",
+   "sha1": "271deea2ac8bacdd58784fd18b4492fb2fd917a4",
+   "size": 3440
+  },
+  {
    "path": "kubejs/assets/mcrp/textures/entity/anselme.png",
    "sha1": "77b2f261e9579a6639e113ce04c64115625316aa",
    "size": 3148
@@ -6047,8 +6057,8 @@
   },
   {
    "path": "kubejs/client_scripts/pseudo_client.js",
-   "sha1": "3d6e9c628a8ac8b3c8863e753793a0c25ae2cc80",
-   "size": 5785
+   "sha1": "a788c338af85b85555e89231775c8f6ac7f944eb",
+   "size": 6232
   },
   {
    "path": "kubejs/client_scripts/touches_masquees.js",
@@ -6197,8 +6207,8 @@
   },
   {
    "path": "kubejs/server_scripts/starter.js",
-   "sha1": "a96a471f0162601ece5078db18d119d8a00818da",
-   "size": 7480
+   "sha1": "0130dfc73efd15ccb97476fa888fb968dde29e87",
+   "size": 7571
   },
   {
    "path": "kubejs/server_scripts/worldstop_portee.js",
