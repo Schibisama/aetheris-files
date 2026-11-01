@@ -1,5 +1,5 @@
 {
- "version": "2026-11-01T19:10:57.358Z",
+ "version": "2026-11-01T19:16:29.142Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6217,8 +6217,8 @@
   },
   {
    "path": "kubejs/server_scripts/pnj_parler.js",
-   "sha1": "c95a37e177ecf8f75b77fa6573f6d97c0a243822",
-   "size": 2013
+   "sha1": "7d7d93aed8486fa0a7169e6dc0eb9928cf448876",
+   "size": 3231
   },
   {
    "path": "kubejs/server_scripts/pnj_voix.js",
