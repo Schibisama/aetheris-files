@@ -74,7 +74,7 @@ function starterDonner(ctx, joueur) {
 }
 
 // /starter professeur <joueur> : kit de professeur, équipé directement : couronne Pyrium Battlemage + veste, pantalon et bottes de Hazel,
-// le tout teint d'une même couleur aléatoire (mêmes 12 teintes que les élèves). Le set est teignable comme une armure de cuir
+// plus le même grimoire et le même balai volant que les élèves ; le tout (armure) teint d'une même couleur aléatoire (mêmes 12 teintes que les élèves). Le set est teignable comme une armure de cuir
 // (tag minecraft:dyeable ci-dessous ; rendu teint côté client : pseudo_client.js). Les ornements dorés gardent leur couleur.
 // Si un emplacement d'armure est déjà occupé, la pièce est donnée dans l'inventaire. Une seule fois par joueur (clé effacée par /reinit).
 var STARTER_PROF_CLE = 'starter_prof_pris'
@@ -102,8 +102,11 @@ function starterDonnerProf(ctx, joueur) {
     if (libre) server.runCommandSilent('item replace entity ' + n + ' ' + p.slot + ' with ' + objet)
     else server.runCommandSilent('give ' + n + ' ' + objet)
   }
+  // Même grimoire et même balai que les élèves
+  server.runCommandSilent('give ' + n + ' irons_spellbooks:copper_spell_book')
+  server.runCommandSilent('give ' + n + ' apprenticecodex:floatmount_broom')
   if (op) op.tell(Text.gray('Kit de professeur donné à ' + n + '.'))
-  joueur.tell(Text.gold('Kit de professeur reçu : couronne de Pyrium et armure de Hazel (teignable à l\'établi avec des colorants).'))
+  joueur.tell(Text.gold('Kit de professeur reçu : couronne de Pyrium et armure de Hazel (teignables à l\'établi), grimoire et balai volant.'))
   return 1
 }
 
