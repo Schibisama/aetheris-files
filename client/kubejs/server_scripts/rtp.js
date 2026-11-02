@@ -109,8 +109,8 @@ ServerEvents.commandRegistry(function (event) {
 })
 
 // ── /warp : depuis le spawn du monde, téléporte à l'école (cour de récréation de l'Académie) ──
-// Utilisable seulement à moins de WARP.RAYON_SPAWN blocs du point d'apparition du monde (0 = partout). Op : partout.
-var WARP = { X: 1044.5, Y: 482, Z: 1279.5, DIMENSION: 'minecraft:overworld', RAYON_SPAWN: 64 }
+// Utilisable de partout (RAYON_SPAWN: 0). Mettre un rayon en blocs autour du spawn du monde pour le limiter.
+var WARP = { X: 1044.5, Y: 482, Z: 1279.5, DIMENSION: 'minecraft:overworld', RAYON_SPAWN: 0 }
 function cmdWarp(ctx) {
   var j = ctx.source.player
   if (!j) return 0

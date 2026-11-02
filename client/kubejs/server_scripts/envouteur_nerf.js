@@ -1,0 +1,58 @@
+// Envoûteur : rééquilibrage des sorts de l'école Curse (mod Curse Spells, préfixe cursespells:).
+//  1) dégâts de tous les sorts Curse à 75 %
+//  2) recharge x1,5 sur les gros sorts de zone
+//  3) coût en mana x1,3 sur ces mêmes gros sorts
+// À placer dans : kubejs/server_scripts/envouteur_nerf.js  (puis /reload). Les trois valeurs se règlent ci-dessous.
+var NERF_PUISSANCE = 0.75
+var NERF_RECHARGE = 1.5
+var NERF_MANA = 1.3
+var NERF_GROS_SORTS = [
+  'cursespells:catastrophe', 'cursespells:skyfall', 'cursespells:blade_of_judgment',
+  'cursespells:pillar_of_sin', 'cursespells:the_sky_and_cosmos_are_one'
+]
+
+// Les écouteurs ajoutés à la main survivent à /reload : un numéro de chargement évite qu'ils s'empilent.
+var NERF_GEN = String(Date.now()) + '_' + Math.floor(Math.random() * 1e6)
+var NERF_SV = null
+function nerfActuel() {
+  try {
+    if (!NERF_SV) NERF_SV = Java.loadClass('net.neoforged.neoforge.server.ServerLifecycleHooks')
+    var sv = NERF_SV.getCurrentServer()
+    if (!sv) return true
+    var g = String(sv.persistentData.getString('envouteur_nerf_gen'))
+    return g === '' || g === NERF_GEN
+  } catch (e) { return true }
+}
+function nerfNoter(sv) { try { sv.persistentData.putString('envouteur_nerf_gen', NERF_GEN) } catch (e) {} }
+try { nerfNoter(Java.loadClass('net.neoforged.neoforge.server.ServerLifecycleHooks').getCurrentServer()) } catch (e) {}
+ServerEvents.loaded(function (event) { nerfNoter(event.server) })
+
+function nerfGros(id) { return NERF_GROS_SORTS.indexOf(String(id)) !== -1 }
+function nerfEcouter(nom, classe, fn) {
+  try {
+    var BUS = Java.loadClass('net.neoforged.neoforge.common.NeoForge').EVENT_BUS
+    var PRIO = Java.loadClass('net.neoforged.bus.api.EventPriority').NORMAL
+    BUS.addListener(PRIO, false, Java.loadClass(classe), function (e) {
+      if (!nerfActuel()) return
+      try { fn(e) } catch (err) { console.error('[envouteur_nerf] ' + nom + ' : ' + err) }
+    })
+  } catch (e) { console.error('[envouteur_nerf] ' + nom + ' impossible : ' + e) }
+}
+
+// 1) dégâts (calculés depuis la valeur d'origine : un double chargement ne cumule pas)
+nerfEcouter('degats', 'io.redspace.ironsspellbooks.api.events.SpellDamageEvent', function (e) {
+  var id = String(e.getSpellDamageSource().spell().getSpellId())
+  if (id.indexOf('cursespells:') !== 0) return
+  e.setAmount(e.getOriginalAmount() * NERF_PUISSANCE)
+})
+// 2) recharge
+nerfEcouter('recharge', 'io.redspace.ironsspellbooks.api.events.SpellCooldownAddedEvent$Pre', function (e) {
+  if (!nerfGros(e.getSpell().getSpellId())) return
+  e.setEffectiveCooldown(Math.round(e.getEffectiveCooldown() * NERF_RECHARGE))
+})
+// 3) mana (depuis la valeur d'origine)
+nerfEcouter('mana', 'io.redspace.ironsspellbooks.api.events.SpellOnCastEvent', function (e) {
+  if (!nerfGros(e.getSpellId())) return
+  e.setManaCost(Math.round(e.getOriginalManaCost() * NERF_MANA))
+})
+console.info('[envouteur_nerf] actif : dégâts x' + NERF_PUISSANCE + ', recharge x' + NERF_RECHARGE + ', mana x' + NERF_MANA)

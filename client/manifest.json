@@ -1,5 +1,5 @@
 {
- "version": "2026-11-02T03:03:07.926Z",
+ "version": "2026-11-02T03:13:04.912Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6172,8 +6172,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "38dcdf0a93c01e5e51e88e3959b5e1b3d055aa40",
-   "size": 99350
+   "sha1": "ce3e35f63620f8e1cae0b2f318f537eee0ad231e",
+   "size": 100954
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -6199,6 +6199,11 @@
    "path": "kubejs/server_scripts/end_spawn.js",
    "sha1": "1adaa6c849bfbf4a5bd568e2930b8135935441f2",
    "size": 1440
+  },
+  {
+   "path": "kubejs/server_scripts/envouteur_nerf.js",
+   "sha1": "eb008cb5e2b236ef3581ae1fd8d3f4041123912c",
+   "size": 3008
   },
   {
    "path": "kubejs/server_scripts/ftb_aide.js",
@@ -6262,8 +6267,8 @@
   },
   {
    "path": "kubejs/server_scripts/rtp.js",
-   "sha1": "38e25197351e2c16444a09580070d97c98fbda5e",
-   "size": 6009
+   "sha1": "b4b0512b5b7fc03c5f9a03cfece2c588dd372c63",
+   "size": 5999
   },
   {
    "path": "kubejs/server_scripts/starter.js",
