@@ -1,11 +1,20 @@
 // Envoûteur : rééquilibrage des sorts de l'école Curse (mod Curse Spells, préfixe cursespells:).
-//  1) dégâts de tous les sorts Curse à 56,25 % (deux nerfs de -25 % cumulés), y compris les sorts qui percent les défenses (Abhorrent Star...)
+//  1) dégâts à 56,25 % (deux nerfs de -25 % cumulés) SEULEMENT pour les gros sorts (NERF_DEGATS_GROS), y compris ceux qui percent les
+//     défenses (Abhorrent Star...) ; les petits sorts Curse retrouvent leurs dégâts de base
 //  2) recharge x1,5 sur les gros sorts de zone
 //  3) coût en mana x1,3 sur ces mêmes gros sorts
 // À placer dans : kubejs/server_scripts/envouteur_nerf.js  (puis /reload). Les trois valeurs se règlent ci-dessous.
 var NERF_PUISSANCE = 0.5625   // 0,75 x 0,75 : deuxième baisse de 25 %
 var NERF_RECHARGE = 1.5
 var NERF_MANA = 1.3
+// Gros sorts Curse dont les dégâts restent réduits (NERF_PUISSANCE) : les sorts de zone, ultimes et sorts légendaires. Les autres sorts
+// de l'école Curse ne sont plus réduits.
+var NERF_DEGATS_GROS = [
+  'cursespells:catastrophe', 'cursespells:skyfall', 'cursespells:blade_of_judgment', 'cursespells:pillar_of_sin',
+  'cursespells:the_sky_and_cosmos_are_one', 'cursespells:abhorrent_star',
+  'cursespells:flames_of_fury', 'cursespells:rage_awakened', 'cursespells:cursed_sabbath', 'cursespells:the_command',
+  'cursespells:cursed_eye', 'cursespells:cursed_rage', 'cursespells:cursed_strike', 'cursespells:hell_fire'
+]
 // Autres sorts dont les dégâts sont multipliés (sorts hors école Curse) : identifiant -> coefficient
 var NERF_DEGATS_SORTS = {
   'hazennstuff:counterspell_spider_lily': 0.5   // Contre-sort : lys araignée, dégâts divisés par deux
@@ -57,7 +66,7 @@ try {
       if (!NERF_SDS || !(src instanceof NERF_SDS)) return
       var id = String(src.spell().getSpellId())
       var mult = NERF_DEGATS_SORTS[id]
-      if (mult === undefined && id.indexOf('cursespells:') === 0) mult = NERF_PUISSANCE
+      if (mult === undefined && NERF_DEGATS_GROS.indexOf(id) !== -1) mult = NERF_PUISSANCE
       if (mult === undefined) return
       e.setNewDamage(e.getNewDamage() * mult)
     } catch (err) { console.error('[envouteur_nerf] degats : ' + err) }
