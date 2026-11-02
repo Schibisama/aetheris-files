@@ -15,6 +15,54 @@ var NIVEAUX_DEJA_VUS = {}
 var NIVEAUX_COMPTE = 0
 var NIVEAUX_ERREURS = 0
 
+
+// ───────── Équilibrage des sorts (02/11) ─────────
+// id du sort -> { p: multiplicateur de puissance (dégâts / soins / durée selon le sort), m: multiplicateur de mana, cd: recharge en secondes }
+// Première passe : on relève les classes à peu de sorts offensifs (Chronomancien, Chromancien, Aéromancien) sans rien retirer aux autres.
+var EQUILIBRAGE_SORTS = {
+  // Chronomancien : gros coûts et recharges très longues, presque aucun sort offensif
+  'chronomancy:the_world_stop':        { m: 0.6, cd: 120 },
+  'chronomancy:borrowed_future':       { m: 0.6, cd: 90 },
+  'chronomancy:chrono_double':         { m: 0.6, cd: 90 },
+  'chronomancy:rift':                  { m: 0.75 },
+  'chronomancy:time_walk':             { m: 0.7, cd: 8 },
+  'chronomancy:backtrack':             { p: 1.25 },
+  'chronomancy:sands_of_time':         { p: 1.25 },
+  'chronomancy:time_piercing_needle':  { p: 1.5 },
+  'apprenticecodex:quick_blink':       { m: 0.7 },
+  'irons_spellbooks:evasion':          { m: 0.8, cd: 120 },
+  'irons_spellbooks:slow':             { cd: 60 },
+  'irons_spellbooks:haste':            { cd: 60 },
+  // Aéromancien : sorts de base trop faibles ou trop chers
+  'wind_spellbooks:tornado':           { p: 1.5, m: 0.75 },
+  'wind_spellbooks:aeropic':           { p: 1.5, m: 0.8 },
+  'wind_spellbooks:iron_slash':        { m: 0.75 },
+  'wind_spellbooks:tailwind':          { m: 0.7 },
+  'wind_spellbooks:wind_blade':        { p: 1.1 },
+  'irons_spellbooks:throw':            { p: 1.5 },
+  'irons_spellbooks:gust':             { p: 1.15 },
+  'irons_spellbooks:invisibility':     { cd: 30 },
+  'cataclysm_spellbooks:sandstorm':    { p: 1.3, m: 0.8 },
+  'iss_magicfromtheeast:cloud_ride':   { cd: 60 },
+  // Chromancien : sorts d'Évocation partagés un peu en retrait
+  'irons_spellbooks:firecracker':      { p: 1.2 },
+  'irons_spellbooks:cleanse':          { cd: 40 },
+  'somakespells:jingle_bell':          { p: 1.2 },
+  'somakespells:slumber_melody':       { m: 0.8 },
+  'irons_spellbooks:firefly_swarm':    { p: 1.15 }
+}
+var EQ_PARAMS = null
+function equilibrageAppliquer(event, id) {
+  var cfg = EQUILIBRAGE_SORTS[id]
+  if (!cfg) return
+  var D = Java.loadClass('java.lang.Double')
+  if (!EQ_PARAMS) {
+    var P = Java.loadClass('io.redspace.ironsspellbooks.api.config.IronConfigParameters')
+    EQ_PARAMS = { p: P.POWER_MULTIPLIER, m: P.MANA_MULTIPLIER, cd: P.COOLDOWN_IN_SECONDS }
+  }
+  for (var k in cfg) event.setDefaultValue(EQ_PARAMS[k], D.valueOf(cfg[k]))
+}
+
 var NIVEAUX_PARAM_MAX = null
 var NIVEAUX_ENTIER = null
 
@@ -22,6 +70,7 @@ function niveauxAppliquer(event) {
   try {
     var sort = event.getSpell()
     var id = String(sort.getSpellId())
+    try { equilibrageAppliquer(event, id) } catch (eq) { if (NIVEAUX_ERREURS < 5) { NIVEAUX_ERREURS++; console.error('[equilibrage] ' + id + ' : ' + eq) } }
     if (NIVEAUX_SORTS_EXCLUS.indexOf(id) !== -1) return
     var base = sort.getDefaultConfig().maxLevel
     if (base <= 1) return

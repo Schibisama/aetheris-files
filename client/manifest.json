@@ -1,5 +1,5 @@
 {
- "version": "2026-11-02T16:50:24.842Z",
+ "version": "2026-11-02T17:04:19.120Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6317,8 +6317,8 @@
   },
   {
    "path": "kubejs/startup_scripts/classes_niveaux.js",
-   "sha1": "b9817bb041f4bc077480e427181fe2f34b2ac7c9",
-   "size": 2448
+   "sha1": "f88d869e67593d91d464aa8cabd5ec36e8f115af",
+   "size": 5124
   },
   {
    "path": "kubejs/startup_scripts/main.js",
