@@ -1,5 +1,5 @@
 {
- "version": "2026-11-01T23:34:53.447Z",
+ "version": "2026-11-02T01:03:55.359Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6132,8 +6132,8 @@
   },
   {
    "path": "kubejs/server_scripts/boss_zones.js",
-   "sha1": "70b21c40be224ad7b09a41fe45b55f94212b4114",
-   "size": 36343
+   "sha1": "5a404fccccd918d7fc2e07ff8863f07c6de0aef8",
+   "size": 36363
   },
   {
    "path": "kubejs/server_scripts/chasse_quetes.js",
@@ -6267,8 +6267,8 @@
   },
   {
    "path": "kubejs/server_scripts/zone_pirates.js",
-   "sha1": "7d4772173484fd4997f28a28055eba5b268e41b8",
-   "size": 23059
+   "sha1": "8aea2f4649b2d4a91e6c26f416279f854c2b04ac",
+   "size": 23128
   },
   {
    "path": "kubejs/startup_scripts/aura_professeur_effet.js",
