@@ -1337,7 +1337,30 @@ function verifierMains(joueur, server) {
 
 // Vol plané : interdit à tout le monde (les élytres vanilla et l'armure Ignitium sont de toute façon désactivées). Les armures-ailes (Prismatique, Ignitium, Cursium, Ignis,
 // armure de vol mécanique, Gabriel, robes d'Arbitrium...) et les ailes en curios sont gardées, mais sans le vol.
+// Les armures-ailes passent par Caelus (attribut caelus:fall_flying, valeur 1 = vol autorisé) : on ajoute à chaque joueur un
+// modificateur "x0" (la valeur tombe à 0 = vol refusé, serveur et client). stopFallFlying() reste en secours.
+var CAELUS_ATTR = null, CAELUS_MOD_ID = null, CAELUS_OP = null, CAELUS_MOD_CLASSE = null, CAELUS_ERREUR = false
+function modificateurPasDeVol(joueur) {
+  if (CAELUS_ERREUR) return
+  try {
+    if (!CAELUS_ATTR) {
+      var RL = Java.loadClass('net.minecraft.resources.ResourceLocation')
+      var reg = Java.loadClass('net.minecraft.core.registries.BuiltInRegistries').ATTRIBUTE
+      var opt = reg.getHolder(RL.parse('caelus:fall_flying'))
+      if (!opt.isPresent()) { CAELUS_ERREUR = true; console.warn('[classes_rp] attribut caelus:fall_flying introuvable : seul stopFallFlying est utilisé'); return }
+      CAELUS_ATTR = opt.get()
+      CAELUS_MOD_ID = RL.parse('mcrp:pas_de_vol_plane')
+      CAELUS_MOD_CLASSE = Java.loadClass('net.minecraft.world.entity.ai.attributes.AttributeModifier')
+      CAELUS_OP = Java.loadClass('net.minecraft.world.entity.ai.attributes.AttributeModifier$Operation').ADD_MULTIPLIED_TOTAL
+    }
+    var inst = joueur.getAttribute(CAELUS_ATTR)
+    if (!inst || inst.hasModifier(CAELUS_MOD_ID)) return
+    inst.addTransientModifier(new CAELUS_MOD_CLASSE(CAELUS_MOD_ID, -1.0, CAELUS_OP))
+  } catch (e) { CAELUS_ERREUR = true; console.error('[classes_rp] vol plané (Caelus) : ' + e) }
+}
+
 function interdireVolPlane(joueur) {
+  modificateurPasDeVol(joueur)
   try {
     if (!joueur.isFallFlying()) return
     joueur.stopFallFlying()
