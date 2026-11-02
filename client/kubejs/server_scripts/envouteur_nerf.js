@@ -6,6 +6,10 @@
 var NERF_PUISSANCE = 0.5625   // 0,75 x 0,75 : deuxième baisse de 25 %
 var NERF_RECHARGE = 1.5
 var NERF_MANA = 1.3
+// Autres sorts dont les dégâts sont multipliés (sorts hors école Curse) : identifiant -> coefficient
+var NERF_DEGATS_SORTS = {
+  'hazennstuff:counterspell_spider_lily': 0.5   // Contre-sort : lys araignée, dégâts divisés par deux
+}
 var NERF_GROS_SORTS = [
   'cursespells:catastrophe', 'cursespells:skyfall', 'cursespells:blade_of_judgment',
   'cursespells:pillar_of_sin', 'cursespells:the_sky_and_cosmos_are_one', 'cursespells:abhorrent_star'
@@ -52,8 +56,10 @@ try {
       var src = e.getSource()
       if (!NERF_SDS || !(src instanceof NERF_SDS)) return
       var id = String(src.spell().getSpellId())
-      if (id.indexOf('cursespells:') !== 0) return
-      e.setNewDamage(e.getNewDamage() * NERF_PUISSANCE)
+      var mult = NERF_DEGATS_SORTS[id]
+      if (mult === undefined && id.indexOf('cursespells:') === 0) mult = NERF_PUISSANCE
+      if (mult === undefined) return
+      e.setNewDamage(e.getNewDamage() * mult)
     } catch (err) { console.error('[envouteur_nerf] degats : ' + err) }
   })
 } catch (e) { console.error('[envouteur_nerf] degats impossible : ' + e) }

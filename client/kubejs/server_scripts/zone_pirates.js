@@ -246,9 +246,17 @@ ServerEvents.tick(function (event) {
           var jp = jr.get(qr)
           if (jp.isSpectator() || !jp.isAlive()) continue
           var rx = jp.x - spx, ry = jp.y - spy, rz = jp.z - spz
-          if (rx * rx + ry * ry + rz * rz <= 900) { presents = true; break }
+          var ex2 = jp.x - e.x, ey2 = jp.y - e.y, ez2 = jp.z - e.z
+          // à moins de 30 blocs du point d'apparition OU du mob lui-même
+          if (rx * rx + ry * ry + rz * rz <= 900 || ex2 * ex2 + ey2 * ey2 + ez2 * ez2 <= 900) { presents = true; break }
         }
       } catch (x) {}
+      // un mob qui perd de la vie ne se régénère pas (10 s de répit après le dernier coup)
+      var pvNow = e.health
+      var pvPrec = pd.contains('zp_pv_prec') ? pd.getDouble('zp_pv_prec') : pvNow
+      if (pvNow < pvPrec - 0.05) pd.putLong('zp_coup', Date.now())
+      pd.putDouble('zp_pv_prec', pvNow)
+      if (pd.contains('zp_coup') && (Date.now() - pd.getLong('zp_coup') < 10000)) presents = true
       if (presents) pd.putLong('zp_libre_depuis', 0)
       else {
         var libre = pd.getLong('zp_libre_depuis')

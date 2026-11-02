@@ -508,9 +508,15 @@ ServerEvents.tick(function (event) {
         }
         if (!engage && cible) { try { e.setTarget(null) } catch (x) {} cible = null }   // pas encore provoqué : ignore les joueurs au loin
         if (bzCompteur % 10 === 0) { try { bzGererBarres(event.server, e, b) } catch (x) { console.error('[boss_zones] barres : ' + x) } }
-        // aucun joueur près de son point d'apparition depuis REGEN_DELAI_S secondes : régénération (toutes les secondes)
+        // Régénération (toutes les secondes) : SEULEMENT si plus aucun joueur n'est à moins de REGEN_DISTANCE blocs du boss NI de son point
+        // d'apparition, ET s'il n'a perdu aucune vie depuis REGEN_DELAI_S secondes. Tant qu'on le frappe, il ne récupère rien.
         var pd = e.persistentData
-        if (bzJoueurPres(event.server, b.x, b.y, b.z, REGEN_DISTANCE)) {
+        var pvNow = e.health
+        var pvPrec = pd.contains('bz_pv_prec') ? pd.getDouble('bz_pv_prec') : pvNow
+        if (pvNow < pvPrec - 0.05) pd.putLong('bz_coup', Date.now())
+        pd.putDouble('bz_pv_prec', pvNow)
+        var frappe = pd.contains('bz_coup') && (Date.now() - pd.getLong('bz_coup') < REGEN_DELAI_S * 1000)
+        if (frappe || bzJoueurPres(event.server, e.x, e.y, e.z, REGEN_DISTANCE) || bzJoueurPres(event.server, b.x, b.y, b.z, REGEN_DISTANCE)) {
           pd.putLong('bz_libre_depuis', 0)
         } else {
           var depuis = pd.getLong('bz_libre_depuis')
