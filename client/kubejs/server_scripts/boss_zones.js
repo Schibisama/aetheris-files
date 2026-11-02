@@ -445,6 +445,262 @@ function bzMort(server, nom, b, e, src) {
   console.info('[boss_zones] ' + nom + ' : objet de quête remis à ' + donnes + ' joueur(s)' + (sansQuete.length ? ' ; sans quête active : ' + sansQuete.join(', ') : ''))
 }
 
+// Boss qui meurt « en animation » (Yéti : état DEATH, jamais de vraie mort avant la fin de la cinématique)
+function bzEnMort(e) {
+  try {
+    var n = e.nbt
+    return String(n.getString('State')) === 'DEATH' || n.getInt('is_enraged') === 6
+  } catch (x) { return false }
+}
+
+var bzDernierCoup = {}
+var bzParticipants = {}   // uuid du boss -> { nom du joueur: true } : tous ceux qui l'ont frappé
+
+ServerEvents.tick(function (event) {
+  bzCompteur++
+  if (bzCompteur % 5 !== 0) return
+  if (bzNettoyages.length > 0) {
+    var nv = bzNiveau(event.server)
+    for (var kk = bzNettoyages.length - 1; kk >= 0; kk--) {
+      var nn = bzNettoyages[kk]
+      try { bzNettoyer(nv, nn.x, nn.y, nn.z) } catch (x) {}
+      nn.t--
+      if (nn.t <= 0) bzNettoyages.splice(kk, 1)
+    }
+  }
+  try {
+    var server = event.server
+    var niveau = bzNiveau(server)
+    if (!niveau || !AABB_BZ) return
+    for (var nom in BOSSES) {
+      var b = BOSSES[nom]
+      // Zone, aggro et régénération
+      var proches = bzBoss(niveau, b, b.laisseStricte ? b.rayon + 250 : b.rayon + 40)
+      if (b.laisseStricte && proches.length > 0) { try { bzSuiviUuid[nom] = String(proches[0].uuid) } catch (xu) {} }
+      for (var i = 0; i < proches.length; i++) {
+        var e = proches[i]
+        if (bzEnMort(e)) { bzMort(server, nom, b, e, null); continue }
+        if (b.remonteSous && e.y < b.y - b.remonteSous) {
+          try { e.setTarget(null) } catch (x) {}
+          server.runCommandSilent('tp ' + e.uuid + ' ' + b.x + ' ' + b.y + ' ' + b.z)
+          try { e.fallDistance = 0 } catch (x) {}
+          try { e.setDeltaMovement(0, 0, 0) } catch (x) {}
+          console.info('[boss_zones] ' + nom + ' était tombé trop bas : retour au point d\'apparition, sans soin.')
+          continue
+        }
+        bzBuff(server, e)
+        var dx = e.x - b.x
+        var dz = e.z - b.z
+        var cible = null
+        try { cible = e.getTarget() } catch (x) {}
+        if (Math.sqrt(dx * dx + dz * dz) > b.rayon) {
+          try { e.persistentData.putBoolean('bz_engage', false) } catch (x) {}
+          bzRamener(event.server, e, b)
+          if (b.soigneSiSort) {
+            try { e.setHealth(e.maxHealth) } catch (x) { try { e.health = e.maxHealth } catch (y) {} }
+            console.info('[boss_zones] ' + nom + ' est sorti de sa zone : retour au centre, vie restaurée.')
+          }
+          cible = null
+        } else if (cible) {
+          var tx = cible.x - b.x
+          var tz = cible.z - b.z
+          if (Math.sqrt(tx * tx + tz * tz) > b.rayon) {
+            try { e.setTarget(null) } catch (x) {}
+            cible = null
+          }
+        }
+        // ── Aggro : le boss ne s'engage que s'il reçoit un coup d'un joueur, ou si un joueur s'approche à BZ_AGGRO blocs de lui.
+        // Une fois engagé, il poursuit les joueurs dans toute sa zone (rayon). Il se désengage quand il est ramené au centre
+        // ou quand le combat est fini (aucun coup depuis 20 s et plus personne près de la zone).
+        var pdA = e.persistentData
+        var engage = pdA.getBoolean('bz_engage')
+        if (cible === null && engage && bzCompteur % 20 === 0 && bzHorsCombat(event.server, e, b)) { engage = false; pdA.putBoolean('bz_engage', false) }
+        if (bzCompteur % 10 === 0) {
+          try {
+            var lesJoueurs = event.server.getPlayers()
+            var proche = null, dmin = engage ? 1e12 : BZ_AGGRO * BZ_AGGRO
+            for (var q = 0; q < lesJoueurs.size(); q++) {
+              var jq = lesJoueurs.get(q)
+              if (jq.isSpectator() || jq.isCreative() || !jq.isAlive()) continue
+              var zx = jq.x - b.x, zz = jq.z - b.z
+              if (zx * zx + zz * zz > b.rayon * b.rayon) continue   // jamais hors de la zone
+              var ax = jq.x - e.x, ay = jq.y - e.y, az = jq.z - e.z
+              var d2 = ax * ax + ay * ay + az * az
+              if (d2 <= dmin) { dmin = d2; proche = jq }
+            }
+            if (!engage && proche) { engage = true; pdA.putBoolean('bz_engage', true) }
+            if (engage && !cible && proche) { e.setTarget(proche); cible = proche }
+          } catch (x) { console.error('[boss_zones] aggro : ' + x) }
+        }
+        if (!engage && cible) { try { e.setTarget(null) } catch (x) {} cible = null }   // pas encore provoqué : ignore les joueurs au loin
+        if (bzCompteur % 10 === 0) { try { bzGererBarres(event.server, e, b) } catch (x) { console.error('[boss_zones] barres : ' + x) } }
+        // Régénération (toutes les secondes) : SEULEMENT si plus aucun joueur n'est à moins de REGEN_DISTANCE blocs du boss NI de son point
+        // d'apparition, ET s'il n'a perdu aucune vie depuis REGEN_DELAI_S secondes. Tant qu'on le frappe, il ne récupère rien.
+        var pd = e.persistentData
+        var pvNow = e.health
+        var pvPrec = pd.contains('bz_pv_prec') ? pd.getDouble('bz_pv_prec') : pvNow
+        if (pvNow < pvPrec - 0.05) pd.putLong('bz_coup', Date.now())
+        pd.putDouble('bz_pv_prec', pvNow)
+        var frappe = pd.contains('bz_coup') && (Date.now() - pd.getLong('bz_coup') < REGEN_DELAI_S * 1000)
+        if (frappe || bzJoueurPres(event.server, e.x, e.y, e.z, REGEN_DISTANCE) || bzJoueurPres(event.server, b.x, b.y, b.z, REGEN_DISTANCE)) {
+          pd.putLong('bz_libre_depuis', 0)
+        } else {
+          var depuis = pd.getLong('bz_libre_depuis')
+          if (depuis <= 0) { depuis = Date.now(); pd.putLong('bz_libre_depuis', depuis) }
+          if (Date.now() - depuis >= REGEN_DELAI_S * 1000 && bzCompteur % 20 === 0) {
+            try { e.heal(e.maxHealth * REGEN_POURCENT / 100) } catch (x) {}
+          }
+        }
+      }
+      // Spawn (toutes les 5 s)
+      if (bzCompteur % 100 !== 0) continue
+      if (!bzJoueurProche(server, b)) { bzAbsent[nom] = 0; continue }
+      if (bzBoss(niveau, b, b.laisseStricte ? b.rayon + 250 : b.rayon + 40).length > 0) { bzAbsent[nom] = 0; continue }
+      var d = server.persistentData
+      var quand = d.contains(bzCle(nom)) ? d.getLong(bzCle(nom)) : 0
+      if (Date.now() < quand) continue
+      bzAbsent[nom] = (bzAbsent[nom] || 0) + 1
+      if (bzAbsent[nom] < 2) continue // laisse aux entités le temps de se charger
+      bzAbsent[nom] = 0
+      bzSpawn(server, nom, b)
+    }
+  } catch (err) {
+    console.error('[boss_zones] ' + err)
+  }
+})
+
+// Mémorise le dernier joueur ayant blessé un boss de zone (la mort du Yéti arrive après son animation, sans source)
+try {
+  NativeEvents.onEvent(
+    Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent'),
+    function (ev) {
+      try {
+        var cible = ev.getEntity()
+        var att = null
+        try { att = ev.getSource().actual } catch (e0) {}
+        if (!att || !att.isPlayer()) return
+        if (!cible.tags || !cible.tags.contains('boss_zone')) return
+        bzDernierCoup[String(cible.uuid)] = String(att.username)
+        var cleP = String(cible.uuid)
+        if (!bzParticipants[cleP]) bzParticipants[cleP] = {}
+        bzParticipants[cleP][String(att.username)] = true
+      } catch (e) {}
+    }
+  )
+} catch (e) { console.error('[boss_zones] suivi des coups indisponible : ' + e) }
+
+// ───────────── Pas de tir allié dans les zones de boss ─────────────
+// Deux joueurs présents dans la même zone de boss ne peuvent pas se blesser (armes, projectiles, sorts, invocations).
+// Les dégâts de chute, de feu, etc. (sans auteur joueur) et les dégâts qu'on s'inflige à soi-même ne sont pas concernés.
+function bzJoueurSource(src) {
+  var att = null
+  try { att = src.actual } catch (e) {}
+  if (!att) { try { att = src.getEntity() } catch (e2) {} }
+  if (!att) return null
+  try {
+    if (!att.isPlayer()) {
+      var o = null
+      try { o = att.getOwner() } catch (e3) {}
+      if (!o) { try { o = att.getSummoner() } catch (e4) {} }
+      if (o && o.isPlayer()) att = o
+    }
+  } catch (e5) {}
+  try { return att.isPlayer() ? att : null } catch (e6) { return null }
+}
+function bzZoneDeJoueur(j) {
+  for (var nom in BOSSES) {
+    var b = BOSSES[nom]
+    var dx = j.x - b.x, dz = j.z - b.z
+    if (Math.sqrt(dx * dx + dz * dz) <= b.rayon && Math.abs(j.y - b.y) <= 60) return nom
+  }
+  return null
+}
+function bzTirAllie(ev) {
+  var v = ev.getEntity()
+  if (!v || !v.isPlayer()) return false
+  var a = bzJoueurSource(ev.getSource())
+  if (!a || String(a.uuid) === String(v.uuid)) return false
+  var zv = bzZoneDeJoueur(v)
+  return !!zv && zv === bzZoneDeJoueur(a)
+}
+
+// Dégâts x1,5 : tout coup dont l'auteur est un boss de zone (corps à corps, boules de feu, souffle... si l'auteur est renseigné)
+try {
+  NativeEvents.onEvent(
+    Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent'),
+    function (ev) {
+      try {
+        try { if (bzTirAllie(ev)) { ev.setCanceled(true); return } } catch (eF) {}
+        try { var tg = ev.getEntity(); if (tg.tags && tg.tags.contains('boss_zone')) tg.persistentData.putLong('bz_coup', Date.now()) } catch (e1) {}
+        try {
+          var tgE = ev.getEntity()
+          if (tgE.tags && tgE.tags.contains('boss_zone')) {
+            var auteur = null
+            try { auteur = ev.getSource().getEntity() } catch (eA) {}
+            if (auteur && auteur.isPlayer && auteur.isPlayer() && !auteur.isCreative()) {
+              tgE.persistentData.putBoolean('bz_engage', true)
+              try { if (!tgE.getTarget()) tgE.setTarget(auteur) } catch (eT) {}
+            }
+          }
+        } catch (eE) {}
+        try {
+          var tg2 = ev.getEntity()
+          if (tg2.tags && tg2.tags.contains('boss_zone')) {
+            var id = ''
+            try { id = String(ev.getSource().type().msgId()) } catch (e2) { try { id = String(ev.getSource().getMsgId()) } catch (e3) {} }
+            if (id === 'fall' || id === 'outOfWorld' || id === 'inWall' || id === 'flyIntoWall') {
+              for (var n in BOSSES) if (BOSSES[n].remonteSous && tg2.tags.contains('boss_' + n)) { ev.setCanceled(true); return }
+            }
+          }
+        } catch (e4) {}
+        var att = null
+        try { att = ev.getSource().actual } catch (e0) {}
+        if (!att || !att.tags || !att.tags.contains('boss_zone')) return
+        var mult = bzDegatsMult(att)
+        try { if (ev.getEntity().isPlayer()) mult = mult * bzArmureMult(ev.getEntity()) } catch (e5) {}
+        ev.setAmount(ev.getAmount() * mult)
+      } catch (e) {}
+    }
+  )
+} catch (e) { console.error('[boss_zones] dégâts x1,5 indisponibles : ' + e) }
+
+// Aucun butin pour les boss DE ZONE (seul l'objet de quête est donné). Les mêmes mobs hors de ces zones (structures d'origine) gardent leur butin normal.
+function bzEstBossDeZone(e) {
+  try {
+    var t = String(e.type)
+    for (var nom in BOSSES) {
+      var b = BOSSES[nom]
+      if (b.type !== t) continue
+      var dx = e.x - b.x, dz = e.z - b.z
+      if (Math.sqrt(dx * dx + dz * dz) <= b.rayon + 40) return true
+    }
+  } catch (x) {}
+  return false
+}
+try {
+  NativeEvents.onEvent(
+    Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingDropsEvent'),
+    function (ev) {
+      try { if (bzEstBossDeZone(ev.getEntity())) ev.setCanceled(true) } catch (e) {}
+      try { var tg = ev.getEntity().tags; if (tg && tg.contains('boss_escorte')) ev.setCanceled(true) } catch (e) {}
+    }
+  )
+} catch (e) { console.error('[boss_zones] suppression du loot indisponible : ' + e) }
+
+// Efface les objets au sol lâchés par le boss (sans « Thrower » : les objets jetés par un joueur sont épargnés)
+function bzNettoyer(niveau, x, y, z) {
+  if (!niveau || !AABB_BZ) return
+  var liste = niveau.getEntitiesWithin(new AABB_BZ(x - 14, y - 14, z - 14, x + 14, y + 14, z + 14))
+  for (var i = 0; i < liste.size(); i++) {
+    var it = liste.get(i)
+    if (String(it.type) !== 'minecraft:item') continue
+    try { if (it.nbt.contains('Thrower')) continue } catch (x1) {}
+    it.discard()
+  }
+}
+
+var bzNettoyages = []   // butin parasite (lâché hors événement) à effacer autour des boss de zone morts
+
 // Mort d'un boss : timer de respawn + crédit de quête au SEUL joueur qui a porté le coup fatal
 EntityEvents.death(function (event) {
   try {
