@@ -67,7 +67,9 @@ var EQUILIBRAGE_SORTS = {
   'apprenticecodex:shiden':            { p: 0.8 },
   'apprenticecodex:mantis_leap':       { p: 0.8 },
   'apprenticecodex:artisan_smash':     { p: 0.8 },
-  'apprenticecodex:magic_spear':       { p: 0.75 }
+  'apprenticecodex:magic_spear':       { p: 0.75 },
+  // Nécromancien : Drain de Vie (puissance de base 0 : dégâts quasi nuls)
+  'monsterspellbooks:life_drain':      { p: 2.0 }
 }
 var EQ_PARAMS = null
 function equilibrageAppliquer(event, id) {

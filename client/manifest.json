@@ -1,5 +1,5 @@
 {
- "version": "2026-11-02T17:45:51.808Z",
+ "version": "2026-11-02T17:50:13.269Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6207,8 +6207,8 @@
   },
   {
    "path": "kubejs/server_scripts/envouteur_nerf.js",
-   "sha1": "05233672dd57b9910ce7912ff19f4caa39d686ef",
-   "size": 4983
+   "sha1": "a3635275f4ace5ff48ec927d126e737edf8e9ca4",
+   "size": 5287
   },
   {
    "path": "kubejs/server_scripts/ftb_aide.js",
@@ -6317,8 +6317,8 @@
   },
   {
    "path": "kubejs/startup_scripts/classes_niveaux.js",
-   "sha1": "12d96f07284194bdf7bf69ddaedbc9803806d5b7",
-   "size": 6187
+   "sha1": "17c140dec593d1f6c3c0514e116fc139a71c6ddb",
+   "size": 6316
   },
   {
    "path": "kubejs/startup_scripts/main.js",

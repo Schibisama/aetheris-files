@@ -54,6 +54,8 @@ function nerfEcouter(nom, classe, fn) {
 
 // 1) dégâts. Le mod Curse Spells impose le montant final des sorts « perce-défenses » (Abhorrent Star...) dans
 // LivingDamageEvent$Pre : un nerf posé sur SpellDamageEvent serait écrasé. On agit donc en dernier (priorité LOWEST).
+// Dégâts minimum par touche (sorts dont la puissance de base est nulle : au niveau 1 ils n'infligeaient rien)
+var DEGATS_PLANCHER = { 'monsterspellbooks:life_drain': 3 }
 var NERF_SDS = null
 try { NERF_SDS = Java.loadClass('io.redspace.ironsspellbooks.damage.SpellDamageSource') } catch (e) {}
 try {
@@ -65,6 +67,8 @@ try {
       var src = e.getSource()
       if (!NERF_SDS || !(src instanceof NERF_SDS)) return
       var id = String(src.spell().getSpellId())
+      var plancher = DEGATS_PLANCHER[id]
+      if (plancher !== undefined && e.getNewDamage() < plancher) e.setNewDamage(plancher)
       var mult = NERF_DEGATS_SORTS[id]
       if (mult === undefined && NERF_DEGATS_GROS.indexOf(id) !== -1) mult = NERF_PUISSANCE
       if (mult === undefined) return
