@@ -138,6 +138,59 @@ ServerEvents.tags('item', function (event) {
   console.info('[classes_desactives] ' + n + ' objets désactivés masqués dans JEI (tag).')
 })
 
+// ───────────── Malédictions du lien éternel et de disparition : supprimées ─────────────
+// 1) Plus tirées au hasard (butin, échanges, équipement des mobs, table d'enchantement) : retirées des tags d'enchantements.
+// 2) Celles qui existent déjà sur un objet (inventaire des joueurs, conteneurs ouverts, objets au sol) sont effacées.
+var DESACT_MALEDICTIONS = ['minecraft:binding_curse', 'minecraft:vanishing_curse']
+try {
+  ServerEvents.tags('enchantment', function (event) {
+    var tags = ['minecraft:on_random_loot', 'minecraft:on_mob_spawn_equipment', 'minecraft:on_traded_equipment',
+      'minecraft:tradeable', 'minecraft:in_enchanting_table', 'minecraft:non_treasure']
+    for (var i = 0; i < tags.length; i++) {
+      try { event.remove(tags[i], DESACT_MALEDICTIONS) } catch (e) {}
+    }
+    console.info('[classes_desactives] Malédictions (lien éternel, disparition) retirées des tirages d\'enchantements.')
+  })
+} catch (e) {
+  console.error('[classes_desactives] Tags d\'enchantements indisponibles : ' + e)
+}
+
+var DESACT_ENCH = null
+var DESACT_ENCH_ERREUR = false
+function desactSansMalediction(pile) {
+  try {
+    if (!pile || pile.isEmpty()) return false
+    if (!DESACT_ENCH) DESACT_ENCH = Java.loadClass('net.minecraft.world.item.enchantment.EnchantmentHelper')
+    var ench = DESACT_ENCH.getEnchantmentsForCrafting(pile)
+    if (ench.isEmpty()) return false
+    var trouve = false
+    var it = ench.keySet().iterator()
+    while (it.hasNext()) {
+      if (DESACT_MALEDICTIONS.indexOf(String(it.next().getRegisteredName())) >= 0) { trouve = true; break }
+    }
+    if (!trouve) return false
+    DESACT_ENCH.updateEnchantments(pile, function (m) {
+      m.removeIf(function (h) { return DESACT_MALEDICTIONS.indexOf(String(h.getRegisteredName())) >= 0 })
+    })
+    return true
+  } catch (e) {
+    if (!DESACT_ENCH_ERREUR) { DESACT_ENCH_ERREUR = true; console.error('[classes_desactives] Retrait des malédictions : ' + e) }
+    return false
+  }
+}
+// Inventaire de chaque joueur : une fois toutes les 5 secondes
+ServerEvents.tick(function (ev) {
+  try {
+    if (ev.server.tickCount % 100 !== 0) return
+    var joueurs = ev.server.getPlayers()
+    for (var i = 0; i < joueurs.size(); i++) {
+      var inv = joueurs.get(i).getInventory()
+      var n = inv.getContainerSize()
+      for (var s = 0; s < n; s++) desactSansMalediction(inv.getItem(s))
+    }
+  } catch (e) {}
+})
+
 // ───────────── Butin des mobs ─────────────
 function desactButinMobs(event) {
   try {
@@ -197,8 +250,11 @@ function desactNettoyerConteneur(event) {
   try {
     var joueur = event.getEntity()
     if (!joueur || !joueur.isPlayer()) return
-    if (estTest(joueur)) return
     var menu = event.getContainer()
+    try {   // malédictions déjà présentes sur les objets du conteneur ouvert (et de l'inventaire)
+      for (var m = 0; m < menu.slots.size(); m++) desactSansMalediction(menu.getSlot(m).getItem())
+    } catch (eM) {}
+    if (estTest(joueur)) return
     if (!DESACT_CLASSE_MARCHAND) DESACT_CLASSE_MARCHAND = Java.loadClass('net.minecraft.world.inventory.MerchantMenu')
     if (menu instanceof DESACT_CLASSE_MARCHAND) {
       desactNettoyerOffres(menu)
@@ -261,6 +317,7 @@ function desactObjetAuSol(event) {
     if (entite.getOwner() != null) return
     var pile = entite.getItem()
     if (!pile || pile.isEmpty()) return
+    desactSansMalediction(pile)
     if (desactEstDesactive(pile.id)) { event.setCanceled(true); return }
     if (desactParcheminInterdit(pile)) {
       var neufSol = desactRemplacant(pile)

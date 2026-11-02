@@ -826,6 +826,12 @@ function echangerClasse(server, joueur, direct) {
   data.putBoolean(CLE_TEST, false)
   appliquerClasse(server, joueur, nouvelle, true)
   annoncer(server, joueur, nouvelle, 'Ton destin a changé.')
+  // Message à l'écran de tous les autres joueurs : « X a réécrit son destin. » (seulement auprès du Maître du Destin)
+  try {
+    var nomJ = String(joueur.username)
+    cmd(server, 'title @a[name=!' + nomJ + '] times 20 80 20')
+    cmd(server, 'title @a[name=!' + nomJ + '] title {"translate":"mcrp.msg.destin_reecrit","with":["' + nomJ + '"],"fallback":"%s a réécrit son destin.","color":"gold"}')
+  } catch (eT) { console.error('[classes_rp] message de destin : ' + eT) }
 }
 
 function destinParPnj(source) {
