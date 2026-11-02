@@ -60,7 +60,7 @@ var BOSSES = {
     type: 'block_factorys_bosses:yeti',
     x: 919, y: 227, z: 706,
     rayon: 60,
-    aggro: 30,   // attaque d'office tout joueur (survie/aventure) à moins de 30 blocs
+    aggro: 30,   // (plus utilisé : voir BZ_AGGRO, commun à tous les boss)
     nbtSpawn: 'BossPhase:0,is_enraged:2,BossBarVisible:1b',   // départ « éveillé » (comme un yéti de structure) : sans ça Skor reste en statue de glace
     respawnMin: 30,
     quete: {
@@ -84,7 +84,7 @@ var BOSSES = {
     type: 'legendary_monsters:cloud_golem',
     x: -125, y: 92, z: 1012,
     rayon: 80,   // il vole : zone un peu plus large (doublée le 02/11)
-    aggro: 35,
+    aggro: 35,   // (plus utilisé : voir BZ_AGGRO)
     soigneSiSort: true,
     respawnMin: 30,
     escorte: { type: 'legendary_monsters:hovering_hurricane', nombre: 3, rayon: 6 },   // 3 Ouragans flottants l'entourent à chaque apparition
@@ -109,7 +109,7 @@ var BOSSES = {
     type: 'block_factorys_bosses:infernal_dragon',
     x: 1642, y: 207, z: 1795,
     rayon: 90,   // plus large que les autres : le dragon vole et plonge
-    aggro: 40,
+    aggro: 40,   // (plus utilisé : voir BZ_AGGRO)
     soigneSiSort: true,   // sort de sa zone (aggro perdue) : retour au centre ET vie remise au maximum
     remonteSous: 12,   // s'il descend de plus de 12 blocs sous son point d'apparition : retour au point d'apparition, sans dégâts de chute
     nbtSpawn: 'BossPhase:0,BossBarVisible:1b',   // départ sans cinématique d'intro (comme Skor) ; à ajuster si le dragon reste figé
@@ -232,6 +232,8 @@ function bzBuff(server, e) {
 }
 
 // Hors combat = aucun coup reçu depuis 20 s ET aucun joueur (hors spectateur) à moins de rayon + 30 blocs (le dragon perd souvent sa cible en vol).
+var BZ_AGGRO = 30   // distance (blocs) autour du boss à laquelle un joueur le provoque sans le frapper
+
 function bzHorsCombat(server, e, b) {
   try {
     var pd = e.persistentData
@@ -449,6 +451,7 @@ ServerEvents.tick(function (event) {
         var cible = null
         try { cible = e.getTarget() } catch (x) {}
         if (Math.sqrt(dx * dx + dz * dz) > b.rayon) {
+          try { e.persistentData.putBoolean('bz_engage', false) } catch (x) {}
           bzRamener(event.server, e, b)
           if (b.soigneSiSort) {
             try { e.setHealth(e.maxHealth) } catch (x) { try { e.health = e.maxHealth } catch (y) {} }
@@ -463,23 +466,30 @@ ServerEvents.tick(function (event) {
             cible = null
           }
         }
-        // aggro automatique : le boss prend pour cible le joueur le plus proche dans le rayon "aggro" (si défini)
-        if (b.aggro && !cible && bzCompteur % 10 === 0) {
+        // ── Aggro : le boss ne s'engage que s'il reçoit un coup d'un joueur, ou si un joueur s'approche à BZ_AGGRO blocs de lui.
+        // Une fois engagé, il poursuit les joueurs dans toute sa zone (rayon). Il se désengage quand il est ramené au centre
+        // ou quand le combat est fini (aucun coup depuis 20 s et plus personne près de la zone).
+        var pdA = e.persistentData
+        var engage = pdA.getBoolean('bz_engage')
+        if (cible === null && engage && bzCompteur % 20 === 0 && bzHorsCombat(event.server, e, b)) { engage = false; pdA.putBoolean('bz_engage', false) }
+        if (bzCompteur % 10 === 0) {
           try {
             var lesJoueurs = event.server.getPlayers()
-            var proche = null, dmin = b.aggro * b.aggro
+            var proche = null, dmin = engage ? 1e12 : BZ_AGGRO * BZ_AGGRO
             for (var q = 0; q < lesJoueurs.size(); q++) {
               var jq = lesJoueurs.get(q)
               if (jq.isSpectator() || jq.isCreative() || !jq.isAlive()) continue
+              var zx = jq.x - b.x, zz = jq.z - b.z
+              if (zx * zx + zz * zz > b.rayon * b.rayon) continue   // jamais hors de la zone
               var ax = jq.x - e.x, ay = jq.y - e.y, az = jq.z - e.z
               var d2 = ax * ax + ay * ay + az * az
-              var zx = jq.x - b.x, zz = jq.z - b.z
-              if (zx * zx + zz * zz > b.rayon * b.rayon) continue
               if (d2 <= dmin) { dmin = d2; proche = jq }
             }
-            if (proche) { e.setTarget(proche); cible = proche }
+            if (!engage && proche) { engage = true; pdA.putBoolean('bz_engage', true) }
+            if (engage && !cible && proche) { e.setTarget(proche); cible = proche }
           } catch (x) { console.error('[boss_zones] aggro : ' + x) }
         }
+        if (!engage && cible) { try { e.setTarget(null) } catch (x) {} cible = null }   // pas encore provoqué : ignore les joueurs au loin
         if (bzCompteur % 10 === 0) { try { bzGererBarres(event.server, e, b) } catch (x) { console.error('[boss_zones] barres : ' + x) } }
         // sans cible depuis un moment : régénération progressive (toutes les secondes)
         var pd = e.persistentData
@@ -534,6 +544,17 @@ try {
     function (ev) {
       try {
         try { var tg = ev.getEntity(); if (tg.tags && tg.tags.contains('boss_zone')) tg.persistentData.putLong('bz_coup', Date.now()) } catch (e1) {}
+        try {
+          var tgE = ev.getEntity()
+          if (tgE.tags && tgE.tags.contains('boss_zone')) {
+            var auteur = null
+            try { auteur = ev.getSource().getEntity() } catch (eA) {}
+            if (auteur && auteur.isPlayer && auteur.isPlayer() && !auteur.isCreative()) {
+              tgE.persistentData.putBoolean('bz_engage', true)
+              try { if (!tgE.getTarget()) tgE.setTarget(auteur) } catch (eT) {}
+            }
+          }
+        } catch (eE) {}
         try {
           var tg2 = ev.getEntity()
           if (tg2.tags && tg2.tags.contains('boss_zone')) {
