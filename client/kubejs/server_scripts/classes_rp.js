@@ -269,6 +269,7 @@ var RESTRICTIONS = [
   { regle: /^apprenticecodex:(.*_spellcaster_gun|focus_staffbow|multipurpose_staffrifle|fullauto_rapidcast_spellrifle|.*_swingcast_staff|revolvercast_staff|scrollcaster_gauntlet|circuit_heat_staff|charged_twin_blade_staff|magi_agent_suit_.*)$/, classes: [] },
   { regle: /^cataclysm_spellbooks:(excelsius_.*|cursium_mage_.*|ignis_.*|hellfire_forge)$/, classes: [] },
   { regle: /^somakespells:forbidden_hammer$/, classes: [] },
+  { regle: /^mowziesmobs:ice_crystal$/, classes: [] },   // Cristal de glace de Mowzie's Mobs : désactivé
   { regle: /^iss_magicfromtheeast:repeating_crossbow$/, classes: [] },
   // ── Legendary Monsters : seuls le Marteau moussu et le Plastron moussu sont gardés (Druide, Géomancien) ; le reste des armes et armures est désactivé ──
   { regle: /^legendary_monsters:(mossy_hammer|mossy_chestplate)$/, classes: ['Druide', 'Géomancien'] },
