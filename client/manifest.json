@@ -1,5 +1,5 @@
 {
- "version": "2026-11-02T17:45:16.502Z",
+ "version": "2026-11-02T17:45:28.893Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6147,7 +6147,7 @@
   },
   {
    "path": "kubejs/server_scripts/boss_zones.js",
-   "sha1": "c1ac0620e136b81e7a7597d0075f36c2b18fe391",
+   "sha1": "8443086a471894a4b38d6caa342b6fd69262744f",
    "size": 47634
   },
   {

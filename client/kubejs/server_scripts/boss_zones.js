@@ -10,7 +10,7 @@
 var REGEN_DELAI_S = 10   // secondes sans aucun joueur à moins de REGEN_DISTANCE blocs du point d'apparition
 var REGEN_POURCENT = 3   // % de la vie max récupérés par seconde
 var REGEN_DISTANCE = 30
-var REGEN_INUTILE_S = 10      // secondes sans infliger le moindre dégât à un joueur : le boss récupère de la vie même s'il est frappé
+var REGEN_INUTILE_S = 20      // secondes sans infliger le moindre dégât à un joueur : le boss récupère de la vie même s'il est frappé
 var REGEN_INUTILE_POURCENT = 2   // % de la vie max par seconde dans ce cas
 var DISTANCE_ACTIVE = 80   // le spawn n'est tenté que si un joueur est à moins de ... blocs du centre
 
