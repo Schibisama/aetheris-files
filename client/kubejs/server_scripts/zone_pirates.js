@@ -387,7 +387,7 @@ try {
         var e = ev.getEntity()
         if (!zpDans(e.x, e.z, ZP.marge + 10) || e.y < ZP.y1 - 10 || e.y > ZP.y2 + 25) return
         var type = String(ev.getSpawnType())
-        if (type === 'COMMAND' || type === 'SPAWN_EGG') return
+        if (type === 'COMMAND' || type === 'SPAWN_EGG' || type === 'MOB_SUMMONED') return   // MOB_SUMMONED = invocations de sorts (ex. Thralls de Cataclysm)
         if (String(e.type).indexOf('easy_npc:') === 0) return
         ev.setSpawnCancelled(true)
       } catch (x) {}

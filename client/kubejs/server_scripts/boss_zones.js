@@ -713,7 +713,7 @@ try {
       try {
         var e = ev.getEntity()
         var type = String(ev.getSpawnType())
-        if (type === 'COMMAND' || type === 'SPAWN_EGG') return
+        if (type === 'COMMAND' || type === 'SPAWN_EGG' || type === 'MOB_SUMMONED') return   // MOB_SUMMONED = invocations de sorts (ex. Thralls de Cataclysm)
         if (String(e.type).indexOf('easy_npc:') === 0) return
         for (var nom in BOSSES) {
           var b = BOSSES[nom]

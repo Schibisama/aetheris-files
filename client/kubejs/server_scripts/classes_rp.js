@@ -1344,6 +1344,7 @@ function interdireVolPlane(joueur) {
   } catch (e) {}
 }
 
+try { var rPrism = restriction('crystal_chronicles:prismatic_knight_helmet'); console.info('[classes_rp] Armure prismatique : classes autorisées = ' + (rPrism ? rPrism.classes.join(', ') : 'toutes')) } catch (ePr) {}
 var TICKS_RP = 0
 PlayerEvents.tick(function (event) {
   var joueur = event.player
