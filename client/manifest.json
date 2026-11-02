@@ -1,5 +1,5 @@
 {
- "version": "2026-11-02T15:50:31.632Z",
+ "version": "2026-11-02T16:09:34.451Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6157,8 +6157,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_desactives.js",
-   "sha1": "4c8eac464a312974ed8a53e91a93423cc8671764",
-   "size": 14498
+   "sha1": "8141ca4011f16e778942546f1fdf5c59c4275baa",
+   "size": 15039
   },
   {
    "path": "kubejs/server_scripts/classes_dump_armes.js",
@@ -6172,8 +6172,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "a61e37e172edd6c295ab784935347f2ac00c42f8",
-   "size": 104394
+   "sha1": "53c543d402b3573a9320caa795a73baba06e1d31",
+   "size": 110875
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
