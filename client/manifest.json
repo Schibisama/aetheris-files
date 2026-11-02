@@ -1,5 +1,5 @@
 {
- "version": "2026-11-02T16:31:37.986Z",
+ "version": "2026-11-02T16:35:53.273Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6079,6 +6079,11 @@
    "path": "kubejs/client_scripts/aaa_traduction.js",
    "sha1": "f206169ad484f264f94c187f101eb015f30097bb",
    "size": 1887
+  },
+  {
+   "path": "kubejs/client_scripts/balai_vertical.js",
+   "sha1": "f5ced350f6f4c63d3104e8a3ff878c851f1e4d09",
+   "size": 978
   },
   {
    "path": "kubejs/client_scripts/classes_langue_armes.js",
