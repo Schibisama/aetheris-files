@@ -1291,10 +1291,75 @@ function cmdCodexModifier(ctx, cible, sort, ajouter) {
   return 1
 }
 
+// ---- /tpa : demandes de téléportation entre joueurs ----
+var TPA_DELAI_MS = 60000
+var TPA_DEMANDES = {} // clé = nom du destinataire (minuscule) -> { de, vers: 'moi'|'lui', t }
+
+function tpaEnvoyer(ctx, cible, versLui) {
+  var src = ctx.source.player
+  if (!src) { retour(ctx, 'Commande à lancer par un joueur.'); return 0 }
+  if (String(cible.username) === String(src.username)) { retour(ctx, 'Tu ne peux pas te cibler toi-même.'); return 0 }
+  TPA_DEMANDES[String(cible.username).toLowerCase()] = { de: String(src.username), versLui: versLui, t: Date.now() }
+  src.tell(Text.gold('Demande envoyée à ' + cible.username + ' (valable 60 s).'))
+  cible.tell(Text.gold(src.username + (versLui ? ' veut se téléporter sur toi.' : ' te demande de le rejoindre.') + ' Tape ').append(Text.yellow('/tpaccept')).append(Text.gold(' ou ')).append(Text.yellow('/tpdeny')).append(Text.gold('.')))
+  return 1
+}
+
+function tpaRepondre(ctx, accepter) {
+  var moi = ctx.source.player
+  if (!moi) { retour(ctx, 'Commande à lancer par un joueur.'); return 0 }
+  var cle = String(moi.username).toLowerCase()
+  var d = TPA_DEMANDES[cle]
+  if (!d || Date.now() - d.t > TPA_DELAI_MS) { delete TPA_DEMANDES[cle]; retour(ctx, 'Aucune demande de téléportation en attente.'); return 0 }
+  delete TPA_DEMANDES[cle]
+  var serveur = ctx.source.server
+  var demandeur = serveur.getPlayerList().getPlayerByName(d.de)
+  if (!demandeur) { retour(ctx, d.de + ' n\'est plus connecté.'); return 0 }
+  if (!accepter) {
+    demandeur.tell(Text.red(moi.username + ' a refusé ta demande.'))
+    moi.tell(Text.gray('Demande refusée.'))
+    return 1
+  }
+  if (d.versLui) cmd(serveur, 'tp ' + demandeur.username + ' ' + moi.username)
+  else cmd(serveur, 'tp ' + moi.username + ' ' + demandeur.username)
+  demandeur.tell(Text.green(moi.username + ' a accepté.'))
+  moi.tell(Text.green('Téléportation effectuée.'))
+  return 1
+}
+
+function cmdRespawnReset(ctx, cible) {
+  try {
+    cible.setRespawnPosition(null, null, 0, false, false)
+  } catch (e) {
+    retour(ctx, 'Impossible de réinitialiser le point de réapparition : ' + e)
+    return 0
+  }
+  retour(ctx, 'Point de réapparition (lit) supprimé pour ' + cible.username + ' : il réapparaîtra au spawn du monde.')
+  return 1
+}
+
 ServerEvents.commandRegistry(function (event) {
   var Commands = event.commands
   var Arguments = event.arguments
   var estModo = function (source) { return source.hasPermission(2) }
+
+  event.register(
+    Commands.literal('tpa')
+      .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+        .executes(function (ctx) { return tpaEnvoyer(ctx, Arguments.PLAYER.getResult(ctx, 'joueur'), true) }))
+  )
+  event.register(
+    Commands.literal('tpahere')
+      .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+        .executes(function (ctx) { return tpaEnvoyer(ctx, Arguments.PLAYER.getResult(ctx, 'joueur'), false) }))
+  )
+  event.register(Commands.literal('tpaccept').executes(function (ctx) { return tpaRepondre(ctx, true) }))
+  event.register(Commands.literal('tpdeny').executes(function (ctx) { return tpaRepondre(ctx, false) }))
+  event.register(
+    Commands.literal('respawnreset').requires(estModo)
+      .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+        .executes(function (ctx) { return cmdRespawnReset(ctx, Arguments.PLAYER.getResult(ctx, 'joueur')) }))
+  )
 
   event.register(
     Commands.literal('inventaire').requires(estModo)
