@@ -460,6 +460,7 @@ function zpFtb(joueur) {
 function zpAccepter(joueur) {
   zpFtb(joueur)
   var q = ZP.quete, d = joueur.persistentData
+  if (d.getInt('qfait_' + q.cle) === 1) d.putInt(q.cle, 3)   // jamais refaisable, même après /reinit
   var etat = d.getInt(q.cle)
   if (etat === 0) { d.putInt(q.cle, 1); zpDire(joueur, q.accepter) }
   else if (etat === 1) zpDire(joueur, q.encours)
@@ -470,6 +471,7 @@ function zpAccepter(joueur) {
 function zpRendre(server, joueur) {
   zpFtb(joueur)
   var q = ZP.quete, d = joueur.persistentData
+  if (d.getInt('qfait_' + q.cle) === 1) d.putInt(q.cle, 3)
   var etat = d.getInt(q.cle)
   if (etat === 0) zpDire(joueur, q.rien)
   else if (etat === 3) zpDire(joueur, q.fini)
@@ -478,6 +480,7 @@ function zpRendre(server, joueur) {
   else {
     server.runCommandSilent('clear ' + joueur.username + ' ' + q.objet + ' 1')
     d.putInt(q.cle, 3)
+    d.putInt('qfait_' + q.cle, 1)
     server.runCommandSilent(q.commandeRecompense.replace('%joueur%', joueur.username))
     zpDire(joueur, q.recompense)
   }
@@ -498,7 +501,7 @@ ServerEvents.commandRegistry(function (event) {
     .then(Commands.literal('rendre').requires(parPnj).then(Commands.argument('joueur', Arguments.PLAYER.create(event))
       .executes(function (ctx) { return zpRendre(ctx.source.server, Arguments.PLAYER.getResult(ctx, 'joueur')) })))
     .then(Commands.literal('reset').requires(estModo).then(Commands.argument('joueur', Arguments.PLAYER.create(event))
-      .executes(function (ctx) { Arguments.PLAYER.getResult(ctx, 'joueur').persistentData.putInt(ZP.quete.cle, 0); return 1 }))))
+      .executes(function (ctx) { Arguments.PLAYER.getResult(ctx, 'joueur').persistentData.putInt(ZP.quete.cle, 0); Arguments.PLAYER.getResult(ctx, 'joueur').persistentData.putInt('qfait_' + ZP.quete.cle, 0); return 1 }))))
 })
 
 // /boss respawn pirate | /boss clear pirate (op) : même racine que les autres boss (Brigadier fusionne les deux enregistrements)

@@ -745,6 +745,7 @@ function bqFtb(joueur, q) {
 function bqAccepter(joueur, q) {
   bqFtb(joueur, q)
   var d = joueur.persistentData
+  if (d.getInt('qfait_' + q.cle) === 1) d.putInt(q.cle, 3)   // déjà terminée une fois : jamais refaisable (même après /reinit)
   var etat = d.getInt(q.cle)
   if (etat === 0) { d.putInt(q.cle, 1); bqDire(joueur, q, q.accepter) }
   else if (etat === 1) bqDire(joueur, q, q.encours)
@@ -756,6 +757,7 @@ function bqAccepter(joueur, q) {
 function bqRendre(server, joueur, q) {
   bqFtb(joueur, q)
   var d = joueur.persistentData
+  if (d.getInt('qfait_' + q.cle) === 1) d.putInt(q.cle, 3)
   var etat = d.getInt(q.cle)
   var aObjet = !q.objet || joueur.inventory.count(q.objet) >= 1
   // Qui tient l'objet de quête peut le rendre, même si l'état n'a pas été passé à 2 (boss tué par un autre, rechargement...)
@@ -766,6 +768,7 @@ function bqRendre(server, joueur, q) {
   else {
     if (q.objet) server.runCommandSilent('clear ' + joueur.username + ' ' + q.objet + ' 1')
     d.putInt(q.cle, 3)
+    d.putInt('qfait_' + q.cle, 1)
     server.runCommandSilent(q.commandeRecompense.replace('%joueur%', joueur.username))
     bqDire(joueur, q, q.recompense)
   }
@@ -816,7 +819,7 @@ ServerEvents.commandRegistry(function (event) {
       rendre = rendre.then(Commands.literal(n).then(Commands.argument('joueur', Arguments.PLAYER.create(event))
         .executes(function (ctx) { return bqRendre(ctx.source.server, Arguments.PLAYER.getResult(ctx, 'joueur'), quete(n)) })))
       reset = reset.then(Commands.literal(n).then(Commands.argument('joueur', Arguments.PLAYER.create(event))
-        .executes(function (ctx) { Arguments.PLAYER.getResult(ctx, 'joueur').persistentData.putInt(quete(n).cle, 0); return 1 })))
+        .executes(function (ctx) { Arguments.PLAYER.getResult(ctx, 'joueur').persistentData.putInt(quete(n).cle, 0); Arguments.PLAYER.getResult(ctx, 'joueur').persistentData.putInt('qfait_' + quete(n).cle, 0); return 1 })))
     })(nom)
   }
   event.register(racine.then(accepter).then(rendre).then(reset))
