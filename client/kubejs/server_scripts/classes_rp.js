@@ -1334,6 +1334,8 @@ function cmdCodexVoir(ctx, cible) {
   }
 }
 
+var CODEX_ADMIN = {}   // uuid -> tick du dernier changement de palier fait par un op (à ne pas annuler)
+
 // /codex <joueur> niveau <n> <sort> : fixe le palier (niveau lançable / montable) d'un sort découvert, sans coût d'XP.
 function cmdCodexNiveau(ctx, cible, sort, n) {
   try {
@@ -1343,6 +1345,7 @@ function cmdCodexNiveau(ctx, cible, sort, n) {
     if (!rl || !d.isSpellUnlocked(rl)) { retour(ctx, 'Sort inconnu ou non découvert : ' + sort); return 0 }
     var max = Number(SpellRegistryJ.getSpell(rl).getMaxLevel())
     n = Math.max(1, Math.min(n, max))
+    CODEX_ADMIN[String(cible.uuid)] = cible.server.tickCount
     d.setUnlockedTier(rl, n)
     Java.loadClass('com.specs.irons_spellbooks.unlock.UnlockNetworking').applyAccessAndSync(cible)
     retour(ctx, cible.username + ' : ' + sort + ' au niveau ' + n + ' (max ' + max + ')')
@@ -2312,6 +2315,57 @@ ServerEvents.tick(function (event) {
       PARCH_SUIVI[cle] = { vus: obj.vus, nb: obj.nb, connus: connus }
     } catch (e) {
       if (!PARCH_SUIVI._err) { PARCH_SUIVI._err = true; console.error('[parchemin] suivi : ' + e) }
+    }
+  }
+})
+
+
+// ───────── Respec du codex désactivé ─────────
+// Le bouton « Respec » du codex efface tous les paliers (même ceux gagnés par parchemins) et rembourse l'XP.
+// Il se reconnaît à : paliers en baisse alors que la liste des sorts découverts n'a pas bougé (un verrouillage de sort,
+// lui, retire le sort de la liste). On remet alors les paliers, l'XP investie et l'XP du joueur comme avant.
+var RESPEC_SUIVI = {}
+function respecPhoto(j) {
+  var d = j.getData(UnlockAttachJ.UNLOCKS)
+  var tiers = {}, somme = 0, nb = 0
+  var it = d.getTiers().entrySet().iterator()
+  while (it.hasNext()) { var en = it.next(); var v = Number(en.getValue()); tiers[String(en.getKey())] = v; somme += v; nb++ }
+  return { tiers: tiers, somme: somme, nb: nb, decouverts: Number(d.getDiscoveredSpells().size()), xpInv: Number(d.getXpInvested()),
+           niv: Number(j.experienceLevel), prog: Number(j.experienceProgress), total: Number(j.totalExperience), tick: j.server.tickCount }
+}
+ServerEvents.tick(function (event) {
+  var serveur = event.server
+  if (serveur.tickCount % 2 !== 0) return
+  var joueurs = serveur.players
+  for (var i = 0; i < joueurs.size(); i++) {
+    var j = joueurs.get(i)
+    try {
+      if (!UnlockAttachJ) UnlockAttachJ = Java.loadClass('com.specs.irons_spellbooks.unlock.SpellUnlockAttachments')
+      var cle = String(j.uuid)
+      var cur = respecPhoto(j)
+      var av = RESPEC_SUIVI[cle]
+      var admin = CODEX_ADMIN[cle] && serveur.tickCount - CODEX_ADMIN[cle] < 40
+      if (av && !admin && av.nb > 0 && cur.decouverts === av.decouverts && cur.somme < av.somme && serveur.tickCount - av.tick < 20) {
+        var d = j.getData(UnlockAttachJ.UNLOCKS)
+        for (var id in av.tiers) {
+          var rl = ResourceLocationJ.tryParse(id)
+          if (rl && d.getUnlockedTier(rl) < av.tiers[id]) d.setUnlockedTier(rl, av.tiers[id])
+        }
+        if (av.xpInv > cur.xpInv) d.addXpInvested(av.xpInv - cur.xpInv)
+        Java.loadClass('com.specs.irons_spellbooks.unlock.UnlockNetworking').applyAccessAndSync(j)
+        if (cur.total > av.total) {   // XP remboursée : reprise
+          cmd(serveur, 'xp set ' + j.username + ' ' + av.niv + ' levels')
+          var pts = Math.round(av.prog * Number(j.getXpNeededForNextLevel()))
+          if (pts > 0) cmd(serveur, 'xp add ' + j.username + ' ' + pts + ' points')
+        }
+        j.tell('Le codex refuse d\'oublier ce que vous avez appris.')
+        console.info('[codex] respec annulé pour ' + j.username + ' (' + av.somme + ' → ' + cur.somme + ' niveaux restaurés)')
+        RESPEC_SUIVI[cle] = respecPhoto(j)
+        continue
+      }
+      RESPEC_SUIVI[cle] = cur
+    } catch (e) {
+      if (!RESPEC_SUIVI._err) { RESPEC_SUIVI._err = true; console.error('[codex] suivi respec : ' + e) }
     }
   }
 })
