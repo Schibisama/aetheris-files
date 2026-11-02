@@ -69,7 +69,53 @@ var EQUILIBRAGE_SORTS = {
   'apprenticecodex:artisan_smash':     { p: 0.8 },
   'apprenticecodex:magic_spear':       { p: 0.75 },
   // Nécromancien : Drain de Vie (puissance de base 0 : dégâts quasi nuls)
-  'monsterspellbooks:life_drain':      { p: 2.0 }
+  'monsterspellbooks:life_drain':      { p: 2.0 },
+  // ── 02/11 soir : Symétriste, Spiritualiste, Astromancien, Hydromancien ramenés au niveau du Pyromancien ──
+  // Repères Pyromancien (niveau max) : trait ~26, sorts moyens 30-45, gros sorts 55-90 ; les sorts épiques/légendaires frappent fort.
+  // Symétriste (Magic From The East : symétrie, SoMake)
+  'iss_magicfromtheeast:jade_bullet':        { p: 1.5 },
+  'iss_magicfromtheeast:nephrite_slash':     { p: 1.6, m: 0.7 },
+  'iss_magicfromtheeast:jade_judgement':     { p: 1.4 },
+  'iss_magicfromtheeast:punishing_heaven':   { p: 2.0, m: 0.5, cd: 180 },
+  'iss_magicfromtheeast:underworld_aid':     { p: 1.5, m: 0.5, cd: 120 },
+  'iss_magicfromtheeast:sword_dance':        { p: 1.5, m: 0.7, cd: 60 },
+  'iss_magicfromtheeast:jiangshi_invoke':    { p: 1.3, cd: 100 },
+  'iss_magicfromtheeast:bagua_array_circle': { p: 1.4 },
+  'somakespells:mirror_strike':              { p: 1.4 },
+  'somakespells:halberd_strike':             { p: 1.4 },
+  'somakespells:phantom_barrage':            { p: 1.4 },
+  'somakespells:render_rush':                { p: 1.3 },
+  'somakespells:desert_wrath':               { p: 2.5, m: 0.7 },
+  // Spiritualiste (Magic From The East : esprit, SoMake, Cataclysm)
+  'iss_magicfromtheeast:kitsune_pack':       { cd: 120 },
+  'iss_magicfromtheeast:soul_catalyst':      { p: 1.5 },
+  'iss_magicfromtheeast:anchoring_kunai':    { p: 1.5, cd: 45 },
+  'iss_magicfromtheeast:bone_hands':         { p: 1.6, cd: 40 },
+  'iss_magicfromtheeast:ashigaru_squad':     { cd: 120 },
+  'iss_magicfromtheeast:phantom_charge':     { p: 1.4, cd: 40 },
+  'iss_magicfromtheeast:splitting_shuriken': { p: 1.3 },
+  'iss_magicfromtheeast:revenant_of_honor':  { p: 1.3, m: 0.7, cd: 150 },
+  'iss_magicfromtheeast:soul_burst':         { p: 1.8 },
+  'cataclysm_spellbooks:cursed_rush':        { p: 1.5 },
+  'somakespells:grave_sigil':                { p: 1.4 },
+  'somakespells:soul_latch':                 { p: 1.4 },
+  'somakespells:procession_of_souls':        { p: 1.4 },
+  'somakespells:soul_bastion':               { p: 1.3 },
+  'somakespells:soulfall_judgment':          { p: 1.3 },
+  'somakespells:winged_ruin':                { p: 1.8 },
+  // Astromancien (Asterism Arcanum, Hazen)
+  'asterismarcanum:starcutter':              { p: 1.6 },
+  'asterismarcanum:astral_echo':             { p: 1.4 },
+  'asterismarcanum:brightburst':             { p: 1.8 },
+  'asterismarcanum:celestial_tether':        { p: 1.3, m: 0.7 },
+  'asterismarcanum:silvery_barbs':           { p: 1.6 },
+  'asterismarcanum:summon_lunar_moths':      { cd: 90 },
+  'hazennstuff:cosmic_bolt':                 { p: 1.6 },
+  // Hydromancien (SoMake, Monster Spellbooks)
+  'somakespells:sea_serpent':                { p: 1.5 },
+  'somakespells:tidal_grasp':                { p: 1.4 },
+  'somakespells:water_ball':                 { p: 1.3 },
+  'monsterspellbooks:summon_prismarine_squad': { cd: 120 }
 }
 var EQ_PARAMS = null
 function equilibrageAppliquer(event, id) {
