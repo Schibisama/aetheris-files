@@ -413,7 +413,7 @@ var RESTRICTIONS = [
   { regle: /^crystal_chronicles:lightning_(knight_(helmet|chestplate|leggings|boots)|bident|staff)$/,      classes: ['Électro-Sorcier', 'Aéromancien'] },
   { regle: /^crystal_chronicles:evocation_(knight_(helmet|chestplate|leggings|boots)|twinblade)$/,         classes: ['Évocateur', 'Ésotériste'] },
   // Set Prismatic + Anneau de Diffraction -> Géomancien
-  { regle: /^crystal_chronicles:prismatic_knight_(helmet|chestplate|leggings|boots)$/,  classes: [] },   // armure prismatique désactivée (02/11)
+  { regle: /^crystal_chronicles:(prismatic_knight_(helmet|chestplate|leggings|boots)|diffraction_ring)$/,  classes: ['Géomancien'] },
   { regle: /^crystal_chronicles:diffraction_ring$/,  classes: ['Géomancien'] },
   // Chronomancy : set Clocksmith, 2 épées (Clock Hand, Rift Creator) et artefacts -> Chronomancien
   { regle: /^chronomancy:(clocksmith_(helmet|chestplate|leggings|boots)|clock_hand|rift_creator)$/,         classes: ['Chronomancien'] },
@@ -1302,9 +1302,21 @@ function verifierMains(joueur, server) {
   }
 }
 
+// Vol plané : seules les élytres vanilla permettent de planer. Les armures-ailes (Prismatique, Ignitium, Cursium, Ignis,
+// armure de vol mécanique, Gabriel, robes d'Arbitrium...) et les ailes en curios sont gardées, mais sans le vol.
+function interdireVolPlane(joueur) {
+  try {
+    if (!joueur.isFallFlying()) return
+    var torse = joueur.getItemBySlot(MC_SLOT.CHEST)
+    if (torse && !torse.isEmpty() && String(torse.id) === 'minecraft:elytra') return
+    joueur.stopFallFlying()
+  } catch (e) {}
+}
+
 var TICKS_RP = 0
 PlayerEvents.tick(function (event) {
   var joueur = event.player
+  interdireVolPlane(joueur)
   // Compteur propre (ne dépend pas de l'heure du monde, qui peut être figée par un sort ou une règle de jeu).
   TICKS_RP++
   if (TICKS_RP % 5 === 0) verifierMains(joueur, event.server)

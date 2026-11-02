@@ -1,5 +1,5 @@
 {
- "version": "2026-11-02T10:57:51.559Z",
+ "version": "2026-11-02T11:54:44.231Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6172,8 +6172,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "b4bf0ae7ffada04a7be79032df64f68f4ccf3c4d",
-   "size": 100176
+   "sha1": "8a900f51c5278c789f3e2cd413ed2147e050eff5",
+   "size": 100700
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -6357,8 +6357,8 @@
   },
   {
    "path": "mods/apprentice_codex-1.0.0+mc1.21.1.jar",
-   "sha1": "404a461c50bfee27d64f2c55eb1a0f40406299dd",
-   "size": 11215186
+   "sha1": "faa2a4ef61eea4996d999b8b2166e3cfd60b31dd",
+   "size": 11216773
   },
   {
    "path": "mods/archaion-1.21.1-1.4.4.jar",
