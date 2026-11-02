@@ -2099,6 +2099,31 @@ function parchLire(pile) {
   return { id: String(sort.getSpellResource()), niveau: Number(donnee.getLevel()) }
 }
 
+// Jeté ou lâché au sol, un parchemin devient une page de codex (sans niveau) : on y inscrit le niveau d'origine,
+// pour qu'une fois la page lue le sort soit appris à ce niveau.
+var PAGE_ID = 'specs_irons_spellbooks:codex_page'
+var PAGE_CLE_NIVEAU = 'mcrp_niveau'
+var parchEnAttente = null
+function parchEcrirePage(page, niveau) {
+  var DC = Java.loadClass('net.minecraft.core.component.DataComponents')
+  var CD = Java.loadClass('net.minecraft.world.item.component.CustomData')
+  var CT = Java.loadClass('net.minecraft.nbt.CompoundTag')
+  var cur = page.get(DC.CUSTOM_DATA)
+  var tag = cur ? cur.copyTag() : new CT()
+  tag.putInt(PAGE_CLE_NIVEAU, niveau)
+  page.set(DC.CUSTOM_DATA, CD.of(tag))
+}
+function parchLirePage(page) {
+  var DC = Java.loadClass('net.minecraft.core.component.DataComponents')
+  var cur = page.get(DC.CUSTOM_DATA)
+  if (!cur) return null
+  var tag = cur.copyTag()
+  if (!tag.contains(PAGE_CLE_NIVEAU)) return null
+  var rl = Java.loadClass('com.specs.irons_spellbooks.item.CodexPageItem').getSpellId(page)
+  if (!rl) return null
+  return { id: String(rl), niveau: Number(tag.getInt(PAGE_CLE_NIVEAU)) }
+}
+
 function parchAppliquer(joueur, id, niveau) {
   if (!UnlockAttachJ) UnlockAttachJ = Java.loadClass('com.specs.irons_spellbooks.unlock.SpellUnlockAttachments')
   var rl = ResourceLocationJ.tryParse(id)
@@ -2125,8 +2150,10 @@ try {
       if (client === undefined || typeof client === 'function') client = niveau.isClientSide
       if (client === true) return
       var pile = e.getItemStack()
-      if (!pile || pile.isEmpty() || String(pile.id) !== 'irons_spellbooks:scroll') return
-      var lu = parchLire(pile)
+      if (!pile || pile.isEmpty()) return
+      var idObjet = String(pile.id)
+      if (idObjet !== 'irons_spellbooks:scroll' && idObjet !== PAGE_ID) return
+      var lu = idObjet === PAGE_ID ? parchLirePage(pile) : parchLire(pile)
       console.info('[parchemin] ' + joueur.username + ' utilise un parchemin : ' + (lu ? lu.id + ' niveau ' + lu.niveau : 'illisible'))
       if (!lu) return
       var main = e.getHand()
@@ -2148,4 +2175,55 @@ try {
   console.info('[parchemin] Niveau des parchemins conservé dans le codex.')
 } catch (e) {
   console.error('[parchemin] indisponible : ' + e)
+}
+
+
+// Avant Spell Codex (HIGHEST) : on retient le niveau du parchemin ; après lui (LOWEST) : on l'inscrit sur la page qui le remplace.
+try {
+  var EVT_TOSS = Java.loadClass('net.neoforged.neoforge.event.entity.item.ItemTossEvent')
+  var EVT_JOIN = Java.loadClass('net.neoforged.neoforge.event.entity.EntityJoinLevelEvent')
+  var BUS_PARCH = Java.loadClass('net.neoforged.neoforge.common.NeoForge').EVENT_BUS
+  var PRIO_P = Java.loadClass('net.neoforged.bus.api.EventPriority')
+  var avant = function (pile) {
+    parchEnAttente = null
+    try {
+      if (pile && !pile.isEmpty() && String(pile.id) === 'irons_spellbooks:scroll') parchEnAttente = parchLire(pile)
+    } catch (e1) {}
+  }
+  var apres = function (entiteObjet) {
+    var lu = parchEnAttente
+    parchEnAttente = null
+    if (!lu) return
+    try {
+      var page = entiteObjet.getItem()
+      if (page && !page.isEmpty() && String(page.id) === PAGE_ID) {
+        parchEcrirePage(page, lu.niveau)
+        console.info('[parchemin] page de ' + lu.id + ' marquée niveau ' + lu.niveau)
+      }
+    } catch (e2) { console.error('[parchemin] marquage de la page : ' + e2) }
+  }
+  var cote = function (niveau) {
+    var client = niveau.clientSide
+    if (client === undefined || typeof client === 'function') client = niveau.isClientSide
+    return client === true
+  }
+  BUS_PARCH.addListener(PRIO_P.HIGHEST, false, EVT_TOSS, function (e) { try { avant(e.getEntity().getItem()) } catch (x) {} })
+  BUS_PARCH.addListener(PRIO_P.LOWEST, true, EVT_TOSS, function (e) { try { apres(e.getEntity()) } catch (x) {} })
+  BUS_PARCH.addListener(PRIO_P.HIGHEST, false, EVT_JOIN, function (e) {
+    try {
+      var ent = e.getEntity()
+      if (cote(e.getLevel()) || String(ent.type) !== 'minecraft:item') return
+      avant(ent.getItem())
+    } catch (x) {}
+  })
+  BUS_PARCH.addListener(PRIO_P.LOWEST, true, EVT_JOIN, function (e) {
+    try {
+      var ent = e.getEntity()
+      if (cote(e.getLevel()) || String(ent.type) !== 'minecraft:item') return
+      apres(ent)
+    } catch (x) {}
+  })
+  console.info('[parchemin] Niveau conservé quand un parchemin est jeté ou lâché.')
+} catch (e) {
+  console.error('[parchemin] conservation du niveau indisponible : ' + e)
 }
