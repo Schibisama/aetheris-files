@@ -553,7 +553,7 @@ function verrouillerSortsInterdits(server, joueur, classe) {
 }
 
 // Écoles qui doivent rester ouvertes pour cette classe (école, écoles supplémentaires, écoles libres, écoles des sorts permis).
-function ecolesDeLaClasse(classe) {
+function ecolesOuvertesDeLaClasse(classe) {
   var set = {}
   set[classe.ecole] = true
   if (classe.sup) for (var s = 0; s < classe.sup.length; s++) set[classe.sup[s]] = true
@@ -567,7 +567,7 @@ function ecolesDeLaClasse(classe) {
   return set
 }
 function verrouillerEcolesHorsClasse(server, nom, classe) {
-  var garder = ecolesDeLaClasse(classe)
+  var garder = ecolesOuvertesDeLaClasse(classe)
   var connues = {}
   for (var i = 0; i < CLASSES.length; i++) {
     connues[CLASSES[i].ecole] = true
