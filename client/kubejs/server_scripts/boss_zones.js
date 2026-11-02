@@ -537,12 +537,48 @@ try {
   )
 } catch (e) { console.error('[boss_zones] suivi des coups indisponible : ' + e) }
 
+// ───────────── Pas de tir allié dans les zones de boss ─────────────
+// Deux joueurs présents dans la même zone de boss ne peuvent pas se blesser (armes, projectiles, sorts, invocations).
+// Les dégâts de chute, de feu, etc. (sans auteur joueur) et les dégâts qu'on s'inflige à soi-même ne sont pas concernés.
+function bzJoueurSource(src) {
+  var att = null
+  try { att = src.actual } catch (e) {}
+  if (!att) { try { att = src.getEntity() } catch (e2) {} }
+  if (!att) return null
+  try {
+    if (!att.isPlayer()) {
+      var o = null
+      try { o = att.getOwner() } catch (e3) {}
+      if (!o) { try { o = att.getSummoner() } catch (e4) {} }
+      if (o && o.isPlayer()) att = o
+    }
+  } catch (e5) {}
+  try { return att.isPlayer() ? att : null } catch (e6) { return null }
+}
+function bzZoneDeJoueur(j) {
+  for (var nom in BOSSES) {
+    var b = BOSSES[nom]
+    var dx = j.x - b.x, dz = j.z - b.z
+    if (Math.sqrt(dx * dx + dz * dz) <= b.rayon && Math.abs(j.y - b.y) <= 60) return nom
+  }
+  return null
+}
+function bzTirAllie(ev) {
+  var v = ev.getEntity()
+  if (!v || !v.isPlayer()) return false
+  var a = bzJoueurSource(ev.getSource())
+  if (!a || String(a.uuid) === String(v.uuid)) return false
+  var zv = bzZoneDeJoueur(v)
+  return !!zv && zv === bzZoneDeJoueur(a)
+}
+
 // Dégâts x1,5 : tout coup dont l'auteur est un boss de zone (corps à corps, boules de feu, souffle... si l'auteur est renseigné)
 try {
   NativeEvents.onEvent(
     Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent'),
     function (ev) {
       try {
+        try { if (bzTirAllie(ev)) { ev.setCanceled(true); return } } catch (eF) {}
         try { var tg = ev.getEntity(); if (tg.tags && tg.tags.contains('boss_zone')) tg.persistentData.putLong('bz_coup', Date.now()) } catch (e1) {}
         try {
           var tgE = ev.getEntity()

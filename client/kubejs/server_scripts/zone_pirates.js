@@ -327,12 +327,37 @@ ServerEvents.tick(function (event) {
   } catch (err) { if (!zpErr) { zpErr = true; console.error('[zone_pirates] barres : ' + err) } }
 })
 
+// Pas de tir allié dans la zone pirate : deux joueurs présents dans la zone ne peuvent pas se blesser (armes, projectiles, sorts, invocations).
+function zpJoueurSource(src) {
+  var att = null
+  try { att = src.actual } catch (e) {}
+  if (!att) { try { att = src.getEntity() } catch (e2) {} }
+  if (!att) return null
+  try {
+    if (!att.isPlayer()) {
+      var o = null
+      try { o = att.getOwner() } catch (e3) {}
+      if (!o) { try { o = att.getSummoner() } catch (e4) {} }
+      if (o && o.isPlayer()) att = o
+    }
+  } catch (e5) {}
+  try { return att.isPlayer() ? att : null } catch (e6) { return null }
+}
+function zpTirAllie(ev) {
+  var v = ev.getEntity()
+  if (!v || !v.isPlayer()) return false
+  var a = zpJoueurSource(ev.getSource())
+  if (!a || String(a.uuid) === String(v.uuid)) return false
+  return zpJoueurDedans(v, 0) && zpJoueurDedans(a, 0)
+}
+
 // Dégâts x1,5 : tout coup dont l'auteur est un mob de la zone pirate (corps à corps, boules de feu, souffle... si l'auteur est renseigné)
 try {
   NativeEvents.onEvent(
     Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent'),
     function (ev) {
       try {
+        try { if (zpTirAllie(ev)) { ev.setCanceled(true); return } } catch (eF) {}
         var att = null
         try { att = ev.getSource().actual } catch (e0) {}
         if (!att || !att.tags || !att.tags.contains('pirate_zone')) return
