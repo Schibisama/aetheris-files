@@ -49,7 +49,25 @@ var EQUILIBRAGE_SORTS = {
   'irons_spellbooks:cleanse':          { cd: 40 },
   'somakespells:jingle_bell':          { p: 1.2 },
   'somakespells:slumber_melody':       { m: 0.8 },
-  'irons_spellbooks:firefly_swarm':    { p: 1.15 }
+  'irons_spellbooks:firefly_swarm':    { p: 1.15 },
+  // Technomancien : petits sorts d'Apprentice's Codex trop faibles pour leur coût (+) ; sorts trop forts à recharge courte (-)
+  'apprenticecodex:quick_arms':        { p: 1.8, m: 0.7 },
+  'apprenticecodex:fly_swatter':       { p: 1.6, m: 0.7 },
+  'apprenticecodex:commence_fire':     { p: 1.8, m: 0.6 },
+  'apprenticecodex:auto_turret':       { p: 1.5, m: 0.8 },
+  'apprenticecodex:archer_multiple':   { p: 1.4, m: 0.7 },
+  'apprenticecodex:sky_edge':          { p: 1.5, m: 0.8 },
+  'apprenticecodex:silent_assassin':   { p: 1.5, m: 0.6 },
+  'apprenticecodex:precision_jack':    { p: 1.6, m: 0.7 },
+  'apprenticecodex:dual_acrobat':      { p: 1.3 },
+  'apprenticecodex:bullet_stream':     { p: 1.3 },
+  'apprenticecodex:tiro_volley':       { p: 1.3 },
+  'apprenticecodex:slash_blade':       { p: 1.15 },
+  'monsterspellbooks:spinblade':       { p: 1.2 },
+  'apprenticecodex:shiden':            { p: 0.8 },
+  'apprenticecodex:mantis_leap':       { p: 0.8 },
+  'apprenticecodex:artisan_smash':     { p: 0.8 },
+  'apprenticecodex:magic_spear':       { p: 0.75 }
 }
 var EQ_PARAMS = null
 function equilibrageAppliquer(event, id) {
