@@ -6,7 +6,7 @@
 // Nécessite : startup_scripts/objets_quetes.js (kubejs:jambe_de_bois) + redémarrage. Rechargement du script : /reload
 
 var ZP = {
-  x1: 1297, x2: 1359, z1: -13123, z2: -13066, y1: 62, y2: 69,
+  x1: 1266, x2: 1390, z1: -13152, z2: -13037, y1: 62, y2: 69,   // zone doublée le 02/11 (avant : x 1297..1359, z -13123..-13066)
   respawnMin: 30,
   marge: 5,        // tolérance autour de la boîte avant de ramener un mob (Scylla apparaît 1 bloc dehors)
   barreMarge: 10,  // les joueurs au-delà de la boîte + cette marge ne voient plus les barres de vie

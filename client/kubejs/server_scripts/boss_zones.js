@@ -15,7 +15,7 @@ var BOSSES = {
   helvar: {
     type: 'block_factorys_bosses:underworld_knight',
     x: -399, y: 68, z: 859,
-    rayon: 30,
+    rayon: 60,
     respawnMin: 30,
     quete: {
       cle: 'helvar_quete',
@@ -37,7 +37,7 @@ var BOSSES = {
   maledictus: {
     type: 'cataclysm:maledictus',
     x: 2684, y: 68, z: 1727,
-    rayon: 30,
+    rayon: 60,
     respawnMin: 30,
     quete: {
       cle: 'maledictus_quete',
@@ -59,7 +59,7 @@ var BOSSES = {
   skor: {
     type: 'block_factorys_bosses:yeti',
     x: 919, y: 227, z: 706,
-    rayon: 30,
+    rayon: 60,
     aggro: 30,   // attaque d'office tout joueur (survie/aventure) à moins de 30 blocs
     nbtSpawn: 'BossPhase:0,is_enraged:2,BossBarVisible:1b',   // départ « éveillé » (comme un yéti de structure) : sans ça Skor reste en statue de glace
     respawnMin: 30,
@@ -83,7 +83,7 @@ var BOSSES = {
   cumulonimbus: {
     type: 'legendary_monsters:cloud_golem',
     x: -125, y: 92, z: 1012,
-    rayon: 40,   // il vole : zone un peu plus large
+    rayon: 80,   // il vole : zone un peu plus large (doublée le 02/11)
     aggro: 35,
     soigneSiSort: true,
     respawnMin: 30,
@@ -108,7 +108,7 @@ var BOSSES = {
   dragon: {
     type: 'block_factorys_bosses:infernal_dragon',
     x: 1642, y: 207, z: 1795,
-    rayon: 45,   // plus large que les autres : le dragon vole et plonge
+    rayon: 90,   // plus large que les autres : le dragon vole et plonge
     aggro: 40,
     soigneSiSort: true,   // sort de sa zone (aggro perdue) : retour au centre ET vie remise au maximum
     remonteSous: 12,   // s'il descend de plus de 12 blocs sous son point d'apparition : retour au point d'apparition, sans dégâts de chute
