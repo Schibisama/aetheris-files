@@ -1334,6 +1334,26 @@ function cmdCodexVoir(ctx, cible) {
   }
 }
 
+// /codex <joueur> niveau <n> <sort> : fixe le palier (niveau lançable / montable) d'un sort découvert, sans coût d'XP.
+function cmdCodexNiveau(ctx, cible, sort, n) {
+  try {
+    if (!UnlockAttachJ) UnlockAttachJ = Java.loadClass('com.specs.irons_spellbooks.unlock.SpellUnlockAttachments')
+    var rl = ResourceLocationJ.tryParse(sort)
+    var d = cible.getData(UnlockAttachJ.UNLOCKS)
+    if (!rl || !d.isSpellUnlocked(rl)) { retour(ctx, 'Sort inconnu ou non découvert : ' + sort); return 0 }
+    var max = Number(SpellRegistryJ.getSpell(rl).getMaxLevel())
+    n = Math.max(1, Math.min(n, max))
+    d.setUnlockedTier(rl, n)
+    Java.loadClass('com.specs.irons_spellbooks.unlock.UnlockNetworking').applyAccessAndSync(cible)
+    retour(ctx, cible.username + ' : ' + sort + ' au niveau ' + n + ' (max ' + max + ')')
+    return 1
+  } catch (e) {
+    console.error('[codex] niveau : ' + e)
+    retour(ctx, 'Échec : ' + e)
+    return 0
+  }
+}
+
 function cmdCodexModifier(ctx, cible, sort, ajouter) {
   sort = String(sort).trim()
   if (!/^[a-z0-9_.-]+:[a-z0-9_.\/-]+$/.test(sort)) { retour(ctx, 'Identifiant invalide : ' + sort + ' (format namespace:sort)'); return 0 }
@@ -1426,6 +1446,10 @@ ServerEvents.commandRegistry(function (event) {
         .then(Commands.literal('ajouter')
           .then(Commands.argument('sort', Arguments.GREEDY_STRING.create(event))
             .executes(function (ctx) { return cmdCodexModifier(ctx, Arguments.PLAYER.getResult(ctx, 'joueur'), String(Arguments.GREEDY_STRING.getResult(ctx, 'sort')), true) })))
+        .then(Commands.literal('niveau')
+          .then(Commands.argument('niveau', Arguments.INTEGER.create(event))
+            .then(Commands.argument('sort', Arguments.GREEDY_STRING.create(event))
+              .executes(function (ctx) { return cmdCodexNiveau(ctx, Arguments.PLAYER.getResult(ctx, 'joueur'), String(Arguments.GREEDY_STRING.getResult(ctx, 'sort')).trim(), Number(Arguments.INTEGER.getResult(ctx, 'niveau'))) }))))
         .then(Commands.literal('retirer')
           .then(Commands.argument('sort', Arguments.GREEDY_STRING.create(event))
             .executes(function (ctx) { return cmdCodexModifier(ctx, Arguments.PLAYER.getResult(ctx, 'joueur'), String(Arguments.GREEDY_STRING.getResult(ctx, 'sort')), false) }))))
@@ -2079,9 +2103,10 @@ function parchAppliquer(joueur, id, niveau) {
   if (!UnlockAttachJ) UnlockAttachJ = Java.loadClass('com.specs.irons_spellbooks.unlock.SpellUnlockAttachments')
   var rl = ResourceLocationJ.tryParse(id)
   var donnees = joueur.getData(UnlockAttachJ.UNLOCKS)
-  if (!donnees.isSpellUnlocked(rl)) return
+  if (!donnees.isSpellUnlocked(rl)) { console.info('[parchemin] ' + id + ' non découvert, palier inchangé'); return }
   var cible = niveau
   try { cible = Math.min(niveau, Number(SpellRegistryJ.getSpell(rl).getMaxLevel())) } catch (e0) {}
+  console.info('[parchemin] ' + id + ' : palier actuel ' + donnees.getUnlockedTier(rl) + ', parchemin ' + cible)
   if (cible <= donnees.getUnlockedTier(rl)) return
   donnees.setUnlockedTier(rl, cible)
   Java.loadClass('com.specs.irons_spellbooks.unlock.UnlockNetworking').applyAccessAndSync(joueur)
@@ -2102,6 +2127,7 @@ try {
       var pile = e.getItemStack()
       if (!pile || pile.isEmpty() || String(pile.id) !== 'irons_spellbooks:scroll') return
       var lu = parchLire(pile)
+      console.info('[parchemin] ' + joueur.username + ' utilise un parchemin : ' + (lu ? lu.id + ' niveau ' + lu.niveau : 'illisible'))
       if (!lu) return
       var main = e.getHand()
       var avant = pile.count
@@ -2110,6 +2136,7 @@ try {
         try {
           var apres = joueur.getItemInHand(main)
           var consomme = apres.isEmpty() || apres.item !== objet || apres.count < avant
+          console.info('[parchemin] ' + joueur.username + ' : parchemin ' + (consomme ? 'consommé' : 'non consommé'))
           if (!consomme) return   // refusé (mauvaise classe, etc.) : rien n'est appris
           parchAppliquer(joueur, lu.id, lu.niveau)
         } catch (e2) { console.error('[parchemin] ' + e2) }
