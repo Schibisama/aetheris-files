@@ -580,6 +580,34 @@ function verrouillerEcolesHorsClasse(server, nom, classe) {
   }
 }
 
+// Changement de classe : on oublie les sorts découverts, SAUF ceux obtenus par /cours et les sorts « pour tous » (ils restent acquis).
+function oublierSortsDeClasse(server, joueur) {
+  var nom = joueur.username
+  var gardes = null
+  try { if (typeof desactSortsCours === 'function') gardes = desactSortsCours() } catch (e0) {}
+  var donnees = null
+  try {
+    if (!UnlockAttachJ) UnlockAttachJ = Java.loadClass('com.specs.irons_spellbooks.unlock.SpellUnlockAttachments')
+    donnees = joueur.getData(UnlockAttachJ.UNLOCKS)
+  } catch (e1) {}
+  if (!gardes || !donnees) {
+    // Lecture impossible : ancien comportement, mais on remet d'abord ce que /cours avait donné.
+    cmd(server, 'specs_codex spell lock_all ' + nom)
+    try {
+      var suivi = String(joueur.persistentData.getString(COURS_CLE)).split('|')
+      for (var k = 0; k < suivi.length; k++) if (suivi[k]) cmd(server, 'specs_codex spell unlock ' + nom + ' ' + suivi[k])
+    } catch (e2) {}
+    return
+  }
+  var aOublier = []
+  var it = donnees.getDiscoveredSpells().iterator()
+  while (it.hasNext()) {
+    var id = String(it.next())
+    if (gardes[id] !== true) aOublier.push(id)
+  }
+  for (var i = 0; i < aOublier.length; i++) cmd(server, 'specs_codex spell lock ' + nom + ' ' + aOublier[i])
+}
+
 // reinit = true : on repart de zéro (nouvelle classe) -> tous les sorts découverts sont oubliés.
 // À la simple reconnexion (reinit = false) on garde la progression du joueur.
 function appliquerClasse(server, joueur, classe, reinit) {
@@ -592,7 +620,7 @@ function appliquerClasse(server, joueur, classe, reinit) {
     cmd(server, 'specs_codex spell unlock_all ' + nom)
     return
   }
-  if (reinit) { cmd(server, 'specs_codex spell lock_all ' + nom); try { joueur.persistentData.putString('cours_sorts', '') } catch (e) {} }
+  if (reinit) { oublierSortsDeClasse(server, joueur) }
   if (reinit) {
     cmd(server, 'specs_codex school lock_all ' + nom)
   } else {
