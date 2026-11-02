@@ -2353,10 +2353,9 @@ ServerEvents.tick(function (event) {
         }
         if (av.xpInv > cur.xpInv) d.addXpInvested(av.xpInv - cur.xpInv)
         Java.loadClass('com.specs.irons_spellbooks.unlock.UnlockNetworking').applyAccessAndSync(j)
-        if (cur.total > av.total) {   // XP remboursée : reprise
-          cmd(serveur, 'xp set ' + j.username + ' ' + av.niv + ' levels')
-          var pts = Math.round(av.prog * Number(j.getXpNeededForNextLevel()))
-          if (pts > 0) cmd(serveur, 'xp add ' + j.username + ' ' + pts + ' points')
+        if (cur.total > av.total) {   // XP remboursée : reprise exacte (retrait direct, sans passer par les niveaux)
+          var gain = cur.total - av.total
+          j.giveExperiencePoints(-Math.min(gain, 2147483647))
         }
         j.tell('Le codex refuse d\'oublier ce que vous avez appris.')
         console.info('[codex] respec annulé pour ' + j.username + ' (' + av.somme + ' → ' + cur.somme + ' niveaux restaurés)')
