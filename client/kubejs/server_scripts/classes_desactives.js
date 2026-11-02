@@ -348,3 +348,60 @@ try {
 } catch (e) {
   console.error('[classes_desactives] Filtre des objets au sol indisponible : ' + e)
 }
+
+// ───────────── Bijoux d'Iron's Jewelry désactivés : Amulette de Protection en Cristal de redstone ─────────────
+// Trop puissante (explosion électrique à chaque coup reçu). Retirée de l'inventaire et des emplacements Curios, d'où qu'elle vienne
+// (forge à bijoux, butin, échange entre joueurs).
+var DESACT_BIJOUX = [{ motif: 'amulet_of_protection', materiau: 'monsterspellbooks:redstone_crystal' }]
+var DESACT_VIDE = Java.loadClass('net.minecraft.world.item.ItemStack').EMPTY
+var DESACT_JD = null, DESACT_CURIOS = null, DESACT_BIJOUX_ERREUR = false
+function desactBijouInterdit(pile) {
+  try {
+    if (!pile || pile.isEmpty()) return false
+    var id = String(pile.id)
+    if (id.indexOf('irons_jewelry:') !== 0) return false
+    if (!DESACT_JD) DESACT_JD = Java.loadClass('io.redspace.ironsjewelry.core.data.JewelryData')
+    var d = DESACT_JD.getNullable(pile)
+    if (!d) return false
+    var motif = String(d.pattern().unwrapKey().get().location())
+    var mats = []
+    var it = d.parts().values().iterator()
+    while (it.hasNext()) mats.push(String(it.next().unwrapKey().get().location()))
+    for (var i = 0; i < DESACT_BIJOUX.length; i++) {
+      var r = DESACT_BIJOUX[i]
+      if (motif.indexOf(r.motif) >= 0 && mats.indexOf(r.materiau) >= 0) return true
+    }
+  } catch (e) {
+    if (!DESACT_BIJOUX_ERREUR) { DESACT_BIJOUX_ERREUR = true; console.error('[classes_desactives] bijoux : ' + e) }
+  }
+  return false
+}
+ServerEvents.tick(function (ev) {
+  try {
+    if (ev.server.tickCount % 20 !== 0) return
+    var joueurs = ev.server.getPlayers()
+    for (var i = 0; i < joueurs.size(); i++) {
+      var p = joueurs.get(i)
+      var retire = false
+      var inv = p.getInventory()
+      var n = inv.getContainerSize()
+      for (var s = 0; s < n; s++) {
+        if (desactBijouInterdit(inv.getItem(s))) { inv.setItem(s, DESACT_VIDE); retire = true }
+      }
+      try {
+        if (!DESACT_CURIOS) DESACT_CURIOS = Java.loadClass('top.theillusivec4.curios.api.CuriosApi')
+        var opt = DESACT_CURIOS.getCuriosInventory(p)
+        if (opt.isPresent()) {
+          var h = opt.get().getEquippedCurios()
+          for (var k = 0; k < h.getSlots(); k++) {
+            if (desactBijouInterdit(h.getStackInSlot(k))) { h.setStackInSlot(k, DESACT_VIDE); retire = true }
+          }
+        }
+      } catch (eC) {}
+      if (retire) {
+        p.tell(Text.red('Cette amulette a été désactivée sur le serveur et a disparu de ton équipement.'))
+        console.info('[classes_desactives] Amulette de Protection (cristal de redstone) retirée à ' + p.username)
+      }
+    }
+  } catch (e) {}
+})
