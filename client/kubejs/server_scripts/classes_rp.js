@@ -2128,14 +2128,15 @@ function parchAppliquer(joueur, id, niveau) {
   if (!UnlockAttachJ) UnlockAttachJ = Java.loadClass('com.specs.irons_spellbooks.unlock.SpellUnlockAttachments')
   var rl = ResourceLocationJ.tryParse(id)
   var donnees = joueur.getData(UnlockAttachJ.UNLOCKS)
-  if (!donnees.isSpellUnlocked(rl)) { console.info('[parchemin] ' + id + ' non découvert, palier inchangé'); return }
+  if (!donnees.isSpellUnlocked(rl)) { console.info('[parchemin] ' + id + ' non découvert, palier inchangé'); return false }
   var cible = niveau
   try { cible = Math.min(niveau, Number(SpellRegistryJ.getSpell(rl).getMaxLevel())) } catch (e0) {}
   console.info('[parchemin] ' + id + ' : palier actuel ' + donnees.getUnlockedTier(rl) + ', parchemin ' + cible)
-  if (cible <= donnees.getUnlockedTier(rl)) return
+  if (cible <= donnees.getUnlockedTier(rl)) return true
   donnees.setUnlockedTier(rl, cible)
   Java.loadClass('com.specs.irons_spellbooks.unlock.UnlockNetworking').applyAccessAndSync(joueur)
   console.info('[parchemin] ' + joueur.username + ' apprend ' + id + ' au niveau ' + cible)
+  return true
 }
 
 try {
@@ -2164,7 +2165,14 @@ try {
           var apres = joueur.getItemInHand(main)
           var consomme = apres.isEmpty() || apres.item !== objet || apres.count < avant
           console.info('[parchemin] ' + joueur.username + ' : parchemin ' + (consomme ? 'consommé' : 'non consommé'))
-          if (!consomme) return   // refusé (mauvaise classe, etc.) : rien n'est appris
+          if (!consomme) {
+            // Page d'un sort déjà connu : Spell Codex la refuse (« déjà découvert ») et la garde. Si elle porte un niveau
+            // supérieur au palier, on relève le palier et on la consomme nous-mêmes.
+            if (idObjet !== PAGE_ID || apres.isEmpty() || apres.item !== objet) return
+            if (!parchAppliquer(joueur, lu.id, lu.niveau)) return
+            apres.shrink(1)
+            return
+          }
           parchAppliquer(joueur, lu.id, lu.niveau)
         } catch (e2) { console.error('[parchemin] ' + e2) }
       })
