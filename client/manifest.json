@@ -1,5 +1,5 @@
 {
- "version": "2026-11-02T16:29:06.835Z",
+ "version": "2026-11-02T16:31:37.986Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6202,8 +6202,8 @@
   },
   {
    "path": "kubejs/server_scripts/envouteur_nerf.js",
-   "sha1": "51c2483a3e78aba0499a8e407eed4278c4bdf2c6",
-   "size": 4268
+   "sha1": "05233672dd57b9910ce7912ff19f4caa39d686ef",
+   "size": 4983
   },
   {
    "path": "kubejs/server_scripts/ftb_aide.js",
