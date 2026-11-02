@@ -697,23 +697,24 @@ function effectifsClasses(server) {
   return eff
 }
 
-// Tirage du Maître du Destin : 75 % de chances que la classe soit l'une des moins choisies (les 3 plus petits effectifs,
-// égalités comprises), 25 % qu'elle soit tirée parmi toutes les autres. Ne tombe jamais sur la classe actuelle.
+// Tirage du Maître du Destin : tant qu'il reste PLUS de DESTIN_SEUIL_VIDES classes sans aucun aspirant (effectif 0), la classe est
+// tirée à 100 % parmi elles. Dès qu'il n'en reste que DESTIN_SEUIL_VIDES ou moins : 75 % de chances d'une classe sans aspirant,
+// 25 % d'une classe qui a déjà des joueurs. Ne tombe jamais sur la classe actuelle.
 var DESTIN_CHANCE_RARE = 0.75
-var DESTIN_NB_RARES = 3
+var DESTIN_SEUIL_VIDES = 3
 function tirerRare(server, exclureNom) {
   var eff = effectifsClasses(server)
-  var cands = []
-  for (var i = 0; i < CLASSES.length; i++) if (CLASSES[i].nom !== exclureNom) cands.push(CLASSES[i])
-  var nombres = []
-  for (var j = 0; j < cands.length; j++) nombres.push(eff[cands[j].nom])
-  nombres.sort(function (x, y) { return x - y })
-  var seuil = nombres[Math.min(DESTIN_NB_RARES, nombres.length) - 1]
-  var rares = [], autres = []
-  for (var k = 0; k < cands.length; k++) (eff[cands[k].nom] <= seuil ? rares : autres).push(cands[k])
-  var groupe = (autres.length === 0 || Math.random() < DESTIN_CHANCE_RARE) ? rares : autres
+  var vides = [], autres = []
+  for (var i = 0; i < CLASSES.length; i++) {
+    if (CLASSES[i].nom === exclureNom) continue
+    ;((eff[CLASSES[i].nom] || 0) === 0 ? vides : autres).push(CLASSES[i])
+  }
+  var groupe
+  if (vides.length === 0) groupe = autres
+  else if (autres.length === 0 || vides.length > DESTIN_SEUIL_VIDES) groupe = vides
+  else groupe = (Math.random() < DESTIN_CHANCE_RARE) ? vides : autres
   var choix = groupe[Math.floor(Math.random() * groupe.length)]
-  console.info('[classes_rp] Maître du Destin : effectifs ' + JSON.stringify(eff) + ' -> ' + choix.nom + (groupe === rares ? ' (parmi les moins choisies)' : ' (tirage libre)'))
+  console.info('[classes_rp] Maître du Destin : ' + vides.length + ' classe(s) sans aspirant, effectifs ' + JSON.stringify(eff) + ' -> ' + choix.nom + (groupe === vides ? ' (classe sans aspirant)' : ' (classe déjà choisie)'))
   return choix
 }
 
