@@ -1,5 +1,5 @@
 {
- "version": "2026-11-02T11:55:13.298Z",
+ "version": "2026-11-02T12:00:56.404Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6172,8 +6172,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "8a900f51c5278c789f3e2cd413ed2147e050eff5",
-   "size": 100700
+   "sha1": "b41b1d942691412dfe4f2bc1b8d4531195ea9100",
+   "size": 102053
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -6274,6 +6274,11 @@
    "path": "kubejs/server_scripts/starter.js",
    "sha1": "f4eef756f02ade1e2fc3220be1abdb923a7b8c57",
    "size": 11937
+  },
+  {
+   "path": "kubejs/server_scripts/waystones_halo.js",
+   "sha1": "638b7423f9fadbf6c5541fd4ab9f10b2e9edfc13",
+   "size": 4761
   },
   {
    "path": "kubejs/server_scripts/worldstop_portee.js",

@@ -552,6 +552,33 @@ function verrouillerSortsInterdits(server, joueur, classe) {
   for (var i = 0; i < liste.length; i++) cmd(server, 'specs_codex spell lock ' + joueur.username + ' ' + liste[i])
 }
 
+// Écoles qui doivent rester ouvertes pour cette classe (école, écoles supplémentaires, écoles libres, écoles des sorts permis).
+function ecolesDeLaClasse(classe) {
+  var set = {}
+  set[classe.ecole] = true
+  if (classe.sup) for (var s = 0; s < classe.sup.length; s++) set[classe.sup[s]] = true
+  for (var i = 0; i < ECOLES_LIBRES.length; i++) set[ECOLES_LIBRES[i]] = true
+  for (var sort in SORTS_PAR_CLASSE) {
+    if (classeAutorisee(SORTS_PAR_CLASSE[sort], classe.nom)) {
+      var e = ecoleDuSort(sort)
+      if (e) set[e] = true
+    }
+  }
+  return set
+}
+function verrouillerEcolesHorsClasse(server, nom, classe) {
+  var garder = ecolesDeLaClasse(classe)
+  var connues = {}
+  for (var i = 0; i < CLASSES.length; i++) {
+    connues[CLASSES[i].ecole] = true
+    if (CLASSES[i].sup) for (var j = 0; j < CLASSES[i].sup.length; j++) connues[CLASSES[i].sup[j]] = true
+  }
+  for (var sort in SORTS_PAR_CLASSE) { var e = ecoleDuSort(sort); if (e) connues[e] = true }
+  for (var ecole in connues) {
+    if (!garder[ecole]) cmd(server, 'specs_codex school lock ' + nom + ' ' + ecole)
+  }
+}
+
 // reinit = true : on repart de zéro (nouvelle classe) -> tous les sorts découverts sont oubliés.
 // À la simple reconnexion (reinit = false) on garde la progression du joueur.
 function appliquerClasse(server, joueur, classe, reinit) {
@@ -565,7 +592,13 @@ function appliquerClasse(server, joueur, classe, reinit) {
     return
   }
   if (reinit) { cmd(server, 'specs_codex spell lock_all ' + nom); try { joueur.persistentData.putString('cours_sorts', '') } catch (e) {} }
-  cmd(server, 'specs_codex school lock_all ' + nom)
+  if (reinit) {
+    cmd(server, 'specs_codex school lock_all ' + nom)
+  } else {
+    // Simple reconnexion : on NE verrouille PAS tout puis rouvre (cela retirait les sorts rangés dans la barre du codex).
+    // On verrouille seulement les écoles connues qui ne sont pas à la classe ; les écoles de la classe ne sont jamais touchées.
+    verrouillerEcolesHorsClasse(server, nom, classe)
+  }
   cmd(server, 'specs_codex school unlock ' + nom + ' ' + classe.ecole)
   if (classe.sup) {
     for (var s = 0; s < classe.sup.length; s++) {
@@ -1302,13 +1335,11 @@ function verifierMains(joueur, server) {
   }
 }
 
-// Vol plané : seules les élytres vanilla permettent de planer. Les armures-ailes (Prismatique, Ignitium, Cursium, Ignis,
+// Vol plané : interdit à tout le monde (les élytres vanilla et l'armure Ignitium sont de toute façon désactivées). Les armures-ailes (Prismatique, Ignitium, Cursium, Ignis,
 // armure de vol mécanique, Gabriel, robes d'Arbitrium...) et les ailes en curios sont gardées, mais sans le vol.
 function interdireVolPlane(joueur) {
   try {
     if (!joueur.isFallFlying()) return
-    var torse = joueur.getItemBySlot(MC_SLOT.CHEST)
-    if (torse && !torse.isEmpty() && String(torse.id) === 'minecraft:elytra') return
     joueur.stopFallFlying()
   } catch (e) {}
 }
