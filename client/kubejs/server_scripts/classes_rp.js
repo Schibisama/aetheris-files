@@ -2059,3 +2059,66 @@ function verifierReglesEquipement() {
 }
 
 ServerEvents.loaded(function (event) { verifierReglesEquipement() })
+
+
+// ───────────── Parchemin lu = sort appris AU NIVEAU du parchemin ─────────────
+// Le Spell Codex transforme un parchemin en sort découvert mais ne retient que le niveau 1 : un parchemin de niveau 10 ou 14
+// ne serait alors lançable qu'au niveau 1. On relève donc le palier du sort au niveau du parchemin consommé (jamais à la baisse) :
+// le sort est lançable à ce niveau et le codex propose de le monter à partir de là.
+function parchLire(pile) {
+  var ISpellContainerJ = Java.loadClass('io.redspace.ironsspellbooks.api.spells.ISpellContainer')
+  if (!ISpellContainerJ.isSpellContainer(pile)) return null
+  var donnee = ISpellContainerJ.get(pile).getSpellAtIndex(0)
+  if (!donnee) return null
+  var sort = donnee.getSpell()
+  if (!sort) return null
+  return { id: String(sort.getSpellResource()), niveau: Number(donnee.getLevel()) }
+}
+
+function parchAppliquer(joueur, id, niveau) {
+  if (!UnlockAttachJ) UnlockAttachJ = Java.loadClass('com.specs.irons_spellbooks.unlock.SpellUnlockAttachments')
+  var rl = ResourceLocationJ.tryParse(id)
+  var donnees = joueur.getData(UnlockAttachJ.UNLOCKS)
+  if (!donnees.isSpellUnlocked(rl)) return
+  var cible = niveau
+  try { cible = Math.min(niveau, Number(SpellRegistryJ.getSpell(rl).getMaxLevel())) } catch (e0) {}
+  if (cible <= donnees.getUnlockedTier(rl)) return
+  donnees.setUnlockedTier(rl, cible)
+  Java.loadClass('com.specs.irons_spellbooks.unlock.UnlockNetworking').applyAccessAndSync(joueur)
+  console.info('[parchemin] ' + joueur.username + ' apprend ' + id + ' au niveau ' + cible)
+}
+
+try {
+  var EVT_PARCH = Java.loadClass('net.neoforged.neoforge.event.entity.player.PlayerInteractEvent$RightClickItem')
+  var PRIO_PARCH = Java.loadClass('net.neoforged.bus.api.EventPriority').HIGHEST
+  Java.loadClass('net.neoforged.neoforge.common.NeoForge').EVENT_BUS.addListener(PRIO_PARCH, false, EVT_PARCH, function (e) {
+    try {
+      var joueur = e.getEntity()
+      if (!joueur || !joueur.isPlayer()) return
+      var niveau = e.getLevel()
+      var client = niveau.clientSide
+      if (client === undefined || typeof client === 'function') client = niveau.isClientSide
+      if (client === true) return
+      var pile = e.getItemStack()
+      if (!pile || pile.isEmpty() || String(pile.id) !== 'irons_spellbooks:scroll') return
+      var lu = parchLire(pile)
+      if (!lu) return
+      var main = e.getHand()
+      var avant = pile.count
+      var objet = pile.item
+      joueur.server.scheduleInTicks(3, function () {
+        try {
+          var apres = joueur.getItemInHand(main)
+          var consomme = apres.isEmpty() || apres.item !== objet || apres.count < avant
+          if (!consomme) return   // refusé (mauvaise classe, etc.) : rien n'est appris
+          parchAppliquer(joueur, lu.id, lu.niveau)
+        } catch (e2) { console.error('[parchemin] ' + e2) }
+      })
+    } catch (err) {
+      console.error('[parchemin] ' + err)
+    }
+  })
+  console.info('[parchemin] Niveau des parchemins conservé dans le codex.')
+} catch (e) {
+  console.error('[parchemin] indisponible : ' + e)
+}
