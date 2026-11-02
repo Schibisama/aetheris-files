@@ -167,7 +167,7 @@ function zpSpawn(server) {
   for (var i = 0; i < ZP.mobs.length; i++) {
     var m = ZP.mobs[i]
     server.runCommandSilent('execute in minecraft:overworld run summon ' + m.type + ' ' + m.x + ' ' + m.y + ' ' + m.z +
-      ' {Tags:["pirate_zone","zp' + i + '"],PersistenceRequired:1b' + (m.nbt ? ',' + m.nbt : '') + '}')
+      ' {Tags:["mcrp_autorise","pirate_zone","zp' + i + '"],PersistenceRequired:1b' + (m.nbt ? ',' + m.nbt : '') + '}')
   }
   server.persistentData.putInt('pirates_vivants', ZP.mobs.length)
   console.info('[zone_pirates] ' + ZP.mobs.length + ' anciens matelots apparaissent.')

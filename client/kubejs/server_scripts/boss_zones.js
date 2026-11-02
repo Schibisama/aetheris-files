@@ -280,7 +280,7 @@ function bzRamener(server, e, b) {
 
 function bzSpawn(server, nom, b) {
   server.runCommandSilent('execute in minecraft:overworld run summon ' + b.type + ' ' + b.x + ' ' + b.y + ' ' + b.z +
-    ' {Tags:["boss_zone","boss_' + nom + '"],PersistenceRequired:1b' + (b.nbtSpawn ? ',' + b.nbtSpawn : '') + '}')
+    ' {Tags:["mcrp_autorise","boss_zone","boss_' + nom + '"],PersistenceRequired:1b' + (b.nbtSpawn ? ',' + b.nbtSpawn : '') + '}')
   console.info('[boss_zones] ' + nom + ' apparaît en ' + b.x + ' ' + b.y + ' ' + b.z)
   bzEscorte(server, nom, b)
 }
@@ -306,7 +306,7 @@ function bzEscorte(server, nom, b) {
     var ex = Math.round(b.x + Math.cos(ang) * b.escorte.rayon)
     var ez = Math.round(b.z + Math.sin(ang) * b.escorte.rayon)
     server.runCommandSilent('execute in minecraft:overworld run summon ' + b.escorte.type + ' ' + ex + ' ' + b.y + ' ' + ez +
-      ' {Tags:["boss_escorte","escorte_' + nom + '"],PersistenceRequired:1b}')
+      ' {Tags:["mcrp_autorise","boss_escorte","escorte_' + nom + '"],PersistenceRequired:1b}')
   }
   console.info('[boss_zones] escorte de ' + nom + ' : ' + n + ' x ' + b.escorte.type)
 }
