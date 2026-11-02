@@ -746,8 +746,7 @@ function echangerClasse(server, joueur, direct, sansBoutons) {
   destinProposer(joueur, nouvelle.nom, sansBoutons)
 }
 
-// ── Proposition du Maître du Destin : accepter (la classe change, compte pour 1 changement sur REROLLS_MAX)
-//    ou refuser (on garde l'ancienne classe ; l'étoile est perdue, le compteur de changements ne bouge pas).
+// ── Proposition du Maître du Destin : accepter ou refuser : dans les deux cas l'étoile est perdue et 1 changement sur REROLLS_MAX est consommé.
 var CLE_PROPOSEE = 'classe_proposee'
 function destinProposer(joueur, nomClasse, sansBoutons) {
   var cle = cleClasse(nomClasse)
@@ -762,7 +761,7 @@ function destinProposer(joueur, nomClasse, sansBoutons) {
   } else {
     morceaux.push({ text: '[Accepter]', color: 'green', bold: true, clickEvent: { action: 'run_command', value: '/classe destin accepter' }, hoverEvent: { action: 'show_text', contents: 'Changer de classe' } })
     morceaux.push({ text: '  ' })
-    morceaux.push({ text: '[Refuser]', color: 'red', bold: true, clickEvent: { action: 'run_command', value: '/classe destin refuser' }, hoverEvent: { action: 'show_text', contents: 'Garder ta classe (l\'étoile est perdue)' } })
+    morceaux.push({ text: '[Refuser]', color: 'red', bold: true, clickEvent: { action: 'run_command', value: '/classe destin refuser' }, hoverEvent: { action: 'show_text', contents: 'Garder ta classe (l\'étoile et une tentative sont perdues)' } })
   }
   joueur.server.runCommandSilent('tellraw ' + joueur.username + ' ' + JSON.stringify(morceaux))
   joueur.server.runCommandSilent('title ' + joueur.username + ' actionbar ' + JSON.stringify({ translate: cle, color: 'yellow', bold: true }))
@@ -783,7 +782,8 @@ function destinReponduPar(joueur, accepte) {
   if (!nouvelle) { joueur.tell(Text.gray('Le Maître du Destin ne t\'a rien proposé.')); return 0 }
   data.remove(CLE_PROPOSEE)
   if (!accepte) {
-    joueur.tell(Text.gold('[Maître du Destin] ').append(Text.gray('Tu gardes ta voie. L\'étoile, elle, s\'est éteinte.')))
+    data.putInt(CLE_REROLLS, data.getInt(CLE_REROLLS) + 1)   // un refus consomme aussi une tentative
+    joueur.tell(Text.gold('[Maître du Destin] ').append(Text.gray('Tu gardes ta voie. L\'étoile et une tentative, elles, se sont éteintes.')))
     return 1
   }
   var server = joueur.server
