@@ -16,6 +16,7 @@ var BOSSES = {
     type: 'block_factorys_bosses:underworld_knight',
     x: -399, y: 68, z: 859,
     rayon: 60,
+    laisseStricte: true,   // vérifié à CHAQUE tick (pas toutes les 5) : sa 2e phase le projette hors de la zone (saut / charge / téléportation)
     respawnMin: 30,
     quete: {
       cle: 'helvar_quete',
@@ -254,7 +255,7 @@ function bzCle(nom) { return 'boss_respawn_' + nom }
 function bzBoss(niveau, b, marge) {
   var res = []
   if (!AABB_BZ) return res
-  var liste = niveau.getEntitiesWithin(new AABB_BZ(b.x - marge, b.y - 60, b.z - marge, b.x + marge, b.y + 60, b.z + marge))
+  var liste = niveau.getEntitiesWithin(new AABB_BZ(b.x - marge, b.y - 200, b.z - marge, b.x + marge, b.y + 200, b.z + marge))
   for (var i = 0; i < liste.size(); i++) {
     var e = liste.get(i)
     if (String(e.type) === b.type) res.push(e)
@@ -433,7 +434,8 @@ ServerEvents.tick(function (event) {
     for (var nom in BOSSES) {
       var b = BOSSES[nom]
       // Zone, aggro et régénération
-      var proches = bzBoss(niveau, b, b.rayon + 40)
+      var proches = bzBoss(niveau, b, b.laisseStricte ? b.rayon + 250 : b.rayon + 40)
+      if (b.laisseStricte && proches.length > 0) { try { bzSuiviUuid[nom] = String(proches[0].uuid) } catch (xu) {} }
       for (var i = 0; i < proches.length; i++) {
         var e = proches[i]
         if (bzEnMort(e)) { bzMort(server, nom, b, e, null); continue }
@@ -506,7 +508,7 @@ ServerEvents.tick(function (event) {
       // Spawn (toutes les 5 s)
       if (bzCompteur % 100 !== 0) continue
       if (!bzJoueurProche(server, b)) { bzAbsent[nom] = 0; continue }
-      if (bzBoss(niveau, b, b.rayon + 40).length > 0) { bzAbsent[nom] = 0; continue }
+      if (bzBoss(niveau, b, b.laisseStricte ? b.rayon + 250 : b.rayon + 40).length > 0) { bzAbsent[nom] = 0; continue }
       var d = server.persistentData
       var quand = d.contains(bzCle(nom)) ? d.getLong(bzCle(nom)) : 0
       if (Date.now() < quand) continue
@@ -787,6 +789,51 @@ ServerEvents.commandRegistry(function (event) {
   }
   event.register(Commands.literal('boss').then(respawn).then(clear))
 })
+
+// ── Laisse stricte (Helvar) : vérifiée à CHAQUE tick, par l'identifiant retenu du boss ──
+var bzSuiviUuid = {}
+var BZ_UUID = Java.loadClass('java.util.UUID')
+ServerEvents.tick(function (event) {
+  try {
+    var niveau = bzNiveau(event.server)
+    if (!niveau) return
+    for (var nom in BOSSES) {
+      var b = BOSSES[nom]
+      if (!b.laisseStricte) continue
+      var id = bzSuiviUuid[nom]
+      if (!id) continue
+      var e = niveau.getEntity(BZ_UUID.fromString(id))
+      if (!e || e.isRemoved()) { delete bzSuiviUuid[nom]; continue }
+      var dx = e.x - b.x, dz = e.z - b.z
+      if (Math.sqrt(dx * dx + dz * dz) > b.rayon || Math.abs(e.y - b.y) > 80) {
+        try { e.persistentData.putBoolean('bz_engage', false) } catch (x1) {}
+        bzRamener(event.server, e, b)
+        try { e.setDeltaMovement(0, 0, 0) } catch (x2) {}
+        console.info('[boss_zones] ' + nom + ' avait quitté sa zone : ramené au centre.')
+      }
+    }
+  } catch (err) {}
+})
+
+// Toute téléportation d'un boss de zone vers l'extérieur de sa zone est annulée.
+try {
+  NativeEvents.onEvent(
+    Java.loadClass('net.neoforged.neoforge.event.entity.EntityTeleportEvent'),
+    function (ev) {
+      try {
+        var e = ev.getEntity()
+        var tags = e.getTags()
+        for (var nom in BOSSES) {
+          if (!tags.contains('boss_' + nom)) continue
+          var b = BOSSES[nom]
+          var dx = ev.getTargetX() - b.x, dz = ev.getTargetZ() - b.z
+          if (Math.sqrt(dx * dx + dz * dz) > b.rayon) ev.setCanceled(true)
+          return
+        }
+      } catch (x) {}
+    }
+  )
+} catch (e) { console.error('[boss_zones] blocage des téléportations indisponible : ' + e) }
 
 // Suivi de la vie x3 : à chaque tick (pas toutes les 5 ticks) pour ne rater aucune perte de PV.
 ServerEvents.tick(function (event) {
