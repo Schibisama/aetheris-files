@@ -413,7 +413,8 @@ var RESTRICTIONS = [
   { regle: /^crystal_chronicles:lightning_(knight_(helmet|chestplate|leggings|boots)|bident|staff)$/,      classes: ['Électro-Sorcier', 'Aéromancien'] },
   { regle: /^crystal_chronicles:evocation_(knight_(helmet|chestplate|leggings|boots)|twinblade)$/,         classes: ['Évocateur', 'Ésotériste'] },
   // Set Prismatic + Anneau de Diffraction -> Géomancien
-  { regle: /^crystal_chronicles:(prismatic_knight_(helmet|chestplate|leggings|boots)|diffraction_ring)$/,  classes: ['Géomancien'] },
+  { regle: /^crystal_chronicles:prismatic_knight_(helmet|chestplate|leggings|boots)$/,  classes: [] },   // armure prismatique désactivée (02/11)
+  { regle: /^crystal_chronicles:diffraction_ring$/,  classes: ['Géomancien'] },
   // Chronomancy : set Clocksmith, 2 épées (Clock Hand, Rift Creator) et artefacts -> Chronomancien
   { regle: /^chronomancy:(clocksmith_(helmet|chestplate|leggings|boots)|clock_hand|rift_creator)$/,         classes: ['Chronomancien'] },
   { regle: /^chronomancy:(geminated_ring|cracked_dial|ring_of_rifts|second_chance_watch|hourglass_of_focus|timeless_seal|rift_heart|clockwork_key|deferred_pendulum)$/, classes: ['Chronomancien'] },
@@ -726,6 +727,9 @@ function echangerClasse(server, joueur, direct) {
     dire(Text.translate('mcrp.pnj.encre', COUT_ENCRE).red())
     return
   }
+  // Une proposition déjà en attente : on la rappelle, sans reprendre d'étoile.
+  var enAttente = String(data.getString(CLE_PROPOSEE))
+  if (enAttente && classeParNom(enAttente)) { destinProposer(joueur, enAttente); return }
   var maintenant = Date.now()
   var attente = attenteConfirmation[id]
   if (!direct && (!attente || maintenant - attente > DELAI_CONFIRMATION)) {
@@ -735,13 +739,47 @@ function echangerClasse(server, joueur, direct) {
   }
   delete attenteConfirmation[id]
 
+  // L'étoile est prise tout de suite ; le Maître PROPOSE une classe, que le joueur accepte ou refuse.
   var nouvelle = tirer(classe.nom)
   cmd(server, 'clear ' + joueur.username + ' ' + ENCRE + ' ' + COUT_ENCRE)
-  data.putInt(CLE_REROLLS, utilises + 1)
+  data.putString(CLE_PROPOSEE, nouvelle.nom)
+  destinProposer(joueur, nouvelle.nom)
+}
+
+// ── Proposition du Maître du Destin : accepter (la classe change, compte pour 1 changement sur REROLLS_MAX)
+//    ou refuser (on garde l'ancienne classe ; l'étoile est perdue, le compteur de changements ne bouge pas).
+var CLE_PROPOSEE = 'classe_proposee'
+function destinProposer(joueur, nomClasse) {
+  var cle = cleClasse(nomClasse)
+  joueur.server.runCommandSilent('tellraw ' + joueur.username + ' ' + JSON.stringify([
+    { text: '[Maître du Destin] ', color: 'gold' },
+    { text: 'Les arcanes te proposent une nouvelle voie : ', color: 'gray' },
+    { translate: cle, color: 'yellow', bold: true },
+    { text: '. ', color: 'gray' },
+    { text: '[Accepter]', color: 'green', bold: true, clickEvent: { action: 'run_command', value: '/classe destin accepter' }, hoverEvent: { action: 'show_text', contents: 'Changer de classe' } },
+    { text: '  ' },
+    { text: '[Refuser]', color: 'red', bold: true, clickEvent: { action: 'run_command', value: '/classe destin refuser' }, hoverEvent: { action: 'show_text', contents: 'Garder ta classe (l\'étoile est perdue)' } }
+  ]))
+}
+function destinRepondre(ctx, accepte) {
+  var joueur = ctx.source.player
+  if (!joueur) return 0
+  var data = joueur.persistentData
+  var nom = String(data.getString(CLE_PROPOSEE))
+  var nouvelle = nom ? classeParNom(nom) : null
+  if (!nouvelle) { joueur.tell(Text.gray('Le Maître du Destin ne t\'a rien proposé.')); return 0 }
+  data.remove(CLE_PROPOSEE)
+  if (!accepte) {
+    joueur.tell(Text.gold('[Maître du Destin] ').append(Text.gray('Tu gardes ta voie. L\'étoile, elle, s\'est éteinte.')))
+    return 1
+  }
+  var server = joueur.server
+  data.putInt(CLE_REROLLS, data.getInt(CLE_REROLLS) + 1)
   data.putString(CLE, nouvelle.nom)
   data.putBoolean(CLE_TEST, false)
   appliquerClasse(server, joueur, nouvelle, true)
   annoncer(server, joueur, nouvelle, 'Ton destin a changé.')
+  return 1
 }
 
 // Clic droit sur le PNJ : on écoute l'évènement NeoForge avec la priorité la plus haute (serveur uniquement),
@@ -1112,6 +1150,9 @@ ServerEvents.commandRegistry(function (event) {
     Commands.literal('classe')
       .executes(function (ctx) { return cmdInfos(ctx) })
       .then(Commands.literal('info').executes(function (ctx) { return cmdInfos(ctx) }))
+      .then(Commands.literal('destin')
+        .then(Commands.literal('accepter').executes(function (ctx) { return destinRepondre(ctx, true) }))
+        .then(Commands.literal('refuser').executes(function (ctx) { return destinRepondre(ctx, false) })))
       .then(Commands.literal('donner')
         .requires(estModo)
         .then(Commands.argument('joueur', Arguments.PLAYER.create(event))

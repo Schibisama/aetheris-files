@@ -107,3 +107,34 @@ ServerEvents.commandRegistry(function (event) {
     }
   }))
 })
+
+// ── /warp : depuis le spawn du monde, téléporte à l'école (cour de récréation de l'Académie) ──
+// Utilisable seulement à moins de WARP.RAYON_SPAWN blocs du point d'apparition du monde (0 = partout). Op : partout.
+var WARP = { X: 1044.5, Y: 482, Z: 1279.5, DIMENSION: 'minecraft:overworld', RAYON_SPAWN: 64 }
+function cmdWarp(ctx) {
+  var j = ctx.source.player
+  if (!j) return 0
+  var sv = ctx.source.server
+  var op = false
+  try { op = j.hasPermissions(2) } catch (e) {}
+  if (!op && WARP.RAYON_SPAWN > 0) {
+    var loin = true
+    try {
+      var ow = null, lv = sv.getAllLevels().iterator()
+      while (lv.hasNext()) { var l = lv.next(); if (String(l.dimension).indexOf('minecraft:overworld') >= 0) ow = l }
+      var sp = ow.getSharedSpawnPos()
+      var dimJ = String(j.level.dimension)
+      var dx = j.x - sp.getX(), dz = j.z - sp.getZ()
+      loin = dimJ.indexOf('minecraft:overworld') < 0 || dx * dx + dz * dz > WARP.RAYON_SPAWN * WARP.RAYON_SPAWN
+    } catch (e2) { console.error('[warp] spawn : ' + e2) }
+    if (loin) { j.tell(Text.red('Le /warp ne fonctionne qu\'au spawn du monde.')); return 0 }
+  }
+  sv.runCommandSilent('execute in ' + WARP.DIMENSION + ' run tp ' + j.username + ' ' + WARP.X + ' ' + WARP.Y + ' ' + WARP.Z)
+  j.tell(Text.gold('Bienvenue à l\'Académie !'))
+  return 1
+}
+ServerEvents.commandRegistry(function (event) {
+  event.register(event.commands.literal('warp').executes(function (ctx) {
+    try { return cmdWarp(ctx) } catch (e) { console.error('[warp] ' + e); return 0 }
+  }))
+})

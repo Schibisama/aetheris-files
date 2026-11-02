@@ -5,7 +5,8 @@
 //   Le perdant se fige (comme dans l'épreuve du Courage) quelques secondes, puis les deux duellistes sont soignés et libérés.
 //   « <joueur> est le vainqueur » s'affiche sur l'écran de tout le monde.
 // /duel arreter : annule le duel en cours (personne ne gagne).
-// Réservé aux opérateurs et aux professeurs.
+// /duel <adversaire> : un élève défie un autre joueur (les deux dans le Colisée) ; /duel accepter | refuser pour répondre.
+// /duel <joueur1> <joueur2> et /duel arreter : professeurs et opérateurs. Les armures ne s'usent pas pendant un duel.
 // Règles : un seul duel à la fois ; personne d'autre ne peut toucher les duellistes, et les duellistes ne peuvent toucher qu'entre eux ;
 //   sortir de l'arène ou se déconnecter pendant le combat = défaite.
 
@@ -20,6 +21,9 @@ var DU_KO_PV = 2                        // 2 points de vie = 1 cœur
 // État du duel en cours (null = aucun)
 //   phase : 'decompte' (figés, pas de coups) | 'combat' | 'fin' (perdant figé, puis libération)
 var DUEL = null
+
+var DU_DEFIS = {}      // défis en attente : nom du défié -> { de, fin }
+var DU_DEFI_S = 60    // secondes pour accepter un défi
 
 function duCmd(sv, txt) { try { sv.runCommandSilent('execute in ' + DU_DIM + ' run ' + txt) } catch (e) { console.error('[duel] ' + txt + ' -> ' + e) } }
 function duJoueur(sv, nom) { try { return sv.getPlayerList().getPlayerByName(nom) } catch (e) { return null } }
@@ -68,9 +72,42 @@ function duTitre(sv, cible, titre, couleur, sousTitre) {
   duCmd(sv, 'title ' + cible + ' title ' + JSON.stringify({ text: titre, color: couleur }))
 }
 
+// Les armures ne s'usent pas pendant un duel : leur usure est notée au lancement et remise à chaque tick.
+var DU_SLOTS = null
+function duSlots() {
+  if (!DU_SLOTS) { var S = Java.loadClass('net.minecraft.world.entity.EquipmentSlot'); DU_SLOTS = [S.HEAD, S.CHEST, S.LEGS, S.FEET] }
+  return DU_SLOTS
+}
+function duArmures(j) {
+  var r = []
+  var sl = duSlots()
+  for (var i = 0; i < sl.length; i++) {
+    try { var p = j.getItemBySlot(sl[i]); r.push(p && !p.isEmpty() ? { id: String(p.id), usure: p.getDamageValue() } : null) } catch (e) { r.push(null) }
+  }
+  return r
+}
+function duReparer(sv) {
+  if (!DUEL || !DUEL.armures) return
+  var n = [DUEL.a, DUEL.b]
+  for (var k = 0; k < 2; k++) {
+    var j = duJoueur(sv, n[k]), m = DUEL.armures[n[k]]
+    if (!j || !m) continue
+    var sl = duSlots()
+    for (var i = 0; i < sl.length; i++) {
+      try {
+        if (!m[i]) continue
+        var p = j.getItemBySlot(sl[i])
+        if (p && !p.isEmpty() && String(p.id) === m[i].id && p.getDamageValue() > m[i].usure) p.setDamageValue(m[i].usure)
+      } catch (e) {}
+    }
+  }
+}
+
 function duLancer(sv, j1, j2) {
   var a = String(j1.username), b = String(j2.username)
   DUEL = { a: a, b: b, phase: 'decompte', t: sv.tickCount, reste: DU_DECOMPTE, perdant: null }
+  DUEL.armures = {}
+  DUEL.armures[a] = duArmures(j1); DUEL.armures[b] = duArmures(j2)
   var pos = [[j1, DU_POS_1], [j2, DU_POS_2]]
   for (var i = 0; i < 2; i++) {
     var p = pos[i][1], n = String(pos[i][0].username)
@@ -116,6 +153,7 @@ function duVictoire(sv, perdant, raison) {
 }
 function duTerminer(sv) {
   if (!DUEL) return
+  duReparer(sv)
   var n = [DUEL.a, DUEL.b]
   for (var i = 0; i < 2; i++) {
     duLiberer(sv, n[i])
@@ -200,6 +238,7 @@ ServerEvents.tick(function (event) {
     return
   }
   try {
+    duReparer(sv)
     var ecoule = sv.tickCount - DUEL.t
     if (DUEL.phase === 'decompte') {
       if (ecoule >= 20) {
@@ -245,24 +284,74 @@ ServerEvents.commandRegistry(function (event) {
     try { var p = ctx.source.player; if (p) { p.tell(rouge ? Text.red(txt) : Text.gold(txt)); return } } catch (e) {}
     console.info('[duel] ' + txt)
   }
-  event.register(Commands.literal('duel').requires(autorise)
-    .then(Commands.literal('arreter').executes(function (ctx) {
+  var verifs = function (ctx, sv, j1, j2) {
+    if (DUEL) { dire(ctx, 'Un duel est déjà en cours (' + DUEL.a + ' contre ' + DUEL.b + ').', true); return false }
+    if (String(j1.username) === String(j2.username)) { dire(ctx, 'Il faut deux joueurs différents.', true); return false }
+    try { if (typeof auCombatActif === 'function' && auCombatActif(sv)) { dire(ctx, 'Impossible pendant l\'épreuve du Courage.', true); return false } } catch (e) {}
+    try { if (!sv.isPvpAllowed()) { dire(ctx, 'Le PvP est désactivé sur le serveur (pvp=false dans server.properties).', true); return false } } catch (e2) {}
+    return true
+  }
+  event.register(Commands.literal('duel')
+    // /duel arreter : professeurs et op
+    .then(Commands.literal('arreter').requires(autorise).executes(function (ctx) {
       if (!DUEL) { dire(ctx, 'Aucun duel en cours.', true); return 0 }
       var sv = ctx.source.server
       duCmd(sv, 'tellraw @a ' + JSON.stringify([{ text: '[Colisée] ', color: 'gold' }, { text: 'Le duel entre ' + DUEL.a + ' et ' + DUEL.b + ' a été annulé.', color: 'gray' }]))
       duTerminer(sv)
       return 1
     }))
+    // /duel accepter | refuser : réponse à un défi
+    .then(Commands.literal('accepter').executes(function (ctx) {
+      var moi = ctx.source.player
+      if (!moi) return 0
+      var sv = ctx.source.server
+      var d = DU_DEFIS[String(moi.username)]
+      delete DU_DEFIS[String(moi.username)]
+      if (!d || sv.tickCount > d.fin) { dire(ctx, 'Personne ne t\'a défié (ou le défi a expiré).', true); return 0 }
+      var adv = duJoueur(sv, d.de)
+      if (!adv) { dire(ctx, d.de + ' n\'est plus connecté.', true); return 0 }
+      if (!duDansArene(moi) || !duDansArene(adv)) { dire(ctx, 'Vous devez être tous les deux dans le Colisée.', true); return 0 }
+      if (!verifs(ctx, sv, adv, moi)) return 0
+      duLancer(sv, adv, moi)
+      return 1
+    }))
+    .then(Commands.literal('refuser').executes(function (ctx) {
+      var moi = ctx.source.player
+      if (!moi) return 0
+      var d = DU_DEFIS[String(moi.username)]
+      delete DU_DEFIS[String(moi.username)]
+      if (!d) { dire(ctx, 'Personne ne t\'a défié.', true); return 0 }
+      var adv = duJoueur(ctx.source.server, d.de)
+      if (adv) adv.tell(Text.gray(moi.username + ' a refusé ton duel.'))
+      dire(ctx, 'Duel refusé.', false)
+      return 1
+    }))
     .then(Commands.argument('joueur1', Arguments.PLAYER.create(event))
-      .then(Commands.argument('joueur2', Arguments.PLAYER.create(event)).executes(function (ctx) {
+      // /duel <adversaire> : un élève défie un autre joueur ; les deux doivent être dans le Colisée
+      .executes(function (ctx) {
+        try {
+          var moi = ctx.source.player
+          if (!moi) return 0
+          var sv = ctx.source.server
+          var adv = Arguments.PLAYER.getResult(ctx, 'joueur1')
+          if (!verifs(ctx, sv, moi, adv)) return 0
+          if (!duDansArene(moi) || !duDansArene(adv)) { dire(ctx, 'Vous devez être tous les deux dans le Colisée pour un duel.', true); return 0 }
+          DU_DEFIS[String(adv.username)] = { de: String(moi.username), fin: sv.tickCount + DU_DEFI_S * 20 }
+          sv.runCommandSilent('tellraw ' + adv.username + ' ' + JSON.stringify([
+            { text: '[Colisée] ', color: 'gold' }, { text: moi.username, color: 'yellow' }, { text: ' te défie en duel ! ', color: 'gray' },
+            { text: '[Accepter]', color: 'green', bold: true, clickEvent: { action: 'run_command', value: '/duel accepter' } }, { text: '  ' },
+            { text: '[Refuser]', color: 'red', bold: true, clickEvent: { action: 'run_command', value: '/duel refuser' } }]))
+          dire(ctx, 'Défi envoyé à ' + adv.username + ' (' + DU_DEFI_S + ' s pour répondre).', false)
+          return 1
+        } catch (err) { console.error('[duel] défi : ' + err); return 0 }
+      })
+      // /duel <joueur1> <joueur2> : professeurs et op lancent un duel entre deux joueurs, où qu'ils soient
+      .then(Commands.argument('joueur2', Arguments.PLAYER.create(event)).requires(autorise).executes(function (ctx) {
         try {
           var sv = ctx.source.server
           var j1 = Arguments.PLAYER.getResult(ctx, 'joueur1')
           var j2 = Arguments.PLAYER.getResult(ctx, 'joueur2')
-          if (DUEL) { dire(ctx, 'Un duel est déjà en cours (' + DUEL.a + ' contre ' + DUEL.b + '). /duel arreter pour l\'annuler.', true); return 0 }
-          if (String(j1.username) === String(j2.username)) { dire(ctx, 'Il faut deux joueurs différents.', true); return 0 }
-          try { if (typeof auCombatActif === 'function' && auCombatActif(sv)) { dire(ctx, 'Impossible pendant l\'épreuve du Courage.', true); return 0 } } catch (e) {}
-          try { if (!sv.isPvpAllowed()) { dire(ctx, 'Le PvP est désactivé sur le serveur (pvp=false dans server.properties).', true); return 0 } } catch (e2) {}
+          if (!verifs(ctx, sv, j1, j2)) return 0
           duLancer(sv, j1, j2)
           return 1
         } catch (err) { console.error('[duel] /duel : ' + err); return 0 }

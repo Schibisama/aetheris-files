@@ -44,6 +44,15 @@ ItemEvents.entityInteracted(function (event) {
   }
 })
 
+// Ensemble Wizard des élèves (capuche ou chapeau au hasard, robe, jambières, bottes), teint d'une couleur des kits de départ.
+function pnjDonWizard(server, j) {
+  var couleurs = (typeof STARTER_COULEURS !== 'undefined') ? STARTER_COULEURS : [0x3498DB]
+  var rgb = couleurs[Math.floor(Math.random() * couleurs.length)]
+  var tete = Math.random() < 0.5 ? 'irons_spellbooks:wizard_hat' : 'irons_spellbooks:wizard_helmet'
+  var pieces = [tete, 'irons_spellbooks:wizard_chestplate', 'irons_spellbooks:wizard_leggings', 'irons_spellbooks:wizard_boots']
+  for (var i = 0; i < pieces.length; i++) server.runCommandSilent('give ' + j.username + ' ' + pieces[i] + '[minecraft:dyed_color={rgb:' + rgb + '}] 1')
+}
+
 // ── Chef Cuisinier : /chef oui|non <joueur> ; Gardien des balais : /pnjdon balai <joueur> (lancées par les boutons des PNJ) ──
 // Easy NPC exécute ses commandes avec un niveau de permission limité : un « give » direct échoue, d'où cette commande.
 ServerEvents.commandRegistry(function (event) {
@@ -61,7 +70,7 @@ ServerEvents.commandRegistry(function (event) {
         .executes(function (ctx) {
           try {
             var j = Arguments.PLAYER.getResult(ctx, 'joueur')
-            ctx.source.server.runCommandSilent('give ' + j.username + ' ' + plats[r] + ' 1')
+            ctx.source.server.runCommandSilent('give ' + j.username + ' ' + plats[r] + ' 32')   // 32 plats, quelle que soit la réponse
             return 1
           } catch (e) { console.error('[chef] ' + e); return 0 }
         })))
@@ -70,7 +79,7 @@ ServerEvents.commandRegistry(function (event) {
   event.register(racine)
 
   // /pnjdon <objet> <joueur> : objets donnés par des PNJ (même principe que /chef)
-  var dons = { balai: 'apprenticecodex:floatmount_broom' }
+  var dons = { balai: 'apprenticecodex:floatmount_broom', wizard: 'ensemble' }
   var don = Commands.literal('pnjdon').requires(parPnj)
   for (var o in dons) {
     ;(function (k) {
@@ -78,6 +87,7 @@ ServerEvents.commandRegistry(function (event) {
         .executes(function (ctx) {
           try {
             var j = Arguments.PLAYER.getResult(ctx, 'joueur')
+            if (k === 'wizard') { pnjDonWizard(ctx.source.server, j); return 1 }
             ctx.source.server.runCommandSilent('give ' + j.username + ' ' + dons[k] + ' 1')
             return 1
           } catch (e) { console.error('[pnjdon] ' + e); return 0 }

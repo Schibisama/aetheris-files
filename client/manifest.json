@@ -1,5 +1,5 @@
 {
- "version": "2026-11-02T01:09:46.243Z",
+ "version": "2026-11-02T03:02:46.958Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -5126,6 +5126,11 @@
    "size": 4853
   },
   {
+   "path": "kubejs/assets/mcrp/textures/entity/couturiere_wizard.png",
+   "sha1": "8390e8934e83bbe4d6cf20ed44151ab6a4325d4e",
+   "size": 5440
+  },
+  {
    "path": "kubejs/assets/mcrp/textures/entity/dechiffreur.png",
    "sha1": "6b97d811a31c289a036231cc5e2416a477793cff",
    "size": 3002
@@ -5409,6 +5414,11 @@
    "path": "kubejs/assets/mcrp/textures/entity/hiro.png",
    "sha1": "a3092753362fb880ef57177eef5ce6c6781a94ab",
    "size": 3726
+  },
+  {
+   "path": "kubejs/assets/mcrp/textures/entity/intendant_balais.png",
+   "sha1": "d1237ee88b9fd0dba67d7965e99f5af8ecac45bb",
+   "size": 6143
   },
   {
    "path": "kubejs/assets/mcrp/textures/entity/isolde.png",
@@ -6162,8 +6172,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "e6673ac3e362fc6fffcf64a94d53164ca3d261ca",
-   "size": 96922
+   "sha1": "38dcdf0a93c01e5e51e88e3959b5e1b3d055aa40",
+   "size": 99350
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -6177,8 +6187,8 @@
   },
   {
    "path": "kubejs/server_scripts/colisee_duel.js",
-   "sha1": "3d36fc8b41c94708795641d7845531e10372d0a1",
-   "size": 14235
+   "sha1": "49faeb14e34a5979194195c24efaf67b9506b74c",
+   "size": 18581
   },
   {
    "path": "kubejs/server_scripts/decouverte_lieux.js",
@@ -6222,8 +6232,8 @@
   },
   {
    "path": "kubejs/server_scripts/pnj_parler.js",
-   "sha1": "6aedc5c8a279cbf6d45ae12ff48f1e08ae27da6e",
-   "size": 3974
+   "sha1": "684f7b3cbb423c94213ccae6402d8069c4afc7f0",
+   "size": 4827
   },
   {
    "path": "kubejs/server_scripts/pnj_voix.js",
@@ -6252,8 +6262,8 @@
   },
   {
    "path": "kubejs/server_scripts/rtp.js",
-   "sha1": "193954340133cb7830d747168fae0b1bc910cd95",
-   "size": 4468
+   "sha1": "38e25197351e2c16444a09580070d97c98fbda5e",
+   "size": 6009
   },
   {
    "path": "kubejs/server_scripts/starter.js",
