@@ -31,31 +31,39 @@ function arSortListable(sp) {
   return true
 }
 // Retourne : null = garder la page, 'retirer', ou une nouvelle pile (page remplacée)
+// Poids de tirage d'une page selon la rareté minimale du sort (la page est toujours à son niveau le plus bas) :
+// plus le sort est rare, moins il a de chances de tomber.
+var AR_CODEX_POIDS = { COMMON: 1, UNCOMMON: 0.6, RARE: 0.15, EPIC: 0.06, LEGENDARY: 0.02 }
+var AR_CODEX_LISTE = null
+
+function arListePages() {
+  if (AR_CODEX_LISTE) return AR_CODEX_LISTE
+  var tous = AR_SR.getEnabledSpells(), liste = [], total = 0
+  for (var i = 0; i < tous.size(); i++) {
+    var s2 = tous.get(i)
+    if (!arSortListable(s2)) continue
+    var w = AR_CODEX_POIDS[arRareteSort(s2)]
+    if (w === undefined) w = 1
+    total += w
+    liste.push({ sort: s2, cumul: total })
+  }
+  AR_CODEX_LISTE = { liste: liste, total: total }
+  return AR_CODEX_LISTE
+}
+
 function arPageCodex(pile) {
   if (Math.random() < AR_CODEX_TAUX) return 'retirer'
   try {
     if (!AR_PAGE) AR_PAGE = Java.loadClass('com.specs.irons_spellbooks.item.CodexPageItem')
     if (!AR_SR) AR_SR = Java.loadClass('io.redspace.ironsspellbooks.api.registry.SpellRegistry')
     if (!AR_CATALOGUE) { try { AR_CATALOGUE = Java.loadClass('com.specs.irons_spellbooks.catalog.SpellCatalog') } catch (eC) {} }
-    var id = AR_PAGE.getSpellId(pile)
-    if (!id) return null
-    var sp = AR_SR.getSpell(id)
-    var r = arRareteSort(sp)
-    if (r === 'COMMON') return null
-    // Rare / épique / légendaire : la page est gardée avec le faible taux (AR_CODEX_GARDE_RARE), sinon remplacée par un sort commun
-    if ((r === 'RARE' || r === 'EPIC' || r === 'LEGENDARY') && Math.random() < AR_CODEX_GARDE_RARE) return null
-    var ecole = String(sp.getSchoolType().getId())
-    var tous = AR_SR.getEnabledSpells(), meme = [], autres = []
-    for (var i = 0; i < tous.size(); i++) {
-      var s2 = tous.get(i)
-      var r2 = arRareteSort(s2)
-      if (r2 !== 'COMMON') continue
-      if (!arSortListable(s2)) continue
-      if (String(s2.getSchoolType().getId()) === ecole) meme.push(s2); else autres.push(s2)
+    var L = arListePages()
+    if (L.liste.length === 0) return null
+    var t = Math.random() * L.total
+    for (var i = 0; i < L.liste.length; i++) {
+      if (t <= L.liste[i].cumul) return AR_PAGE['createFor(io.redspace.ironsspellbooks.api.spells.AbstractSpell)'](L.liste[i].sort)
     }
-    var choix = meme.length > 0 ? meme : autres
-    if (choix.length === 0) return 'retirer'
-    return AR_PAGE['createFor(io.redspace.ironsspellbooks.api.spells.AbstractSpell)'](choix[Math.floor(Math.random() * choix.length)])
+    return null
   } catch (e) { console.error('[armures_butin] page de codex : ' + e); return null }
 }
 
