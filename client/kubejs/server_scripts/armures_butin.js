@@ -41,14 +41,15 @@ function arPageCodex(pile) {
     if (!id) return null
     var sp = AR_SR.getSpell(id)
     var r = arRareteSort(sp)
-    if (r !== 'RARE' && r !== 'EPIC' && r !== 'LEGENDARY') return null
-    if (Math.random() < AR_CODEX_GARDE_RARE) return null
+    if (r === 'COMMON') return null
+    // Rare / épique / légendaire : la page est gardée avec le faible taux (AR_CODEX_GARDE_RARE), sinon remplacée par un sort commun
+    if ((r === 'RARE' || r === 'EPIC' || r === 'LEGENDARY') && Math.random() < AR_CODEX_GARDE_RARE) return null
     var ecole = String(sp.getSchoolType().getId())
     var tous = AR_SR.getEnabledSpells(), meme = [], autres = []
     for (var i = 0; i < tous.size(); i++) {
       var s2 = tous.get(i)
       var r2 = arRareteSort(s2)
-      if (r2 !== 'COMMON' && r2 !== 'UNCOMMON') continue
+      if (r2 !== 'COMMON') continue
       if (!arSortListable(s2)) continue
       if (String(s2.getSchoolType().getId()) === ecole) meme.push(s2); else autres.push(s2)
     }
