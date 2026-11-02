@@ -2154,7 +2154,7 @@ try {
       var idObjet = String(pile.id)
       if (idObjet !== 'irons_spellbooks:scroll' && idObjet !== PAGE_ID) return
       var lu = idObjet === PAGE_ID ? parchLirePage(pile) : parchLire(pile)
-      console.info('[parchemin] ' + joueur.username + ' utilise un parchemin : ' + (lu ? lu.id + ' niveau ' + lu.niveau : 'illisible'))
+      console.info('[parchemin] ' + joueur.username + ' utilise un parchemin : ' + (lu ? lu.id + ' niveau ' + lu.niveau : 'illisible (' + idObjet + ', ' + (idObjet === PAGE_ID ? 'page sans niveau enregistré' : 'conteneur de sort absent') + ')'))
       if (!lu) return
       var main = e.getHand()
       var avant = pile.count
