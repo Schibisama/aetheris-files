@@ -10,6 +10,8 @@
 var REGEN_DELAI_S = 10   // secondes sans aucun joueur à moins de REGEN_DISTANCE blocs du point d'apparition
 var REGEN_POURCENT = 3   // % de la vie max récupérés par seconde
 var REGEN_DISTANCE = 30
+var REGEN_INUTILE_S = 10      // secondes sans infliger le moindre dégât à un joueur : le boss récupère de la vie même s'il est frappé
+var REGEN_INUTILE_POURCENT = 2   // % de la vie max par seconde dans ce cas
 var DISTANCE_ACTIVE = 80   // le spawn n'est tenté que si un joueur est à moins de ... blocs du centre
 
 var BOSSES = {
@@ -536,6 +538,7 @@ ServerEvents.tick(function (event) {
         if (bzCompteur % 10 === 0) { try { bzGererBarres(event.server, e, b) } catch (x) { console.error('[boss_zones] barres : ' + x) } }
         // Régénération (toutes les secondes) : SEULEMENT si plus aucun joueur n'est à moins de REGEN_DISTANCE blocs du boss NI de son point
         // d'apparition, ET s'il n'a perdu aucune vie depuis REGEN_DELAI_S secondes. Tant qu'on le frappe, il ne récupère rien.
+        var soigne = false
         var pd = e.persistentData
         var pvNow = e.health
         var pvPrec = pd.contains('bz_pv_prec') ? pd.getDouble('bz_pv_prec') : pvNow
@@ -549,7 +552,13 @@ ServerEvents.tick(function (event) {
           if (depuis <= 0) { depuis = Date.now(); pd.putLong('bz_libre_depuis', depuis) }
           if (Date.now() - depuis >= REGEN_DELAI_S * 1000 && bzCompteur % 20 === 0) {
             try { e.heal(e.maxHealth * REGEN_POURCENT / 100) } catch (x) {}
+            soigne = true
           }
+        }
+        // Boss incapable de blesser un joueur (hors de portée, en vol, bloqué...) : il récupère REGEN_INUTILE_POURCENT % par seconde
+        if (!pd.contains('bz_degats')) pd.putLong('bz_degats', Date.now())
+        if (!soigne && bzCompteur % 20 === 0 && e.health < e.maxHealth && Date.now() - pd.getLong('bz_degats') >= REGEN_INUTILE_S * 1000) {
+          try { e.heal(e.maxHealth * REGEN_INUTILE_POURCENT / 100) } catch (x) {}
         }
       }
       // Spawn (toutes les 5 s)
@@ -945,3 +954,21 @@ ServerEvents.tick(function (event) {
     } catch (x) {}
   }
 })
+
+// Mémorise le dernier moment où un boss / mob de zone a réellement blessé un joueur (dégâts > 0 après armure et parades)
+try {
+  NativeEvents.onEvent(
+    Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingDamageEvent$Post'),
+    function (ev) {
+      try {
+        if (!ev.getEntity().isPlayer()) return
+        if (ev.getNewDamage() <= 0) return
+        var at = ev.getSource().getEntity()
+        if (!at || at.isPlayer()) return
+        var tg = at.tags
+        if (!tg || !(tg.contains('boss_zone') || tg.contains('pirate_zone') || tg.contains('boss_escorte'))) return
+        at.persistentData.putLong('bz_degats', Date.now())
+      } catch (e) {}
+    }
+  )
+} catch (e) { console.error('[boss_zones] suivi des dégâts infligés indisponible : ' + e) }

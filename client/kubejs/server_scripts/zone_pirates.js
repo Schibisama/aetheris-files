@@ -252,6 +252,7 @@ ServerEvents.tick(function (event) {
         }
       } catch (x) {}
       // un mob qui perd de la vie ne se régénère pas (10 s de répit après le dernier coup)
+      var soignePir = false
       var pvNow = e.health
       var pvPrec = pd.contains('zp_pv_prec') ? pd.getDouble('zp_pv_prec') : pvNow
       if (pvNow < pvPrec - 0.05) pd.putLong('zp_coup', Date.now())
@@ -261,7 +262,12 @@ ServerEvents.tick(function (event) {
       else {
         var libre = pd.getLong('zp_libre_depuis')
         if (libre <= 0) { libre = Date.now(); pd.putLong('zp_libre_depuis', libre) }
-        if (Date.now() - libre >= 10000 && zpCompteur % 20 === 0) { try { e.heal(e.maxHealth * 0.03) } catch (x) {} }
+        if (Date.now() - libre >= 10000 && zpCompteur % 20 === 0) { try { e.heal(e.maxHealth * 0.03) } catch (x) {} soignePir = true }
+      }
+      // mob incapable de blesser un joueur depuis REGEN_INUTILE_S secondes : il récupère REGEN_INUTILE_POURCENT % par seconde même s'il est frappé
+      if (!pd.contains('bz_degats')) pd.putLong('bz_degats', Date.now())
+      if (!soignePir && zpCompteur % 20 === 0 && e.health < e.maxHealth && Date.now() - pd.getLong('bz_degats') >= REGEN_INUTILE_S * 1000) {
+        try { e.heal(e.maxHealth * REGEN_INUTILE_POURCENT / 100) } catch (x) {}
       }
     }
     // apparition (toutes les 5 s)
