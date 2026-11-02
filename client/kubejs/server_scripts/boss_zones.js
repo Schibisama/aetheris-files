@@ -4,11 +4,12 @@
 // Règles communes :
 //  - un seul exemplaire à la fois ; il n'apparaît que si un joueur est proche (chunks chargés) ;
 //  - s'il sort de la zone : il perd sa cible et retourne au centre ; il oublie une cible qui quitte la zone ;
-//  - sans cible depuis REGEN_DELAI_S secondes : il récupère REGEN_POURCENT % de sa vie max par seconde ;
+//  - aucun joueur à moins de REGEN_DISTANCE blocs de son point d'apparition depuis REGEN_DELAI_S secondes : il récupère REGEN_POURCENT % de sa vie max par seconde ;
 //  - après sa mort : respawn au bout de respawnMin minutes (temps réel) ;
 //  - quête : SEUL le joueur qui porte le coup fatal reçoit le crédit (et seulement s'il a accepté la quête).
-var REGEN_DELAI_S = 5
-var REGEN_POURCENT = 2
+var REGEN_DELAI_S = 10   // secondes sans aucun joueur à moins de REGEN_DISTANCE blocs du point d'apparition
+var REGEN_POURCENT = 3   // % de la vie max récupérés par seconde
+var REGEN_DISTANCE = 30
 var DISTANCE_ACTIVE = 80   // le spawn n'est tenté que si un joueur est à moins de ... blocs du centre
 
 var BOSSES = {
@@ -248,6 +249,20 @@ function bzHorsCombat(server, e, b) {
     }
   } catch (x) {}
   return true
+}
+
+// Vrai si un joueur (hors spectateur, vivant) est à moins de « dist » blocs du point donné.
+function bzJoueurPres(server, x, y, z, dist) {
+  try {
+    var js = server.getPlayers()
+    for (var i = 0; i < js.size(); i++) {
+      var j = js.get(i)
+      if (j.isSpectator() || !j.isAlive()) continue
+      var dx = j.x - x, dy = j.y - y, dz = j.z - z
+      if (dx * dx + dy * dy + dz * dz <= dist * dist) return true
+    }
+  } catch (e) {}
+  return false
 }
 
 function bzCle(nom) { return 'boss_respawn_' + nom }
@@ -493,14 +508,14 @@ ServerEvents.tick(function (event) {
         }
         if (!engage && cible) { try { e.setTarget(null) } catch (x) {} cible = null }   // pas encore provoqué : ignore les joueurs au loin
         if (bzCompteur % 10 === 0) { try { bzGererBarres(event.server, e, b) } catch (x) { console.error('[boss_zones] barres : ' + x) } }
-        // sans cible depuis un moment : régénération progressive (toutes les secondes)
+        // aucun joueur près de son point d'apparition depuis REGEN_DELAI_S secondes : régénération (toutes les secondes)
         var pd = e.persistentData
-        if (cible) {
-          pd.putInt('bz_sans_cible', 0)
+        if (bzJoueurPres(event.server, b.x, b.y, b.z, REGEN_DISTANCE)) {
+          pd.putLong('bz_libre_depuis', 0)
         } else {
-          var n = pd.getInt('bz_sans_cible') + 1
-          pd.putInt('bz_sans_cible', n)
-          if (n >= REGEN_DELAI_S * 4 && bzCompteur % 20 === 0 && bzHorsCombat(event.server, e, b)) {
+          var depuis = pd.getLong('bz_libre_depuis')
+          if (depuis <= 0) { depuis = Date.now(); pd.putLong('bz_libre_depuis', depuis) }
+          if (Date.now() - depuis >= REGEN_DELAI_S * 1000 && bzCompteur % 20 === 0) {
             try { e.heal(e.maxHealth * REGEN_POURCENT / 100) } catch (x) {}
           }
         }

@@ -235,13 +235,25 @@ ServerEvents.tick(function (event) {
           if (proche) { e.setTarget(proche); cible = proche }
         } catch (x) { console.error('[zone_pirates] aggro : ' + x) }
       }
-      // régénération après 5 s sans cible
+      // régénération : 3 % de la vie max par seconde, après 10 s sans aucun joueur à moins de 30 blocs de son point d'apparition
       var pd = e.persistentData
-      if (cible) pd.putInt('zp_sans_cible', 0)
+      var sp = (idx >= 0) ? ZP.mobs[idx] : null
+      var spx = sp ? sp.x : (ZP.x1 + ZP.x2) / 2, spy = sp ? sp.y : ZP.y1, spz = sp ? sp.z : (ZP.z1 + ZP.z2) / 2
+      var presents = false
+      try {
+        var jr = server.getPlayers()
+        for (var qr = 0; qr < jr.size(); qr++) {
+          var jp = jr.get(qr)
+          if (jp.isSpectator() || !jp.isAlive()) continue
+          var rx = jp.x - spx, ry = jp.y - spy, rz = jp.z - spz
+          if (rx * rx + ry * ry + rz * rz <= 900) { presents = true; break }
+        }
+      } catch (x) {}
+      if (presents) pd.putLong('zp_libre_depuis', 0)
       else {
-        var c = pd.getInt('zp_sans_cible') + 1
-        pd.putInt('zp_sans_cible', c)
-        if (c >= 20 && zpCompteur % 20 === 0) { try { e.heal(e.maxHealth * 0.02) } catch (x) {} }
+        var libre = pd.getLong('zp_libre_depuis')
+        if (libre <= 0) { libre = Date.now(); pd.putLong('zp_libre_depuis', libre) }
+        if (Date.now() - libre >= 10000 && zpCompteur % 20 === 0) { try { e.heal(e.maxHealth * 0.03) } catch (x) {} }
       }
     }
     // apparition (toutes les 5 s)
