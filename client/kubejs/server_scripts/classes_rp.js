@@ -2290,8 +2290,15 @@ ServerEvents.tick(function (event) {
       var avant = PARCH_SUIVI[cle]
       if (avant) {
         // Parchemin disparu d'un sort déjà connu : compté comme lu seulement s'il n'a été ni jeté ni rangé dans un coffre.
-        var menuOk = false
-        try { var nomMenu = String(j.containerMenu.getClass().getSimpleName()); menuOk = nomMenu === 'InventoryMenu' || nomMenu.indexOf('SpellHud') >= 0 } catch (eM) {}
+        // (aucun menu ouvert = menu d'inventaire du joueur ; en cas de doute on considère le parchemin comme lu)
+        var menuOk = true
+        try {
+          var menu = j.containerMenu
+          if (menu != j.inventoryMenu) {
+            var nomMenu = String(menu.getClass().getSimpleName())
+            menuOk = nomMenu === 'InventoryMenu' || nomMenu.indexOf('SpellHud') >= 0 || nomMenu.indexOf('Creative') >= 0
+          }
+        } catch (eM) { menuOk = true }
         var jeteRecemment = PARCH_JETE[cle] && serveur.tickCount - PARCH_JETE[cle] < 20
         for (var id in avant.vus) {
           var nouveau = connus[id] && !avant.connus[id]
