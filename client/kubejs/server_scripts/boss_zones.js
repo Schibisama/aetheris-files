@@ -872,3 +872,47 @@ ServerEvents.tick(function (event) {
     }
   } catch (err) {}
 })
+
+// ───────── Balais interdits dans les zones de boss (rayon 60 blocs autour du spawn, toute la hauteur) + zone pirate ─────────
+var BALAI_INTERDIT_R = 60
+function bzBalaiZone(x, z) {
+  var cibles = []
+  for (var nom in BOSSES) cibles.push({ x: BOSSES[nom].x, z: BOSSES[nom].z })
+  try { if (typeof ZP !== 'undefined') cibles.push({ x: (ZP.x1 + ZP.x2) / 2, z: (ZP.z1 + ZP.z2) / 2 }) } catch (e) {}
+  for (var i = 0; i < cibles.length; i++) {
+    var dx = x - cibles[i].x, dz = z - cibles[i].z
+    if (Math.sqrt(dx * dx + dz * dz) <= BALAI_INTERDIT_R) return true
+  }
+  return false
+}
+function bzEstBalai(ent) {
+  try { return String(ent.getClass().getSimpleName()).indexOf('Broom') !== -1 } catch (e) { return false }
+}
+try {
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.EntityMountEvent'), function (ev) {
+    try {
+      if (!ev.isMounting()) return
+      var cheval = ev.getEntityBeingMounted()
+      if (!bzEstBalai(cheval)) return
+      var qui = ev.getEntityMounting()
+      if (!bzBalaiZone(cheval.getX(), cheval.getZ())) return
+      ev.setCanceled(true)
+      try { qui.tell(Text.red('Les balais sont interdits dans les zones de boss.')) } catch (e2) {}
+    } catch (x) {}
+  })
+} catch (e) { console.error('[boss_zones] blocage des balais (monter) indisponible : ' + e) }
+ServerEvents.tick(function (event) {
+  if (event.server.tickCount % 5 !== 0) return
+  var joueurs = event.server.players
+  for (var i = 0; i < joueurs.length; i++) {
+    try {
+      var p = joueurs[i]
+      var v = p.getVehicle()
+      if (!v || !bzEstBalai(v)) continue
+      if (!bzBalaiZone(p.x, p.z)) continue
+      p.stopRiding()
+      event.server.runCommandSilent('effect give ' + p.username + ' minecraft:slow_falling 20 0 true')
+      p.tell(Text.red('Les balais sont interdits dans les zones de boss.'))
+    } catch (x) {}
+  }
+})
