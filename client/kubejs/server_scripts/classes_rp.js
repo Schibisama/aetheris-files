@@ -917,6 +917,8 @@ function sortRecompenseAleatoire(joueur, rareteNom) {
       var id = String(sort.getSpellId())
       if (ecoles.indexOf(String(sort.getSchoolType().getId())) === -1) continue
       if (SORTS_PAR_CLASSE[id] && !classeAutorisee(SORTS_PAR_CLASSE[id], classe.nom)) continue
+      // jamais un sort désactivé, ni un sort réservé aux cours (/cours) ou « pour tous »
+      try { if (typeof desactSortInterdit === 'function' && desactSortInterdit(id)) continue } catch (eD) {}
       var niveau = sort.getMinLevelForRarity(RARETE_CIBLE)
       if (niveau < 1 || niveau > sort.getMaxLevel() || String(sort.getRarity(niveau).name()).toUpperCase() !== rareteNom) {
         var max = sort.getMaxLevel()
