@@ -1184,10 +1184,136 @@ function cmdCoursOrdre(ctx, cible) {
   return 1
 }
 
+
+// ───────────── /inventaire <joueur> [enderchest] et /codex <joueur> [ajouter|retirer <sort>] (modérateurs) ─────────────
+// /inventaire : ouvre l'inventaire du joueur (en ligne) dans un coffre : on peut y prendre ou y poser des objets, c'est appliqué tout de suite.
+//   Rangée 1 = barre d'action, rangées 2 à 4 = sac, rangée 5 = bottes, jambières, plastron, casque, main secondaire.
+// /codex : liste les sorts découverts (Spell Codex) du joueur, par école ; ajouter / retirer un sort (identifiant complet, ex. irons_spellbooks:fireball).
+var INV_MenuType = null, INV_ChestMenu = null, INV_Provider = null, INV_Simple = null, INV_Stack = null
+function invCharger() {
+  if (INV_MenuType) return
+  INV_MenuType = Java.loadClass('net.minecraft.world.inventory.MenuType')
+  INV_ChestMenu = Java.loadClass('net.minecraft.world.inventory.ChestMenu')
+  INV_Provider = Java.loadClass('net.minecraft.world.SimpleMenuProvider')
+  INV_Simple = Java.loadClass('net.minecraft.world.SimpleContainer')
+  INV_Stack = Java.loadClass('net.minecraft.world.item.ItemStack')
+}
+
+function cmdInventaire(ctx, cible, ender) {
+  try {
+    invCharger()
+    var admin = ctx.source.player
+    if (!admin) { retour(ctx, 'À lancer en jeu.'); return 0 }
+    var conteneur, lignes, type
+    if (ender) {
+      conteneur = cible.getEnderChestInventory()
+      lignes = 3; type = INV_MenuType.GENERIC_9x3
+    } else {
+      conteneur = new INV_Simple(45)
+      lignes = 5; type = INV_MenuType.GENERIC_9x5
+      var inv = cible.getInventory()
+      var snap = []
+      for (var i = 0; i < 41; i++) { var p = inv.getItem(i).copy(); conteneur.setItem(i, p.copy()); snap.push(p) }
+      var garde = { actif: false }
+      conteneur.addListener(function (c) {
+        if (garde.actif) return
+        garde.actif = true
+        try {
+          var changes = 0
+          for (var j = 0; j < 41; j++) {
+            var cur = c.getItem(j)
+            if (!INV_Stack.matches(cur, snap[j])) { inv.setItem(j, cur.copy()); snap[j] = cur.copy(); changes++ }
+          }
+          for (var x = 41; x < 45; x++) {   // emplacements sans équivalent : l'objet est rendu au modérateur
+            var reste = c.getItem(x)
+            if (!reste.isEmpty()) { admin.give(reste.copy()); c.setItem(x, Item.of('minecraft:air')) }
+          }
+          if (changes > 0) {
+            try { cible.inventoryMenu.broadcastChanges() } catch (e1) {}
+            try { cible.containerMenu.broadcastChanges() } catch (e2) {}
+          }
+        } catch (err) { console.error('[inventaire] ' + err) }
+        garde.actif = false
+      })
+    }
+    var titre = Text.of((ender ? 'Coffre de l\'Ender de ' : 'Inventaire de ') + cible.username)
+    admin.openMenu(new INV_Provider(function (id, invAdmin, p) { return new INV_ChestMenu(type, id, invAdmin, conteneur, lignes) }, titre))
+    console.info('[inventaire] ' + admin.username + ' ouvre ' + (ender ? 'le coffre de l\'Ender' : 'l\'inventaire') + ' de ' + cible.username)
+    return 1
+  } catch (e) {
+    console.error('[inventaire] ' + e)
+    retour(ctx, 'Impossible d\'ouvrir l\'inventaire : ' + e)
+    return 0
+  }
+}
+
+function cmdCodexVoir(ctx, cible) {
+  try {
+    if (!UnlockAttachJ) UnlockAttachJ = Java.loadClass('com.specs.irons_spellbooks.unlock.SpellUnlockAttachments')
+    var emetteur = ctx.source.player
+    var donnees = cible.getData(UnlockAttachJ.UNLOCKS)
+    var ids = []
+    var it = donnees.getDiscoveredSpells().iterator()
+    while (it.hasNext()) ids.push(String(it.next()))
+    var parEcole = {}
+    for (var i = 0; i < ids.length; i++) {
+      var ecole = '?'
+      try { ecole = String(SpellRegistryJ.getSpell(ResourceLocationJ.tryParse(ids[i])).getSchoolType().getId()).split(':').pop() } catch (e0) {}
+      if (!parEcole[ecole]) parEcole[ecole] = []
+      parEcole[ecole].push(ids[i])
+    }
+    var envoyer = function (t) { if (emetteur) emetteur.tell(t) }
+    envoyer(Text.gold('Codex de ' + cible.username + ' : ' + ids.length + ' sort(s) découvert(s)'))
+    var ecoles = Object.keys(parEcole).sort()
+    for (var k = 0; k < ecoles.length; k++) {
+      var ligne = Text.yellow(ecoles[k] + ' (' + parEcole[ecoles[k]].length + ') : ')
+      var liste = parEcole[ecoles[k]].sort()
+      for (var m = 0; m < liste.length; m++) {
+        if (m > 0) ligne = ligne.append(Text.gray(', '))
+        ligne = ligne.append(Text.translate('spell.' + liste[m].replace(':', '.')).white())
+      }
+      envoyer(ligne)
+    }
+    envoyer(Text.gray('/codex ' + cible.username + ' ajouter|retirer <sort>  (ex. irons_spellbooks:fireball)'))
+    return 1
+  } catch (e) {
+    console.error('[codex] ' + e)
+    retour(ctx, 'Lecture du codex impossible : ' + e)
+    return 0
+  }
+}
+
+function cmdCodexModifier(ctx, cible, sort, ajouter) {
+  sort = String(sort).trim()
+  if (!/^[a-z0-9_.-]+:[a-z0-9_.\/-]+$/.test(sort)) { retour(ctx, 'Identifiant invalide : ' + sort + ' (format namespace:sort)'); return 0 }
+  cmd(ctx.source.server, 'specs_codex spell ' + (ajouter ? 'unlock ' : 'lock ') + cible.username + ' ' + sort)
+  retour(ctx, (ajouter ? 'Sort ajouté au codex de ' : 'Sort retiré du codex de ') + cible.username + ' : ' + sort)
+  return 1
+}
+
 ServerEvents.commandRegistry(function (event) {
   var Commands = event.commands
   var Arguments = event.arguments
   var estModo = function (source) { return source.hasPermission(2) }
+
+  event.register(
+    Commands.literal('inventaire').requires(estModo)
+      .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+        .executes(function (ctx) { return cmdInventaire(ctx, Arguments.PLAYER.getResult(ctx, 'joueur'), false) })
+        .then(Commands.literal('enderchest')
+          .executes(function (ctx) { return cmdInventaire(ctx, Arguments.PLAYER.getResult(ctx, 'joueur'), true) })))
+  )
+  event.register(
+    Commands.literal('codex').requires(estModo)
+      .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+        .executes(function (ctx) { return cmdCodexVoir(ctx, Arguments.PLAYER.getResult(ctx, 'joueur')) })
+        .then(Commands.literal('ajouter')
+          .then(Commands.argument('sort', Arguments.GREEDY_STRING.create(event))
+            .executes(function (ctx) { return cmdCodexModifier(ctx, Arguments.PLAYER.getResult(ctx, 'joueur'), String(Arguments.GREEDY_STRING.getResult(ctx, 'sort')), true) })))
+        .then(Commands.literal('retirer')
+          .then(Commands.argument('sort', Arguments.GREEDY_STRING.create(event))
+            .executes(function (ctx) { return cmdCodexModifier(ctx, Arguments.PLAYER.getResult(ctx, 'joueur'), String(Arguments.GREEDY_STRING.getResult(ctx, 'sort')), false) }))))
+  )
 
   // /cours : un sort pour chaque élève de la zone de cours ; /cours ici : autour du professeur ; /cours ordre <joueur>
   event.register(

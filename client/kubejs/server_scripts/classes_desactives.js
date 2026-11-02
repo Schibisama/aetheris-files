@@ -33,6 +33,16 @@ function desactSortsCours() {
   if (DESACT_COURS) return DESACT_COURS
   var set = {}
   try { var o = coursOrdre(); for (var i = 0; i < o.length; i++) set[String(o[i])] = true; DESACT_COURS = set } catch (e) { return set }
+  // Tous les sorts « pour tous » (liste « * » de SORTS_PAR_CLASSE), même ceux que /cours ne donne jamais (école Indicible :
+  // Portail Prismatique, etc.) : ils ne s'obtiennent pas en butin.
+  try {
+    var tous = SpellRegistryJ.getEnabledSpells()
+    for (var k = 0; k < tous.size(); k++) {
+      var sid = String(tous.get(k).getSpellId())
+      var perm = SORTS_PAR_CLASSE[sid]
+      if (perm && perm.indexOf('*') !== -1) set[sid] = true
+    }
+  } catch (e2) { console.error('[classes_desactives] sorts « pour tous » : ' + e2) }
   return DESACT_COURS
 }
 function desactSortInterdit(id) {
