@@ -398,6 +398,11 @@ ServerEvents.tick(function (event) {
   }
 })
 
+// server.getPlayer(String) attend un UUID : on cherche par pseudo via la liste des joueurs.
+function bzJoueurParNom(server, nom) {
+  try { return server.getPlayerList().getPlayerByName(String(nom)) } catch (e) { return null }
+}
+
 // Fin de combat : timer de respawn + crédit de quête au dernier joueur ayant frappé (une seule fois par exemplaire)
 function bzMort(server, nom, b, e, src) {
   var pd = e.persistentData
@@ -409,7 +414,7 @@ function bzMort(server, nom, b, e, src) {
   var tueur = src ? src.actual : null
   if (!tueur || !tueur.isPlayer()) {
     var nomT = bzDernierCoup[cle]
-    tueur = nomT ? server.getPlayer(nomT) : null
+    tueur = nomT ? bzJoueurParNom(server, nomT) : null
   }
   delete bzDernierCoup[cle]
   var parts = bzParticipants[cle] || {}
@@ -435,7 +440,7 @@ function bzMort(server, nom, b, e, src) {
   }
   var donnes = 0, sansQuete = []
   for (var nomJ in cibles) {
-    var j = server.getPlayer(nomJ)
+    var j = bzJoueurParNom(server, nomJ)
     if (!j) continue
     if (j.persistentData.getInt(b.quete.cle) === 1) {
       j.persistentData.putInt(b.quete.cle, 2)
@@ -752,9 +757,11 @@ function bqRendre(server, joueur, q) {
   bqFtb(joueur, q)
   var d = joueur.persistentData
   var etat = d.getInt(q.cle)
-  if (etat === 0) bqDire(joueur, q, q.rien)
-  else if (etat === 1) bqDire(joueur, q, q.vivant)
-  else if (etat === 3) bqDire(joueur, q, q.fini)
+  var aObjet = !q.objet || joueur.inventory.count(q.objet) >= 1
+  // Qui tient l'objet de quête peut le rendre, même si l'état n'a pas été passé à 2 (boss tué par un autre, rechargement...)
+  if (etat === 3) bqDire(joueur, q, q.fini)
+  else if (etat === 0 && !aObjet) bqDire(joueur, q, q.rien)
+  else if (etat === 1 && !aObjet) bqDire(joueur, q, q.vivant)
   else if (q.objet && joueur.inventory.count(q.objet) < 1) bqDire(joueur, q, q.sansObjet)
   else {
     if (q.objet) server.runCommandSilent('clear ' + joueur.username + ' ' + q.objet + ' 1')

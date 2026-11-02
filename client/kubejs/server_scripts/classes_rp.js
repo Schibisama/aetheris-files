@@ -1216,59 +1216,50 @@ function cmdCoursOrdre(ctx, cible) {
 
 
 // ───────────── /inventaire <joueur> [enderchest] et /codex <joueur> [ajouter|retirer <sort>] (modérateurs) ─────────────
-// /inventaire : ouvre l'inventaire du joueur (en ligne) dans un coffre : on peut y prendre ou y poser des objets, c'est appliqué tout de suite.
+// /inventaire : ouvre l'inventaire du joueur (en ligne) en direct : clic gauche = prendre l'objet, clic droit = en copier un exemplaire.
 //   Rangée 1 = barre d'action, rangées 2 à 4 = sac, rangée 5 = bottes, jambières, plastron, casque, main secondaire.
 // /codex : liste les sorts découverts (Spell Codex) du joueur, par école ; ajouter / retirer un sort (identifiant complet, ex. irons_spellbooks:fireball).
-var INV_MenuType = null, INV_ChestMenu = null, INV_Provider = null, INV_Simple = null, INV_Stack = null
-function invCharger() {
-  if (INV_MenuType) return
-  INV_MenuType = Java.loadClass('net.minecraft.world.inventory.MenuType')
-  INV_ChestMenu = Java.loadClass('net.minecraft.world.inventory.ChestMenu')
-  INV_Provider = Java.loadClass('net.minecraft.world.SimpleMenuProvider')
-  INV_Simple = Java.loadClass('net.minecraft.world.SimpleContainer')
-  INV_Stack = Java.loadClass('net.minecraft.world.item.ItemStack')
+// Interfaces KubeJS (openChestGUI) : les emplacements sont reliés EN DIRECT à l'inventaire du joueur ciblé.
+// Clic gauche : prend l'objet pour le modérateur (retiré du joueur) ; clic droit : en reçoit une copie sans rien retirer.
+function invPrise(admin, sl) {
+  sl.setLeftClicked(function () {
+    var st = sl.getItem()
+    if (st.isEmpty()) return
+    admin.give(st.copy())
+    sl.setItem(Item.of('minecraft:air'))
+  })
+  sl.setRightClicked(function () {
+    var st = sl.getItem()
+    if (!st.isEmpty()) admin.give(st.copy())
+  })
 }
 
 function cmdInventaire(ctx, cible, ender) {
   try {
-    invCharger()
     var admin = ctx.source.player
     if (!admin) { retour(ctx, 'À lancer en jeu.'); return 0 }
-    var conteneur, lignes, type
+    console.info('[inventaire] ' + admin.username + ' demande ' + (ender ? 'le coffre de l\'Ender' : 'l\'inventaire') + ' de ' + cible.username)
+    var titre = Text.of((ender ? 'Coffre de l\'Ender de ' : 'Inventaire de ') + cible.username)
     if (ender) {
-      conteneur = cible.getEnderChestInventory()
-      lignes = 3; type = INV_MenuType.GENERIC_9x3
+      var ec = cible.getEnderChestInventory()
+      admin.openChestGUI(titre, 3, function (gui) {
+        for (var n = 0; n < 27; n++) {
+          (function (n) { gui.slot(n % 9, Math.floor(n / 9), function (sl) { sl.inventory = ec; sl.inventorySlot = n; invPrise(admin, sl) }) })(n)
+        }
+      })
     } else {
-      conteneur = new INV_Simple(45)
-      lignes = 5; type = INV_MenuType.GENERIC_9x5
       var inv = cible.getInventory()
-      var snap = []
-      for (var i = 0; i < 41; i++) { var p = inv.getItem(i).copy(); conteneur.setItem(i, p.copy()); snap.push(p) }
-      var garde = { actif: false }
-      conteneur.addListener(function (c) {
-        if (garde.actif) return
-        garde.actif = true
-        try {
-          var changes = 0
-          for (var j = 0; j < 41; j++) {
-            var cur = c.getItem(j)
-            if (!INV_Stack.matches(cur, snap[j])) { inv.setItem(j, cur.copy()); snap[j] = cur.copy(); changes++ }
-          }
-          for (var x = 41; x < 45; x++) {   // emplacements sans équivalent : l'objet est rendu au modérateur
-            var reste = c.getItem(x)
-            if (!reste.isEmpty()) { admin.give(reste.copy()); c.setItem(x, Item.of('minecraft:air')) }
-          }
-          if (changes > 0) {
-            try { cible.inventoryMenu.broadcastChanges() } catch (e1) {}
-            try { cible.containerMenu.broadcastChanges() } catch (e2) {}
-          }
-        } catch (err) { console.error('[inventaire] ' + err) }
-        garde.actif = false
+      // rangée 0 : casque, plastron, jambières, bottes, (vide), main secondaire ; rangées 1-3 : sac ; rangée 4 : barre d'action
+      var plan = [[0, 0, 39], [1, 0, 38], [2, 0, 37], [3, 0, 36], [5, 0, 40]]
+      for (var k = 0; k < 27; k++) plan.push([k % 9, 1 + Math.floor(k / 9), 9 + k])
+      for (var h = 0; h < 9; h++) plan.push([h, 4, h])
+      admin.openChestGUI(titre, 5, function (gui) {
+        for (var q = 0; q < plan.length; q++) {
+          (function (p) { gui.slot(p[0], p[1], function (sl) { sl.inventory = inv; sl.inventorySlot = p[2]; invPrise(admin, sl) }) })(plan[q])
+        }
       })
     }
-    var titre = Text.of((ender ? 'Coffre de l\'Ender de ' : 'Inventaire de ') + cible.username)
-    admin.openMenu(new INV_Provider(function (id, invAdmin, p) { return new INV_ChestMenu(type, id, invAdmin, conteneur, lignes) }, titre))
-    console.info('[inventaire] ' + admin.username + ' ouvre ' + (ender ? 'le coffre de l\'Ender' : 'l\'inventaire') + ' de ' + cible.username)
+    console.info('[inventaire] ouvert pour ' + admin.username)
     return 1
   } catch (e) {
     console.error('[inventaire] ' + e)
@@ -1277,34 +1268,64 @@ function cmdInventaire(ctx, cible, ender) {
   }
 }
 
+// /codex <joueur> : ouvre une fenêtre (lecture seule) avec les sorts découverts du joueur, par école ; pages si > 45 sorts.
+function codexIds(cible) {
+  if (!UnlockAttachJ) UnlockAttachJ = Java.loadClass('com.specs.irons_spellbooks.unlock.SpellUnlockAttachments')
+  var donnees = cible.getData(UnlockAttachJ.UNLOCKS)
+  var ids = []
+  var it = donnees.getDiscoveredSpells().iterator()
+  while (it.hasNext()) ids.push(String(it.next()))
+  var out = []
+  for (var i = 0; i < ids.length; i++) {
+    var ecole = '?'
+    try { ecole = String(SpellRegistryJ.getSpell(ResourceLocationJ.tryParse(ids[i])).getSchoolType().getId()).split(':').pop() } catch (e0) {}
+    out.push({ id: ids[i], ecole: ecole })
+  }
+  out.sort(function (a, b) { return a.ecole < b.ecole ? -1 : a.ecole > b.ecole ? 1 : (a.id < b.id ? -1 : a.id > b.id ? 1 : 0) })
+  return out
+}
+
+var CODEX_ICONES = { fire: 'minecraft:blaze_powder', ice: 'minecraft:snowball', lightning: 'minecraft:lightning_rod', holy: 'minecraft:glowstone_dust', ender: 'minecraft:ender_pearl', blood: 'minecraft:redstone', evocation: 'minecraft:totem_of_undying', nature: 'minecraft:oak_sapling', eldritch: 'minecraft:sculk' }
+
+function codexOuvrir(admin, cible, liste, page) {
+  var parPage = 45
+  var pages = Math.max(1, Math.ceil(liste.length / parPage))
+  if (page < 0) page = 0
+  if (page >= pages) page = pages - 1
+  var titre = Text.of('Codex de ' + cible.username + ' (' + liste.length + ') — page ' + (page + 1) + '/' + pages)
+  admin.openChestGUI(titre, 6, function (gui) {
+    for (var n = 0; n < parPage; n++) {
+      var idx = page * parPage + n
+      if (idx >= liste.length) break
+      var sp = liste[idx]
+      var icone = CODEX_ICONES[sp.ecole] || 'minecraft:book'
+      var stack = Item.of(icone)
+      try { stack = stack.withName(Text.yellow(sp.ecole + ' · ').append(Text.translate('spell.' + sp.id.replace(':', '.')).white())) } catch (eN) {}
+      ;(function (n, stack) { gui.slot(n % 9, Math.floor(n / 9), function (sl) { sl.setItem(stack) }) })(n, stack)
+    }
+    var info = Item.of('minecraft:paper')
+    try { info = info.withName(Text.gold('/codex ' + cible.username + ' ajouter|retirer <sort>')) } catch (eI) {}
+    gui.slot(4, 5, function (sl) { sl.setItem(info) })
+    if (page > 0) {
+      var pr = Item.of('minecraft:arrow')
+      try { pr = pr.withName(Text.white('Page précédente')) } catch (eP) {}
+      gui.slot(3, 5, function (sl) { sl.setItem(pr); sl.setLeftClicked(function () { codexOuvrir(admin, cible, liste, page - 1) }) })
+    }
+    if (page < pages - 1) {
+      var su = Item.of('minecraft:arrow')
+      try { su = su.withName(Text.white('Page suivante')) } catch (eS) {}
+      gui.slot(5, 5, function (sl) { sl.setItem(su); sl.setLeftClicked(function () { codexOuvrir(admin, cible, liste, page + 1) }) })
+    }
+  })
+}
+
 function cmdCodexVoir(ctx, cible) {
   try {
-    if (!UnlockAttachJ) UnlockAttachJ = Java.loadClass('com.specs.irons_spellbooks.unlock.SpellUnlockAttachments')
-    var emetteur = ctx.source.player
-    var donnees = cible.getData(UnlockAttachJ.UNLOCKS)
-    var ids = []
-    var it = donnees.getDiscoveredSpells().iterator()
-    while (it.hasNext()) ids.push(String(it.next()))
-    var parEcole = {}
-    for (var i = 0; i < ids.length; i++) {
-      var ecole = '?'
-      try { ecole = String(SpellRegistryJ.getSpell(ResourceLocationJ.tryParse(ids[i])).getSchoolType().getId()).split(':').pop() } catch (e0) {}
-      if (!parEcole[ecole]) parEcole[ecole] = []
-      parEcole[ecole].push(ids[i])
-    }
-    var envoyer = function (t) { if (emetteur) emetteur.tell(t) }
-    envoyer(Text.gold('Codex de ' + cible.username + ' : ' + ids.length + ' sort(s) découvert(s)'))
-    var ecoles = Object.keys(parEcole).sort()
-    for (var k = 0; k < ecoles.length; k++) {
-      var ligne = Text.yellow(ecoles[k] + ' (' + parEcole[ecoles[k]].length + ') : ')
-      var liste = parEcole[ecoles[k]].sort()
-      for (var m = 0; m < liste.length; m++) {
-        if (m > 0) ligne = ligne.append(Text.gray(', '))
-        ligne = ligne.append(Text.translate('spell.' + liste[m].replace(':', '.')).white())
-      }
-      envoyer(ligne)
-    }
-    envoyer(Text.gray('/codex ' + cible.username + ' ajouter|retirer <sort>  (ex. irons_spellbooks:fireball)'))
+    var admin = ctx.source.player
+    var liste = codexIds(cible)
+    if (!admin) { retour(ctx, 'Codex de ' + cible.username + ' : ' + liste.length + ' sort(s)'); return 1 }
+    console.info('[codex] ' + admin.username + ' ouvre le codex de ' + cible.username + ' (' + liste.length + ' sorts)')
+    codexOuvrir(admin, cible, liste, 0)
     return 1
   } catch (e) {
     console.error('[codex] ' + e)
