@@ -550,7 +550,19 @@ function sortsInterditsDeLaClasse(classe) {
 function verrouillerSortsInterdits(server, joueur, classe) {
   if (!classe || estTest(joueur)) return
   var liste = sortsInterditsDeLaClasse(classe)
-  for (var i = 0; i < liste.length; i++) cmd(server, 'specs_codex spell lock ' + joueur.username + ' ' + liste[i])
+  // Seuls les sorts réellement découverts sont verrouillés : avant, une commande par sort interdit (des centaines)
+  // partait pour chaque joueur toutes les 30 s et gelait le serveur plusieurs secondes.
+  var connus = null
+  try {
+    if (!UnlockAttachJ) UnlockAttachJ = Java.loadClass('com.specs.irons_spellbooks.unlock.SpellUnlockAttachments')
+    connus = {}
+    var it = joueur.getData(UnlockAttachJ.UNLOCKS).getDiscoveredSpells().iterator()
+    while (it.hasNext()) connus[String(it.next())] = true
+  } catch (e0) { connus = null }
+  for (var i = 0; i < liste.length; i++) {
+    if (connus && !connus[liste[i]]) continue
+    cmd(server, 'specs_codex spell lock ' + joueur.username + ' ' + liste[i])
+  }
 }
 
 // Écoles qui doivent rester ouvertes pour cette classe (école, écoles supplémentaires, écoles libres, écoles des sorts permis).
