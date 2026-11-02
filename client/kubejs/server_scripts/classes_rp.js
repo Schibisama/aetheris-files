@@ -2215,7 +2215,10 @@ try {
     if (client === undefined || typeof client === 'function') client = niveau.isClientSide
     return client === true
   }
-  BUS_PARCH.addListener(PRIO_P.HIGHEST, false, EVT_TOSS, function (e) { try { avant(e.getEntity().getItem()) } catch (x) {} })
+  BUS_PARCH.addListener(PRIO_P.HIGHEST, false, EVT_TOSS, function (e) {
+    try { PARCH_JETE[String(e.getPlayer().uuid)] = e.getPlayer().server.tickCount } catch (x0) {}
+    try { avant(e.getEntity().getItem()) } catch (x) {}
+  })
   BUS_PARCH.addListener(PRIO_P.LOWEST, true, EVT_TOSS, function (e) { try { apres(e.getEntity()) } catch (x) {} })
   BUS_PARCH.addListener(PRIO_P.HIGHEST, false, EVT_JOIN, function (e) {
     try {
@@ -2235,3 +2238,73 @@ try {
 } catch (e) {
   console.error('[parchemin] conservation du niveau indisponible : ' + e)
 }
+
+
+// ───────────── Apprentissage par le menu du codex (parchemin déposé dans le codex) ─────────────
+// Spell Codex traite le clic droit sur un parchemin en priorité HIGHEST et annule l'évènement : aucun script ne le voit.
+// Même chose pour le menu du codex. On surveille donc, toutes les 5 ticks, les parchemins/pages (avec niveau)
+// portés par chaque joueur et les sorts découverts. Un sort qui vient d'être découvert alors que le joueur portait
+// un parchemin de ce sort -> palier = niveau du parchemin. Sort déjà connu dont le parchemin disparaît pendant que
+// le menu du codex est ouvert -> idem.
+var PARCH_SUIVI = {}
+var PARCH_JETE = {}   // uuid -> tick du dernier objet jeté   // uuid -> { vus: {id: niveau}, nb: {id: nombre}, connus: {id: true} }
+
+function parchScanObjets(joueur) {
+  var vus = {}, nb = {}
+  var noter = function (pile) {
+    try {
+      if (!pile || pile.isEmpty()) return
+      var idO = String(pile.id)
+      var lu = null
+      if (idO === 'irons_spellbooks:scroll') lu = parchLire(pile)
+      else if (idO === PAGE_ID) lu = parchLirePage(pile)
+      if (!lu) return
+      if (!vus[lu.id] || vus[lu.id] < lu.niveau) vus[lu.id] = lu.niveau
+      nb[lu.id] = (nb[lu.id] || 0) + pile.count
+    } catch (e) {}
+  }
+  var inv = joueur.getInventory()
+  for (var i = 0; i < inv.getContainerSize(); i++) noter(inv.getItem(i))
+  try { noter(joueur.containerMenu.getCarried()) } catch (e1) {}
+  return { vus: vus, nb: nb }
+}
+
+function parchScanConnus(joueur) {
+  if (!UnlockAttachJ) UnlockAttachJ = Java.loadClass('com.specs.irons_spellbooks.unlock.SpellUnlockAttachments')
+  var connus = {}
+  var it = joueur.getData(UnlockAttachJ.UNLOCKS).getDiscoveredSpells().iterator()
+  while (it.hasNext()) connus[String(it.next())] = true
+  return connus
+}
+
+ServerEvents.tick(function (event) {
+  var serveur = event.server
+  if (serveur.tickCount % 5 !== 0) return
+  var joueurs = serveur.players
+  for (var i = 0; i < joueurs.size(); i++) {
+    var j = joueurs.get(i)
+    try {
+      var cle = String(j.uuid)
+      var obj = parchScanObjets(j)
+      var connus = parchScanConnus(j)
+      var avant = PARCH_SUIVI[cle]
+      if (avant) {
+        // Parchemin disparu d'un sort déjà connu : compté comme lu seulement s'il n'a été ni jeté ni rangé dans un coffre.
+        var menuOk = false
+        try { var nomMenu = String(j.containerMenu.getClass().getSimpleName()); menuOk = nomMenu === 'InventoryMenu' || nomMenu.indexOf('SpellHud') >= 0 } catch (eM) {}
+        var jeteRecemment = PARCH_JETE[cle] && serveur.tickCount - PARCH_JETE[cle] < 20
+        for (var id in avant.vus) {
+          var nouveau = connus[id] && !avant.connus[id]
+          var disparu = (obj.nb[id] || 0) < avant.nb[id]
+          if (nouveau || (disparu && connus[id] && menuOk && !jeteRecemment)) {
+            console.info('[parchemin] ' + j.username + ' : ' + id + (nouveau ? ' découvert' : ' parchemin consommé') + ' (parchemin niveau ' + avant.vus[id] + ')')
+            parchAppliquer(j, id, avant.vus[id])
+          }
+        }
+      }
+      PARCH_SUIVI[cle] = { vus: obj.vus, nb: obj.nb, connus: connus }
+    } catch (e) {
+      if (!PARCH_SUIVI._err) { PARCH_SUIVI._err = true; console.error('[parchemin] suivi : ' + e) }
+    }
+  }
+})
