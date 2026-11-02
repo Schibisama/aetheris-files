@@ -258,3 +258,89 @@ EntityEvents.spawned(function (event) {
 })
 
 console.info('[mobs_distance] actif : +' + (MD.VIE * 100) + ' % max. vie/dégâts par palier de ' + MD.PALIER + ' blocs (plafond +' + (MD.PLAFOND * 100) + ' %), boss x' + MD.FACTEUR_BOSS + ', Nether x0,125.')
+
+
+// ───────── Densité de mobs ─────────
+// Autour de chaque joueur, si plus de DENS.max mobs hostiles (monstres et chauves-souris) se trouvent dans le rayon DENS.rayon,
+// l'excédent est retiré en commençant par les plus éloignés (jamais ceux qui sont à moins de DENS.proche blocs du joueur).
+// Épargnés : boss et escortes de zone, pirates, invocations de sorts, mobs persistants (nommés à l'étiquette, apprivoisés...),
+// mobs montés ou qui portent des passagers, mobs au tag mcrp_autorise.
+// Réglage en jeu (op) : /densite  /densite max <n>  /densite rayon <n>  /densite on|off
+var DENS = { actif: true, rayon: 64, hauteur: 48, max: 30, proche: 20, periode: 100 }
+var DENS_J = null
+var DENS_TAGS = ['boss_zone', 'boss_escorte', 'pirate_zone', 'mcrp_autorise']
+function densInit() {
+  if (DENS_J) return
+  DENS_J = {}
+  DENS_J.AABB = Java.loadClass('net.minecraft.world.phys.AABB')
+  DENS_J.Mob = Java.loadClass('net.minecraft.world.entity.Mob')
+  try { DENS_J.Summon = Java.loadClass('io.redspace.ironsspellbooks.entity.mobs.IMagicSummon') } catch (e) { DENS_J.Summon = null }
+}
+function densEstCible(m) {
+  var cat = ''
+  try { cat = String(m.getType().getCategory().getName()) } catch (e) { return false }
+  if (cat !== 'monster' && cat !== 'ambient') return false
+  try {
+    if (m.isPersistenceRequired() || m.isPassenger() || m.isVehicle()) return false
+    if (DENS_J.Summon && (m instanceof DENS_J.Summon)) return false
+    var tags = m.getTags()
+    for (var i = 0; i < DENS_TAGS.length; i++) if (tags.contains(DENS_TAGS[i])) return false
+    if (m.getMaxHealth() >= MD.SEUIL_BOSS_VIE) return false
+    if (MD.BOSS_IDS.indexOf(String(m.getType().builtInRegistryHolder().key().location())) >= 0) return false
+  } catch (e2) { return false }
+  return true
+}
+function densCompter(joueur) {
+  densInit()
+  var niveau = joueur.level
+  var x = joueur.getX(), y = joueur.getY(), z = joueur.getZ()
+  var r = DENS.rayon, h = DENS.hauteur
+  var boite = new DENS_J.AABB(x - r, y - h, z - r, x + r, y + h, z + r)
+  var it = niveau.getEntitiesOfClass(DENS_J.Mob, boite).iterator()
+  var liste = []
+  while (it.hasNext()) {
+    var m = it.next()
+    if (!densEstCible(m)) continue
+    liste.push({ m: m, d: m.distanceToSqr(joueur) })
+  }
+  return liste
+}
+ServerEvents.tick(function (event) {
+  if (!DENS.actif || event.server.tickCount % DENS.periode !== 3) return
+  var joueurs = event.server.players
+  for (var i = 0; i < joueurs.size(); i++) {
+    try {
+      var liste = densCompter(joueurs.get(i))
+      var exces = liste.length - DENS.max
+      if (exces <= 0) continue
+      liste.sort(function (a, b) { return b.d - a.d })
+      var retires = 0
+      var proche2 = DENS.proche * DENS.proche
+      for (var k = 0; k < liste.length && retires < exces; k++) {
+        if (liste[k].d < proche2) break
+        liste[k].m.discard()
+        retires++
+      }
+      if (retires > 0) console.info('[densite] ' + joueurs.get(i).username + ' : ' + retires + ' mob(s) retiré(s) (' + liste.length + ' dans ' + DENS.rayon + ' blocs, max ' + DENS.max + ')')
+    } catch (e) {
+      console.error('[densite] ' + e)
+    }
+  }
+})
+ServerEvents.commandRegistry(function (event) {
+  var C = event.commands, A = event.arguments
+  var op = function (s) { return s.hasPermission(2) }
+  var dire = function (ctx, t) { var p = ctx.source.player; if (p) p.tell(Text.gray(t)); else console.info('[densite] ' + t) }
+  event.register(C.literal('densite').requires(op)
+    .executes(function (ctx) {
+      var joueurs = ctx.source.server.players
+      var t = 'Densité : ' + (DENS.actif ? 'active' : 'coupée') + ', max ' + DENS.max + ' mobs dans ' + DENS.rayon + ' blocs.'
+      for (var i = 0; i < joueurs.size(); i++) { var j = joueurs.get(i); t += '\n- ' + j.username + ' : ' + densCompter(j).length }
+      dire(ctx, t)
+      return 1
+    })
+    .then(C.literal('max').then(C.argument('n', A.INTEGER.create(event)).executes(function (ctx) { DENS.max = Math.max(5, A.INTEGER.getResult(ctx, 'n')); dire(ctx, 'Maximum : ' + DENS.max); return 1 })))
+    .then(C.literal('rayon').then(C.argument('n', A.INTEGER.create(event)).executes(function (ctx) { DENS.rayon = Math.max(24, Math.min(128, A.INTEGER.getResult(ctx, 'n'))); dire(ctx, 'Rayon : ' + DENS.rayon); return 1 })))
+    .then(C.literal('on').executes(function (ctx) { DENS.actif = true; dire(ctx, 'Densité active'); return 1 }))
+    .then(C.literal('off').executes(function (ctx) { DENS.actif = false; dire(ctx, 'Densité coupée'); return 1 })))
+})

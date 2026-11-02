@@ -238,6 +238,32 @@ function lvChoisir(server, joueur, q, option) {
   return 1
 }
 
+// /livraison info : quêtes acceptées (état 1) ou en attente de choix (état 2), avec l'avancement dans le sac.
+function lvInfo(demandeur, cible) {
+  if (!demandeur || !cible) return 0
+  var d = cible.persistentData
+  var lignes = 0
+  for (var nom in LIVRAISONS) {
+    var q = LIVRAISONS[nom]
+    var etat = d.getInt(q.cle)
+    if (etat !== 1 && etat !== 2) continue
+    if (lignes === 0) demandeur.tell(Text.gold('Quêtes de livraison en cours' + (cible === demandeur ? '' : ' (' + cible.username + ')') + ' :'))
+    lignes++
+    var objet = String(q.objet)
+    try { objet = String(Item.of(q.objet).hoverName.string) } catch (e) {}
+    if (etat === 2) {
+      demandeur.tell(Text.yellow('• ' + q.pnj + ' : ').append(Text.gray('objets remis, il reste à choisir ta récompense.')))
+    } else {
+      var a = 0
+      try { a = Number(cible.inventory.count(q.objet)) } catch (e2) {}
+      var ok = a >= q.nombre
+      demandeur.tell(Text.yellow('• ' + q.pnj + ' : ').append(Text.white(q.nombre + ' × ' + objet)).append((ok ? Text.green : Text.gray)(' (dans ton sac : ' + a + '/' + q.nombre + ')')))
+    }
+  }
+  if (lignes === 0) demandeur.tell(Text.gray('Aucune quête de livraison en cours.'))
+  return 1
+}
+
 ServerEvents.commandRegistry(function (event) {
   var Commands = event.commands
   var Arguments = event.arguments
@@ -271,7 +297,12 @@ ServerEvents.commandRegistry(function (event) {
       }
     })(nom)
   }
-  event.register(Commands.literal('livraison').then(accepter).then(rendre).then(choix).then(reset))
+  // /livraison info : les quêtes de livraison en cours du joueur (et /livraison info <joueur> pour un op)
+  var info = Commands.literal('info')
+    .executes(function (ctx) { return lvInfo(ctx.source.player, ctx.source.player) })
+    .then(Commands.argument('joueur', Arguments.PLAYER.create(event)).requires(estModo)
+      .executes(function (ctx) { return lvInfo(ctx.source.player, Arguments.PLAYER.getResult(ctx, 'joueur')) }))
+  event.register(Commands.literal('livraison').then(accepter).then(rendre).then(choix).then(reset).then(info))
 })
 
 // ───── Quêtes des PNJ de classe (livraison) ─────
