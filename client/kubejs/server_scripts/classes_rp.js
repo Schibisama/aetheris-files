@@ -1003,6 +1003,54 @@ function retour(ctx, texte) {
   if (emetteur) emetteur.tell(Text.gray(texte))
 }
 
+// Argument « classe » de /classe edit (texte libre avec propositions des noms de classes).
+function editerClasseArg(Commands, Arguments, event) {
+  var arg = Commands.argument('classe', Arguments.GREEDY_STRING.create(event))
+  try {
+    arg = arg.suggests(function (ctx, builder) {
+      for (var i = 0; i < CLASSES.length; i++) builder.suggest(CLASSES[i].nom)
+      return builder.buildFuture()
+    })
+  } catch (e) { console.error('[classes_rp] suggestions /classe edit : ' + e) }
+  return arg.executes(function (ctx) {
+    return cmdClasseEdit(ctx, Arguments.PLAYER.getResult(ctx, 'joueur'), String(Arguments.GREEDY_STRING.getResult(ctx, 'classe')).trim())
+  })
+}
+
+// /classe edit <joueur> <classe> : change la classe actuelle d'un joueur, sans annonce (ni titre, ni chat). Ne compte pas comme un changement.
+function classeParTexte(texte) {
+  var norm = function (t) {
+    return String(t).toLowerCase().replace(/[àâä]/g, 'a').replace(/[éèêë]/g, 'e').replace(/[îï]/g, 'i').replace(/[ôö]/g, 'o').replace(/[ûùü]/g, 'u').replace(/ç/g, 'c').replace(/[^a-z0-9]+/g, ' ').trim()
+  }
+  var voulu = norm(texte)
+  if (voulu === 'pretre') voulu = 'paladin'
+  for (var i = 0; i < CLASSES.length; i++) {
+    if (norm(CLASSES[i].nom) === voulu) return CLASSES[i]
+  }
+  return null
+}
+function cmdClasseEdit(ctx, cible, texte) {
+  try {
+    var classe = classeParTexte(texte)
+    if (!classe) {
+      var noms = []
+      for (var i = 0; i < CLASSES.length; i++) noms.push(CLASSES[i].nom)
+      retour(ctx, 'Classe inconnue : « ' + texte + ' ». Classes : ' + noms.join(', ') + '.')
+      return 0
+    }
+    cible.persistentData.putString(CLE, classe.nom)
+    cible.persistentData.putBoolean(CLE_TEST, false)
+    appliquerClasse(ctx.source.server, cible, classe, true)
+    retour(ctx, cible.username + ' est maintenant ' + classe.nom + ' (sans annonce).')
+    console.info('[classes_rp] /classe edit : ' + cible.username + ' -> ' + classe.nom)
+    return 1
+  } catch (e) {
+    console.error('[classes_rp] Erreur dans /classe edit : ' + e)
+    retour(ctx, 'Erreur (voir logs/kubejs/server.log).')
+    return 0
+  }
+}
+
 // /classe reset <joueur> : nouveau tirage immédiat et gratuit (ne consomme pas de changement).
 function cmdAdminReset(ctx, cible) {
   try {
@@ -1522,6 +1570,10 @@ ServerEvents.commandRegistry(function (event) {
         .requires(estModo)
         .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
           .executes(function (ctx) { return cmdRecompense(ctx, Arguments.PLAYER.getResult(ctx, 'joueur'), 'LEGENDARY') })))
+      .then(Commands.literal('edit')
+        .requires(estModo)
+        .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+          .then(editerClasseArg(Commands, Arguments, event))))
       .then(Commands.literal('reset')
         .requires(estModo)
         .then(Commands.argument('joueur', Arguments.PLAYER.create(event))

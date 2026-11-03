@@ -1,5 +1,5 @@
 {
- "version": "2026-11-03T15:11:18.844Z",
+ "version": "2026-11-03T16:36:59.995Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6177,8 +6177,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "a5d3ca685e66d26d7064d8d4d7113bc1bc8346d4",
-   "size": 133196
+   "sha1": "c4fa88f517bc844948a18dbf255e882e1b09ded4",
+   "size": 135519
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -6207,8 +6207,8 @@
   },
   {
    "path": "kubejs/server_scripts/envouteur_nerf.js",
-   "sha1": "a3635275f4ace5ff48ec927d126e737edf8e9ca4",
-   "size": 5287
+   "sha1": "899fcabd4edf209ec6e672f0112774ae04c6b187",
+   "size": 5322
   },
   {
    "path": "kubejs/server_scripts/ftb_aide.js",

@@ -1,10 +1,10 @@
 // Envoûteur : rééquilibrage des sorts de l'école Curse (mod Curse Spells, préfixe cursespells:).
-//  1) dégâts à 56,25 % (deux nerfs de -25 % cumulés) SEULEMENT pour les gros sorts (NERF_DEGATS_GROS), y compris ceux qui percent les
+//  1) dégâts à 75 % (-25 %) SEULEMENT pour les gros sorts (NERF_DEGATS_GROS), y compris ceux qui percent les
 //     défenses (Abhorrent Star...) ; les petits sorts Curse retrouvent leurs dégâts de base
 //  2) recharge x1,5 sur les gros sorts de zone
 //  3) coût en mana x1,3 sur ces mêmes gros sorts
 // À placer dans : kubejs/server_scripts/envouteur_nerf.js  (puis /reload). Les trois valeurs se règlent ci-dessous.
-var NERF_PUISSANCE = 0.5625   // 0,75 x 0,75 : deuxième baisse de 25 %
+var NERF_PUISSANCE = 0.75     // -25 % sur les gros sorts (niveau de la première modification ; le deuxième -25 % a été retiré)
 var NERF_RECHARGE = 1.5
 var NERF_MANA = 1.3
 // Gros sorts Curse dont les dégâts restent réduits (NERF_PUISSANCE) : les sorts de zone, ultimes et sorts légendaires. Les autres sorts
