@@ -1,5 +1,5 @@
 {
- "version": "2026-11-03T01:09:11.844Z",
+ "version": "2026-11-03T01:29:22.910Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6177,8 +6177,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "e8e253576da6eed99f86598660fd0f842c709b46",
-   "size": 132867
+   "sha1": "a8833629e1f257fc08aed1ef962ca39cabe59864",
+   "size": 133176
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -6272,8 +6272,8 @@
   },
   {
    "path": "kubejs/server_scripts/rtp.js",
-   "sha1": "b4b0512b5b7fc03c5f9a03cfece2c588dd372c63",
-   "size": 5999
+   "sha1": "e50d869db985c1e3f927b43d86a31c7156d91865",
+   "size": 6193
   },
   {
    "path": "kubejs/server_scripts/starter.js",
@@ -6702,8 +6702,8 @@
   },
   {
    "path": "mods/GrandTeleport-NeoForge-1.21.1-1.0.2.jar",
-   "sha1": "d18b3b38cda73abc383a5832854fd4cc42c8ab0f",
-   "size": 1290817
+   "sha1": "7e5616f955e1fe2eddae6138cc97bd0e7a5e01e7",
+   "size": 1296759
   },
   {
    "path": "mods/gtbcs_cataclysmic_uis-1.0.3+1.21.1.jar",

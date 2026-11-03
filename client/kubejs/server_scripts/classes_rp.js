@@ -1406,8 +1406,15 @@ function tpaRepondre(ctx, accepter) {
     moi.tell(Text.gray('Demande refusée.'))
     return 1
   }
-  if (d.versLui) cmd(serveur, 'tp ' + demandeur.username + ' ' + moi.username)
-  else cmd(serveur, 'tp ' + moi.username + ' ' + demandeur.username)
+  // Animation Grand Teleport : réservée à /tpa, /warp, Waystones et au sort Rappel (tag lu par le mod pendant la commande)
+  var voyageur = d.versLui ? demandeur : moi
+  try { voyageur.addTag('gta_anim') } catch (e) {}
+  try {
+    if (d.versLui) cmd(serveur, 'tp ' + demandeur.username + ' ' + moi.username)
+    else cmd(serveur, 'tp ' + moi.username + ' ' + demandeur.username)
+  } finally {
+    try { voyageur.removeTag('gta_anim') } catch (e) {}
+  }
   demandeur.tell(Text.green(moi.username + ' a accepté.'))
   moi.tell(Text.green('Téléportation effectuée.'))
   return 1
