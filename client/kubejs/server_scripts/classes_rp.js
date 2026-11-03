@@ -2426,6 +2426,74 @@ ServerEvents.tick(perfWrap('classes_rp:2371', function (event) {
 }))
 
 
+// ───────── Page imprimée à la forge à parchemins : niveau selon la rareté de la page vierge ─────────
+// Spell Codex fabrique la page sans niveau (donc palier 1, même avec une page vierge légendaire).
+// On inscrit sur la page neuve le premier niveau du sort qui atteint la rareté de la page vierge
+// (à défaut, le plus haut niveau de rareté inférieure). Les pages de butin restent au niveau minimum.
+var FORGE_VIERGE_ID = 'specs_irons_spellbooks:blank_codex_page'
+function forgePagesSansNiveau(joueur) {
+  var res = {}
+  var inv = joueur.getInventory()
+  for (var i = 0; i < inv.getContainerSize(); i++) {
+    var p = inv.getItem(i)
+    if (!p || p.isEmpty() || String(p.id) !== PAGE_ID || parchLirePage(p)) continue
+    var rl = Java.loadClass('com.specs.irons_spellbooks.item.CodexPageItem').getSpellId(p)
+    if (rl) res[String(rl)] = (res[String(rl)] || 0) + p.count
+  }
+  return res
+}
+function forgeNiveauPourRarete(sortId, rarete) {
+  var IUH = Java.loadClass('com.specs.irons_spellbooks.unlock.InkUnlockHelper')
+  var sort = SpellRegistryJ.getSpell(ResourceLocationJ.tryParse(sortId))
+  var max = Number(sort.getMaxLevel())
+  var exact = 0, meilleur = 1
+  for (var t = 1; t <= max; t++) {
+    var r = IUH.rarityForTier(sort, t)
+    if (!r) continue
+    if (r.ordinal() === rarete.ordinal()) { exact = t; break }
+    if (r.ordinal() < rarete.ordinal()) meilleur = t
+  }
+  return exact || meilleur
+}
+try {
+  Java.loadClass('net.neoforged.neoforge.common.NeoForge').EVENT_BUS.addListener(
+    Java.loadClass('net.neoforged.bus.api.EventPriority').LOWEST, true,
+    Java.loadClass('net.neoforged.neoforge.event.entity.player.PlayerInteractEvent$RightClickBlock'),
+    function (e) {
+      try {
+        var joueur = e.getEntity()
+        if (!joueur || !joueur.isPlayer() || e.getLevel().isClientSide()) return
+        if (String(e.getLevel().getBlockState(e.getPos()).block.id) !== 'irons_spellbooks:scroll_forge') return
+        var main = e.getItemStack()
+        if (!main || main.isEmpty() || String(main.id) !== FORGE_VIERGE_ID) return
+        var rarete = Java.loadClass('com.specs.irons_spellbooks.item.BlankCodexPageItem').getInkRarity(main)
+        if (!rarete) return
+        var avant = forgePagesSansNiveau(joueur)
+        joueur.server.scheduleInTicks(2, function () {
+          try {
+            var apres = forgePagesSansNiveau(joueur)
+            for (var id in apres) {
+              if ((apres[id] || 0) <= (avant[id] || 0)) continue
+              var niveau = forgeNiveauPourRarete(id, rarete)
+              var inv = joueur.getInventory()
+              for (var i = 0; i < inv.getContainerSize(); i++) {
+                var p = inv.getItem(i)
+                if (!p || p.isEmpty() || String(p.id) !== PAGE_ID || parchLirePage(p)) continue
+                if (String(Java.loadClass('com.specs.irons_spellbooks.item.CodexPageItem').getSpellId(p)) !== id) continue
+                var cible = p
+                if (p.count > 1) { cible = p.copyWithCount(1); p.shrink(1); parchEcrirePage(cible, niveau); joueur.give(cible) }
+                else parchEcrirePage(cible, niveau)
+                console.info('[parchemin] page forgée ' + id + ' (page vierge ' + rarete.name() + ') : niveau ' + niveau)
+                break
+              }
+            }
+          } catch (e2) { console.error('[parchemin] forge : ' + e2) }
+        })
+      } catch (e1) { console.error('[parchemin] forge : ' + e1) }
+    })
+  console.info('[parchemin] Pages de la forge à parchemins : niveau selon la rareté.')
+} catch (e) { console.error('[parchemin] forge indisponible : ' + e) }
+
 // ───────── Respec du codex désactivé ─────────
 // Le bouton « Respec » du codex efface tous les paliers (même ceux gagnés par parchemins) et rembourse l'XP.
 // Il se reconnaît à : paliers en baisse alors que la liste des sorts découverts n'a pas bougé (un verrouillage de sort,
