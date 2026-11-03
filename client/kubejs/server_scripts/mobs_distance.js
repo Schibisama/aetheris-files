@@ -344,3 +344,52 @@ ServerEvents.commandRegistry(function (event) {
     .then(C.literal('on').executes(function (ctx) { DENS.actif = true; dire(ctx, 'Densité active'); return 1 }))
     .then(C.literal('off').executes(function (ctx) { DENS.actif = false; dire(ctx, 'Densité coupée'); return 1 })))
 })
+
+
+// ───────── Nettoyage automatique des zones de sorts ─────────
+// Les zones d'Iron's Spells (nuages de poison, séismes, blizzards...) s'accumulent et coûtent cher à chaque tick :
+// toute zone de plus de NETTOY.age ticks est retirée, et au-delà de NETTOY.max zones par dimension les plus anciennes partent.
+// Réglage en jeu (op) : /nettoyage  /nettoyage age <ticks>  /nettoyage max <n>  /nettoyage on|off
+var NETTOY = { actif: true, age: 300, max: 40, periode: 40 }
+var NETTOY_AOE = null
+function nettoyInit() {
+  if (NETTOY_AOE !== null) return
+  try { NETTOY_AOE = Java.loadClass('io.redspace.ironsspellbooks.entity.spells.AoeEntity') } catch (e) { NETTOY_AOE = false }
+}
+ServerEvents.tick(function (event) {
+  if (!NETTOY.actif || event.server.tickCount % NETTOY.periode !== 11) return
+  nettoyInit()
+  if (!NETTOY_AOE) return
+  var niveaux = event.server.getAllLevels().iterator()
+  while (niveaux.hasNext()) {
+    try {
+      var niveau = niveaux.next()
+      var it = niveau.getAllEntities().iterator()
+      var zones = []
+      var retires = 0
+      while (it.hasNext()) {
+        var ent = it.next()
+        if (!(ent instanceof NETTOY_AOE)) continue
+        if (ent.tickCount > NETTOY.age) { ent.discard(); retires++ } else zones.push(ent)
+      }
+      if (zones.length > NETTOY.max) {
+        zones.sort(function (a, b) { return b.tickCount - a.tickCount })
+        for (var i = 0; i < zones.length - NETTOY.max; i++) { zones[i].discard(); retires++ }
+      }
+      if (retires > 0) console.info('[nettoyage] ' + niveau.dimension + ' : ' + retires + ' zone(s) de sort retirée(s)')
+    } catch (e) {
+      console.error('[nettoyage] ' + e)
+    }
+  }
+})
+ServerEvents.commandRegistry(function (event) {
+  var C = event.commands, A = event.arguments
+  var op = function (s) { return s.hasPermission(2) }
+  var dire = function (ctx, t) { var p = ctx.source.player; if (p) p.tell(Text.gray(t)); else console.info('[nettoyage] ' + t) }
+  event.register(C.literal('nettoyage').requires(op)
+    .executes(function (ctx) { dire(ctx, 'Nettoyage des zones de sorts : ' + (NETTOY.actif ? 'actif' : 'coupé') + ', âge max ' + NETTOY.age + ' ticks, max ' + NETTOY.max + ' par dimension.'); return 1 })
+    .then(C.literal('age').then(C.argument('n', A.INTEGER.create(event)).executes(function (ctx) { NETTOY.age = Math.max(40, A.INTEGER.getResult(ctx, 'n')); dire(ctx, 'Âge max : ' + NETTOY.age + ' ticks'); return 1 })))
+    .then(C.literal('max').then(C.argument('n', A.INTEGER.create(event)).executes(function (ctx) { NETTOY.max = Math.max(5, A.INTEGER.getResult(ctx, 'n')); dire(ctx, 'Maximum : ' + NETTOY.max); return 1 })))
+    .then(C.literal('on').executes(function (ctx) { NETTOY.actif = true; dire(ctx, 'Nettoyage actif'); return 1 }))
+    .then(C.literal('off').executes(function (ctx) { NETTOY.actif = false; dire(ctx, 'Nettoyage coupé'); return 1 })))
+})
