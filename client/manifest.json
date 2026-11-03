@@ -1,5 +1,5 @@
 {
- "version": "2026-11-03T16:39:56.422Z",
+ "version": "2026-11-03T18:07:47.765Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6177,8 +6177,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "c4fa88f517bc844948a18dbf255e882e1b09ded4",
-   "size": 135519
+   "sha1": "75fb907cb132b80322639734d9b3bd0f1f9b7a2c",
+   "size": 136517
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -6232,8 +6232,8 @@
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
-   "sha1": "5f6c9d8288e4da707f2c8f76b4e8c70ed7b90e21",
-   "size": 16163
+   "sha1": "66ccf2f98153fc688c9eba79ca22eebb93deeebc",
+   "size": 16162
   },
   {
    "path": "kubejs/server_scripts/parchemins_coffres.js",
