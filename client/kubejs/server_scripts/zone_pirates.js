@@ -1,6 +1,6 @@
 // [perf] mesure du temps des handlers de tick : écrit « [perf] ... » dans la console si > 1,5 s cumulées par 1200 appels
 var perfWrap = (typeof perfWrap === 'function') ? perfWrap : (function () {
-  var SYS = Java.loadClass('net.minecraft.Util')
+  var SYS = { getNanos: function () { return Date.now() * 1e6 } }
   return function (nom, fn) {
     var cumul = 0, n = 0
     return function (ev) {
