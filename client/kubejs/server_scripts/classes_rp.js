@@ -1,3 +1,21 @@
+// [perf] mesure du temps des handlers de tick : écrit « [perf] ... » dans la console si > 1,5 s cumulées par 1200 appels
+var perfWrap = (typeof perfWrap === 'function') ? perfWrap : (function () {
+  var SYS = Java.loadClass('java.lang.System')
+  return function (nom, fn) {
+    var cumul = 0, n = 0
+    return function (ev) {
+      var t0 = SYS.nanoTime()
+      try { return fn(ev) } finally {
+        cumul += SYS.nanoTime() - t0; n++
+        if (n >= 1200) {
+          var ms = cumul / 1e6
+          if (ms > 1500) console.info('[perf] ' + nom + ' : ' + (ms / n).toFixed(3) + ' ms par appel, ' + ms.toFixed(0) + ' ms par ' + n + ' appels')
+          cumul = 0; n = 0
+        }
+      }
+    }
+  }
+})()
 // Classes RP : une école de sorts par joueur, tirée au sort à la première connexion.
 // Dépend de : KubeJS + Spell Codex (commande /specs_codex school ...).
 // À placer dans : <instance ou serveur>/kubejs/server_scripts/classes_rp.js  (puis /reload)
@@ -1722,7 +1740,7 @@ function interdireVolPlane(joueur) {
 
 try { var rPrism = restriction('crystal_chronicles:prismatic_knight_helmet'); console.info('[classes_rp] Armure prismatique : classes autorisées = ' + (rPrism ? rPrism.classes.join(', ') : 'toutes')) } catch (ePr) {}
 var TICKS_RP = 0
-PlayerEvents.tick(function (event) {
+PlayerEvents.tick(perfWrap('classes_rp:1725', function (event) {
   var joueur = event.player
   interdireVolPlane(joueur)
   // Compteur propre à chaque joueur (tickCount) : évite qu'un joueur soit toujours sauté quand leur nombre divise le pas.
@@ -1735,7 +1753,7 @@ PlayerEvents.tick(function (event) {
     }
   }
   if (t % 5 === 1) verifierCurios(joueur)
-})
+}))
 
 // Temporal Anchor : recette supprimée (l'objet reste bloqué à l'équipement et à l'usage par les règles ci-dessus).
 ServerEvents.recipes(function (event) {
@@ -1821,7 +1839,7 @@ function nettoyerGrimoiresDuJoueur(joueur, classe) {
   }
 }
 
-ServerEvents.tick(function (event) {
+ServerEvents.tick(perfWrap('classes_rp:1824', function (event) {
   var serveur = event.server
   if (serveur.tickCount % 20 !== 7) return
   if (!GrimoireJ || !ISpellContainerJ) return
@@ -1832,7 +1850,7 @@ ServerEvents.tick(function (event) {
       nettoyerGrimoiresDuJoueur(joueurs[i], classeDe(joueurs[i]))
     } catch (e) {}
   }
-})
+}))
 
 // ───────────── Parchemins et pages de Codex : ramassables, mais inutilisables hors classe ─────────────
 // Un joueur peut posséder n'importe quel parchemin ou page. Les sorts d'une autre classe ne peuvent ni être lancés
@@ -1902,7 +1920,7 @@ function reverrouillerDecouverts(serveur, joueur, classe) {
   for (var i = 0; i < aVerrouiller.length; i++) cmd(serveur, 'specs_codex spell lock ' + joueur.username + ' ' + aVerrouiller[i])
 }
 
-ServerEvents.tick(function (event) {
+ServerEvents.tick(perfWrap('classes_rp:1905', function (event) {
   var serveur = event.server
   if (serveur.tickCount % 3 !== 0) return // toutes les 3 ticks : le sort étranger n'a pas le temps d'être affiché
   var joueurs = serveur.players
@@ -1915,7 +1933,7 @@ ServerEvents.tick(function (event) {
       reverrouillerDecouverts(serveur, j, classe)
     } catch (e) {}
   }
-})
+}))
 
 // Après l'usage d'un parchemin / d'une page de Codex / d'un grimoire, et régulièrement : on reverrouille les sorts
 // qui ne sont pas à la classe du joueur (ceux d'une école ouverte seulement par exception).
@@ -1932,14 +1950,14 @@ ItemEvents.rightClicked(function (event) {
   } catch (e) {}
 })
 
-ServerEvents.tick(function (event) {
+ServerEvents.tick(perfWrap('classes_rp:1935', function (event) {
   var serveur = event.server
   if (serveur.tickCount % 600 !== 0) return
   var joueurs = serveur.players
   for (var i = 0; i < joueurs.length; i++) {
     try { verrouillerSortsInterdits(serveur, joueurs[i], classeDe(joueurs[i])) } catch (e) {}
   }
-})
+}))
 
 // Équiper une pièce par clic droit (armure, bijou Curios...) : certains mods traitent le clic AVANT KubeJS
 // et l'annulent eux-mêmes après avoir équipé la pièce. On écoute donc l'évènement avec la priorité la plus haute
@@ -2368,7 +2386,7 @@ function parchScanConnus(joueur) {
   return connus
 }
 
-ServerEvents.tick(function (event) {
+ServerEvents.tick(perfWrap('classes_rp:2371', function (event) {
   var serveur = event.server
   if (serveur.tickCount % 5 !== 0) return
   var joueurs = serveur.players
@@ -2405,7 +2423,7 @@ ServerEvents.tick(function (event) {
       if (!PARCH_SUIVI._err) { PARCH_SUIVI._err = true; console.error('[parchemin] suivi : ' + e) }
     }
   }
-})
+}))
 
 
 // ───────── Respec du codex désactivé ─────────
@@ -2421,7 +2439,7 @@ function respecPhoto(j) {
   return { tiers: tiers, somme: somme, nb: nb, decouverts: Number(d.getDiscoveredSpells().size()), xpInv: Number(d.getXpInvested()),
            niv: Number(j.experienceLevel), prog: Number(j.experienceProgress), total: Number(j.totalExperience), tick: j.server.tickCount }
 }
-ServerEvents.tick(function (event) {
+ServerEvents.tick(perfWrap('classes_rp:2424', function (event) {
   var serveur = event.server
   if (serveur.tickCount % 2 !== 0) return
   var joueurs = serveur.players
@@ -2455,4 +2473,4 @@ ServerEvents.tick(function (event) {
       if (!RESPEC_SUIVI._err) { RESPEC_SUIVI._err = true; console.error('[codex] suivi respec : ' + e) }
     }
   }
-})
+}))

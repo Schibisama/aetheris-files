@@ -1,3 +1,21 @@
+// [perf] mesure du temps des handlers de tick : écrit « [perf] ... » dans la console si > 1,5 s cumulées par 1200 appels
+var perfWrap = (typeof perfWrap === 'function') ? perfWrap : (function () {
+  var SYS = Java.loadClass('java.lang.System')
+  return function (nom, fn) {
+    var cumul = 0, n = 0
+    return function (ev) {
+      var t0 = SYS.nanoTime()
+      try { return fn(ev) } finally {
+        cumul += SYS.nanoTime() - t0; n++
+        if (n >= 1200) {
+          var ms = cumul / 1e6
+          if (ms > 1500) console.info('[perf] ' + nom + ' : ' + (ms / n).toFixed(3) + ' ms par appel, ' + ms.toFixed(0) + ' ms par ' + n + ' appels')
+          cumul = 0; n = 0
+        }
+      }
+    }
+  }
+})()
 // Mobs hostiles de plus en plus puissants à mesure qu'on s'éloigne du spawn du monde
 // (le centre est celui défini par /setworldspawn). Les bonus sont posés une fois, à l'apparition du mob.
 // Tout se règle dans l'objet MD ci-dessous.
@@ -268,7 +286,7 @@ console.info('[mobs_distance] actif : +' + (MD.VIE * 100) + ' % max. vie/dégât
 // Épargnés : boss et escortes de zone, pirates, invocations de sorts, mobs persistants (nommés à l'étiquette, apprivoisés...),
 // mobs montés ou qui portent des passagers, mobs au tag mcrp_autorise.
 // Réglage en jeu (op) : /densite  /densite max <n>  /densite rayon <n>  /densite on|off
-var DENS = { actif: true, rayon: 64, hauteur: 48, max: 20, proche: 20, periode: 40 }
+var DENS = { actif: true, rayon: 64, hauteur: 48, max: 12, proche: 20, periode: 40 }
 var DENS_J = null
 var DENS_TAGS = ['boss_zone', 'boss_escorte', 'pirate_zone', 'mcrp_autorise']
 function densInit() {
@@ -307,7 +325,7 @@ function densCompter(joueur) {
   }
   return liste
 }
-ServerEvents.tick(function (event) {
+ServerEvents.tick(perfWrap('mobs_distance:310', function (event) {
   if (!DENS.actif || event.server.tickCount % DENS.periode !== 3) return
   var joueurs = event.server.players
   for (var i = 0; i < joueurs.size(); i++) {
@@ -328,7 +346,7 @@ ServerEvents.tick(function (event) {
       console.error('[densite] ' + e)
     }
   }
-})
+}))
 ServerEvents.commandRegistry(function (event) {
   var C = event.commands, A = event.arguments
   var op = function (s) { return s.hasPermission(2) }
@@ -358,7 +376,7 @@ function nettoyInit() {
   if (NETTOY_AOE !== null) return
   try { NETTOY_AOE = Java.loadClass('io.redspace.ironsspellbooks.entity.spells.AoeEntity') } catch (e) { NETTOY_AOE = false }
 }
-ServerEvents.tick(function (event) {
+ServerEvents.tick(perfWrap('mobs_distance:361', function (event) {
   if (!NETTOY.actif || event.server.tickCount % NETTOY.periode !== 11) return
   nettoyInit()
   if (!NETTOY_AOE) return
@@ -383,7 +401,7 @@ ServerEvents.tick(function (event) {
       console.error('[nettoyage] ' + e)
     }
   }
-})
+}))
 ServerEvents.commandRegistry(function (event) {
   var C = event.commands, A = event.arguments
   var op = function (s) { return s.hasPermission(2) }
@@ -394,4 +412,38 @@ ServerEvents.commandRegistry(function (event) {
     .then(C.literal('max').then(C.argument('n', A.INTEGER.create(event)).executes(function (ctx) { NETTOY.max = Math.max(5, A.INTEGER.getResult(ctx, 'n')); dire(ctx, 'Maximum : ' + NETTOY.max); return 1 })))
     .then(C.literal('on').executes(function (ctx) { NETTOY.actif = true; dire(ctx, 'Nettoyage actif'); return 1 }))
     .then(C.literal('off').executes(function (ctx) { NETTOY.actif = false; dire(ctx, 'Nettoyage coupé'); return 1 })))
+})
+
+
+// ───────── Spawn naturel allégé ─────────
+// Une part des apparitions NATURELLES de monstres est annulée (réglage : SPAWN_LEGER.part, 0 à 1). Ni les boss, ni les invocations,
+// ni les œufs/commandes/spawners/zones de boss ne sont concernés.
+// Réglage en jeu (op) : /spawnleger  /spawnleger <0-100>
+var SPAWN_LEGER = { part: 0.35 }
+try {
+  NativeEvents.onEvent(
+    Java.loadClass('net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent'),
+    function (event) {
+      try {
+        if (SPAWN_LEGER.part <= 0) return
+        if (String(event.getSpawnType().name()) !== 'NATURAL') return
+        var m = event.getEntity()
+        if (String(m.getType().getCategory().getName()) !== 'monster') return
+        if (Math.random() < SPAWN_LEGER.part) event.setSpawnCancelled(true)
+      } catch (e1) {}
+    }
+  )
+} catch (e) {
+  console.error('[spawn_leger] indisponible : ' + e)
+}
+ServerEvents.commandRegistry(function (event) {
+  var C = event.commands, A = event.arguments
+  event.register(C.literal('spawnleger').requires(function (s) { return s.hasPermission(2) })
+    .executes(function (ctx) { var p = ctx.source.player; var t = 'Spawn naturel de monstres annulé à ' + Math.round(SPAWN_LEGER.part * 100) + ' %'; if (p) p.tell(Text.gray(t)); else console.info('[spawn_leger] ' + t); return 1 })
+    .then(C.argument('pourcent', A.INTEGER.create(event)).executes(function (ctx) {
+      SPAWN_LEGER.part = Math.max(0, Math.min(90, A.INTEGER.getResult(ctx, 'pourcent'))) / 100
+      var p = ctx.source.player; var t = 'Spawn naturel de monstres annulé à ' + Math.round(SPAWN_LEGER.part * 100) + ' %'
+      if (p) p.tell(Text.gray(t)); else console.info('[spawn_leger] ' + t)
+      return 1
+    })))
 })

@@ -1,3 +1,21 @@
+// [perf] mesure du temps des handlers de tick : écrit « [perf] ... » dans la console si > 1,5 s cumulées par 1200 appels
+var perfWrap = (typeof perfWrap === 'function') ? perfWrap : (function () {
+  var SYS = Java.loadClass('java.lang.System')
+  return function (nom, fn) {
+    var cumul = 0, n = 0
+    return function (ev) {
+      var t0 = SYS.nanoTime()
+      try { return fn(ev) } finally {
+        cumul += SYS.nanoTime() - t0; n++
+        if (n >= 1200) {
+          var ms = cumul / 1e6
+          if (ms > 1500) console.info('[perf] ' + nom + ' : ' + (ms / n).toFixed(3) + ' ms par appel, ' + ms.toFixed(0) + ' ms par ' + n + ' appels')
+          cumul = 0; n = 0
+        }
+      }
+    }
+  }
+})()
 // Rôle « professeur » : tag « professeur » + Aura de professeur + commandes.
 //   /professeur donner <joueur>   : donne le rôle (opérateurs uniquement)
 //   /professeur retirer <joueur>  : retire le rôle
@@ -85,7 +103,7 @@ function pfTraiter(joueur) {
   }
 }
 // Toutes les 5 secondes (compteur du serveur, plus fiable que l'âge du joueur)
-ServerEvents.tick(function (event) {
+ServerEvents.tick(perfWrap('professeur:88', function (event) {
   try {
     var sv = event.server
     if (sv.tickCount % 100 !== 7) return
@@ -94,7 +112,7 @@ ServerEvents.tick(function (event) {
       try { pfTraiter(js[i]) } catch (e) { console.error('[aura_professeurs] ' + e) }
     }
   } catch (e2) { console.error('[aura_professeurs] tick : ' + e2) }
-})
+}))
 // Pose immédiate à la connexion
 PlayerEvents.loggedIn(function (e) {
   try { pfTraiter(e.player) } catch (err) { console.error('[aura_professeurs] connexion pose : ' + err) }
@@ -217,7 +235,7 @@ function warnRetenue(j) {
 }
 
 // Porte invisible et anti-fuite, vérifiées 4 fois par seconde pour les élèves en retenue
-ServerEvents.tick(function (event) {
+ServerEvents.tick(perfWrap('professeur:220', function (event) {
   var sv = event.server
   if (sv.tickCount % 5 !== 0) return
   sv.players.forEach(function (j) {
@@ -235,7 +253,7 @@ ServerEvents.tick(function (event) {
       }
     } catch (e) { console.error('[warn] retenue : ' + e) }
   })
-})
+}))
 // Un élève qui se reconnecte pendant sa retenue y retourne
 PlayerEvents.loggedIn(function (e) {
   try { if (warnEnRetenue(e.player)) { warnVersSalle(e.player); e.player.tell(Text.red('Ta retenue n\'est pas finie : encore ' + warnMinutes(e.player) + ' min.')) } } catch (err) { console.error('[warn] connexion : ' + err) }

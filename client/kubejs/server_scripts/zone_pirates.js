@@ -1,3 +1,21 @@
+// [perf] mesure du temps des handlers de tick : écrit « [perf] ... » dans la console si > 1,5 s cumulées par 1200 appels
+var perfWrap = (typeof perfWrap === 'function') ? perfWrap : (function () {
+  var SYS = Java.loadClass('java.lang.System')
+  return function (nom, fn) {
+    var cumul = 0, n = 0
+    return function (ev) {
+      var t0 = SYS.nanoTime()
+      try { return fn(ev) } finally {
+        cumul += SYS.nanoTime() - t0; n++
+        if (n >= 1200) {
+          var ms = cumul / 1e6
+          if (ms > 1500) console.info('[perf] ' + nom + ' : ' + (ms / n).toFixed(3) + ' ms par appel, ' + ms.toFixed(0) + ' ms par ' + n + ' appels')
+          cumul = 0; n = 0
+        }
+      }
+    }
+  }
+})()
 // Zone des anciens matelots du Capitaine Morrow (Sculk Castle) : 6 mobs de Cataclysm, aucun butin, la jambe de bois tombe quand le DERNIER meurt.
 //  - zone d'aggro (boîte) : les mobs attaquent d'office tout joueur (survie/aventure) dedans, et lâchent l'aggro si le joueur sort ou si eux sortent de la zone ;
 //  - régénération après 5 s sans cible ; respawn 30 min après la mort du dernier ; barres de vie masquées au-delà de la zone + 10 blocs.
@@ -174,7 +192,7 @@ function zpSpawn(server) {
 }
 
 // ───────── Boucle : aggro, laisse, régénération, apparition ─────────
-ServerEvents.tick(function (event) {
+ServerEvents.tick(perfWrap('zone_pirates:177', function (event) {
   zpCompteur++
   var server = event.server
   // nettoyage du butin parasite (1 s après chaque mort) : objets au sol sans « Thrower » (les objets jetés par un joueur sont épargnés), sauf la jambe de bois
@@ -292,7 +310,7 @@ ServerEvents.tick(function (event) {
   } catch (err) {
     console.error('[zone_pirates] ' + err)
   }
-})
+}))
 
 // ───────── Barres de vie : masquées pour les joueurs loin de la zone (toutes les 2 ticks) ─────────
 // Vision : un joueur voit la barre de vie du boss seulement s'il est dans la zone (rayon + marge), si le boss est dans son champ de vision
@@ -333,7 +351,7 @@ function zpMobsBarre(niveau) {
   }
   return res
 }
-ServerEvents.tick(function (event) {
+ServerEvents.tick(perfWrap('zone_pirates:336', function (event) {
   if (zpCompteur % 2 !== 0) return
   try {
     var niveau = zpNiveau(event.server)
@@ -351,7 +369,7 @@ ServerEvents.tick(function (event) {
       }
     }
   } catch (err) { if (!zpErr) { zpErr = true; console.error('[zone_pirates] barres : ' + err) } }
-})
+}))
 
 // Pas de tir allié dans la zone pirate : deux joueurs présents dans la zone ne peuvent pas se blesser (armes, projectiles, sorts, invocations).
 function zpJoueurSource(src) {
@@ -534,7 +552,7 @@ ServerEvents.commandRegistry(function (event) {
 console.info('[zone_pirates] Zone des anciens matelots chargée.')
 
 // Suivi de la vie x3 : à chaque tick.
-ServerEvents.tick(function (event) {
+ServerEvents.tick(perfWrap('zone_pirates:537', function (event) {
   try {
     var niveau = zpNiveau(event.server)
     if (!niveau || !AABB_ZP) return
@@ -542,4 +560,4 @@ ServerEvents.tick(function (event) {
     if (liste.length > 0) zpNbJoueurs = zpCompterJoueurs(event.server)
     for (var i = 0; i < liste.length; i++) zpVieFictive(liste[i])
   } catch (err) {}
-})
+}))

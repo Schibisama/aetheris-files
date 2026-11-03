@@ -1,3 +1,21 @@
+// [perf] mesure du temps des handlers de tick : écrit « [perf] ... » dans la console si > 1,5 s cumulées par 1200 appels
+var perfWrap = (typeof perfWrap === 'function') ? perfWrap : (function () {
+  var SYS = Java.loadClass('java.lang.System')
+  return function (nom, fn) {
+    var cumul = 0, n = 0
+    return function (ev) {
+      var t0 = SYS.nanoTime()
+      try { return fn(ev) } finally {
+        cumul += SYS.nanoTime() - t0; n++
+        if (n >= 1200) {
+          var ms = cumul / 1e6
+          if (ms > 1500) console.info('[perf] ' + nom + ' : ' + (ms / n).toFixed(3) + ' ms par appel, ' + ms.toFixed(0) + ' ms par ' + n + ' appels')
+          cumul = 0; n = 0
+        }
+      }
+    }
+  }
+})()
 // Boss de zone (Block Factory's Bosses, etc.) : un seul exemplaire, retenu dans une zone, regen hors combat, respawn différé.
 // Pour ajouter un boss : copie une entrée de BOSSES (nom unique). Chaque boss peut avoir une quête (champ "quete") liée à un PNJ.
 //
@@ -376,7 +394,7 @@ function bzGererBarres(server, e, b) {
 // Masquage rapide des barres (toutes les 2 ticks) : un boss qui revient dans le champ d'un joueur le réajoute aussitôt, on le retire donc sans attendre.
 var bzCompteurBarre = 0
 var bzEntitesBarre = {}
-ServerEvents.tick(function (event) {
+ServerEvents.tick(perfWrap('boss_zones:379', function (event) {
   bzCompteurBarre++
   if (bzCompteurBarre % 2 !== 0) return
   try {
@@ -396,7 +414,7 @@ ServerEvents.tick(function (event) {
   } catch (err) {
     if (!bzErrBarre) { bzErrBarre = true; console.error('[boss_zones] barres rapides : ' + err) }
   }
-})
+}))
 
 // server.getPlayer(String) attend un UUID : on cherche par pseudo via la liste des joueurs.
 function bzJoueurParNom(server, nom) {
@@ -463,7 +481,7 @@ function bzEnMort(e) {
 var bzDernierCoup = {}
 var bzParticipants = {}   // uuid du boss -> { nom du joueur: true } : tous ceux qui l'ont frappé
 
-ServerEvents.tick(function (event) {
+ServerEvents.tick(perfWrap('boss_zones:466', function (event) {
   bzCompteur++
   if (bzCompteur % 5 !== 0) return
   if (bzNettoyages.length > 0) {
@@ -581,7 +599,7 @@ ServerEvents.tick(function (event) {
   } catch (err) {
     console.error('[boss_zones] ' + err)
   }
-})
+}))
 
 // Mémorise le dernier joueur ayant blessé un boss de zone (la mort du Yéti arrive après son animation, sans source)
 try {
@@ -862,7 +880,7 @@ ServerEvents.commandRegistry(function (event) {
 // ── Laisse stricte (Helvar) : vérifiée à CHAQUE tick, par l'identifiant retenu du boss ──
 var bzSuiviUuid = {}
 var BZ_UUID = Java.loadClass('java.util.UUID')
-ServerEvents.tick(function (event) {
+ServerEvents.tick(perfWrap('boss_zones:865', function (event) {
   try {
     var niveau = bzNiveau(event.server)
     if (!niveau) return
@@ -882,7 +900,7 @@ ServerEvents.tick(function (event) {
       }
     }
   } catch (err) {}
-})
+}))
 
 // Toute téléportation d'un boss de zone vers l'extérieur de sa zone est annulée.
 try {
@@ -905,7 +923,7 @@ try {
 } catch (e) { console.error('[boss_zones] blocage des téléportations indisponible : ' + e) }
 
 // Suivi de la vie x3 : à chaque tick (pas toutes les 5 ticks) pour ne rater aucune perte de PV.
-ServerEvents.tick(function (event) {
+ServerEvents.tick(perfWrap('boss_zones:908', function (event) {
   try {
     var niveau = bzNiveau(event.server)
     if (!niveau || !AABB_BZ) return
@@ -919,7 +937,7 @@ ServerEvents.tick(function (event) {
       for (var i = 0; i < liste.length; i++) bzVieFictive(liste[i])
     }
   } catch (err) {}
-})
+}))
 
 // ───────── Balais interdits dans les zones de boss (rayon 60 blocs autour du spawn, toute la hauteur) + zone pirate ─────────
 var BALAI_INTERDIT_R = 60
@@ -949,7 +967,7 @@ try {
     } catch (x) {}
   })
 } catch (e) { console.error('[boss_zones] blocage des balais (monter) indisponible : ' + e) }
-ServerEvents.tick(function (event) {
+ServerEvents.tick(perfWrap('boss_zones:952', function (event) {
   if (event.server.tickCount % 5 !== 0) return
   var joueurs = event.server.players
   for (var i = 0; i < joueurs.length; i++) {
@@ -963,7 +981,7 @@ ServerEvents.tick(function (event) {
       p.tell(Text.red('Les balais sont interdits dans les zones de boss.'))
     } catch (x) {}
   }
-})
+}))
 
 // Mémorise le dernier moment où un boss / mob de zone a réellement blessé un joueur (dégâts > 0 après armure et parades)
 try {

@@ -1,5 +1,5 @@
 {
- "version": "2026-11-03T19:00:42.621Z",
+ "version": "2026-11-03T19:17:33.723Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6147,8 +6147,8 @@
   },
   {
    "path": "kubejs/server_scripts/boss_zones.js",
-   "sha1": "b27185a1c16d3387a3aae09791656a49f1055136",
-   "size": 48415
+   "sha1": "a72d05360aa69f566afa3a5a085eb76f56c27b0d",
+   "size": 49262
   },
   {
    "path": "kubejs/server_scripts/chasse_quetes.js",
@@ -6162,8 +6162,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_desactives.js",
-   "sha1": "af0ac7dcb767e372372612872dbb64e5915b075f",
-   "size": 19461
+   "sha1": "4828c225733fc956c0a9ca0192cf9bd914ae8418",
+   "size": 20240
   },
   {
    "path": "kubejs/server_scripts/classes_dump_armes.js",
@@ -6177,8 +6177,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "75fb907cb132b80322639734d9b3bd0f1f9b7a2c",
-   "size": 136517
+   "sha1": "9123e15b0f1ad2b1a269c9370cefcf4e10fab815",
+   "size": 137398
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -6232,8 +6232,8 @@
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
-   "sha1": "04196baa7d7eb298e4aae3da9fc7cd4bb33d4116",
-   "size": 19307
+   "sha1": "35147ec2cfbee07ad776d8c11c07cc0bed7a3606",
+   "size": 21835
   },
   {
    "path": "kubejs/server_scripts/parchemins_coffres.js",
@@ -6257,8 +6257,8 @@
   },
   {
    "path": "kubejs/server_scripts/professeur.js",
-   "sha1": "651a038618ebc69584fc57f677617e09ab9bdcf0",
-   "size": 15986
+   "sha1": "df272f288023332ae9968ab4820953a297d28e60",
+   "size": 16748
   },
   {
    "path": "kubejs/server_scripts/pseudo.js",
@@ -6287,8 +6287,8 @@
   },
   {
    "path": "kubejs/server_scripts/zone_pirates.js",
-   "sha1": "6491077286526bcff792a34cf994b0002f9d20fa",
-   "size": 26284
+   "sha1": "33a82f9fe15708438b9bbffa57c3ef2b165cda58",
+   "size": 27081
   },
   {
    "path": "kubejs/startup_scripts/aura_professeur_effet.js",

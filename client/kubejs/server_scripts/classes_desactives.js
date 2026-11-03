@@ -1,3 +1,21 @@
+// [perf] mesure du temps des handlers de tick : écrit « [perf] ... » dans la console si > 1,5 s cumulées par 1200 appels
+var perfWrap = (typeof perfWrap === 'function') ? perfWrap : (function () {
+  var SYS = Java.loadClass('java.lang.System')
+  return function (nom, fn) {
+    var cumul = 0, n = 0
+    return function (ev) {
+      var t0 = SYS.nanoTime()
+      try { return fn(ev) } finally {
+        cumul += SYS.nanoTime() - t0; n++
+        if (n >= 1200) {
+          var ms = cumul / 1e6
+          if (ms > 1500) console.info('[perf] ' + nom + ' : ' + (ms / n).toFixed(3) + ' ms par appel, ' + ms.toFixed(0) + ' ms par ' + n + ' appels')
+          cumul = 0; n = 0
+        }
+      }
+    }
+  }
+})()
 // Objets désactivés (règles « classes: [] » de classes_rp.js) :
 //   - plus de recette de fabrication ;
 //   - retirés des butins de mobs (les mobs/boss gardent et utilisent leur équipement d'origine) ;
@@ -189,7 +207,7 @@ function desactSansMalediction(pile) {
   }
 }
 // Inventaire de chaque joueur : une fois toutes les 5 secondes
-ServerEvents.tick(function (ev) {
+ServerEvents.tick(perfWrap('classes_desactives:192', function (ev) {
   try {
     if (ev.server.tickCount % 100 !== 0) return
     var joueurs = ev.server.getPlayers()
@@ -199,7 +217,7 @@ ServerEvents.tick(function (ev) {
       for (var s = 0; s < n; s++) desactSansMalediction(inv.getItem(s))
     }
   } catch (e) {}
-})
+}))
 
 // ───────────── Butin des mobs ─────────────
 function desactButinMobs(event) {
@@ -412,7 +430,7 @@ function desactBijouInterdit(pile) {
   }
   return false
 }
-ServerEvents.tick(function (ev) {
+ServerEvents.tick(perfWrap('classes_desactives:415', function (ev) {
   try {
     if (ev.server.tickCount % 20 !== 0) return
     var joueurs = ev.server.getPlayers()
@@ -440,4 +458,4 @@ ServerEvents.tick(function (ev) {
       }
     }
   } catch (e) {}
-})
+}))
