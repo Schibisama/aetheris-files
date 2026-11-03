@@ -1,5 +1,5 @@
 {
- "version": "2026-11-03T01:29:46.297Z",
+ "version": "2026-11-03T01:44:40.705Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6702,8 +6702,8 @@
   },
   {
    "path": "mods/GrandTeleport-NeoForge-1.21.1-1.0.2.jar",
-   "sha1": "7e5616f955e1fe2eddae6138cc97bd0e7a5e01e7",
-   "size": 1296759
+   "sha1": "1deb1beeb773b4331beb21bf1e9f88a9d4b0c135",
+   "size": 1297882
   },
   {
    "path": "mods/gtbcs_cataclysmic_uis-1.0.3+1.21.1.jar",
