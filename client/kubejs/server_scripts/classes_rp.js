@@ -1607,6 +1607,7 @@ var EMPLACEMENTS_ARMURE = [MC_SLOT.HEAD, MC_SLOT.CHEST, MC_SLOT.LEGS, MC_SLOT.FE
 
 // Traite UN emplacement d'armure (fonction séparée : portée neuve à chaque appel).
 // La pièce n'est rendue au joueur QUE si elle a bien été retirée de l'emplacement.
+var DERNIER_RETRAIT = {}
 function traiterArmure(joueur, slot) {
   var pile = joueur.getItemBySlot(slot)
   if (!pile || pile.isEmpty()) return
@@ -1621,6 +1622,10 @@ function traiterArmure(joueur, slot) {
   }
 
   joueur.give(copie)
+  // Anti-boucle : si la même pièce est remise aussitôt (équipement automatique d'un mod), on ne spamme ni message, ni journal, ni resynchronisation.
+  var cleR = String(joueur.uuid) + id, tR = joueur.tickCount, dR = DERNIER_RETRAIT[cleR]
+  DERNIER_RETRAIT[cleR] = tR
+  if (dR !== undefined && tR - dR < 40) return
   joueur.tell(messageRestriction(restriction(id), 'mcrp.sujet.equipement').red())
   console.info('[classes_rp] Pièce retirée : ' + id + ' (' + joueur.username + ')')
   // Resynchronise l'inventaire complet avec le client : évite qu'une pièce « fantôme » reste affichée sur la tête.
@@ -1708,7 +1713,7 @@ function modificateurPasDeVol(joueur) {
 }
 
 function interdireVolPlane(joueur) {
-  modificateurPasDeVol(joueur)
+  if (joueur.tickCount % 20 === 0) modificateurPasDeVol(joueur)
   try {
     if (!joueur.isFallFlying()) return
     joueur.stopFallFlying()
@@ -1720,14 +1725,16 @@ var TICKS_RP = 0
 PlayerEvents.tick(function (event) {
   var joueur = event.player
   interdireVolPlane(joueur)
-  // Compteur propre (ne dépend pas de l'heure du monde, qui peut être figée par un sort ou une règle de jeu).
-  TICKS_RP++
-  if (TICKS_RP % 5 === 0) verifierMains(joueur, event.server)
-  // Armure : vérifiée à chaque tick (peu coûteux : seuls les emplacements non vides sont examinés).
-  for (var i = 0; i < EMPLACEMENTS_ARMURE.length; i++) {
-    traiterArmure(joueur, EMPLACEMENTS_ARMURE[i])
+  // Compteur propre à chaque joueur (tickCount) : évite qu'un joueur soit toujours sauté quand leur nombre divise le pas.
+  var t = joueur.tickCount
+  if (t % 5 === 0) verifierMains(joueur, event.server)
+  // Armure : vérifiée 1 tick sur 2 (seuls les emplacements non vides sont examinés).
+  if (t % 2 === 0) {
+    for (var i = 0; i < EMPLACEMENTS_ARMURE.length; i++) {
+      traiterArmure(joueur, EMPLACEMENTS_ARMURE[i])
+    }
   }
-  if (TICKS_RP % 5 === 0) verifierCurios(joueur)
+  if (t % 5 === 1) verifierCurios(joueur)
 })
 
 // Temporal Anchor : recette supprimée (l'objet reste bloqué à l'équipement et à l'usage par les règles ci-dessus).
@@ -1875,11 +1882,18 @@ try { UnlocksJ = Java.loadClass('com.specs.irons_spellbooks.unlock.SpellUnlockAt
   console.error('[classes_rp] Données du Codex indisponibles (reverrouillage rapide inactif) : ' + e)
 }
 
+var CACHE_DECOUVERTS = {}
 function reverrouillerDecouverts(serveur, joueur, classe) {
   if (!UnlocksJ) return
   var donnees = joueur.getData(UnlocksJ.get())
   if (!donnees) return
-  var it = donnees.getDiscoveredSpells().iterator()
+  var ens = donnees.getDiscoveredSpells()
+  // Rien n'a changé depuis le dernier contrôle propre (même classe, même nombre de sorts) : on ne reparcourt qu'une fois par seconde.
+  var cle = String(joueur.uuid), sig = classe.nom + '|' + ens.size()
+  var c = CACHE_DECOUVERTS[cle]
+  if (c && c.sig === sig && joueur.tickCount - c.t < 20) return
+  CACHE_DECOUVERTS[cle] = { sig: sig, t: joueur.tickCount }
+  var it = ens.iterator()
   var aVerrouiller = []
   while (it.hasNext()) {
     var id = String(it.next())
@@ -1978,6 +1992,9 @@ try {
       var vers = e.getTo()
       if (!vers || vers.isEmpty()) return
       if (autorise(ent, String(vers.id))) return
+      var cleE = String(ent.uuid) + 'E' + String(vers.id), tE = ent.tickCount, dE = DERNIER_RETRAIT[cleE]
+      DERNIER_RETRAIT[cleE] = tE
+      if (dE !== undefined && tE - dE < 40) return
       console.info('[classes_rp] Pièce interdite équipée : ' + String(vers.id) + ' emplacement ' + e.getSlot() + ' (' + ent.username + ')')
     } catch (err) {}
   })

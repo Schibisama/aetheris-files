@@ -266,7 +266,7 @@ console.info('[mobs_distance] actif : +' + (MD.VIE * 100) + ' % max. vie/dégât
 // Épargnés : boss et escortes de zone, pirates, invocations de sorts, mobs persistants (nommés à l'étiquette, apprivoisés...),
 // mobs montés ou qui portent des passagers, mobs au tag mcrp_autorise.
 // Réglage en jeu (op) : /densite  /densite max <n>  /densite rayon <n>  /densite on|off
-var DENS = { actif: true, rayon: 64, hauteur: 48, max: 30, proche: 20, periode: 100 }
+var DENS = { actif: true, rayon: 64, hauteur: 48, max: 20, proche: 20, periode: 40 }
 var DENS_J = null
 var DENS_TAGS = ['boss_zone', 'boss_escorte', 'pirate_zone', 'mcrp_autorise']
 function densInit() {
