@@ -1,5 +1,5 @@
 {
- "version": "2026-11-02T23:01:44.929Z",
+ "version": "2026-11-03T00:03:25.283Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6286,11 +6286,6 @@
    "size": 4761
   },
   {
-   "path": "kubejs/server_scripts/worldstop_portee.js",
-   "sha1": "8608af27129ef08101f53327dc97c8e331ab283e",
-   "size": 8295
-  },
-  {
    "path": "kubejs/server_scripts/zone_pirates.js",
    "sha1": "6491077286526bcff792a34cf994b0002f9d20fa",
    "size": 26284
@@ -6442,8 +6437,8 @@
   },
   {
    "path": "mods/chronomancy-1.0.5.jar",
-   "sha1": "307e2d0edc765a02b224d47724c750116d002df1",
-   "size": 5879199
+   "sha1": "a18a4399af238fd40ff449211b1031dcd722205e",
+   "size": 5895664
   },
   {
    "path": "mods/citadel-1.21.1-2.7.6.jar",
