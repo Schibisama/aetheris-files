@@ -251,6 +251,8 @@ function mdTraiter(ent) {
 
 EntityEvents.spawned(function (event) {
   try {
+    // Aegis naturel des villages (Monster & Spellbooks) : supprimé. Les « Summoned Aegis » du sort Aegis Patrol ne sont pas touchés.
+    if (String(event.entity.type) === 'monsterspellbooks:aegis') { event.cancel(); return }
     mdTraiter(event.entity)
   } catch (e) {
     console.error('[mobs_distance] ' + e)

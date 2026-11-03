@@ -1,5 +1,5 @@
 {
- "version": "2026-11-03T18:28:36.609Z",
+ "version": "2026-11-03T18:55:10.478Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6162,8 +6162,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_desactives.js",
-   "sha1": "4b844d40f42c7d752a05c2e38ffb1c0b81e17305",
-   "size": 17702
+   "sha1": "af0ac7dcb767e372372612872dbb64e5915b075f",
+   "size": 19461
   },
   {
    "path": "kubejs/server_scripts/classes_dump_armes.js",
@@ -6232,8 +6232,8 @@
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
-   "sha1": "03460996f5c3435dc2aa9077fcd6432a509ebe2c",
-   "size": 19077
+   "sha1": "04196baa7d7eb298e4aae3da9fc7cd4bb33d4116",
+   "size": 19307
   },
   {
    "path": "kubejs/server_scripts/parchemins_coffres.js",

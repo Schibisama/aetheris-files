@@ -349,6 +349,42 @@ try {
   console.error('[classes_desactives] Filtre des objets au sol indisponible : ' + e)
 }
 
+// ───────────── Aegis sauvage (Monster & Spellbooks) : plus de spawn naturel dans les villages ─────────────
+// Le mod en place un à la génération de chaque village (sans passer par les règles de spawn). Seuls les Aegis créés par
+// œuf, commande, spawner ou invocation de joueur (SummonedAegis = autre entité, jamais touchée) sont marqués et gardés ;
+// tout autre Aegis qui rejoint le monde est retiré.
+var AEGIS_TYPE = 'monsterspellbooks:aegis'
+var AEGIS_TAG = 'mcrp_aegis_autorise'
+var AEGIS_SOURCES_OK = { COMMAND: 1, SPAWN_EGG: 1, SPAWNER: 1, TRIGGERED: 1, DISPENSER: 1, MOB_SUMMONED: 1, BUCKET: 1, MOB_SUMMON: 1 }
+try {
+  NativeEvents.onEvent(
+    Java.loadClass('net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent'),
+    function (event) {
+      try {
+        var m = event.getEntity()
+        if (String(m.type) !== AEGIS_TYPE) return
+        if (AEGIS_SOURCES_OK[String(event.getSpawnType().name())]) m.addTag(AEGIS_TAG)
+      } catch (e1) {}
+    }
+  )
+  NativeEvents.onEvent(
+    Java.loadClass('net.neoforged.neoforge.event.entity.EntityJoinLevelEvent'),
+    function (event) {
+      try {
+        var m = event.getEntity()
+        if (String(m.type) !== AEGIS_TYPE) return
+        if (event.getLevel().isClientSide()) return
+        if (m.getTags().contains(AEGIS_TAG)) return
+        event.setCanceled(true)
+        console.info('[classes_desactives] Aegis sauvage (village) retiré : ' + Math.floor(m.getX()) + ' ' + Math.floor(m.getY()) + ' ' + Math.floor(m.getZ()))
+      } catch (e2) {}
+    }
+  )
+  console.info('[classes_desactives] Spawn naturel de l\'Aegis désactivé.')
+} catch (e) {
+  console.error('[classes_desactives] Filtre Aegis indisponible : ' + e)
+}
+
 // ───────────── Bijoux d'Iron's Jewelry désactivés : Amulette de Protection en Cristal de redstone ─────────────
 // Trop puissante (explosion électrique à chaque coup reçu). Retirée de l'inventaire et des emplacements Curios, d'où qu'elle vienne
 // (forge à bijoux, butin, échange entre joueurs).
