@@ -1,5 +1,5 @@
 {
- "version": "2026-11-03T02:00:08.828Z",
+ "version": "2026-11-03T15:10:35.990Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6987,8 +6987,8 @@
   },
   {
    "path": "mods/specs_irons_spellbooks-1.6.13-neoforge-1.21.1.jar",
-   "sha1": "0ccbbc03c3de90af00507d573cbc975358ac8030",
-   "size": 705789
+   "sha1": "9ac5179e1d53530c2f6826a1fe52e373d512feb9",
+   "size": 708337
   },
   {
    "path": "mods/spell_actionbar-1.1.7-neoforge-1.21.1.jar",
