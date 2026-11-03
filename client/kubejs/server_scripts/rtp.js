@@ -130,11 +130,11 @@ function cmdWarp(ctx) {
     if (loin) { j.tell(Text.red('Le /warp ne fonctionne qu\'au spawn du monde.')); return 0 }
   }
   // Animation Grand Teleport : tag lu par le mod pendant la commande tp
-  try { j.addTag('gta_anim') } catch (e) {}
+  sv.runCommandSilent('tag ' + j.username + ' add gta_anim')
   try {
     sv.runCommandSilent('execute in ' + WARP.DIMENSION + ' run tp ' + j.username + ' ' + WARP.X + ' ' + WARP.Y + ' ' + WARP.Z)
   } finally {
-    try { j.removeTag('gta_anim') } catch (e) {}
+    sv.runCommandSilent('tag ' + j.username + ' remove gta_anim')
   }
   j.tell(Text.gold('Bienvenue à l\'Académie !'))
   return 1
