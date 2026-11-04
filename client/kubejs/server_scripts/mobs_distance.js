@@ -370,7 +370,9 @@ ServerEvents.commandRegistry(function (event) {
 // Les zones d'Iron's Spells (nuages de poison, séismes, blizzards...) s'accumulent et coûtent cher à chaque tick :
 // toute zone de plus de NETTOY.age ticks est retirée, et au-delà de NETTOY.max zones par dimension les plus anciennes partent.
 // Réglage en jeu (op) : /nettoyage  /nettoyage age <ticks>  /nettoyage max <n>  /nettoyage on|off
-var NETTOY = { actif: true, age: 300, max: 40, periode: 40 }
+var NETTOY = { actif: true, age: 300, max: 40, periode: 40, flecheAge: 200, flecheMax: 2400 }
+var NETTOY_FLECHE = null
+try { NETTOY_FLECHE = Java.loadClass('net.minecraft.world.entity.projectile.AbstractArrow') } catch (eF) {}
 var NETTOY_AOE = null
 function nettoyInit() {
   if (NETTOY_AOE !== null) return
@@ -379,7 +381,6 @@ function nettoyInit() {
 ServerEvents.tick(perfWrap('mobs_distance:361', function (event) {
   if (!NETTOY.actif || event.server.tickCount % NETTOY.periode !== 11) return
   nettoyInit()
-  if (!NETTOY_AOE) return
   var niveaux = event.server.getAllLevels().iterator()
   while (niveaux.hasNext()) {
     try {
@@ -387,15 +388,28 @@ ServerEvents.tick(perfWrap('mobs_distance:361', function (event) {
       var it = niveau.getAllEntities().iterator()
       var zones = []
       var retires = 0
+      var fleches = 0
       while (it.hasNext()) {
         var ent = it.next()
-        if (!(ent instanceof NETTOY_AOE)) continue
+        if (NETTOY_FLECHE && ent instanceof NETTOY_FLECHE) {
+          if (String(ent.type).indexOf('trident') !== -1) continue
+          // Flèches : celles sans objet à ramasser font échouer la sauvegarde du chunk (erreur répétée dans les logs).
+          if (ent.tickCount > NETTOY.flecheAge) {
+            var vide = false
+            try { vide = String(ent.pickup) !== 'ALLOWED' } catch (e5) {}
+            try { if (ent.getPickupItem().isEmpty()) vide = true } catch (e6) {}
+            if (vide || ent.tickCount > NETTOY.flecheMax) { ent.discard(); fleches++ }
+          }
+          continue
+        }
+        if (!NETTOY_AOE || !(ent instanceof NETTOY_AOE)) continue
         if (ent.tickCount > NETTOY.age) { ent.discard(); retires++ } else zones.push(ent)
       }
       if (zones.length > NETTOY.max) {
         zones.sort(function (a, b) { return b.tickCount - a.tickCount })
         for (var i = 0; i < zones.length - NETTOY.max; i++) { zones[i].discard(); retires++ }
       }
+      if (fleches > 0) console.info('[nettoyage] ' + niveau.dimension + ' : ' + fleches + ' flèche(s) retirée(s)')
       if (retires > 0) console.info('[nettoyage] ' + niveau.dimension + ' : ' + retires + ' zone(s) de sort retirée(s)')
     } catch (e) {
       console.error('[nettoyage] ' + e)

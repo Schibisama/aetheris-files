@@ -1,5 +1,5 @@
 {
- "version": "2026-11-04T01:10:12.352Z",
+ "version": "2026-11-04T13:48:11.824Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6232,8 +6232,8 @@
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
-   "sha1": "2b3e5fe6b1a0a599394c24169c0b5dfcc5721d40",
-   "size": 21854
+   "sha1": "a1416a039f77e53a752f3807576a66ba151bc7f8",
+   "size": 22764
   },
   {
    "path": "kubejs/server_scripts/parchemins_coffres.js",
