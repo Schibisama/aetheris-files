@@ -189,3 +189,28 @@ if (AR_MOBS) {
     console.error('[armures_butin] Filtre du butin des mobs indisponible : ' + e)
   }
 }
+
+// ───────────── Butin supplémentaire : poussière d'étoile sur le papillon lunaire ─────────────
+var BUTIN_SUPPL = [
+  { mob: 'asterismarcanum:lunar_moth', objet: 'hazennstuff:stardust', chance: 0.33, min: 1, max: 1 }
+]
+try {
+  var ItemEntiteJ = Java.loadClass('net.minecraft.world.entity.item.ItemEntity')
+  NativeEvents.onEvent(
+    Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingDropsEvent'),
+    function (event) {
+      try {
+        var ent = event.getEntity()
+        if (ent.isPlayer() || ent.level.isClientSide()) return
+        var type = String(ent.type)
+        for (var i = 0; i < BUTIN_SUPPL.length; i++) {
+          var b = BUTIN_SUPPL[i]
+          if (b.mob !== type || Math.random() >= b.chance) continue
+          var n = b.min + Math.floor(Math.random() * (b.max - b.min + 1))
+          event.getDrops().add(new ItemEntiteJ(ent.level, ent.x, ent.y, ent.z, Item.of(b.objet, n)))
+        }
+      } catch (e) { console.error('[armures_butin] Butin supplémentaire : ' + e) }
+    }
+  )
+  console.info('[armures_butin] Butin supplémentaire actif.')
+} catch (e) { console.error('[armures_butin] Butin supplémentaire indisponible : ' + e) }
