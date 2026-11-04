@@ -1,5 +1,5 @@
 {
- "version": "2026-11-04T13:51:32.091Z",
+ "version": "2026-11-04T14:10:34.687Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6077,8 +6077,8 @@
   },
   {
    "path": "kubejs/client_scripts/aaa_traduction.js",
-   "sha1": "f206169ad484f264f94c187f101eb015f30097bb",
-   "size": 1887
+   "sha1": "517cab826d250c256ec9fcef50b5402f87f174aa",
+   "size": 1828
   },
   {
    "path": "kubejs/client_scripts/balai_vertical.js",
@@ -6087,13 +6087,13 @@
   },
   {
    "path": "kubejs/client_scripts/classes_langue_armes.js",
-   "sha1": "32a5d00cdfc7b527a9b50a36f1251251bd9241f7",
-   "size": 40276
+   "sha1": "5d095b2e956d9801efb3a54e167a8ea0842729a8",
+   "size": 40275
   },
   {
    "path": "kubejs/client_scripts/classes_langue_invocations.js",
-   "sha1": "ce32c6c8ebbe6ebac27ccf2d4b50b0c6e8e172e9",
-   "size": 3514
+   "sha1": "c291c2a6c259956cdfb5ef6c2879d72e69266308",
+   "size": 3549
   },
   {
    "path": "kubejs/client_scripts/classes_langue_messages.js",
@@ -6102,13 +6102,13 @@
   },
   {
    "path": "kubejs/client_scripts/classes_langue.js",
-   "sha1": "72e690eac3f3547dca803880c193685e8214f567",
-   "size": 473990
+   "sha1": "956a618773f0e48dce59502aea324ab5259043b5",
+   "size": 479231
   },
   {
    "path": "kubejs/client_scripts/classes_tooltips.js",
-   "sha1": "151f5fbe84ca5ec2ef4ca7deb2f109f38c03d0bf",
-   "size": 82412
+   "sha1": "8e8ac6c10bf14b5226f64b83b1b8aadd02f0448c",
+   "size": 89940
   },
   {
    "path": "kubejs/client_scripts/main.js",
@@ -6177,8 +6177,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "ffc091b2b2fb561aeb763a646ed40a90ebe959d4",
-   "size": 141055
+   "sha1": "d35abd5083820d95097176c68ded8a83efd70c06",
+   "size": 148596
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -6302,13 +6302,13 @@
   },
   {
    "path": "kubejs/startup_scripts/classes_effets.js",
-   "sha1": "5c79df40c7beaa0db9a18340021abdde9dc7498e",
-   "size": 11040
+   "sha1": "450e6d25baf2fa17e60c7681c2c122ade97c3193",
+   "size": 11041
   },
   {
    "path": "kubejs/startup_scripts/classes_equip_ecoles.js",
-   "sha1": "0cd85c295913bc676f3fc7a64ae9a703cdc187df",
-   "size": 41529
+   "sha1": "aed6e223c996f1ad411c320a715e5a448334e99d",
+   "size": 41339
   },
   {
    "path": "kubejs/startup_scripts/classes_niveaux.js",

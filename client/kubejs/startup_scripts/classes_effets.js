@@ -29,7 +29,7 @@ var REGLES_EFFETS = [
   // Sets avec un boost en trop : on ne garde que celui de la classe
   { objet: /^monsterspellbooks:death_knight_(helmet|chestplate|leggings|boots)$/, retirer: [GLACE] },        // Nécromancien
   { objet: /^monsterspellbooks:illager_ember_robe_(helmet|chestplate|leggings|boots)$/, retirer: [EVOCATION] }, // Pyromancien
-  { objet: /^monsterspellbooks:illager_enchanter_(helmet|chestplate|leggings|boots)$/, retirer: [SACRE] },     // Évocateur
+  { objet: /^monsterspellbooks:illager_enchanter_(helmet|chestplate|leggings|boots)$/, retirer: [SACRE] },     // Chromancien
   { objet: /^monsterspellbooks:illager_iceologer_(helmet|chestplate|leggings|boots)$/, retirer: [EVOCATION] } // Cryomancien
 ]
 

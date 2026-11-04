@@ -5,9 +5,9 @@
 
 var INV_NOMS = {
   'irons_spellbooks:raise_dead': ['Hémomancien', 'Ressusciter les Morts', 'Raise Dead'],
-  'irons_spellbooks:summon_horse': ['Évocateur', 'Invocation : Cheval', 'Summon: Horse'],
-  'irons_spellbooks:summon_vex': ['Évocateur', 'Invocation : Vex', 'Summon: Vex'],
-  'cataclysm_spellbooks:conjure_ignited_reinforcement': ['Évocateur', 'Renforts Enflammés', 'Ignited Reinforcements'],
+  'irons_spellbooks:summon_horse': ['toutes', 'Invocation : Cheval', 'Summon: Horse'],
+  'irons_spellbooks:summon_vex': ['Nécromancien / Voyageur du Vide', 'Invocation : Vex', 'Summon: Vex'],
+  'cataclysm_spellbooks:conjure_ignited_reinforcement': ['Pyromancien / Nécromancien', 'Renforts Enflammés', 'Ignited Reinforcements'],
   'irons_spellbooks:summon_polar_bear': ['Cryomancien', 'Invocation : Ours Polaire', 'Summon: Polar Bear'],
   'monsterspellbooks:summon_ice_hydra': ['Cryomancien', 'Invocation de l’Hydre de Glace', 'Summon Ice Hydra'],
   'cataclysm_spellbooks:conjure_koboldiator': ['Géomancien', 'Invocation : Koboldiateur', 'Summon: Koboldiator'],

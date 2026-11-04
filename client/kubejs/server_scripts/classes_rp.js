@@ -31,7 +31,6 @@ var CLASSES = [
   { nom: 'Hémomancien',      ecole: 'irons_spellbooks:blood' },
   { nom: 'Voyageur du Vide', ecole: 'irons_spellbooks:ender' },
   { nom: 'Druide',           ecole: 'irons_spellbooks:nature' },
-  { nom: 'Évocateur',        ecole: 'irons_spellbooks:evocation' },
   { nom: 'Chronomancien',    ecole: 'chronomancy:chronomancy' },
   { nom: 'Géomancien',       ecole: 'gtbcs_geomancy_plus:geo', sup: ['cataclysm_spellbooks:sand'] },
   { nom: 'Aéromancien',      ecole: 'wind_spellbooks:wind', sup: ['cataclysm_spellbooks:sand'] },
@@ -40,7 +39,6 @@ var CLASSES = [
   { nom: 'Nécromancien',     ecole: 'monsterspellbooks:necro' },
   { nom: 'Réprouvé',         ecole: 'cursed_school:cursed' },
   { nom: 'Envoûteur',        ecole: 'cursespells:curse' },
-  { nom: 'Ésotériste',       ecole: 'esoteric_spell:esoteric' },
   { nom: 'Astromancien',     ecole: 'asterismarcanum:astral', sup: ['tempest_almanac:astral'] },
   { nom: 'Spiritualiste',    ecole: 'iss_magicfromtheeast:spirit' },
   { nom: 'Symétriste',       ecole: 'iss_magicfromtheeast:symmetry' },
@@ -57,6 +55,117 @@ var ECOLES_LIBRES = [
 // Les autres classes ne peuvent pas les lancer, même si leur école est débloquée ; les classes
 // autorisées peuvent les lancer même si l'école est verrouillée.
 var SORTS_PAR_CLASSE = {
+  // ── Anciennes classes Évocateur et Ésotériste (supprimées) : leurs sorts sont répartis entre les classes restantes ──
+  // Familia : tous les sorts qui exigent un familier sont donnés avec « Familia : Chat Noir » (et Recherche) aux mêmes classes.
+  'esoteric_spell:protection_barrier': ['*'],
+  'esoteric_spell:guard_barrier': ['*'],
+  'esoteric_spell:aegis_barrier': ['Paladin'],
+  'esoteric_spell:bless_barrier': ['Paladin', 'Spiritualiste'],
+  'esoteric_spell:prayer_barrier': ['Paladin', 'Spiritualiste'],
+  'esoteric_spell:sanctuary_barrier': ['Paladin'],
+  'esoteric_spell:guardian_barrier': ['Paladin', 'Géomancien'],
+  'esoteric_spell:gloria_barrier': ['Paladin', 'Astromancien'],
+  'esoteric_spell:cast_barrier': ['Paladin', 'Technomancien'],
+  'esoteric_spell:wall_barrier': ['Géomancien', 'Druide'],
+  'esoteric_spell:flowing_barrier': ['Hydromancien'],
+  'esoteric_spell:ether_barrier': ['Voyageur du Vide', 'Astromancien'],
+  'esoteric_spell:aspis_soul_barrier': ['Nécromancien', 'Spiritualiste'],
+  'esoteric_spell:namesis_barrier': ['Envoûteur', 'Réprouvé'],
+  'esoteric_spell:mana_change_barrier': ['Technomancien', 'Chromancien'],
+  'esoteric_spell:maximizer_change_barrier': ['Technomancien'],
+  'esoteric_spell:rapid_change_barrier': ['Technomancien', 'Chronomancien'],
+  'esoteric_spell:barrier_aura': ['Paladin'],
+  'esoteric_spell:brave_aura': ['Paladin', 'Pyromancien'],
+  'esoteric_spell:health_aura': ['Paladin', 'Druide'],
+  'esoteric_spell:immunity_aura': ['Paladin', 'Druide', 'Hémomancien'],
+  'esoteric_spell:mana_aura': ['Astromancien', 'Technomancien'],
+  'esoteric_spell:cycle_aura': ['Chronomancien', 'Chromancien'],
+  'esoteric_spell:fast_reaction_aura': ['Chronomancien', 'Aéromancien'],
+  'esoteric_spell:quick_motion_aura': ['Aéromancien', 'Chronomancien'],
+  'esoteric_spell:auto_device': ['Technomancien'],
+  'esoteric_spell:array_device': ['Technomancien', 'Symétriste'],
+  'esoteric_spell:chase_device': ['Technomancien', 'Voyageur du Vide'],
+  'esoteric_spell:counter_device': ['Technomancien', 'Symétriste'],
+  'esoteric_spell:missile_device': ['Technomancien', 'Pyromancien'],
+  'esoteric_spell:suppress_device': ['Technomancien', 'Envoûteur'],
+  'esoteric_spell:vulcan_device': ['Technomancien', 'Électro-Sorcier'],
+  'esoteric_spell:dual_bringer': ['Symétriste'],
+  'esoteric_spell:union_sword': ['Symétriste', 'Paladin'],
+  'esoteric_spell:magic_blade_absorb': ['Symétriste', 'Nécromancien'],
+  'esoteric_spell:magic_blade_conversion': ['Symétriste', 'Chromancien'],
+  'esoteric_spell:magic_blade_enchanting': ['Symétriste', 'Spiritualiste'],
+  'esoteric_spell:magic_blade_enchant_slash': ['Symétriste', 'Voyageur du Vide'],
+  'esoteric_spell:echanted_burst': ['Symétriste', 'Pyromancien'],
+  'esoteric_spell:echanted_spell': ['Symétriste', 'Astromancien'],
+  'esoteric_spell:element_slash': ['Symétriste', 'Cryomancien', 'Électro-Sorcier'],
+  'esoteric_spell:auto_arrow_magic': ['Druide', 'Voyageur du Vide'],
+  'esoteric_spell:auto_javelin_magic': ['Électro-Sorcier', 'Aéromancien'],
+  'esoteric_spell:auto_lances_magic': ['Paladin', 'Géomancien'],
+  'esoteric_spell:magic_skin': ['Druide', 'Géomancien'],
+  'esoteric_spell:blast_magic': ['Pyromancien', 'Technomancien'],
+  'esoteric_spell:cannon_magic': ['Technomancien'],
+  'esoteric_spell:crash_magic': ['Aéromancien', 'Géomancien'],
+  'esoteric_spell:esoteric_missile': ['*'],
+  'esoteric_spell:esoteric_shackle': ['Envoûteur', 'Réprouvé'],
+  'esoteric_spell:guandian_beam_magic': ['Astromancien'],
+  'esoteric_spell:impact_magic': ['Géomancien', 'Paladin'],
+  'esoteric_spell:laser_magic': ['Technomancien', 'Astromancien'],
+  'esoteric_spell:finale_magic': ['Astromancien', 'Spiritualiste'],
+  'esoteric_spell:namesis_magic': ['Envoûteur', 'Réprouvé'],
+  'esoteric_spell:qadal_magic': ['Spiritualiste', 'Chromancien'],
+  'esoteric_spell:storm_magic': ['Électro-Sorcier', 'Aéromancien', 'Hydromancien'],
+  'esoteric_spell:limit_break': ['Paladin', 'Hémomancien'],
+  'esoteric_spell:resurrection': ['Paladin', 'Nécromancien'],
+  'esoteric_spell:spell_calibration': ['*'],
+  'esoteric_spell:mana_resonance': ['Astromancien', 'Chromancien'],
+  'esoteric_spell:esoteric_step': ['Voyageur du Vide', 'Chronomancien'],
+  'esoteric_spell:familia_blizzard': ['Cryomancien', 'Astromancien'],
+  'esoteric_spell:familia_lightning': ['Électro-Sorcier', 'Astromancien'],
+  'esoteric_spell:familia_meteor': ['Pyromancien', 'Astromancien'],
+  'esoteric_spell:familia_imperial_ray': ['Paladin', 'Astromancien'],
+  'esoteric_spell:familia_symphony': ['Spiritualiste', 'Chromancien'],
+  'esoteric_spell:finale_guide': ['Spiritualiste', 'Astromancien'],
+  'esoteric_spell:finale_mana_regan': ['Spiritualiste', 'Astromancien'],
+  'esoteric_spell:finale_stone_barrier': ['Géomancien', 'Paladin'],
+  'esoteric_spell:chronos_shift_magic': ['Chronomancien'],
+  'irons_spellbooks:fang_strike': ['Géomancien', 'Druide'],
+  'irons_spellbooks:fang_swirl': ['Géomancien', 'Druide'],
+  'irons_spellbooks:fang_ward': ['Géomancien', 'Paladin'],
+  'irons_spellbooks:chain_creeper': ['Pyromancien', 'Technomancien'],
+  'irons_spellbooks:creeper_revenge': ['Pyromancien', 'Technomancien'],
+  'irons_spellbooks:lob_creeper': ['Pyromancien', 'Technomancien'],
+  'irons_spellbooks:arrow_volley': ['Druide', 'Voyageur du Vide'],
+  'irons_spellbooks:summon_horse': ['*'],
+  'irons_spellbooks:summon_vex': ['Nécromancien', 'Voyageur du Vide'],
+  'irons_spellbooks:shield': ['Paladin', 'Chromancien'],
+  'irons_spellbooks:slow': ['Chronomancien', 'Cryomancien'],
+  'irons_spellbooks:firecracker': ['Pyromancien', 'Chromancien'],
+  'irons_spellbooks:wololo': ['*'],
+  'irons_spellbooks:scapegoat': ['Envoûteur', 'Voyageur du Vide'],
+  'irons_spellbooks:spectral_hammer': ['Paladin', 'Spiritualiste'],
+  'cataclysm_spellbooks:conjure_ignited_reinforcement': ['Pyromancien', 'Nécromancien'],
+  'cataclysm_spellbooks:pilfer': ['Voyageur du Vide', 'Technomancien'],
+  'apprenticecodex:edge_dancer': ['Symétriste', 'Voyageur du Vide'],
+  'apprenticecodex:feather_rush': ['Aéromancien', 'Voyageur du Vide'],
+  'apprenticecodex:search_beacon': ['*'],
+  'aces_spell_utils:example_advanced_spells': ['Technomancien'],
+  'aces_spell_utils:example_advanced_tp': ['Technomancien'],
+  'gametechbcs_spellbooks:ashen_breath': ['Pyromancien', 'Géomancien'],
+  'gametechbcs_spellbooks:lingering_strain': ['Envoûteur', 'Nécromancien'],
+  'hazennstuff:arcane_cards': ['Chromancien', 'Astromancien'],
+  'hazennstuff:bone_bolt': ['Nécromancien'],
+  'monsterspellbooks:enchanters_boost': ['Chromancien', 'Spiritualiste'],
+  'monsterspellbooks:enchanters_protection': ['Paladin', 'Chromancien'],
+  'monsterspellbooks:spell_of_undying': ['Nécromancien', 'Paladin'],
+  'somakespells:comforting_lullaby': ['Chromancien', 'Spiritualiste'],
+  'somakespells:slumber_melody': ['Chromancien', 'Spiritualiste'],
+  'somakespells:jingle_bell': ['Chromancien', 'Spiritualiste'],
+  'somakespells:resonant_pulse': ['Chromancien', 'Spiritualiste'],
+  'somakespells:evocation_fortitude': ['Paladin'],
+  'somakespells:ram_tchum': ['Paladin', 'Géomancien'],
+  'somakespells:reverberation': ['Spiritualiste', 'Électro-Sorcier'],
+  'esoteric_spell:familia_cat_summon': ['Cryomancien', 'Astromancien', 'Électro-Sorcier', 'Pyromancien', 'Paladin', 'Spiritualiste', 'Chromancien', 'Géomancien', 'Chronomancien'],
+  'esoteric_spell:familia_research': ['Cryomancien', 'Astromancien', 'Électro-Sorcier', 'Pyromancien', 'Paladin', 'Spiritualiste', 'Chromancien', 'Géomancien', 'Chronomancien'],
   // Woodwalkers
   'woodwalkers_spellbooks:shapeshifting': ['*'],
   // Crystal Chronicles : Portail Prismatique, pour tout le monde (son onglet est fusionné dans Occultiste)
@@ -70,7 +179,6 @@ var SORTS_PAR_CLASSE = {
   'cataclysm_spellbooks:piercing_bone': ['Nécromancien'],
   'cataclysm_spellbooks:bone_storm': ['Nécromancien'],
   'cataclysm_spellbooks:conjure_thralls': ['Nécromancien'],
-  'cataclysm_spellbooks:conjure_ignited_reinforcement': ['Évocateur'],
   'cataclysm_spellbooks:malevolent_battlefield': ['Spiritualiste'],
   'cataclysm_spellbooks:forgone_rage': ['Spiritualiste'],
   'cataclysm_spellbooks:cursed_rush': ['Spiritualiste'],
@@ -122,12 +230,10 @@ var SORTS_PAR_CLASSE = {
   'hazennstuff:violent_regurgitation': ['Hémomancien'],
   'hazennstuff:counterspell_spider_lily': ['Géomancien', 'Druide'],
   'hazennstuff:syringe_barrage': ['Hémomancien'],
-  'hazennstuff:bone_bolt': ['Évocateur'],
   'hazennstuff:spectral_axe': ['Spiritualiste'],
   'hazennstuff:umbrashift_barrage': ['Réprouvé'],
   'hazennstuff:shadow_reaver': ['Envoûteur'],
   'hazennstuff:soul_seekers': ['Nécromancien', 'Envoûteur'],
-  'hazennstuff:arcane_cards': ['Évocateur'],
   'hazennstuff:cosmic_bolt': ['Astromancien'],
   'hazennstuff:evercomet_barrage': ['Astromancien'],
   'hazennstuff:moonkissed': ['Astromancien'],
@@ -150,7 +256,6 @@ var SORTS_PAR_CLASSE = {
   'farmers_spell:preserve_circle': ['Druide'],
   'farmers_spell:pan': ['Druide'],
   // ── Rééquilibrage : sorts partagés avec les classes les moins dotées ──
-  'irons_spellbooks:slow': ['Évocateur', 'Chronomancien'],
   'irons_spellbooks:haste': ['Paladin', 'Chronomancien'],
   'irons_spellbooks:evasion': ['Voyageur du Vide', 'Chronomancien', 'Aéromancien'],
   'irons_spellbooks:recall': ['*'], // Rappel : pour tout le monde (onglet Occultiste)
@@ -159,22 +264,13 @@ var SORTS_PAR_CLASSE = {
   'irons_spellbooks:counterspell': ['Voyageur du Vide', 'Chronomancien', 'Symétriste'],
   'gametechbcs_spellbooks:displacement': ['Voyageur du Vide', 'Chronomancien'],
   'firesenderexpansion:dimensional_adaptation': ['Voyageur du Vide', 'Chronomancien'],
-  'irons_spellbooks:wololo': ['Évocateur', 'Chromancien'],
-  'irons_spellbooks:firecracker': ['Évocateur', 'Chromancien'],
   'apprenticecodex:wizardlamp': ['Paladin', 'Chromancien'],
   'irons_spellbooks:firefly_swarm': ['Druide', 'Chromancien'],
-  'monsterspellbooks:enchanters_boost': ['Évocateur', 'Chromancien'],
-  'somakespells:comforting_lullaby': ['Évocateur', 'Chromancien'],
-  'somakespells:slumber_melody': ['Évocateur', 'Chromancien'],
-  'somakespells:jingle_bell': ['Évocateur', 'Chromancien'],
-  'irons_spellbooks:shield': ['Évocateur', 'Chromancien'],
-  'somakespells:resonant_pulse': ['Évocateur', 'Chromancien'],
   'irons_spellbooks:cleanse': ['Paladin', 'Chromancien'],
   'irons_spellbooks:lightning_bolt': ['Électro-Sorcier', 'Aéromancien'],
   'irons_spellbooks:thunderstorm': ['Électro-Sorcier', 'Aéromancien'],
   'iss_magicfromtheeast:cloud_ride': ['Symétriste', 'Aéromancien'],
   'somakespells:thunder_cloud': ['Hydromancien', 'Aéromancien'],
-  'apprenticecodex:feather_rush': ['Évocateur', 'Aéromancien'],
   'irons_spellbooks:charge': ['Électro-Sorcier', 'Aéromancien'],
   'monsterspellbooks:soul_form': ['Nécromancien', 'Spiritualiste'],
   'monsterspellbooks:spirit_strike': ['Nécromancien', 'Spiritualiste'],
@@ -299,7 +395,7 @@ var RESTRICTIONS = [
   { regle: /^cataclysm:(ignitium_(helmet|chestplate|elytra_chestplate|leggings|boots)|cursium_(helmet|chestplate|leggings|boots))$/, classes: [] },
 
   // ── Iron's Spells 'n Spellbooks ──
-  { regle: /^irons_spellbooks:decrepit_scythe$/, classes: ['Évocateur'] },
+  { regle: /^irons_spellbooks:decrepit_scythe$/, classes: ['Nécromancien'] },
   { regle: /^irons_spellbooks:hellrazor$/, classes: ['Pyromancien'] },
   { regle: /^irons_spellbooks:twilight_gale$/, classes: ['Électro-Sorcier', 'Aéromancien'] },
   // ── Wind Spellbooks ──
@@ -344,7 +440,7 @@ var RESTRICTIONS = [
   { regle: /^monsterspellbooks:unstable_robes_(helmet|chestplate|leggings|boots)$/, classes: ['Voyageur du Vide'] },
   { regle: /^monsterspellbooks:(claws_of_calamity)$/, classes: ['Électro-Sorcier', 'Aéromancien'] },
   { regle: /^monsterspellbooks:eternal_knife$/, classes: ['Nécromancien'] },
-  { regle: /^monsterspellbooks:(great_axeblade|village_butcherer)$/, classes: ['Évocateur'] },
+  { regle: /^monsterspellbooks:(great_axeblade|village_butcherer)$/, classes: ['Hémomancien'] },
   { regle: /^monsterspellbooks:orichalcum_(axe|dagger|greataxe|greatsword|warhammer)$/, classes: ['Druide', 'Géomancien'] },
   { regle: /^monsterspellbooks:swift_striker$/, classes: ['Voyageur du Vide'] },
   { regle: /^monsterspellbooks:vilenova_staff$/, classes: ['Nécromancien', 'Spiritualiste'] },
@@ -365,7 +461,7 @@ var RESTRICTIONS = [
   { regle: /^somakespells:glacium_greataxe$/, classes: ['Cryomancien'] },
   { regle: /^somakespells:mirrored_edge$/, classes: ['Symétriste'] },
   { regle: /^somakespells:(monolith_sword|rock_sword)$/, classes: ['Géomancien'] },
-  { regle: /^somakespells:totem_dagger$/, classes: ['Évocateur', 'Ésotériste'] },
+  { regle: /^somakespells:totem_dagger$/, classes: ['Spiritualiste'] },
   // ── Mowzie's Mobs ──
   { regle: /^mowziesmobs:sculptor_staff$/, classes: ['Géomancien'] },
   { regle: /^mowziesmobs:naga_fang_dagger$/, classes: ['Druide'] },
@@ -392,7 +488,7 @@ var RESTRICTIONS = [
   { regle: /^hazennstuff:(fireblossom_battlemage_boots|fireblossom_battlemage_chestplate|fireblossom_battlemage_helmet|fireblossom_battlemage_leggings|geckolib_fireblossom_battlemage_boots|geckolib_fireblossom_battlemage_chestplate|geckolib_fireblossom_battlemage_helmet|geckolib_fireblossom_battlemage_leggings|legacy_fireblossom_boots|legacy_fireblossom_chestplate|legacy_fireblossom_crown|legacy_fireblossom_helmet|legacy_fireblossom_leggings|legacy_geckolib_fireblossom_boots|legacy_geckolib_fireblossom_chestplate|legacy_geckolib_fireblossom_crown|legacy_geckolib_fireblossom_helmet|legacy_geckolib_fireblossom_leggings)$/, classes: [] },
   { regle: /^hazennstuff:(ender_dragon_boots|ender_dragon_chestplate|ender_dragon_helmet|ender_dragon_leggings|geckolib_ender_dragon_boots|geckolib_ender_dragon_chestplate|geckolib_ender_dragon_helmet|geckolib_ender_dragon_leggings|shadowwalker_enderman_blindfold|shadowwalker_enderman_boots|shadowwalker_enderman_chestplate|shadowwalker_enderman_hood|shadowwalker_enderman_leggings|shadowwalker_enderman_masked)$/, classes: ['Voyageur du Vide'] },
   { regle: /^hazennstuff:(charged_scourge_boots|charged_scourge_chestplate|charged_scourge_helmet|charged_scourge_leggings|thunder_prowler_boots|thunder_prowler_chestplate|thunder_prowler_helmet|thunder_prowler_leggings)$/, classes: ['Électro-Sorcier', 'Aéromancien'] },
-  { regle: /^hazennstuff:(alchemist_supreme_boots|alchemist_supreme_chestplate|alchemist_supreme_helmet|alchemist_supreme_leggings|geckolib_supreme_witch_boots|geckolib_supreme_witch_chestplate|geckolib_supreme_witch_helmet|geckolib_supreme_witch_leggings|spectral_spelunker_boots|spectral_spelunker_chestplate|spectral_spelunker_helmet|spectral_spelunker_leggings|supreme_witch_boots|supreme_witch_chestplate|supreme_witch_helmet|supreme_witch_leggings)$/, classes: ['Évocateur'] },
+  { regle: /^hazennstuff:(alchemist_supreme_boots|alchemist_supreme_chestplate|alchemist_supreme_helmet|alchemist_supreme_leggings|geckolib_supreme_witch_boots|geckolib_supreme_witch_chestplate|geckolib_supreme_witch_helmet|geckolib_supreme_witch_leggings|spectral_spelunker_boots|spectral_spelunker_chestplate|spectral_spelunker_helmet|spectral_spelunker_leggings|supreme_witch_boots|supreme_witch_chestplate|supreme_witch_helmet|supreme_witch_leggings)$/, classes: ['Chromancien'] },
   { regle: /^hazennstuff:(abberant_predator_boots|abberant_predator_chestplate|abberant_predator_helmet|abberant_predator_leggings|masked_fool_boots|masked_fool_chestplate|masked_fool_helmet|masked_fool_leggings|shadow_jester_boots|shadow_jester_chestplate|shadow_jester_helmet|shadow_jester_leggings|shadow_scale_boots|shadow_scale_chestplate|shadow_scale_helmet|shadow_scale_leggings)$/, classes: ['Réprouvé'] },
   { regle: /^hazennstuff:(geckolib_radiant_crystal_boots|geckolib_radiant_crystal_chestplate|geckolib_radiant_crystal_helmet|geckolib_radiant_crystal_leggings|glassweaver_boots|glassweaver_chestplate|glassweaver_helmet|glassweaver_leggings|radiant_crystal_boots|radiant_crystal_chestplate|radiant_crystal_helmet|radiant_crystal_leggings)$/, classes: [] },
   // ── Simply Swords : armes uniques attribuées à une classe ; les autres uniques sont désactivées ──
@@ -408,8 +504,8 @@ var RESTRICTIONS = [
   { regle: /^simplyswords:(dormant_relic|righteous_relic|tainted_relic|harbinger|sunfire)$/, classes: ['Technomancien'] },
   { regle: /^simplyswords:(shadowsting)$/, classes: ['Chronomancien'] },
   { regle: /^simplyswords:(watching_warglaive|watcher_claymore)$/, classes: ['Réprouvé'] },
-  { regle: /^simplyswords:(riftmane)$/, classes: ['Évocateur'] },
-  { regle: /^simplyswords:(decaying_relic|magiscythe|magiblade|magispear)$/, classes: ['Ésotériste'] },
+  { regle: /^simplyswords:(riftmane)$/, classes: ['Chronomancien'] },
+  { regle: /^simplyswords:(decaying_relic|magiscythe|magiblade|magispear)$/, classes: ['Symétriste'] },
   { regle: /^simplyswords:(bramblethorn)$/, classes: ['Géomancien'] },
   { regle: /^simplyswords:(hiveheart)$/, classes: ['Druide'] },
   { regle: /^simplyswords:(icewhisper)$/, classes: ['Cryomancien'] },
@@ -427,10 +523,10 @@ var RESTRICTIONS = [
   { regle: /^crystal_chronicles:ender_(mage_(helmet|chestplate|leggings|boots)|staff|sickle)$/,            classes: ['Voyageur du Vide'] },
   { regle: /^crystal_chronicles:fire_(knight_(helmet|chestplate|leggings|boots)|chakram)$/,                classes: ['Pyromancien'] },
   { regle: /^crystal_chronicles:nature_spear$/, classes: ['Druide'] },
-  { regle: /^crystal_chronicles:evocation_twinblade$/, classes: ['Évocateur'] },
+  { regle: /^crystal_chronicles:evocation_twinblade$/, classes: ['Paladin'] },
   { regle: /^crystal_chronicles:nature_(knight_(helmet|chestplate|leggings|boots)|spear)$/,                classes: ['Druide', 'Géomancien'] },
   { regle: /^crystal_chronicles:lightning_(knight_(helmet|chestplate|leggings|boots)|bident|staff)$/,      classes: ['Électro-Sorcier', 'Aéromancien'] },
-  { regle: /^crystal_chronicles:evocation_(knight_(helmet|chestplate|leggings|boots)|twinblade)$/,         classes: ['Évocateur', 'Ésotériste'] },
+  { regle: /^crystal_chronicles:evocation_(knight_(helmet|chestplate|leggings|boots)|twinblade)$/,         classes: ['Paladin'] },
   // Set Prismatic + Anneau de Diffraction -> Géomancien
   { regle: /^crystal_chronicles:(prismatic_knight_(helmet|chestplate|leggings|boots)|diffraction_ring)$/,  classes: ['Géomancien'] },
   { regle: /^crystal_chronicles:diffraction_ring$/,  classes: ['Géomancien'] },
@@ -452,7 +548,7 @@ var RESTRICTIONS = [
   { regle: /^monsterspellbooks:(sanguinite_hero_(hood|chestplate|leggings|boots)|sanguinite_(dagger|scythe|axe)|crescent_blood_rose|dukes_heartstealer)$/, classes: ['Hémomancien'] },
   { regle: /^monsterspellbooks:(paladin_hammer|sword_of_courage)$/, classes: ['Paladin'] },
   { regle: /^monsterspellbooks:(fun_gal_cap_red|fun_gal_cap_blue|poison_biter|poison_glaive|eyebloosom_staff)$/, classes: ['Druide'] },
-  { regle: /^monsterspellbooks:illager_enchanter_(helmet|chestplate|leggings|boots)$/, classes: ['Évocateur', 'Ésotériste'] },
+  { regle: /^monsterspellbooks:illager_enchanter_(helmet|chestplate|leggings|boots)$/, classes: ['Chromancien'] },
   { regle: /^monsterspellbooks:(void_touched_blade|endersent_crusher|disruption_naginata)$/, classes: ['Voyageur du Vide'] },
   { regle: /^monsterspellbooks:(necromancer_(helmet|chestplate|leggings|boots)|death_knight_(helmet|chestplate|leggings|boots)|draugr_elite_(helmet|chestplate|leggings|boots)|deathsilver_(dagger|sword|axe|greataxe)|necromancer_trident|reaper_sickle|orb_soul)$/, classes: ['Nécromancien'] },
   { regle: /^monsterspellbooks:(prismarine_claymore|prismarine_axe)$/, classes: ['Hydromancien'] },
@@ -463,8 +559,8 @@ var RESTRICTIONS = [
   // ── Curse Spells -> Envoûteur ──
   { regle: /^cursespells:((heretic|worshipper|preacher|remnant)_(hood|robe|pants|shoes)|transcendent_(helmet|chestplate|leggings|boots)|heretic_staff|heretic_necklace|heretic_cross|executioner_greatsword|stagnation_blade|blade_of_the_first_sin|clairvoyance_ring|curse_bane_ring)$/, classes: ['Envoûteur'] },
 
-  // ── Esoteric Spells -> Ésotériste ──
-  { regle: /^esoteric_spell:(esoteric_mage_(helmet|chestplate|chestplate_base|leggings|boots)|prismatic_arc_staff|rising_(inolia|arcane|zeroing)_ring)$/, classes: ['Ésotériste'] },
+  // ── Esoteric Spells (équipement) ──
+  { regle: /^esoteric_spell:(esoteric_mage_(helmet|chestplate|chestplate_base|leggings|boots)|prismatic_arc_staff|rising_(inolia|arcane|zeroing)_ring)$/, classes: ['Astromancien'] },
   // ── Iron's Spells 'n Spellbooks : équipements au thème clair ──
   { regle: /^irons_spellbooks:(pyromancer_(helmet|chestplate|leggings|boots)|infernal_sorcerer_chestplate|pyrium_staff)$/, classes: ['Pyromancien'] },
   { regle: /^irons_spellbooks:(cryomancer_(helmet|chestplate|leggings|boots)|ice_staff|boreal_blade)$/, classes: ['Cryomancien'] },
@@ -473,7 +569,7 @@ var RESTRICTIONS = [
   { regle: /^irons_spellbooks:(cultist_(helmet|chestplate|leggings|boots)|blood_staff|improved_blood_staff)$/, classes: ['Hémomancien'] },
   { regle: /^irons_spellbooks:shadowwalker_(helmet|chestplate|leggings|boots)$/, classes: ['Voyageur du Vide'] },
   { regle: /^irons_spellbooks:plagued_(helmet|chestplate|leggings|boots)$/, classes: ['Druide'] },
-  { regle: /^irons_spellbooks:archevoker_(helmet|chestplate|leggings|boots)$/, classes: ['Évocateur', 'Ésotériste'] },
+  { regle: /^irons_spellbooks:archevoker_(helmet|chestplate|leggings|boots)$/, classes: ['Spiritualiste'] },
   // ── Cataclysm: Spellbooks ──
   { regle: /^cataclysm_spellbooks:(ignis_(helmet|chestplate|chestplate_elytra|leggings|boots)|monstrous_wizard_hat)$/, classes: ['Pyromancien'] },
   { regle: /^cataclysm_spellbooks:cursium_mage_(circlet|chestplate|elytra|skirt|boots)$/, classes: ['Cryomancien'] },
@@ -493,7 +589,7 @@ var RESTRICTIONS = [
   { regle: /^somakespells:(centauri|scorn|fragmented_sword_1|fragmented_sword_2|withered_rose_staff)$/, classes: ['Hémomancien'] },
   { regle: /^somakespells:(witherite_glaive|core_splitter)$/, classes: ['Électro-Sorcier'] },
   { regle: /^somakespells:(radiant_judgment|hallow_sword)$/, classes: ['Paladin'] },
-  { regle: /^somakespells:last_mourning$/, classes: ['Évocateur'] },
+  { regle: /^somakespells:last_mourning$/, classes: ['Nécromancien'] },
   { regle: /^somakespells:symmetry_staff$/, classes: ['Symétriste'] }
 ]
 
@@ -813,6 +909,22 @@ function autorise(joueur, idObjet) {
 }
 
 // ───────────────────────── CONNEXION ─────────────────────────
+// Classes supprimées : le joueur qui en avait une reçoit automatiquement une nouvelle classe (tirage du Maître du Destin).
+var CLASSES_SUPPRIMEES = ['Évocateur', 'Ésotériste']
+function migrerClasseSupprimee(server, joueur) {
+  try {
+    var data = joueur.persistentData
+    if (!data.contains(CLE)) return false
+    var ancien = String(data.getString(CLE))
+    if (CLASSES_SUPPRIMEES.indexOf(ancien) === -1) return false
+    var nouvelle = tirerRare(server, null)
+    console.info('[classes_rp] Classe supprimée : ' + joueur.username + ' ' + ancien + ' -> ' + nouvelle.nom)
+    appliquerClasse(server, joueur, nouvelle, true)
+    joueur.tell(Text.gold('La classe ' + ancien + ' n\'existe plus : tu deviens ').append(Text.yellow(nouvelle.nom).bold()).append(Text.gold('.')))
+    return true
+  } catch (e) { console.error('[classes_rp] migration de classe : ' + e); return false }
+}
+
 PlayerEvents.loggedIn(function (event) {
   var joueur = event.player
   var server = event.server
@@ -827,6 +939,7 @@ PlayerEvents.loggedIn(function (event) {
   // Pas de classe automatique : un modérateur l'attribue avec /classe donner <joueur>.
   if (!data.contains(CLE)) return
 
+  if (migrerClasseSupprimee(server, joueur)) return
   var classe = classeDe(joueur)
   if (classe) appliquerClasse(server, joueur, classe, false)
 })
