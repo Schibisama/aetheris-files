@@ -1,5 +1,5 @@
 {
- "version": "2026-11-04T13:48:36.656Z",
+ "version": "2026-11-04T13:51:03.592Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6437,8 +6437,8 @@
   },
   {
    "path": "mods/chronomancy-1.0.5.jar",
-   "sha1": "e7ef0ee4b233810d7c714b9dae1c89611769f2b5",
-   "size": 5895627
+   "sha1": "05419910a25246bb4784d0c4709171bdfe1e990d",
+   "size": 5895603
   },
   {
    "path": "mods/citadel-1.21.1-2.7.6.jar",
