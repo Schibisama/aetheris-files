@@ -771,7 +771,7 @@ var SORT_DEBUT = {
   'Géomancien': 'gtbcs_geomancy_plus:dripstone_bolt',
   'Hémomancien': 'monsterspellbooks:blood_thorn',
   'Voyageur du Vide': 'apprenticecodex:arcane_blast',
-  'Pyromancien': 'irons_spellbooks:fire_arrow',
+  'Pyromancien': 'irons_spellbooks:firebolt',
   'Paladin': 'irons_spellbooks:guiding_bolt',
   'Cryomancien': 'irons_spellbooks:icicle',
   'Électro-Sorcier': 'apprenticecodex:shock',
