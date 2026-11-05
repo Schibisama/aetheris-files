@@ -120,7 +120,8 @@ var EQUILIBRAGE_SORTS = {
 
 // ───────── Retour d'équilibrage (05/11) ─────────
 // Rapports mesurés en jeu : p = dégâts × (rapport), m = mana × (rapport), cd = recharge exacte en secondes. Se COMPOSE avec EQUILIBRAGE_SORTS ci-dessus.
-// Non gérés par la config d'Iron's (à faire dans le code des sorts) : temps d'incantation, durées, rayons, portée, dégâts de mêlée, délai d'aiguille.
+// Temps d'incantation, durées, portée et dégâts de mêlée ne passent pas par la config d'Iron's : ils sont réglés dans les mods eux-mêmes (jars modifiés :
+// irons_spellbooks, cursespells, somakespells, cataclysm_spellbooks, gametechbcs_spellbooks, apprentice_codex, chronomancy).
 var EQUILIBRAGE_RETOUR = {
   'apprenticecodex:arcane_beam': { p: 1.3636 },
   'apprenticecodex:arcane_blast': { p: 1.3235 },
@@ -271,6 +272,7 @@ var EQUILIBRAGE_RETOUR = {
   'irons_spellbooks:earthquake': { p: 1.6043 },
   'irons_spellbooks:electrocute': { p: 2.1226 },
   'irons_spellbooks:fire_breath': { p: 5 },
+  'irons_spellbooks:fire_arrow': { p: 0.744 },
   'irons_spellbooks:firebolt': { p: 0.744 },
   'irons_spellbooks:firefly_swarm': { p: 2.1622 },
   'irons_spellbooks:flaming_barrage': { p: 1.634 },
@@ -345,6 +347,7 @@ var EQUILIBRAGE_RETOUR = {
   'somakespells:spiral_of_ruin': { p: 2.1176 },
   'somakespells:tsunami': { p: 0.67 },
   'somakespells:withered_rose_vortex': { p: 1.4607 },
+  'irons_spellbooks:starfall': { p: 1.33 },
   'tempest_almanac:starfall': { p: 1.33 },
   'tunes_n_tomes:grand_finale': { p: 1.4857 },
   'tunes_n_tomes:sonata': { p: 1.3333 },
