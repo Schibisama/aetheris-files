@@ -107,7 +107,6 @@ function tbSimuler(server, cle, nb, o) {
   var vide = null
   for (var k = 0; k < nb; k++) {
     var vu = {}
-    var pageVue = false
     var liste
     try { liste = tbTirer(server, cle) } catch (e) { o.erreurs++; continue }
     o.coffres++
@@ -126,7 +125,6 @@ function tbSimuler(server, cle, nb, o) {
       // 2) armures_butin.js
       var d2 = arFiltrerPile(cur)
       if (d2 === 'retirer') continue
-      if (String(cur.id) === 'specs_irons_spellbooks:codex_page') { if (pageVue) continue; pageVue = true }   // une page de Codex max par coffre
       if (d2) cur = d2
       var c1 = tbClasser(cur)
       var n1 = cur.count
@@ -141,12 +139,11 @@ function tbSimuler(server, cle, nb, o) {
       }
       try { if (desactSansButin(c1.id)) o.interditsRestants.push(c1.id) } catch (e5) {}
     }
-    if (Math.random() < AR_PARCHEMIN_AJOUT) {   // parchemin supplémentaire (armures_butin.js)
-      var ps = arCreerParchemin()
+    if (Math.random() < AR_SORT_PAR_COFFRE) {   // page de Codex ou parchemin ajouté (armures_butin.js)
+      var ps = arSortNeuf()
       if (ps) {
         var c2 = tbClasser(ps)
         tbCompter(o, c2, 'fin', 1)
-        tbCompter(o, c2, 'brut', 1)
         vu[c2.c] = true
         if (c2.c === 'parchemin') o.rar.fin[c2.rar] = (o.rar.fin[c2.rar] || 0) + 1
       }
@@ -174,7 +171,7 @@ function tbRapport(o, titre) {
   q.sort()
   L.push('    répartition des qualités de bijoux : ' + (q.length ? q.join(', ') : 'aucun bijou'))
   L.push('  - objets désactivés / craft seulement restant dans le butin final : ' + o.interditsRestants.length + (o.interditsRestants.length === 0 ? '  [OK]' : '  [À CORRIGER] ' + o.interditsRestants.slice(0, 8).join(', ')))
-  L.push('  - pages de Codex : attendu environ ' + ((1 - AR_CODEX_TAUX) * 100).toFixed(1) + ' % conservées ; mesuré ' + tbPct(o.fin.page_codex, o.brut.page_codex))
+  L.push('  - pages de Codex + parchemins : attendu ' + (AR_SORT_PAR_COFFRE * 100).toFixed(1) + ' % de coffres avec 1 objet (1 tous les ' + Math.round(1 / AR_SORT_PAR_COFFRE) + ' coffres) ; mesuré, pages ' + (o.coffres ? o.fin.page_codex / o.coffres : 0).toFixed(3) + ' + parchemins ' + (o.coffres ? o.fin.parchemin / o.coffres : 0).toFixed(3) + ' par coffre')
   L.push('  - parchemins Réprouvé : attendu environ ' + ((1 - AR_REPROUVE_TAUX) * 100).toFixed(0) + ' % conservés ; mesuré ' + tbPct(o.repro.fin, o.repro.brut) + ' (' + o.repro.brut + ' avant, ' + o.repro.fin + ' après)')
   L.push('  - armures : attendu ' + ((1 - AR_TAUX_VANILLA) * 100).toFixed(0) + ' % (vanilla) et ' + ((1 - AR_TAUX_MOD) * 100).toFixed(0) + ' % (mods) conservées ; mesuré '
     + tbPct(o.fin.armure_vanilla, o.brut.armure_vanilla) + ' / ' + tbPct(o.fin.armure_mod, o.brut.armure_mod) + ' (les désactivées retirées en plus)')

@@ -17,13 +17,15 @@ var AR_AUTRES = [
   [/^irons_spellbooks:(?!copper_|iron_)[a-z_]*spell_book$/, 0.6],         // grimoires supérieurs (sauf cuivre et fer)
   [/^irons_spellbooks:[a-z_]*upgrade_orb$/, 0.5]                          // orbes d'amélioration
 ]
-// Pages de Codex : AR_CODEX_TAUX des pages sont retirées ; chaque page conservée est recréée au niveau le plus bas, pour un sort tiré
-// au hasard (sort actif, trouvable en butin, non désactivé), pondéré par la rareté : voir AR_CODEX_POIDS.
-// Parchemins de sorts de la classe Réprouvé : AR_REPROUVE_TAUX des parchemins sont retirés des coffres (ils étaient sur-représentés).
+// Pages de Codex et parchemins : tous ceux du butin d'origine sont retirés ; chaque coffre reçoit, avec la chance AR_SORT_PAR_COFFRE (1 sur 25),
+// UNE page de Codex ou UN parchemin, toujours au niveau le plus bas du sort (page : sort tiré selon AR_CODEX_POIDS ; parchemin : sort au hasard hors Réprouvé).
+// (AR_CODEX_TAUX et AR_REPROUVE_TAUX ne servent plus.)
 var AR_CODEX_TAUX = 0.74   // 74 % des pages retirées : environ 1 page de Codex tous les 15 coffres (brut mesuré : 0,255 page par coffre)
 var AR_REPROUVE_TAUX = 0.6
 // Parchemin supplémentaire : chance par coffre d'en ajouter un (en plus de ceux déjà présents, environ 0,017 par coffre),
 // pour viser environ 1 parchemin tous les 25 coffres (0,04 par coffre).
+var AR_SORT_PAR_COFFRE = 0.04   // 1 page de Codex OU 1 parchemin tous les 25 coffres (tous les autres sont retirés), toujours au niveau le plus bas
+var AR_PART_PAGE = 0.5          // part de pages parmi ces objets (le reste : parchemins)
 var AR_PARCHEMIN_AJOUT = 0.023
 var AR_DEBUG = false   // journal de chaque ouverture de conteneur (mettre false une fois le filtre vérifié)
 var AR_PAGE = null, AR_SR = null, AR_CATALOGUE = null
@@ -55,8 +57,8 @@ function arListePages() {
   return AR_CODEX_LISTE
 }
 
-function arPageCodex(pile) {
-  if (Math.random() < AR_CODEX_TAUX) return 'retirer'
+// Nouvelle page de Codex (niveau le plus bas), sort tiré selon AR_CODEX_POIDS ; null en cas d'échec.
+function arPageNeuve() {
   try {
     if (!AR_PAGE) AR_PAGE = Java.loadClass('com.specs.irons_spellbooks.item.CodexPageItem')
     if (!AR_SR) AR_SR = Java.loadClass('io.redspace.ironsspellbooks.api.registry.SpellRegistry')
@@ -145,6 +147,14 @@ function arTauxAutre(pile) {
 }
 // Décision pour UNE pile de coffre. Retourne : undefined = objet non concerné par le filtre ; null = gardé ;
 // 'retirer' = supprimé ; ou une nouvelle pile (page de Codex recréée). Utilisée aussi par le test de butin (test_butin.js).
+// Objet ajouté à un coffre : une page de Codex (AR_PART_PAGE) ou un parchemin, toujours au niveau le plus bas.
+function arSortNeuf() {
+  var page = Math.random() < AR_PART_PAGE
+  var r = page ? arPageNeuve() : arCreerParchemin()
+  if (!r) r = page ? arCreerParchemin() : arPageNeuve()
+  return r
+}
+
 // Parchemin d'un sort au niveau le plus bas : retourne un parchemin neuf s'il est au-dessus du minimum, sinon null (inchangé).
 function arParcheminAuMin(pile) {
   try {
@@ -161,22 +171,9 @@ function arParcheminAuMin(pile) {
 }
 
 function arFiltrerPile(pile) {
-  if (String(pile.id) === 'specs_irons_spellbooks:codex_page') {
-    var res = arPageCodex(pile)
-    return res === null ? null : res
-  }
-  if (String(pile.id) === 'irons_spellbooks:scroll') {
-    // Tous les parchemins de coffre sont au niveau le plus bas de leur sort.
-    var base = pile
-    if (arEstParcheminReprouve(pile) && Math.random() < AR_REPROUVE_TAUX) {
-      var rempl = arRemplacerParcheminReprouve(pile)
-      if (rempl === 'retirer') return 'retirer'
-      base = rempl
-    }
-    var bas = arParcheminAuMin(base)
-    if (bas) return bas
-    return base === pile ? null : base
-  }
+  var idp = String(pile.id)
+  // Pages et parchemins du butin d'origine : tous retirés ; le coffre en reçoit au plus un, ajouté à part (AR_SORT_PAR_COFFRE).
+  if (idp === 'specs_irons_spellbooks:codex_page' || idp === 'irons_spellbooks:scroll') return 'retirer'
   var taux = arEstArmure(pile) ? arTaux(pile) : arTauxAutre(pile)
   if (taux <= 0) return undefined
   return Math.random() < taux ? 'retirer' : null
@@ -253,7 +250,6 @@ function arFiltrerConteneur(event) {
     var vide = Item.of('minecraft:air')
     var retires = 0
     var vus = 0
-    var pages = 0   // une seule page de Codex par coffre
     for (var i = 0; i < total; i++) {
       var slot = menu.getSlot(i)
       if (slot.isSameInventory(repere)) continue
@@ -262,16 +258,11 @@ function arFiltrerConteneur(event) {
       var dec = arFiltrerPile(pile)
       if (dec === undefined) continue            // objet non concerné
       vus++
-      var estPage = String(pile.id) === 'specs_irons_spellbooks:codex_page'
-      if (estPage && dec !== 'retirer') {
-        if (pages >= 1) dec = 'retirer'   // déjà une page dans ce coffre : les suivantes sont retirées
-        else pages++
-      }
       if (dec === 'retirer') { slot.set(vide); retires++ }
       else if (dec) slot.set(dec)
     }
-    if (Math.random() < AR_PARCHEMIN_AJOUT) {   // parchemin supplémentaire dans un emplacement libre
-      var neuf = arCreerParchemin()
+    if (Math.random() < AR_SORT_PAR_COFFRE) {   // la seule page de Codex ou le seul parchemin du coffre, au niveau le plus bas
+      var neuf = arSortNeuf()
       if (neuf) {
         var libres = []
         for (var j = 0; j < total; j++) {
