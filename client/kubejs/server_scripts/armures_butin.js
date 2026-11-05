@@ -30,7 +30,11 @@ var AR_PARCHEMIN_PAR_COFFRE = 0.04  // 1 parchemin tous les 25 coffres (tous les
 var AR_PARCHEMIN_AJOUT = 0.023
 var AR_DEBUG = false   // journal de chaque ouverture de conteneur (mettre false une fois le filtre vérifié)
 var AR_PAGE = null, AR_SR = null, AR_CATALOGUE = null
-function arRareteSort(sp) { try { return String(sp.getMinRarity()).toUpperCase() } catch (e) { return 'COMMON' } }
+// Rareté du sort à son niveau minimum (COMMON..LEGENDARY). NB : getMinRarity() renvoie un entier, pas un nom : les poids de rareté ne s'appliquaient jamais.
+function arRareteSort(sp) {
+  try { return String(sp.getRarity(Math.max(1, Number(sp.getMinLevel()))).name()).toUpperCase() } catch (e) {}
+  try { return ['COMMON', 'UNCOMMON', 'RARE', 'EPIC', 'LEGENDARY'][Number(sp.getMinRarity())] || 'COMMON' } catch (e2) { return 'COMMON' }
+}
 function arSortListable(sp) {
   try { if (!sp.allowLooting()) return false } catch (e) {}
   try { if (typeof desactSortInterdit === 'function' && desactSortInterdit(sp.getSpellId())) return false } catch (e2) {}   // désactivés et sorts de cours
