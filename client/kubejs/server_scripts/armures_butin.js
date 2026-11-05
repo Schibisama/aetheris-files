@@ -190,9 +190,8 @@ if (AR_MOBS) {
   }
 }
 
-// ───────────── Butin supplémentaire : poussière d'étoile sur le papillon lunaire ─────────────
+// ───────────── Butin supplémentaire ─────────────
 var BUTIN_SUPPL = [
-  { mob: 'asterismarcanum:lunar_moth', objet: 'hazennstuff:stardust', chance: 0.33, min: 1, max: 1 },
   // Rod of Discord : aussi sur les variantes d'Enderman Overhaul (1 %, tué par un joueur)
   { mob: 'endermanoverhaul:windswept_hills_enderman', objet: 'hazennstuff:rod_of_discord', chance: 0.01, min: 1, max: 1, joueur: true },
   { mob: 'endermanoverhaul:flower_fields_enderman', objet: 'hazennstuff:rod_of_discord', chance: 0.01, min: 1, max: 1, joueur: true },
