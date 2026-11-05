@@ -5,7 +5,7 @@
 // Chaque coffre est tiré comme en jeu (modificateurs de butin des mods compris : bijoux, pages de Codex, Simply Swords...),
 // puis passe par les MÊMES filtres que l'ouverture réelle : classes_desactives.js (objets désactivés / craft seulement / parchemins
 // interdits) puis armures_butin.js (armures, pages de Codex, parchemins Réprouvé, autres objets rares).
-// Sortie : un résumé dans le chat + le rapport complet dans kubejs/exports/test_butin.txt (sur le serveur).
+// Sortie : un résumé dans le chat + le rapport complet dans le log du serveur (latest.log et logs/kubejs/server.log).
 // Limites : les coffres LootR « par joueur » et la pitié des armes uniques Simply Swords (compteur par joueur) ne sont pas simulés.
 // Rechargement : /reload
 
@@ -178,24 +178,6 @@ function tbRapport(o, titre) {
   return L.join('\n')
 }
 
-function tbEcrire(texte) {
-  try {
-    var Files = Java.loadClass('java.nio.file.Files')
-    var Paths = Java.loadClass('java.nio.file.Paths')
-    var dir = Paths.get('kubejs', 'exports')
-    Files.createDirectories(dir)
-    Files.write(dir.resolve('test_butin.txt'), Java.loadClass('java.util.Arrays').asList(String(texte).split('\n')))
-    return true
-  } catch (e) {
-    try {
-      var F = Java.loadClass('java.io.FileWriter')
-      var w = new F('kubejs/exports/test_butin.txt')
-      w.write(String(texte)); w.close()
-      return true
-    } catch (e2) { console.error('[test_butin] écriture impossible : ' + e + ' / ' + e2); return false }
-  }
-}
-
 function tbLancer(source, nb, cible) {
   var server = source.server
   var R = tbInit()
@@ -245,11 +227,10 @@ function tbLancer(source, nb, cible) {
     if (idx < choisies.length) { server.scheduleInTicks(1, paquet); return }
     var texte = tbRapport(tot, choisies.length === 1 ? choisies[0] : (cible === 'tout' ? 'TOUTES LES TABLES' : 'tables « ' + cible + '* »'))
     if (parTable.length) texte += '\n\nDétail par table (totaux finaux) :\n' + parTable.join('\n')
-    var ok = tbEcrire(texte)
     console.info('\n' + texte)
     var lignes = texte.split('\n')
     for (var l = 0; l < Math.min(lignes.length, 22); l++) dire(lignes[l])
-    dire(ok ? 'Rapport complet : kubejs/exports/test_butin.txt (sur le serveur).' : 'Rapport complet dans la console (écriture du fichier impossible).')
+    dire('Rapport complet dans le log serveur : cherche « === » dans logs/kubejs/server.log (ou latest.log).')
   }
   paquet()
   return choisies.length
@@ -258,19 +239,28 @@ function tbLancer(source, nb, cible) {
 ServerEvents.commandRegistry(function (event) {
   var Commands = event.commands
   var Arguments = event.arguments
+  // /testbutin <nombre> <cible>   ou   /testbutin <cible> <nombre>   (le nombre peut être placé avant ou après)
   event.register(Commands.literal('testbutin')
     .requires(function (source) { return source.hasPermission(2) })
-    .then(Commands.argument('nombre', Arguments.INTEGER.create(event))
-      .then(Commands.argument('cible', Arguments.GREEDY_STRING.create(event))
-        .executes(function (ctx) {
-          var nb = Arguments.INTEGER.getResult(ctx, 'nombre')
-          if (nb < 1) nb = 1
-          if (nb > 20000) nb = 20000
-          var cible = Arguments.GREEDY_STRING.getResult(ctx, 'cible')
-          try { return tbLancer(ctx.source, nb, cible) } catch (e) {
-            console.error('[test_butin] ' + e)
-            try { if (ctx.source.player) ctx.source.player.tell(Text.red('Erreur du test : ' + e)) } catch (e2) {}
-            return 0
-          }
-        }))))
+    .then(Commands.argument('args', Arguments.GREEDY_STRING.create(event))
+      .executes(function (ctx) {
+        var mots = String(Arguments.GREEDY_STRING.getResult(ctx, 'args')).trim().split(/\s+/)
+        var nb = 0, reste = []
+        for (var i = 0; i < mots.length; i++) {
+          if (nb === 0 && /^[0-9]+$/.test(mots[i])) nb = parseInt(mots[i], 10)
+          else reste.push(mots[i])
+        }
+        if (nb < 1) nb = 100
+        if (nb > 20000) nb = 20000
+        var cible = reste.join(' ')
+        if (!cible) {
+          try { if (ctx.source.player) ctx.source.player.tell(Text.red('Usage : /testbutin 500 minecraft:chests/simple_dungeon   (ou « tout », ou un début d\'identifiant)')) } catch (e0) {}
+          return 0
+        }
+        try { return tbLancer(ctx.source, nb, cible) } catch (e) {
+          console.error('[test_butin] ' + e)
+          try { if (ctx.source.player) ctx.source.player.tell(Text.red('Erreur du test : ' + e)) } catch (e2) {}
+          return 0
+        }
+      })))
 })

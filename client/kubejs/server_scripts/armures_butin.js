@@ -189,6 +189,15 @@ try {
   console.error('[armures_butin] Filtre des coffres indisponible : ' + e)
 }
 
+// Auteur d'un coup mortel : DamageSource n'expose pas toujours getEntity() sous KubeJS (« actual » en secours).
+function arTueur(event) {
+  var s = event.getSource()
+  try { if (typeof s.getEntity === 'function') return s.getEntity() } catch (e) {}
+  try { if (s.actual) return s.actual } catch (e2) {}
+  try { if (typeof s.getDirectEntity === 'function') return s.getDirectEntity() } catch (e3) {}
+  return null
+}
+
 // ───────────── Butin des mobs ─────────────
 if (AR_MOBS) {
   try {
@@ -246,7 +255,7 @@ try {
         for (var i = 0; i < BUTIN_SUPPL.length; i++) {
           var b = BUTIN_SUPPL[i]
           if (b.mob !== type || Math.random() >= b.chance) continue
-          if (b.joueur) { var tu = event.getSource().getEntity(); if (!tu || !tu.isPlayer()) continue }
+          if (b.joueur) { var tu = arTueur(event); if (!tu || !tu.isPlayer()) continue }
           var n = b.min + Math.floor(Math.random() * (b.max - b.min + 1))
           event.getDrops().add(new ItemEntiteJ(ent.level, ent.x, ent.y, ent.z, Item.of(b.objet, n)))
         }
@@ -267,7 +276,7 @@ try {
       try {
         var victime = event.getEntity()
         if (!victime.isPlayer() || victime.level.isClientSide()) return
-        var tueur = event.getSource().getEntity()
+        var tueur = arTueur(event)
         if (!tueur || !tueur.isPlayer() || String(tueur.uuid) === String(victime.uuid)) return
         if (Math.random() >= BUTIN_JOUEUR.chance) return
         event.getDrops().add(new ItemEntiteJ2(victime.level, victime.x, victime.y, victime.z, Item.of(BUTIN_JOUEUR.objet, 1)))
