@@ -1,5 +1,5 @@
 {
- "version": "2026-11-05T19:35:56.268Z",
+ "version": "2026-11-05T19:40:08.216Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6382,8 +6382,8 @@
   },
   {
    "path": "kubejs/startup_scripts/classes_niveaux.js",
-   "sha1": "54ebd58dc7d1c8319db1a9dcf9f7faee1fad6be6",
-   "size": 20621
+   "sha1": "b55ba585c6c8d2c9c80f58b39b286107f496d960",
+   "size": 20628
   },
   {
    "path": "kubejs/startup_scripts/main.js",
@@ -6512,7 +6512,7 @@
   },
   {
    "path": "mods/chronomancy-1.0.5.jar",
-   "sha1": "fc4f684f92aa59030beb1438058012e80bd0da30",
+   "sha1": "4b974289be454dde1cc4153d21c0159dec914798",
    "size": 5895513
   },
   {
