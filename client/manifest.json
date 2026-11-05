@@ -1,5 +1,5 @@
 {
- "version": "2026-11-05T19:40:08.216Z",
+ "version": "2026-11-05T19:44:29.059Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6202,8 +6202,8 @@
   },
   {
    "path": "kubejs/server_scripts/armures_butin.js",
-   "sha1": "c2ca0a826ce52dedd5e0a3007e30cfc518370cda",
-   "size": 19860
+   "sha1": "736a21b5f036ffe933971661c6d317f09bbeb6fd",
+   "size": 19861
   },
   {
    "path": "kubejs/server_scripts/baton_neant.js",
@@ -6382,8 +6382,8 @@
   },
   {
    "path": "kubejs/startup_scripts/classes_niveaux.js",
-   "sha1": "b55ba585c6c8d2c9c80f58b39b286107f496d960",
-   "size": 20628
+   "sha1": "17af2f2d6733aabaee0a93f446c74d30cee946de",
+   "size": 20632
   },
   {
    "path": "kubejs/startup_scripts/main.js",
