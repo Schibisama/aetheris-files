@@ -1,5 +1,5 @@
 {
- "version": "2026-11-05T16:17:48.228Z",
+ "version": "2026-11-05T16:21:24.596Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6131,6 +6131,76 @@
    "size": 2219
   },
   {
+   "path": "kubejs/data/apprenticecodex/irons_jewelry/material/spellstained_diamond.json",
+   "sha1": "3c795927e943692522688d7bc46ad8596cb982b7",
+   "size": 876
+  },
+  {
+   "path": "kubejs/data/apprenticecodex/irons_jewelry/material/wisdom.json",
+   "sha1": "34340dfc5cc12f486e322fecd91db9678f42c5c2",
+   "size": 830
+  },
+  {
+   "path": "kubejs/data/hazennstuff/irons_jewelry/material/chlorophyte.json",
+   "sha1": "b88ed8279ce616f9c209ccd5bfd01d6ab4314dba",
+   "size": 837
+  },
+  {
+   "path": "kubejs/data/hazennstuff/irons_jewelry/material/dreadsteel.json",
+   "sha1": "edd99eb36623df51f8f870fcd6fb3e3d91ae1e64",
+   "size": 736
+  },
+  {
+   "path": "kubejs/data/hazennstuff/irons_jewelry/material/hallowed.json",
+   "sha1": "d48d3beeb101acc2ff1617bb3f81a3f3d91b4dbf",
+   "size": 801
+  },
+  {
+   "path": "kubejs/data/hazennstuff/irons_jewelry/material/rose_gold.json",
+   "sha1": "cdb59311b8f711196d1b6aa21b1589f263cb1919",
+   "size": 726
+  },
+  {
+   "path": "kubejs/data/hazennstuff/irons_jewelry/material/zenalite.json",
+   "sha1": "3381919982891d7c1a265f01d7a6d40fa2d75605",
+   "size": 796
+  },
+  {
+   "path": "kubejs/data/irons_jewelry/irons_jewelry/material/onyx.json",
+   "sha1": "37433d231ff7bd5d66137563400d73593d493af3",
+   "size": 623
+  },
+  {
+   "path": "kubejs/data/irons_jewelry/tags/irons_jewelry/material/jewelry_loot_blacklist.json",
+   "sha1": "f16af32953443317d4d717bdf6884df8957b4c63",
+   "size": 1299
+  },
+  {
+   "path": "kubejs/data/irons_spellbooks/irons_jewelry/material/divine_pearl.json",
+   "sha1": "003b1448cd59359fc7738095c1a7304f70b0d2a1",
+   "size": 811
+  },
+  {
+   "path": "kubejs/data/irons_spellbooks/irons_jewelry/material/mithril.json",
+   "sha1": "3667628150945e99ba687169febfff1f3bd89c2f",
+   "size": 582
+  },
+  {
+   "path": "kubejs/data/irons_spellbooks/irons_jewelry/material/refined_jade.json",
+   "sha1": "557aba3de92c75d8fb87441369c662b3b378e8dc",
+   "size": 884
+  },
+  {
+   "path": "kubejs/data/monsterspellbooks/irons_jewelry/material/sanguinite.json",
+   "sha1": "be1d22fcb514afa5ebf9287ad54fc6a488f9750d",
+   "size": 804
+  },
+  {
+   "path": "kubejs/data/monsterspellbooks/irons_jewelry/material/void_obsidian.json",
+   "sha1": "62b23cfaa84ad429a7d6f36f4e00c87e4fc58178",
+   "size": 792
+  },
+  {
    "path": "kubejs/server_scripts/armourers_ops.js",
    "sha1": "f30cac47bce59e49d7a79a786e786be0be1d4c1d",
    "size": 2627
@@ -7014,6 +7084,11 @@
    "path": "mods/supplementaries-1.21.1-4.0.2-neoforge.jar",
    "sha1": "af25cb08a82c72b3fb67508071ce627714bd2b57",
    "size": 13840377
+  },
+  {
+   "path": "mods/SwordBlockingMechanics-v21.1.1-1.21.1-NeoForge.jar",
+   "sha1": "7b94495f0aabb90c66406af0be34ef7dab60135a",
+   "size": 103807
   },
   {
    "path": "mods/t_and_t-fabric-neoforge-1.13.11.jar",
