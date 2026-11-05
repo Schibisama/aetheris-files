@@ -1,5 +1,5 @@
 {
- "version": "2026-11-05T16:36:02.365Z",
+ "version": "2026-11-05T17:19:49.417Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6077,8 +6077,8 @@
   },
   {
    "path": "kubejs/client_scripts/aaa_traduction.js",
-   "sha1": "517cab826d250c256ec9fcef50b5402f87f174aa",
-   "size": 1828
+   "sha1": "b1f9c15a6995f58203403781c372a2107d138071",
+   "size": 1847
   },
   {
    "path": "kubejs/client_scripts/balai_vertical.js",
@@ -6102,13 +6102,13 @@
   },
   {
    "path": "kubejs/client_scripts/classes_langue.js",
-   "sha1": "956a618773f0e48dce59502aea324ab5259043b5",
-   "size": 479231
+   "sha1": "727780716e93999421e498dee0a54ce4fb81bcf1",
+   "size": 483489
   },
   {
    "path": "kubejs/client_scripts/classes_tooltips.js",
-   "sha1": "ca3f2eaaf644880e505c5af2290a950bfccb3e29",
-   "size": 92214
+   "sha1": "b8c7c2096462451a4c15752e3762314a65d9a42d",
+   "size": 92689
   },
   {
    "path": "kubejs/client_scripts/main.js",
@@ -6247,8 +6247,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "c513f64552dd3e5f7ae502187351265c63ec8581",
-   "size": 153590
+   "sha1": "a54041c5a94d00b8dfa027a480505aef0d1e5219",
+   "size": 153772
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -6377,13 +6377,13 @@
   },
   {
    "path": "kubejs/startup_scripts/classes_equip_ecoles.js",
-   "sha1": "f243ac3efd6da0d1a3f8dc06ef71ef22880c5814",
-   "size": 43613
+   "sha1": "984e9333aad724a65326cd1968768f2a20fec572",
+   "size": 43880
   },
   {
    "path": "kubejs/startup_scripts/classes_niveaux.js",
-   "sha1": "08093d1d8060e595ed922edc8c3c8cc9dee2db30",
-   "size": 9203
+   "sha1": "791272929f8e751d1901816be7b3128156242739",
+   "size": 20963
   },
   {
    "path": "kubejs/startup_scripts/main.js",
