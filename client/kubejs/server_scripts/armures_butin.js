@@ -194,8 +194,9 @@ function arCle(joueur, menu) {
     }
     if (pos.length === 0) return null
     var dim = String(joueur.level.dimension.location())
-    var nom = String(menu.getClass().getName()).toLowerCase() + String(menu.getContainer().getClass().getName()).toLowerCase()
-    var lootr = nom.indexOf('lootr') !== -1
+    // NB : getClass() n'existe pas dans le moteur de script : un coffre Lootr se reconnaît à son « info » (ILootrInventory.getInfo()).
+    var lootr = false
+    try { lootr = !!menu.getContainer().getInfo() } catch (eN) {}
     var s = dim + '@'
     for (var i = 0; i < pos.length; i++) s += pos[i].x + ',' + pos[i].y + ',' + pos[i].z + ';'
     if (lootr) s += 'j:' + String(joueur.uuid)
@@ -212,7 +213,7 @@ function arFiltrerConteneur(event) {
     if (total <= 36) return
     var modeTest = false
     try { modeTest = estTest(joueur) } catch (e0) {}
-    if (AR_DEBUG) console.info('[armures_butin] ouverture : ' + joueur.username + ' | menu ' + menu.getClass().getName() + ' | conteneur ' + menu.getContainer().getClass().getName() + ' | ' + total + ' emplacements | mode testeur ' + modeTest)
+    if (AR_DEBUG) console.info('[armures_butin] ouverture : ' + joueur.username + ' | ' + String(menu) + ' | ' + String(menu.getContainer()) + ' | ' + total + ' emplacements | mode testeur ' + modeTest)
     if (modeTest) return
     if (!AR_CLASSE_ENDER) AR_CLASSE_ENDER = Java.loadClass('net.minecraft.world.inventory.PlayerEnderChestContainer')
     try { if (menu.getContainer() instanceof AR_CLASSE_ENDER) return } catch (e1) {}
