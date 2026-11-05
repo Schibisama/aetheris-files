@@ -107,6 +107,7 @@ function tbSimuler(server, cle, nb, o) {
   var vide = null
   for (var k = 0; k < nb; k++) {
     var vu = {}
+    var pageVue = false
     var liste
     try { liste = tbTirer(server, cle) } catch (e) { o.erreurs++; continue }
     o.coffres++
@@ -125,6 +126,7 @@ function tbSimuler(server, cle, nb, o) {
       // 2) armures_butin.js
       var d2 = arFiltrerPile(cur)
       if (d2 === 'retirer') continue
+      if (String(cur.id) === 'specs_irons_spellbooks:codex_page') { if (pageVue) continue; pageVue = true }   // une page de Codex max par coffre
       if (d2) cur = d2
       var c1 = tbClasser(cur)
       var n1 = cur.count

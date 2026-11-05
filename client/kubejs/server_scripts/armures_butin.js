@@ -253,6 +253,7 @@ function arFiltrerConteneur(event) {
     var vide = Item.of('minecraft:air')
     var retires = 0
     var vus = 0
+    var pages = 0   // une seule page de Codex par coffre
     for (var i = 0; i < total; i++) {
       var slot = menu.getSlot(i)
       if (slot.isSameInventory(repere)) continue
@@ -261,6 +262,11 @@ function arFiltrerConteneur(event) {
       var dec = arFiltrerPile(pile)
       if (dec === undefined) continue            // objet non concerné
       vus++
+      var estPage = String(pile.id) === 'specs_irons_spellbooks:codex_page'
+      if (estPage && dec !== 'retirer') {
+        if (pages >= 1) dec = 'retirer'   // déjà une page dans ce coffre : les suivantes sont retirées
+        else pages++
+      }
       if (dec === 'retirer') { slot.set(vide); retires++ }
       else if (dec) slot.set(dec)
     }
