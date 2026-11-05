@@ -389,6 +389,7 @@ var RESTRICTIONS = [
   { regle: /^apprenticecodex:(.*_spellcaster_gun|focus_staffbow|multipurpose_staffrifle|fullauto_rapidcast_spellrifle|.*_swingcast_staff|revolvercast_staff|scrollcaster_gauntlet|circuit_heat_staff|charged_twin_blade_staff|magi_agent_suit_.*)$/, classes: [] },
   { regle: /^cataclysm_spellbooks:(excelsius_.*|cursium_mage_.*|ignis_.*|hellfire_forge)$/, classes: [] },
   { regle: /^somakespells:forbidden_hammer$/, classes: [] },
+  { regle: /^born_in_chaos_v1:(wood_splitter_axe|nightmare_claw|sweet_sword|sweet_axe|staff_of_magic_arrows|skullbreaker_hammer|shell_mace|frostbitten_blade|nut_hammer|nightmare_scythe|stop_hammer|staffof_blindness|dark_rod|dark_ritual_dagger|bonescaller_staff|trident_hayfork|great_reaper_axe|carrot_sword|darkwarblade|pumpkinstaffa|sharpened_dark_metal_sword|spider_bite_sword|spiritual_sword|soul_cutlass|soulbane|intoxicating_dagger|pumpkinhandgun|(dark_metal_armor|nightmare_mantleofthe_night|spiny_shell_armor)_(helmet|chestplate|leggings|boots)|damned_demomans_hat_helmet|killer_rabbit_ears_helmet|lord_pumpkinheads_hat_helmet|missionary_hat_helmet|spiritual_guide_sombrero_helmet)$/, classes: [] },   // Born in Chaos : armes et armures désactivées
   { regle: /^mowziesmobs:ice_crystal$/, classes: [] },   // Cristal de glace de Mowzie's Mobs : désactivé
   { regle: /^iss_magicfromtheeast:repeating_crossbow$/, classes: [] },
   // ── Legendary Monsters : seuls le Marteau moussu et le Plastron moussu sont gardés (Druide, Géomancien) ; le reste des armes et armures est désactivé ──
