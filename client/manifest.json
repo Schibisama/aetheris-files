@@ -1,5 +1,5 @@
 {
- "version": "2026-11-05T19:01:38.613Z",
+ "version": "2026-11-05T19:12:21.744Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6202,8 +6202,8 @@
   },
   {
    "path": "kubejs/server_scripts/armures_butin.js",
-   "sha1": "556fbd4eb609700c6c375bb3a56f26a0088d63c7",
-   "size": 19263
+   "sha1": "0499a59b74bf6f6897d8fc7035218ae35d1e34ec",
+   "size": 19855
   },
   {
    "path": "kubejs/server_scripts/baton_neant.js",
@@ -6382,8 +6382,8 @@
   },
   {
    "path": "kubejs/startup_scripts/classes_niveaux.js",
-   "sha1": "0f0905a65f5797c9b1e9ec3f0d6ef18c9bf443d8",
-   "size": 21184
+   "sha1": "1b6a4671dd11c01690025f6df697578e753fb3bf",
+   "size": 21137
   },
   {
    "path": "kubejs/startup_scripts/main.js",
@@ -6597,8 +6597,8 @@
   },
   {
    "path": "mods/cursespells-1.21.1-1.0.0.jar",
-   "sha1": "4a9f429f75823ca84a73e81704e5d135e12696a3",
-   "size": 24515260
+   "sha1": "b43a770949d44e3d320de1db101b4ca1c5ef7192",
+   "size": 24515215
   },
   {
    "path": "mods/d4239400-immersivedamageindicators-neoforge-1.0.0-1.21.1.jar",
