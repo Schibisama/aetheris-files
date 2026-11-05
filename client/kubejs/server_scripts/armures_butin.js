@@ -25,7 +25,7 @@ var AR_REPROUVE_TAUX = 0.6
 // Parchemin supplémentaire : chance par coffre d'en ajouter un (en plus de ceux déjà présents, environ 0,017 par coffre),
 // pour viser environ 1 parchemin tous les 25 coffres (0,04 par coffre).
 var AR_PARCHEMIN_AJOUT = 0.023
-var AR_DEBUG = true   // journal de chaque ouverture de conteneur (mettre false une fois le filtre vérifié)
+var AR_DEBUG = false   // journal de chaque ouverture de conteneur (mettre false une fois le filtre vérifié)
 var AR_PAGE = null, AR_SR = null, AR_CATALOGUE = null
 function arRareteSort(sp) { try { return String(sp.getMinRarity()).toUpperCase() } catch (e) { return 'COMMON' } }
 function arSortListable(sp) {
