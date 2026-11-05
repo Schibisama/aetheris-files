@@ -394,3 +394,50 @@ try {
   )
   console.info('[armures_butin] Butin sur joueur actif.')
 } catch (e) { console.error('[armures_butin] Butin sur joueur indisponible : ' + e) }
+
+
+// ───────────── Contrôle de la répartition de rareté (écrit dans le journal, une fois après chaque chargement) ─────────────
+// Donne, pour les pages de Codex et pour les parchemins de coffre, le nombre de sorts éligibles par rareté (au niveau minimum)
+// et la part de tirage attendue de chaque rareté d'après les poids AR_CODEX_POIDS.
+var AR_RAPPORT_FAIT = false
+function arRapportRarete(server) {
+  var noms = ['COMMON', 'UNCOMMON', 'RARE', 'EPIC', 'LEGENDARY']
+  var ligne = function (titre, cnt, poidsTot) {
+    var t = []
+    for (var i = 0; i < noms.length; i++) {
+      var n = cnt[noms[i]] ? cnt[noms[i]].n : 0, w = cnt[noms[i]] ? cnt[noms[i]].w : 0
+      t.push(noms[i] + ' ' + n + ' sorts -> ' + (poidsTot > 0 ? (100 * w / poidsTot).toFixed(1) : '0') + ' %')
+    }
+    console.info('[armures_butin] RARETE ' + titre + ' : ' + t.join(' | '))
+  }
+  if (!AR_SR) AR_SR = Java.loadClass('io.redspace.ironsspellbooks.api.registry.SpellRegistry')
+  if (!AR_CATALOGUE) { try { AR_CATALOGUE = Java.loadClass('com.specs.irons_spellbooks.catalog.SpellCatalog') } catch (eC) {} }
+  var tous = AR_SR.getEnabledSpells()
+  var cl = classeParNom('Réprouvé')
+  var pages = {}, parch = {}, totP = 0, totS = 0
+  for (var i = 0; i < tous.size(); i++) {
+    var sp = tous.get(i), id = String(sp.getSpellId()), r = arRareteSort(sp)
+    var w = AR_CODEX_POIDS[r]; if (w === undefined) w = 1
+    if (arSortListable(sp)) {
+      if (!pages[r]) pages[r] = { n: 0, w: 0 }
+      pages[r].n++; pages[r].w += w; totP += w
+    }
+    var ok = !desactSortInterdit(id)
+    try { if (!sp.allowLooting()) ok = false } catch (e1) {}
+    if (ok) {
+      var pourTous = (typeof SORTS_PAR_CLASSE !== 'undefined' && SORTS_PAR_CLASSE[id] && SORTS_PAR_CLASSE[id].indexOf('*') !== -1)
+      if (!pourTous && !sortInterditPourJoueur(cl, id)) ok = false
+    }
+    if (ok) {
+      if (!parch[r]) parch[r] = { n: 0, w: 0 }
+      parch[r].n++; parch[r].w += w; totS += w
+    }
+  }
+  ligne('pages de Codex (part de tirage)', pages, totP)
+  ligne('parchemins de coffre (part de tirage)', parch, totS)
+}
+ServerEvents.tick(function (event) {
+  if (AR_RAPPORT_FAIT || event.server.tickCount < 200) return
+  AR_RAPPORT_FAIT = true
+  try { arRapportRarete(event.server) } catch (e) { console.error('[armures_butin] rapport de rareté : ' + e) }
+})
