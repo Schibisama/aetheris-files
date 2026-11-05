@@ -1,5 +1,5 @@
 {
- "version": "2026-11-05T19:23:09.435Z",
+ "version": "2026-11-05T19:32:11.194Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6202,8 +6202,8 @@
   },
   {
    "path": "kubejs/server_scripts/armures_butin.js",
-   "sha1": "fcac8edd2480ad3512a0122e5bd5e2cf9a78170d",
-   "size": 19871
+   "sha1": "c2ca0a826ce52dedd5e0a3007e30cfc518370cda",
+   "size": 19860
   },
   {
    "path": "kubejs/server_scripts/baton_neant.js",
@@ -6382,8 +6382,8 @@
   },
   {
    "path": "kubejs/startup_scripts/classes_niveaux.js",
-   "sha1": "0e40636c27078a9bf85721994afc840e9ff32f47",
-   "size": 21136
+   "sha1": "17a7c62e5728c5fd1e7611a556bc0a2c4d67361b",
+   "size": 20624
   },
   {
    "path": "kubejs/startup_scripts/main.js",
@@ -6507,8 +6507,8 @@
   },
   {
    "path": "mods/cataclysm_spellbooks-1.1.11-1.21.jar",
-   "sha1": "25f1ee76933c29b97e4e8a6bd9ab1ad67b16300b",
-   "size": 737424
+   "sha1": "835be7492e10a7792ab723989f4f6a3994001851",
+   "size": 737384
   },
   {
    "path": "mods/chronomancy-1.0.5.jar",
@@ -6842,13 +6842,13 @@
   },
   {
    "path": "mods/irons_spellbooks-1.21.1-3.16.3.jar",
-   "sha1": "27ccf4e7f6e88d1d48c854d49d1cd422f98143bc",
-   "size": 14000803
+   "sha1": "67c8e43fbe875e312ba4f3cb17c102bfe714a7f6",
+   "size": 14000686
   },
   {
    "path": "mods/iss_magicfromtheeast-1.1.5.jar",
-   "sha1": "e3552ea6b7b32b843c48bf0d857237d4b7129ab0",
-   "size": 1680780
+   "sha1": "500ee17fb00eee5901ef9d7cc654d57d35fdc127",
+   "size": 1701051
   },
   {
    "path": "mods/jei-1.21.1-neoforge-19.64.0.455.jar",
