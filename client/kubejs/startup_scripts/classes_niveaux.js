@@ -202,7 +202,6 @@ var EQUILIBRAGE_RETOUR = {
   'cursed_school:wailing_dirge': { p: 1.5 },
   'cursed_school:withering_touch': { p: 1.5 },
   'cursespells:a_call_beyond': { p: 1.4706 },
-  'cursespells:abhorrent_star': { p: 0.1667 },
   'cursespells:all_vanity': { p: 0.4444 },
   'cursespells:blade_of_judgment': { p: 0.5882, cd: 40 },
   'cursespells:cursed_arrow': { p: 1.4706, cd: 10 },

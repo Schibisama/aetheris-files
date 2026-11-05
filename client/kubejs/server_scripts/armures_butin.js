@@ -25,6 +25,7 @@ var AR_REPROUVE_TAUX = 0.6
 // Parchemin supplémentaire : chance par coffre d'en ajouter un (en plus de ceux déjà présents, environ 0,017 par coffre),
 // pour viser environ 1 parchemin tous les 25 coffres (0,04 par coffre).
 var AR_PARCHEMIN_AJOUT = 0.023
+var AR_DEBUG = true   // journal de chaque ouverture de conteneur (mettre false une fois le filtre vérifié)
 var AR_PAGE = null, AR_SR = null, AR_CATALOGUE = null
 function arRareteSort(sp) { try { return String(sp.getMinRarity()).toUpperCase() } catch (e) { return 'COMMON' } }
 function arSortListable(sp) {
@@ -189,7 +190,7 @@ function arCle(joueur, menu) {
   try {
     var pos = arPositions(menu.getContainer())
     if (pos.length === 0) {   // coffres Lootr : l'inventaire du joueur est une copie (ILootrInventory), la position est dans son « info »
-      try { var inf = menu.getContainer().getInfo(); pos = [inf.getInfoPos()] } catch (eL) {}
+      try { var inf = menu.getContainer().getInfo(); pos = [inf.getInfoPos()] } catch (eL) { if (AR_DEBUG) console.error('[armures_butin] getInfo : ' + eL) }
     }
     if (pos.length === 0) return null
     var dim = String(joueur.level.dimension.location())
@@ -199,20 +200,24 @@ function arCle(joueur, menu) {
     for (var i = 0; i < pos.length; i++) s += pos[i].x + ',' + pos[i].y + ',' + pos[i].z + ';'
     if (lootr) s += 'j:' + String(joueur.uuid)
     return s
-  } catch (e) { return null }
+  } catch (e) { if (AR_DEBUG) console.error('[armures_butin] arCle : ' + e); return null }
 }
 
 function arFiltrerConteneur(event) {
   try {
     var joueur = event.getEntity()
     if (!joueur || !joueur.isPlayer()) return
-    try { if (estTest(joueur)) return } catch (e0) {}
     var menu = event.getContainer()
     var total = menu.slots.size()
     if (total <= 36) return
+    var modeTest = false
+    try { modeTest = estTest(joueur) } catch (e0) {}
+    if (AR_DEBUG) console.info('[armures_butin] ouverture : ' + joueur.username + ' | menu ' + menu.getClass().getName() + ' | conteneur ' + menu.getContainer().getClass().getName() + ' | ' + total + ' emplacements | mode testeur ' + modeTest)
+    if (modeTest) return
     if (!AR_CLASSE_ENDER) AR_CLASSE_ENDER = Java.loadClass('net.minecraft.world.inventory.PlayerEnderChestContainer')
     try { if (menu.getContainer() instanceof AR_CLASSE_ENDER) return } catch (e1) {}
     var cle = arCle(joueur, menu)
+    if (AR_DEBUG) console.info('[armures_butin] clé : ' + cle)
     if (!cle) return
     var deja = joueur.server.persistentData
     var liste = deja.getCompound(AR_CLE)   // renvoie un compound vide s'il n'existe pas encore
