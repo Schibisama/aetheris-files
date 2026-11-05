@@ -190,11 +190,20 @@ ServerEvents.recipes(function (event) {
         ingredients: ings.map(function (x) { return { ingredient: { item: x[0] }, count: x[1] } }) }).id('aetheris:' + id)
     })
   }
+  ajout(function () { event.shaped('somakespells:frostvein_codex_spell_book', ['ABB', 'DCC', 'ABB'], { A: IS + 'ice_rune', B: IS + 'arcane_ingot', C: IS + 'hogskin', D: IS + 'gold_spell_book' }).id('aetheris:frostvein_codex_spell_book') })
+  ajout(function () { event.shaped('somakespells:starless_grimoire_spell_book', ['ABB', 'DCC', 'ABB'], { A: 'somakespells:eldritch_rune', B: IS + 'arcane_ingot', C: IS + 'hogskin', D: IS + 'gold_spell_book' }).id('aetheris:starless_grimoire_spell_book') })
+  ajout(function () { event.shaped('somakespells:stoneheart_codex_spell_book', ['ABB', 'DCC', 'ABB'], { A: 'gtbcs_geomancy_plus:geo_rune', B: IS + 'arcane_ingot', C: IS + 'hogskin', D: IS + 'gold_spell_book' }).id('aetheris:stoneheart_codex_spell_book') })
   var SPI = 'iss_magicfromtheeast:', SO = 'somakespells:'
   amelioration('soullit_testament_t1_to_t2', SO + 'soullit_testament_spell_book', SO + 'soullit_testament_2_spell_book', SPI + 'spirit', [[SPI + 'crystallized_soul', 16], [IS + 'arcane_ingot', 4], [SPI + 'spirit_upgrade_orb', 2]])
   amelioration('soullit_testament_t2_to_t3', SO + 'soullit_testament_2_spell_book', SO + 'soullit_testament_3_spell_book', SPI + 'spirit', [[SPI + 'crystallized_soul', 32], [IS + 'divine_soulshard', 1], [SPI + 'spirit_upgrade_orb', 3]])
   amelioration('axiomatic_codex_t1_to_t2', SO + 'axiomatic_codex_spell_book', SO + 'axiomatic_codex_2_spell_book', SPI + 'symmetry', [[SPI + 'jade', 16], [IS + 'arcane_ingot', 4], [SPI + 'symmetry_upgrade_orb', 2]])
   amelioration('axiomatic_codex_t2_to_t3', SO + 'axiomatic_codex_2_spell_book', SO + 'axiomatic_codex_3_spell_book', SPI + 'symmetry', [[SPI + 'refined_jade_ingot', 16], [IS + 'arcane_ingot', 8], [SPI + 'symmetry_upgrade_orb', 3]])
+  amelioration('frostvein_codex_t1_to_t2', SO + 'frostvein_codex_spell_book', SO + 'frostvein_codex_2_spell_book', IS + 'ice', [[IS + 'permafrost_shard', 16], [IS + 'frozen_bone', 8], [IS + 'ice_upgrade_orb', 2]])
+  amelioration('frostvein_codex_t2_to_t3', SO + 'frostvein_codex_2_spell_book', SO + 'frostvein_codex_3_spell_book', IS + 'ice', [[IS + 'permafrost_shard', 32], [IS + 'frozen_bone', 16], [IS + 'ice_upgrade_orb', 3]])
+  amelioration('starless_grimoire_t1_to_t2', SO + 'starless_grimoire_spell_book', SO + 'starless_grimoire_2_spell_book', IS + 'eldritch', [[IS + 'eldritch_manuscript', 4], [IS + 'arcane_ingot', 4], [SO + 'eldritch_upgrade_orb', 2]])
+  amelioration('starless_grimoire_t2_to_t3', SO + 'starless_grimoire_2_spell_book', SO + 'starless_grimoire_3_spell_book', IS + 'eldritch', [[IS + 'eldritch_manuscript', 8], [IS + 'arcane_ingot', 8], [SO + 'eldritch_upgrade_orb', 3]])
+  amelioration('stoneheart_codex_t1_to_t2', SO + 'stoneheart_codex_spell_book', SO + 'stoneheart_codex_2_spell_book', 'gtbcs_geomancy_plus:geo', [['minecraft:obsidian', 16], [IS + 'arcane_ingot', 4], ['gtbcs_geomancy_plus:geo_upgrade_orb', 2]])
+  amelioration('stoneheart_codex_t2_to_t3', SO + 'stoneheart_codex_2_spell_book', SO + 'stoneheart_codex_3_spell_book', 'gtbcs_geomancy_plus:geo', [['minecraft:obsidian', 32], [IS + 'arcane_ingot', 8], ['gtbcs_geomancy_plus:geo_upgrade_orb', 3]])
   console.info('[classes_desactives] ' + n + ' recettes ajoutées (armes sans source).')
 })
 
