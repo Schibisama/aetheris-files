@@ -104,7 +104,7 @@ function arRemplacerParcheminReprouve(pile) {
     }
     if (!liste.length) return 'retirer'
     var choix = liste[Math.floor(Math.random() * liste.length)]
-    var niveau = Math.max(choix.getMinLevel(), Math.min(s.niveau, choix.getMaxLevel()))
+    var niveau = Math.max(1, choix.getMinLevel())   // niveau le plus bas
     var neuf = Item.of('irons_spellbooks:scroll')
     DESACT_ISC.set(neuf, DESACT_ISC.createScrollContainer(choix, niveau, neuf))
     return neuf
@@ -131,9 +131,7 @@ function arCreerParchemin() {
     }
     if (!liste.length) return null
     var choix = liste[Math.floor(Math.random() * liste.length)]
-    var mn = choix.getMinLevel(), mx = choix.getMaxLevel()
-    var q = Math.random() < 0.75 ? Math.random() * 0.7 : Math.random()
-    var niveau = Math.min(mx, mn + Math.floor(q * (mx - mn + 1)))
+    var niveau = Math.max(1, choix.getMinLevel())   // niveau le plus bas
     var neuf = Item.of('irons_spellbooks:scroll')
     DESACT_ISC.set(neuf, DESACT_ISC.createScrollContainer(choix, niveau, neuf))
     return neuf
@@ -147,12 +145,38 @@ function arTauxAutre(pile) {
 }
 // Décision pour UNE pile de coffre. Retourne : undefined = objet non concerné par le filtre ; null = gardé ;
 // 'retirer' = supprimé ; ou une nouvelle pile (page de Codex recréée). Utilisée aussi par le test de butin (test_butin.js).
+// Parchemin d'un sort au niveau le plus bas : retourne un parchemin neuf s'il est au-dessus du minimum, sinon null (inchangé).
+function arParcheminAuMin(pile) {
+  try {
+    var s = desactSortDuParchemin(pile)
+    if (!s) return null
+    if (!AR_SR) AR_SR = Java.loadClass('io.redspace.ironsspellbooks.api.registry.SpellRegistry')
+    var sp = AR_SR.getSpell(Java.loadClass('net.minecraft.resources.ResourceLocation').parse(s.id))
+    var mn = Math.max(1, Number(sp.getMinLevel()))
+    if (Number(s.niveau) <= mn) return null
+    var neuf = Item.of('irons_spellbooks:scroll')
+    DESACT_ISC.set(neuf, DESACT_ISC.createScrollContainer(sp, mn, neuf))
+    return neuf
+  } catch (e) { return null }
+}
+
 function arFiltrerPile(pile) {
   if (String(pile.id) === 'specs_irons_spellbooks:codex_page') {
     var res = arPageCodex(pile)
     return res === null ? null : res
   }
-  if (arEstParcheminReprouve(pile)) return Math.random() < AR_REPROUVE_TAUX ? arRemplacerParcheminReprouve(pile) : null
+  if (String(pile.id) === 'irons_spellbooks:scroll') {
+    // Tous les parchemins de coffre sont au niveau le plus bas de leur sort.
+    var base = pile
+    if (arEstParcheminReprouve(pile) && Math.random() < AR_REPROUVE_TAUX) {
+      var rempl = arRemplacerParcheminReprouve(pile)
+      if (rempl === 'retirer') return 'retirer'
+      base = rempl
+    }
+    var bas = arParcheminAuMin(base)
+    if (bas) return bas
+    return base === pile ? null : base
+  }
   var taux = arEstArmure(pile) ? arTaux(pile) : arTauxAutre(pile)
   if (taux <= 0) return undefined
   return Math.random() < taux ? 'retirer' : null
