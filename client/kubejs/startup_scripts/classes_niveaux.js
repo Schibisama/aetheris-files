@@ -258,7 +258,7 @@ var EQUILIBRAGE_RETOUR = {
   'hazennstuff:shard_sword': { p: 1.9394 },
   'hazennstuff:soul_flame_bolt': { p: 0.5081 },
   'hazennstuff:spectral_axe': { p: 1.6667 },
-  'hazennstuff:syringe_barrage': { p: 1.9608 },
+  'hazennstuff:syringe_barrage': { p: 0.817 },
   'hazennstuff:umbrashift_barrage': { p: 1.5 },
   'hazennstuff:violent_regurgitation': { p: 1.8519 },
   'irons_spellbooks:acupuncture': { p: 1.2963 },
