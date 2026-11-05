@@ -22,6 +22,9 @@ var AR_AUTRES = [
 // Parchemins de sorts de la classe Réprouvé : AR_REPROUVE_TAUX des parchemins sont retirés des coffres (ils étaient sur-représentés).
 var AR_CODEX_TAUX = 0.74   // 74 % des pages retirées : environ 1 page de Codex tous les 15 coffres (brut mesuré : 0,255 page par coffre)
 var AR_REPROUVE_TAUX = 0.6
+// Parchemin supplémentaire : chance par coffre d'en ajouter un (en plus de ceux déjà présents, environ 0,017 par coffre),
+// pour viser environ 1 parchemin tous les 25 coffres (0,04 par coffre).
+var AR_PARCHEMIN_AJOUT = 0.023
 var AR_PAGE = null, AR_SR = null, AR_CATALOGUE = null
 function arRareteSort(sp) { try { return String(sp.getMinRarity()).toUpperCase() } catch (e) { return 'COMMON' } }
 function arSortListable(sp) {
@@ -105,6 +108,35 @@ function arRemplacerParcheminReprouve(pile) {
     DESACT_ISC.set(neuf, DESACT_ISC.createScrollContainer(choix, niveau, neuf))
     return neuf
   } catch (e) { return 'retirer' }
+}
+
+// Parchemin ajouté : sort au hasard (actif, trouvable en butin, ni désactivé ni Réprouvé), niveau le plus souvent bas
+// (3 fois sur 4 dans le premier 70 % de la plage de niveaux, sinon toute la plage).
+function arCreerParchemin() {
+  try {
+    if (!AR_SR) AR_SR = Java.loadClass('io.redspace.ironsspellbooks.api.registry.SpellRegistry')
+    var vide = Item.of('minecraft:air')
+    var modele = Item.of('irons_spellbooks:scroll')
+    desactSortDuParchemin(modele)   // initialise DESACT_ISC
+    var cl = classeParNom('Réprouvé')
+    var tous = AR_SR.getEnabledSpells(), liste = []
+    for (var i = 0; i < tous.size(); i++) {
+      var sp = tous.get(i), id = String(sp.getSpellId())
+      if (desactSortInterdit(id)) continue
+      try { if (!sp.allowLooting()) continue } catch (e1) {}
+      var pourTous = (typeof SORTS_PAR_CLASSE !== 'undefined' && SORTS_PAR_CLASSE[id] && SORTS_PAR_CLASSE[id].indexOf('*') !== -1)
+      if (!pourTous && !sortInterditPourJoueur(cl, id)) continue
+      liste.push(sp)
+    }
+    if (!liste.length) return null
+    var choix = liste[Math.floor(Math.random() * liste.length)]
+    var mn = choix.getMinLevel(), mx = choix.getMaxLevel()
+    var q = Math.random() < 0.75 ? Math.random() * 0.7 : Math.random()
+    var niveau = Math.min(mx, mn + Math.floor(q * (mx - mn + 1)))
+    var neuf = Item.of('irons_spellbooks:scroll')
+    DESACT_ISC.set(neuf, DESACT_ISC.createScrollContainer(choix, niveau, neuf))
+    return neuf
+  } catch (e) { return null }
 }
 
 function arTauxAutre(pile) {
@@ -201,6 +233,18 @@ function arFiltrerConteneur(event) {
       vus++
       if (dec === 'retirer') { slot.set(vide); retires++ }
       else if (dec) slot.set(dec)
+    }
+    if (Math.random() < AR_PARCHEMIN_AJOUT) {   // parchemin supplémentaire dans un emplacement libre
+      var neuf = arCreerParchemin()
+      if (neuf) {
+        var libres = []
+        for (var j = 0; j < total; j++) {
+          var sl = menu.getSlot(j)
+          if (sl.isSameInventory(repere)) continue
+          if (sl.getItem().isEmpty()) libres.push(sl)
+        }
+        if (libres.length) libres[Math.floor(Math.random() * libres.length)].set(neuf)
+      }
     }
     if (vus > 0) console.info('[armures_butin] ' + retires + '/' + vus + ' objet(s) filtré(s) retiré(s) (' + cle + ')')
   } catch (e) {

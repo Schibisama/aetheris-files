@@ -138,6 +138,16 @@ function tbSimuler(server, cle, nb, o) {
       }
       try { if (desactSansButin(c1.id)) o.interditsRestants.push(c1.id) } catch (e5) {}
     }
+    if (Math.random() < AR_PARCHEMIN_AJOUT) {   // parchemin supplémentaire (armures_butin.js)
+      var ps = arCreerParchemin()
+      if (ps) {
+        var c2 = tbClasser(ps)
+        tbCompter(o, c2, 'fin', 1)
+        tbCompter(o, c2, 'brut', 1)
+        vu[c2.c] = true
+        if (c2.c === 'parchemin') o.rar.fin[c2.rar] = (o.rar.fin[c2.rar] || 0) + 1
+      }
+    }
     for (var cc in vu) o.parCoffre[cc]++
   }
 }
