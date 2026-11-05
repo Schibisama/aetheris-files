@@ -154,7 +154,7 @@ var EQUILIBRAGE_RETOUR = {
   'cataclysm_spellbooks:monolith_crash': { p: 4.0118 },
   'cataclysm_spellbooks:phantasmal_blade': { p: 1.5 },
   'cataclysm_spellbooks:piercing_bone': { p: 11.3333 },
-  'chronomancy:time_piercing_needle': { p: 0.75 },
+  'chronomancy:time_piercing_needle': { p: 0.75, cd: 2 },
   'colormagic:black_droplets': { p: 0.6667 },
   'colormagic:desaturation': { m: 0.4444 },
   'colormagic:paint_spray': { p: 2.6658 },
