@@ -1,5 +1,5 @@
 {
- "version": "2026-11-05T17:19:49.417Z",
+ "version": "2026-11-05T17:27:56.525Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6382,8 +6382,8 @@
   },
   {
    "path": "kubejs/startup_scripts/classes_niveaux.js",
-   "sha1": "791272929f8e751d1901816be7b3128156242739",
-   "size": 20963
+   "sha1": "0f0905a65f5797c9b1e9ec3f0d6ef18c9bf443d8",
+   "size": 21184
   },
   {
    "path": "kubejs/startup_scripts/main.js",
@@ -6432,8 +6432,8 @@
   },
   {
    "path": "mods/apprentice_codex-1.0.0+mc1.21.1.jar",
-   "sha1": "faa2a4ef61eea4996d999b8b2166e3cfd60b31dd",
-   "size": 11216773
+   "sha1": "7518e1586235cb75f0cedbc5efa30e46313ebdbe",
+   "size": 11300734
   },
   {
    "path": "mods/archaion-1.21.1-1.4.4.jar",
@@ -6507,13 +6507,13 @@
   },
   {
    "path": "mods/cataclysm_spellbooks-1.1.11-1.21.jar",
-   "sha1": "917c976cf801d4d0090c57686f1ad1693b714117",
-   "size": 737143
+   "sha1": "25f1ee76933c29b97e4e8a6bd9ab1ad67b16300b",
+   "size": 737424
   },
   {
    "path": "mods/chronomancy-1.0.5.jar",
-   "sha1": "05419910a25246bb4784d0c4709171bdfe1e990d",
-   "size": 5895603
+   "sha1": "01cc8d33265e042a4b3279d721e25dc2f5880640",
+   "size": 5895554
   },
   {
    "path": "mods/citadel-1.21.1-2.7.6.jar",
@@ -6597,8 +6597,8 @@
   },
   {
    "path": "mods/cursespells-1.21.1-1.0.0.jar",
-   "sha1": "87111a988be3f089d7b9954e5c269cce83afbb99",
-   "size": 24494296
+   "sha1": "6caaf2ec39d3bd5e2a218e2fcd7f80b6e53e3c7c",
+   "size": 24515359
   },
   {
    "path": "mods/d4239400-immersivedamageindicators-neoforge-1.0.0-1.21.1.jar",
@@ -6742,8 +6742,8 @@
   },
   {
    "path": "mods/gametechbcs_spellbooks-3.0.0-1.21.1.jar",
-   "sha1": "e3c24451e0bbf05ba3fe1d4a0ac7beca44bea310",
-   "size": 1695572
+   "sha1": "2caf5b7ae5dd1059c9fee5fd86fbe4eb16a37b17",
+   "size": 1695554
   },
   {
    "path": "mods/GatewaysToEternity-1.21.1-5.1.0.jar",
@@ -6842,8 +6842,8 @@
   },
   {
    "path": "mods/irons_spellbooks-1.21.1-3.16.3.jar",
-   "sha1": "08eb14c90a382a71b8b6c4ec1f741145b213b0db",
-   "size": 13999997
+   "sha1": "27ccf4e7f6e88d1d48c854d49d1cd422f98143bc",
+   "size": 14000803
   },
   {
    "path": "mods/iss_magicfromtheeast-1.1.5.jar",
@@ -7047,8 +7047,8 @@
   },
   {
    "path": "mods/somakespells-1.0.9-fix.jar",
-   "sha1": "aa99cb7752eb544bd4febd3553bcb15dbfb4c52d",
-   "size": 2554112
+   "sha1": "6f929024d7a7efcf642ed2a3529af110229f08c0",
+   "size": 2586529
   },
   {
    "path": "mods/sophisticatedbackpacks-1.21.1-3.26.19.2243.jar",
