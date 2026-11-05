@@ -12,7 +12,8 @@ var RESTRICTIONS = [
   { regle: /^iss_magicfromtheeast:repeating_crossbow$/, classes: [] },
   // ── Legendary Monsters : seuls le Marteau moussu et le Plastron moussu sont gardés (Druide, Géomancien) ; le reste des armes et armures est désactivé ──
   { regle: /^legendary_monsters:(mossy_hammer|mossy_chestplate)$/, classes: ['Druide', 'Géomancien'] },
-  { regle: /^legendary_monsters:(sharp_battle_axe|spiky_shield|spiky_spear|chorus_blade|chorus_mask|chorus_cannon|shulker_shield|shulker_helmet|the_great_frost|dinosaur_bone_shield|dinosaur_bone_club|dinosaur_bone_helmet|frostbitten_shield|fiery_jaw|fiery_boots|void_sword|ender_hammer|withered_scythe|withered_ribcage|wand_of_clouds|sharp_sai|axe_of_lightning|atmospheric_boots|soul_great_sword|golden_halbert|knights_sword|blastproof_helmet|sand_cannon|sickle_of_harvest|monstrous_anchor|reinforced_monstrous_anchor|atom_splitter|the_tesseract|buckler_of_annihilation|resurrected_javelin|shattered_greatsword|hand_cannon|swinging_axe|sapphire_helmet|bronzite_sword|bronzite_axe|enderitium_(sword|axe|sickle)|annihilator_(helmet|chestplate|leggings|boots))$/, classes: [] },
+  { regle: /^(legendary_monsters:sickle_of_harvest)$/, classes: ['Géomancien'] },
+  { regle: /^legendary_monsters:(sharp_battle_axe|spiky_shield|spiky_spear|chorus_blade|chorus_mask|chorus_cannon|shulker_shield|shulker_helmet|the_great_frost|dinosaur_bone_shield|dinosaur_bone_club|dinosaur_bone_helmet|frostbitten_shield|fiery_jaw|fiery_boots|void_sword|ender_hammer|withered_scythe|withered_ribcage|wand_of_clouds|sharp_sai|axe_of_lightning|atmospheric_boots|soul_great_sword|golden_halbert|knights_sword|blastproof_helmet|sand_cannon|monstrous_anchor|reinforced_monstrous_anchor|atom_splitter|the_tesseract|buckler_of_annihilation|resurrected_javelin|shattered_greatsword|hand_cannon|swinging_axe|sapphire_helmet|bronzite_sword|bronzite_axe|enderitium_(sword|axe|sickle)|annihilator_(helmet|chestplate|leggings|boots))$/, classes: [] },
   // ── Bosses'Rise (block_factorys_bosses) : armes et armures désactivées ──
   { regle: /^block_factorys_bosses:(dragon_bones_(boots|chestplate|leggings)|dragon_guard_shield|enhanced_shield|ice_gauntlet|knight_(helmet|chestplate|leggings|boots|sword)|kraken_trident|kraken_cannon_item|large_sword|pirate_saber|sandworm_gauntlet|warrior_sword|dagger)$/, classes: [] },
   // Cataclysm (mod principal)
@@ -96,6 +97,27 @@ var RESTRICTIONS = [
   { regle: /^farmers_spell:hell_knife$/, classes: ['Druide'] },
   { regle: /^farmers_spell:gospel$/, classes: ['Paladin'] },
   { regle: /^farmers_spell:grow_knife$/, classes: ['Druide', 'Géomancien'] },
+  // ── Objets réactivés (liste « craft uniquement ») : classes attribuées, recette conservée, plus aucun butin ──
+  { regle: /^(hazennstuff:ancient_warriors_axe)$/, classes: ['Spiritualiste'] },
+  { regle: /^(hazennstuff:astralite_cleaver|hazennstuff:nexus|hazennstuff:starfury|hazennstuff:terraprisma)$/, classes: ['Astromancien'] },
+  { regle: /^(hazennstuff:beongae)$/, classes: ['Électro-Sorcier'] },
+  { regle: /^(hazennstuff:blade_of_grass|hazennstuff:blossom_of_the_enchantress|hazennstuff:bountiful_harvest|hazennstuff:thorn_chakram)$/, classes: ['Druide'] },
+  { regle: /^(hazennstuff:ceaseless_void|hazennstuff:hammush|hazennstuff:lights_bane|hazennstuff:nights_edge|hazennstuff:rod_of_discord|hazennstuff:true_nights_edge)$/, classes: ['Réprouvé'] },
+  { regle: /^(hazennstuff:coralite_cane)$/, classes: ['Hydromancien'] },
+  { regle: /^(hazennstuff:divine_greatsword|hazennstuff:divine_scepter|hazennstuff:excalibur|hazennstuff:hammer_of_justice)$/, classes: ['Paladin'] },
+  { regle: /^(hazennstuff:draconic_splitter|hazennstuff:fireblossom_rapier|hazennstuff:firebrand|hazennstuff:soulcalling_scepter|hazennstuff:volcano|hazennstuff:war_flaming_lance)$/, classes: ['Pyromancien'] },
+  { regle: /^(hazennstuff:enderconic_scepter)$/, classes: ['Voyageur du Vide'] },
+  { regle: /^(hazennstuff:frieren_staff|hazennstuff:ravens_bane)$/, classes: ['Chronomancien'] },
+  { regle: /^(hazennstuff:glassweaver_scepter)$/, classes: ['Symétriste'] },
+  { regle: /^(hazennstuff:grimoire_staff|hazennstuff:spectrum)$/, classes: ['Technomancien'] },
+  { regle: /^(hazennstuff:ice_pike)$/, classes: ['Cryomancien'] },
+  { regle: /^(hazennstuff:malice)$/, classes: ['Aéromancien'] },
+  { regle: /^(hazennstuff:meowmere)$/, classes: ['Chromancien'] },
+  { regle: /^(hazennstuff:muramasa)$/, classes: ['Nécromancien'] },
+  { regle: /^(hazennstuff:skyscorcher)$/, classes: ['Électro-Sorcier', 'Aéromancien'] },
+  { regle: /^(hazennstuff:soul_reaper|hazennstuff:wisewood_cane)$/, classes: ['Nécromancien', 'Réprouvé'] },
+  { regle: /^(hazennstuff:spectral_pickaxe)$/, classes: ['Nécromancien', 'Spiritualiste'] },
+  { regle: /^(hazennstuff:vampire_knives)$/, classes: ['Hémomancien'] },
   // ── Hazen N Stuff : onglet « Utility » (armes, bâtons, curios) désactivé pour tout le monde ──
   { regle: /^hazennstuff:(fireblossom_rapier|firebrand|draconic_splitter|ravens_bane|war_flaming_lance|volcano|ice_pike|frostburn_dagger|beongae|skyscorcher|ionic_splitter_dormant|ionic_splitter_t1|ionic_splitter_t2|ionic_splitter_t3|bountiful_harvest|thorn_chakram|blade_of_grass|o_fortuna_dormant|vampire_knives|devastator_dormant|obsidian_claymore|starfury|umbranova_dormant|hammer_of_justice|excalibur|excalibur_divine_gold|hazens_excalibur|divine_greatsword|hammush|meowmere|spectrum|terraprisma|ancient_warriors_axe|malice|provocation_dormant|soul_reaper|lights_bane|nights_edge|true_nights_edge|astralite_cleaver|tidal_wave|the_devourer|mage_bane|legionnaire_warlock_axe|dawnmaker|muramasa|wisewood_cane|frieren_staff|rod_of_discord|white_lily_staff|soulcalling_scepter|enderconic_scepter|blossom_of_the_enchantress|grimoire_staff|divine_scepter|ceaseless_void|glassweaver_scepter|nexus|coralite_cane|insania_aeternus|spectral_pickaxe|pickaxe_axe|pickaxe_axe_divine_gold|ruptured|refined|reinforced|radiance|shattered|sacred|strengthened|singularity|abstract|advanced|abomination|absolute|golden_shower_spellbook|energized_core_spellbook|galvanized_sheath|scroll_sheath|arbitrium_wings|angel_wings|fallen_angel_wings|blade_of_the_legate|the_prefects_ring|the_tribunes_medallion|ring_of_efficiency|pendant_of_harmony)$/, classes: [] },
   // ── Hazen N Stuff : armures classées selon leur bonus de puissance d'école ──
