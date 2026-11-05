@@ -20,7 +20,7 @@ var AR_AUTRES = [
 // Pages de Codex : AR_CODEX_TAUX des pages sont retirées ; chaque page conservée est recréée au niveau le plus bas, pour un sort tiré
 // au hasard (sort actif, trouvable en butin, non désactivé), pondéré par la rareté : voir AR_CODEX_POIDS.
 // Parchemins de sorts de la classe Réprouvé : AR_REPROUVE_TAUX des parchemins sont retirés des coffres (ils étaient sur-représentés).
-var AR_CODEX_TAUX = 0.98   // 98 % des pages retirées (÷5 par rapport à 90 %)
+var AR_CODEX_TAUX = 0.74   // 74 % des pages retirées : environ 1 page de Codex tous les 15 coffres (brut mesuré : 0,255 page par coffre)
 var AR_REPROUVE_TAUX = 0.6
 var AR_PAGE = null, AR_SR = null, AR_CATALOGUE = null
 function arRareteSort(sp) { try { return String(sp.getMinRarity()).toUpperCase() } catch (e) { return 'COMMON' } }
@@ -81,6 +81,32 @@ function arEstParcheminReprouve(pile) {
   } catch (e) { return false }
 }
 
+// Remplace un parchemin Réprouvé retiré par un parchemin d'un sort d'une autre classe (même niveau si possible) :
+// le nombre de parchemins dans les coffres ne baisse plus, seule la part de Réprouvé diminue.
+function arRemplacerParcheminReprouve(pile) {
+  try {
+    var s = desactSortDuParchemin(pile)
+    if (!s) return 'retirer'
+    if (!AR_SR) AR_SR = Java.loadClass('io.redspace.ironsspellbooks.api.registry.SpellRegistry')
+    var cl = classeParNom('Réprouvé')
+    var tous = AR_SR.getEnabledSpells(), liste = []
+    for (var i = 0; i < tous.size(); i++) {
+      var sp = tous.get(i), id = String(sp.getSpellId())
+      if (id === s.id || desactSortInterdit(id)) continue
+      try { if (!sp.allowLooting()) continue } catch (e1) {}
+      var pourTous = (typeof SORTS_PAR_CLASSE !== 'undefined' && SORTS_PAR_CLASSE[id] && SORTS_PAR_CLASSE[id].indexOf('*') !== -1)
+      if (!pourTous && !sortInterditPourJoueur(cl, id)) continue   // sort Réprouvé : exclu
+      liste.push(sp)
+    }
+    if (!liste.length) return 'retirer'
+    var choix = liste[Math.floor(Math.random() * liste.length)]
+    var niveau = Math.max(choix.getMinLevel(), Math.min(s.niveau, choix.getMaxLevel()))
+    var neuf = Item.of('irons_spellbooks:scroll')
+    DESACT_ISC.set(neuf, DESACT_ISC.createScrollContainer(choix, niveau, neuf))
+    return neuf
+  } catch (e) { return 'retirer' }
+}
+
 function arTauxAutre(pile) {
   var id = String(pile.id)
   for (var i = 0; i < AR_AUTRES.length; i++) if (AR_AUTRES[i][0].test(id)) return AR_AUTRES[i][1]
@@ -93,7 +119,7 @@ function arFiltrerPile(pile) {
     var res = arPageCodex(pile)
     return res === null ? null : res
   }
-  if (arEstParcheminReprouve(pile)) return Math.random() < AR_REPROUVE_TAUX ? 'retirer' : null
+  if (arEstParcheminReprouve(pile)) return Math.random() < AR_REPROUVE_TAUX ? arRemplacerParcheminReprouve(pile) : null
   var taux = arEstArmure(pile) ? arTaux(pile) : arTauxAutre(pile)
   if (taux <= 0) return undefined
   return Math.random() < taux ? 'retirer' : null
