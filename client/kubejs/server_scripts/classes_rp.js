@@ -2512,8 +2512,19 @@ try {
     try {
       var page = entiteObjet.getItem()
       if (page && !page.isEmpty() && String(page.id) === PAGE_ID) {
-        parchEcrirePage(page, lu.niveau)
-        console.info('[parchemin] page de ' + lu.id + ' marquée niveau ' + lu.niveau)
+        var niveau = lu.niveau
+        // Parchemin apparu au sol sans joueur (butin de mob, coffre cassé...) : la page est au niveau le plus bas du sort.
+        // Un parchemin jeté par un joueur garde son niveau.
+        var jeteParJoueur = false
+        try { jeteParJoueur = entiteObjet.getOwner() != null } catch (eO) { jeteParJoueur = true }
+        if (!jeteParJoueur) {
+          try {
+            var sp = Java.loadClass('io.redspace.ironsspellbooks.api.registry.SpellRegistry').getSpell(Java.loadClass('net.minecraft.resources.ResourceLocation').parse(lu.id))
+            niveau = Math.max(1, Number(sp.getMinLevel()))
+          } catch (eN) { niveau = 1 }
+        }
+        parchEcrirePage(page, niveau)
+        console.info('[parchemin] page de ' + lu.id + ' marquée niveau ' + niveau + (jeteParJoueur ? '' : ' (butin : niveau le plus bas)'))
       }
     } catch (e2) { console.error('[parchemin] marquage de la page : ' + e2) }
   }
