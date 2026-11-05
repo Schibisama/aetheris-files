@@ -1,5 +1,5 @@
 {
- "version": "2026-11-05T19:32:11.194Z",
+ "version": "2026-11-05T19:35:56.268Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6347,8 +6347,8 @@
   },
   {
    "path": "kubejs/server_scripts/test_butin.js",
-   "sha1": "66d11bbdf9babec1eb79d583d54201ed1b615000",
-   "size": 30710
+   "sha1": "6a653a34bf03065268d841ad12527922852f6bb1",
+   "size": 30645
   },
   {
    "path": "kubejs/server_scripts/waystones_halo.js",
@@ -6382,8 +6382,8 @@
   },
   {
    "path": "kubejs/startup_scripts/classes_niveaux.js",
-   "sha1": "17a7c62e5728c5fd1e7611a556bc0a2c4d67361b",
-   "size": 20624
+   "sha1": "54ebd58dc7d1c8319db1a9dcf9f7faee1fad6be6",
+   "size": 20621
   },
   {
    "path": "kubejs/startup_scripts/main.js",
