@@ -193,7 +193,7 @@ function arCle(joueur, menu) {
       try { var inf = menu.getContainer().getInfo(); pos = [inf.getInfoPos()] } catch (eL) { if (AR_DEBUG) console.error('[armures_butin] getInfo : ' + eL) }
     }
     if (pos.length === 0) return null
-    var dim = String(joueur.level.dimension.location())
+    var dim = String(joueur.level.dimension)
     // NB : getClass() n'existe pas dans le moteur de script : un coffre Lootr se reconnaît à son « info » (ILootrInventory.getInfo()).
     var lootr = false
     try { lootr = !!menu.getContainer().getInfo() } catch (eN) {}
