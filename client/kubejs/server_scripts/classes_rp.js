@@ -756,6 +756,44 @@ function oublierSortsDeClasse(server, joueur) {
   for (var i = 0; i < aOublier.length; i++) cmd(server, 'specs_codex spell lock ' + nom + ' ' + aOublier[i])
 }
 
+// ───────── Sort de départ de chaque classe ─────────
+// Appris d'office quand une classe est attribuée (/starter ou reroll chez le Maître du Destin) ; on ne peut pas l'oublier
+// (le respec du codex est annulé plus bas, et un contrôle le remet s'il disparaît) tant que le joueur garde sa classe.
+// Au changement de classe il est oublié comme les autres sorts de classe, puis le sort de départ de la nouvelle classe est donné.
+var SORT_DEBUT = {
+  'Hydromancien': 'hazennstuff:water_bolt',
+  'Technomancien': 'apprenticecodex:lethal_assault',
+  'Astromancien': 'asterismarcanum:starfire',
+  'Chronomancien': 'chronomancy:sands_of_time',
+  'Chromancien': 'colormagic:paint_spray',
+  'Réprouvé': 'cursed_school:crow_feast',
+  'Envoûteur': 'cursespells:chain_curse',
+  'Géomancien': 'gtbcs_geomancy_plus:dripstone_bolt',
+  'Hémomancien': 'monsterspellbooks:blood_thorn',
+  'Voyageur du Vide': 'apprenticecodex:arcane_blast',
+  'Pyromancien': 'irons_spellbooks:fire_arrow',
+  'Paladin': 'irons_spellbooks:guiding_bolt',
+  'Cryomancien': 'irons_spellbooks:icicle',
+  'Électro-Sorcier': 'apprenticecodex:shock',
+  'Druide': 'apprenticecodex:compound_phial',
+  'Spiritualiste': 'iss_magicfromtheeast:splitting_shuriken',
+  'Symétriste': 'iss_magicfromtheeast:jade_bullet',
+  'Nécromancien': 'monsterspellbooks:bone_dagger',
+  'Aéromancien': 'cataclysm_spellbooks:desert_winds'
+}
+var SORT_DEBUT_CLE = 'classe_sort_debut'
+function donnerSortDeBase(server, joueur, classe) {
+  try {
+    var id = SORT_DEBUT[classe.nom]
+    if (!id) { joueur.persistentData.remove(SORT_DEBUT_CLE); return }
+    joueur.persistentData.putString(SORT_DEBUT_CLE, id)
+    cmd(server, 'specs_codex spell unlock ' + joueur.username + ' ' + id)
+    var rl = id.split(':')
+    joueur.tell(Text.gold('Sort de départ appris : ').append(Text.translate('spell.' + rl[0] + '.' + rl[1]).yellow()))
+    console.info('[classes_rp] ' + joueur.username + ' (' + classe.nom + ') apprend son sort de départ ' + id)
+  } catch (e) { console.error('[classes_rp] sort de départ : ' + e) }
+}
+
 // reinit = true : on repart de zéro (nouvelle classe) -> tous les sorts découverts sont oubliés.
 // À la simple reconnexion (reinit = false) on garde la progression du joueur.
 function appliquerClasse(server, joueur, classe, reinit) {
@@ -802,6 +840,7 @@ function appliquerClasse(server, joueur, classe, reinit) {
     }
   }
   verrouillerSortsInterdits(server, joueur, classe)
+  if (reinit) donnerSortDeBase(server, joueur, classe)
 }
 
 // Messages traduisibles : le client les affiche en français ou en anglais selon la langue du jeu
@@ -2672,6 +2711,14 @@ ServerEvents.tick(perfWrap('classes_rp:2424', function (event) {
         continue
       }
       RESPEC_SUIVI[cle] = cur
+      // Sort de départ : jamais oublié tant que la classe est gardée (remis s'il a disparu)
+      if (serveur.tickCount % 20 === 0) {
+        var sd = String(j.persistentData.getString(SORT_DEBUT_CLE))
+        if (sd && !admin && !estTest(j) && classeDe(j) && SORT_DEBUT[classeDe(j).nom] === sd && !j.getData(UnlockAttachJ.UNLOCKS).isSpellUnlocked(ResourceLocationJ.tryParse(sd))) {
+          cmd(serveur, 'specs_codex spell unlock ' + j.username + ' ' + sd)
+          console.info('[codex] sort de départ remis pour ' + j.username + ' : ' + sd)
+        }
+      }
     } catch (e) {
       if (!RESPEC_SUIVI._err) { RESPEC_SUIVI._err = true; console.error('[codex] suivi respec : ' + e) }
     }
