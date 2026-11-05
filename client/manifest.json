@@ -1,5 +1,5 @@
 {
- "version": "2026-11-05T18:04:03.114Z",
+ "version": "2026-11-05T18:29:39.793Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6202,8 +6202,8 @@
   },
   {
    "path": "kubejs/server_scripts/armures_butin.js",
-   "sha1": "0c696160051ceae414fdf37fb8d7cd69637c23aa",
-   "size": 14912
+   "sha1": "898e3600c876168225329321d8bfa1bd7172e18b",
+   "size": 15301
   },
   {
    "path": "kubejs/server_scripts/baton_neant.js",
@@ -6347,8 +6347,8 @@
   },
   {
    "path": "kubejs/server_scripts/test_butin.js",
-   "sha1": "dd32be8f1086d2367b89b94fd97a9aacdb2dcc28",
-   "size": 14194
+   "sha1": "9dc6f1b064ae1645b7e8748aef04c017eff53c3a",
+   "size": 13949
   },
   {
    "path": "kubejs/server_scripts/waystones_halo.js",
