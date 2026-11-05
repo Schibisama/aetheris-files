@@ -1,5 +1,5 @@
 {
- "version": "2026-11-04T15:57:26.363Z",
+ "version": "2026-11-05T14:36:11.938Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6137,8 +6137,8 @@
   },
   {
    "path": "kubejs/server_scripts/armures_butin.js",
-   "sha1": "ccbe702038d3b406e91004af11b8082f2d20c957",
-   "size": 10052
+   "sha1": "ed33be13858df396446877aff9b315d82d6e2006",
+   "size": 13859
   },
   {
    "path": "kubejs/server_scripts/baton_neant.js",
@@ -6162,8 +6162,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_desactives.js",
-   "sha1": "90d07dc0219a04df1f05cba213160a3fb0b7ad1f",
-   "size": 20259
+   "sha1": "8cc82a664d2301621c2a12eae5322c767a1d4ff4",
+   "size": 37959
   },
   {
    "path": "kubejs/server_scripts/classes_dump_armes.js",
@@ -6177,8 +6177,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "d35abd5083820d95097176c68ded8a83efd70c06",
-   "size": 148596
+   "sha1": "0c3a3a4931602fd259c5929b93893e2a905c2466",
+   "size": 150870
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -6727,8 +6727,8 @@
   },
   {
    "path": "mods/hazennstuff-1.4.0.14.jar",
-   "sha1": "3be20bacb44c1923348ab6f61b685eec6aacfdcd",
-   "size": 7921289
+   "sha1": "58f90d8f748c73a6e89c7d979ab41f536632f27d",
+   "size": 8017505
   },
   {
    "path": "mods/hazentouvelib-1.0.11.jar",
