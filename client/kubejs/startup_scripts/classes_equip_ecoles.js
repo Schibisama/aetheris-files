@@ -32,7 +32,8 @@ var CLASSES = [
   { nom: 'Astromancien',     ecole: 'asterismarcanum:astral', sup: ['tempest_almanac:astral'] },
   { nom: 'Spiritualiste',    ecole: 'iss_magicfromtheeast:spirit' },
   { nom: 'Symétriste',       ecole: 'iss_magicfromtheeast:symmetry' },
-  { nom: 'Technomancien',    ecole: 'aces_spell_utils:technomancy', sup: ['cataclysm_spellbooks:technomancy'] }
+  { nom: 'Technomancien',    ecole: 'aces_spell_utils:technomancy', sup: ['cataclysm_spellbooks:technomancy'] },
+  { nom: 'Barde',            ecole: 'tunes_n_tomes:melody' }
 ]
 
 var RESTRICTIONS = [
@@ -59,6 +60,8 @@ var RESTRICTIONS = [
   { regle: /^irons_spellbooks:twilight_gale$/, classes: ['Électro-Sorcier', 'Aéromancien'] },
   // ── Wind Spellbooks ──
   { regle: /^wind_spellbooks:(aeromancer_(helmet|chestplate|leggings|boots)|wind_staff)$/, classes: ['Aéromancien'] },
+  // ── Tunes 'n Tomes ──
+  { regle: /^tunes_n_tomes:(bard_(harp|helmet|chestplate|leggings|boots)|melodic_mastery_(helmet|chestplate|leggings|boots)|affinity_ring_melody)$/, classes: ['Barde'] },
   // ── Cursed School / Curse Spells ──
   { regle: /^cursed_school:margin_reaper$/, classes: ['Réprouvé'] },
   // ── Apprentice's Codex ──

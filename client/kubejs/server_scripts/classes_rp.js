@@ -42,7 +42,8 @@ var CLASSES = [
   { nom: 'Astromancien',     ecole: 'asterismarcanum:astral', sup: ['tempest_almanac:astral'] },
   { nom: 'Spiritualiste',    ecole: 'iss_magicfromtheeast:spirit' },
   { nom: 'Symétriste',       ecole: 'iss_magicfromtheeast:symmetry' },
-  { nom: 'Technomancien',    ecole: 'aces_spell_utils:technomancy', sup: ['cataclysm_spellbooks:technomancy'] }
+  { nom: 'Technomancien',    ecole: 'aces_spell_utils:technomancy', sup: ['cataclysm_spellbooks:technomancy'] },
+  { nom: 'Barde',            ecole: 'tunes_n_tomes:melody' }
 ]
 
 // Écoles accessibles à TOUS les joueurs, quelle que soit leur classe.
@@ -123,7 +124,7 @@ var SORTS_PAR_CLASSE = {
   'esoteric_spell:familia_lightning': ['Électro-Sorcier', 'Astromancien'],
   'esoteric_spell:familia_meteor': ['Pyromancien', 'Astromancien'],
   'esoteric_spell:familia_imperial_ray': ['Paladin', 'Astromancien'],
-  'esoteric_spell:familia_symphony': ['Spiritualiste', 'Chromancien'],
+  'esoteric_spell:familia_symphony': ['Spiritualiste', 'Chromancien', 'Barde'],
   'esoteric_spell:finale_guide': ['Spiritualiste', 'Astromancien'],
   'esoteric_spell:finale_mana_regan': ['Spiritualiste', 'Astromancien'],
   'esoteric_spell:finale_stone_barrier': ['Géomancien', 'Paladin'],
@@ -157,10 +158,15 @@ var SORTS_PAR_CLASSE = {
   'monsterspellbooks:enchanters_boost': ['Chromancien', 'Spiritualiste'],
   'monsterspellbooks:enchanters_protection': ['Paladin', 'Chromancien'],
   'monsterspellbooks:spell_of_undying': ['Nécromancien', 'Paladin'],
-  'somakespells:comforting_lullaby': ['Chromancien', 'Spiritualiste'],
-  'somakespells:slumber_melody': ['Chromancien', 'Spiritualiste'],
-  'somakespells:jingle_bell': ['Chromancien', 'Spiritualiste'],
-  'somakespells:resonant_pulse': ['Chromancien', 'Spiritualiste'],
+  'somakespells:comforting_lullaby': ['Chromancien', 'Spiritualiste', 'Barde'],
+  'somakespells:slumber_melody': ['Chromancien', 'Spiritualiste', 'Barde'],
+  'somakespells:jingle_bell': ['Chromancien', 'Spiritualiste', 'Barde'],
+  'somakespells:resonant_pulse': ['Chromancien', 'Spiritualiste', 'Barde'],
+  // Sorts musicaux d'autres classes, partagés avec le Barde
+  'somakespells:fragmented_requiem': ['Hémomancien', 'Barde'],
+  'somakespells:spectral_rondo': ['Spiritualiste', 'Barde'],
+  'cursed_school:wailing_dirge': ['Réprouvé', 'Barde'],
+  'cursespells:silent_waltz': ['Envoûteur', 'Barde'],
   'somakespells:evocation_fortitude': ['Paladin'],
   'somakespells:ram_tchum': ['Paladin', 'Géomancien'],
   'somakespells:reverberation': ['Spiritualiste', 'Électro-Sorcier'],
@@ -779,7 +785,8 @@ var SORT_DEBUT = {
   'Spiritualiste': 'iss_magicfromtheeast:splitting_shuriken',
   'Symétriste': 'iss_magicfromtheeast:jade_bullet',
   'Nécromancien': 'monsterspellbooks:bone_dagger',
-  'Aéromancien': 'cataclysm_spellbooks:desert_winds'
+  'Aéromancien': 'cataclysm_spellbooks:desert_winds',
+  'Barde': 'tunes_n_tomes:chord_blast'
 }
 var SORT_DEBUT_CLE = 'classe_sort_debut'
 function donnerSortDeBase(server, joueur, classe) {
@@ -1311,18 +1318,13 @@ function cmdAdminCompteur(ctx, cible) {
 // /cours. Chaque élève présent dans le dôme (sphère) reçoit LE PREMIER sort de COURS_ORDRE qu'il n'a pas encore : celui qui a
 // déjà le n°1 reçoit le n°2, etc. Un sort par commande et par élève. Les sorts de l'école Indicible (Occulte / Prismatique,
 // dont le Portail Prismatique) ne sont jamais donnés. Pour changer l'ordre : modifier COURS_ORDRE (les sorts « pour tous »
-// qui n'y figurent pas sont ajoutés à la fin, du plus courant au plus rare).
+// qui n'y figurent pas sont ajoutés à la fin, par ordre de rareté : du plus commun au plus rare).
 var COURS = { X: 1088, Y: 543, Z: 1350, RAYON: 16, DIMENSION: 'minecraft:overworld' }
 var COURS_ORDRE = [
   'irons_spellbooks:recall',                    // 1. Rappel
-  'hazennstuff:parry',                          // 2. Parade
-  'apprenticecodex:mage_light',                 // 3. Lumière de Mage
-  'apprenticecodex:tamers_pocket',              // 4. Poche du Dompteur
-  'apprenticecodex:call_broom',                 // 5. Appel du Balai
-  'apprenticecodex:companion_trunk',            // 6. Coffre de Compagnon
-  'apprenticecodex:personal_shelf',             // 7. Étagère Personnelle
-  'woodwalkers_spellbooks:shapeshifting',       // 8. Métamorphose
-  'apprenticecodex:mana_mending'                // 9. Réparation de Mana
+  'apprenticecodex:mana_mending',               // 2. Réparation de Mana
+  'apprenticecodex:search_beacon'               // 3. Balise de Recherche
+  // puis TOUS les autres sorts « pour tous » (hors Indicible), par ordre de rareté (commun -> légendaire), voir coursOrdre()
 ]
 var COURS_ECOLES_EXCLUES = /eldritch|occult|ritual|prismatic/
 var COURS_CACHE = null

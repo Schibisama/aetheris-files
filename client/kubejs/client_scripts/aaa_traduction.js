@@ -22,7 +22,8 @@ var CLASSES_EN = {
   'Astromancien': 'Astromancer',
   'Spiritualiste': 'Spiritualist',
   'Symétriste': 'Symmetrist',
-  'Technomancien': 'Technomancer'
+  'Technomancien': 'Technomancer',
+  'Barde': 'Bard'
 }
 var LIBELLES_EN = [
   ['Classe : objet désactivé', 'Class: item disabled'],
