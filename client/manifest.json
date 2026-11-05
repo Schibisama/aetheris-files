@@ -1,5 +1,5 @@
 {
- "version": "2026-11-05T17:38:20.439Z",
+ "version": "2026-11-05T17:55:38.711Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6081,11 +6081,6 @@
    "size": 1847
   },
   {
-   "path": "kubejs/client_scripts/balai_vertical.js",
-   "sha1": "f5ced350f6f4c63d3104e8a3ff878c851f1e4d09",
-   "size": 978
-  },
-  {
    "path": "kubejs/client_scripts/classes_langue_armes.js",
    "sha1": "5d095b2e956d9801efb3a54e167a8ea0842729a8",
    "size": 40275
@@ -6207,8 +6202,8 @@
   },
   {
    "path": "kubejs/server_scripts/armures_butin.js",
-   "sha1": "2dbba66c28a36be376723b6bd775e2a2d124b452",
-   "size": 13710
+   "sha1": "f800ffd9473f401b242621af8e955d4f9e530817",
+   "size": 14588
   },
   {
    "path": "kubejs/server_scripts/baton_neant.js",
@@ -6307,8 +6302,8 @@
   },
   {
    "path": "kubejs/server_scripts/parchemins_coffres.js",
-   "sha1": "56b2c0f187fe7bfd7f88bdd65a3fdfb24db47093",
-   "size": 81407
+   "sha1": "962bffb6602b0252dd2e1faf0450dd13a630cdd2",
+   "size": 81529
   },
   {
    "path": "kubejs/server_scripts/pnj_parler.js",
@@ -6432,8 +6427,8 @@
   },
   {
    "path": "mods/apprentice_codex-1.0.0+mc1.21.1.jar",
-   "sha1": "7518e1586235cb75f0cedbc5efa30e46313ebdbe",
-   "size": 11300734
+   "sha1": "b6bd13df67c8dc4533de48ed3996a76adeda17eb",
+   "size": 11300560
   },
   {
    "path": "mods/archaion-1.21.1-1.4.4.jar",
@@ -6832,8 +6827,8 @@
   },
   {
    "path": "mods/irons_jewelry-1.21.1-2.0.2.jar",
-   "sha1": "2f8d934d04111037dcf3fe7b04c96aec892da744",
-   "size": 731614
+   "sha1": "4fa9e5e825c44635dab0271230b4071243eb0f82",
+   "size": 741664
   },
   {
    "path": "mods/irons_lib-1.21.1-2.2.0.jar",
