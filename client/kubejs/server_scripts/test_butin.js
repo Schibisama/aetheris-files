@@ -456,7 +456,6 @@ var VS_CIBLES = {
   'hazennstuff:cosmic_bolt': ['Trait cosmique', -1, -1],
   'hazennstuff:evercomet_barrage': ['Salve de comètes éternelles', -1, -1],
   'chronomancy:time_piercing_needle': ['Aiguille Perce-Temps', -1, -1],
-  'irons_spellbooks:divine_smite': ['Châtiment Divin', -1, -1],
   'hazennstuff:death_sentence': ['Sentence de mort', -1, -1],
   'somakespells:resonant_pulse': ['Pulsation Résonante', -1, -1]
 }

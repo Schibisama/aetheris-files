@@ -259,7 +259,7 @@ var EQUILIBRAGE_RETOUR = {
   'irons_spellbooks:arrow_volley': { p: 2 },
   'irons_spellbooks:blood_needles': { p: 1.6677 },
   'irons_spellbooks:devour': { p: 1.6677 },
-  'irons_spellbooks:divine_smite': { p: 1.6176 },
+  'irons_spellbooks:divine_smite': { cd: 22 },
   'irons_spellbooks:earthquake': { p: 2.0006 },
   'irons_spellbooks:electrocute': { p: 2.8252 },
   'irons_spellbooks:fire_arrow': { p: 0.744 },
