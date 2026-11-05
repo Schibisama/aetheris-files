@@ -1256,6 +1256,49 @@ function cmdClasseEdit(ctx, cible, texte) {
   }
 }
 
+// /classe reroll <joueur> <classe> : change la classe comme un reroll du Maître du Destin (titre « Ton destin a changé. » au milieu de l'écran
+// du joueur + « X a réécrit son destin. » aux autres), mais en choisissant la classe ; sans encre et sans compter comme un changement.
+function rerollArg(Commands, Arguments, event) {
+  var arg = Commands.argument('classe', Arguments.GREEDY_STRING.create(event))
+  try {
+    arg = arg.suggests(function (ctx, builder) {
+      for (var i = 0; i < CLASSES.length; i++) builder.suggest(CLASSES[i].nom)
+      return builder.buildFuture()
+    })
+  } catch (e) { console.error('[classes_rp] suggestions /classe reroll : ' + e) }
+  return arg.executes(function (ctx) {
+    return cmdClasseReroll(ctx, Arguments.PLAYER.getResult(ctx, 'joueur'), String(Arguments.GREEDY_STRING.getResult(ctx, 'classe')).trim())
+  })
+}
+function cmdClasseReroll(ctx, cible, texte) {
+  try {
+    var classe = classeParTexte(texte)
+    if (!classe) {
+      var noms = []
+      for (var i = 0; i < CLASSES.length; i++) noms.push(CLASSES[i].nom)
+      retour(ctx, 'Classe inconnue : « ' + texte + ' ». Classes : ' + noms.join(', ') + '.')
+      return 0
+    }
+    var server = ctx.source.server
+    cible.persistentData.putString(CLE, classe.nom)
+    cible.persistentData.putBoolean(CLE_TEST, false)
+    appliquerClasse(server, cible, classe, true)
+    annoncer(server, cible, classe, 'Ton destin a changé.')
+    try {
+      var nomJ = String(cible.username)
+      cmd(server, 'title @a[name=!' + nomJ + '] times 20 80 20')
+      cmd(server, 'title @a[name=!' + nomJ + '] title {"translate":"mcrp.msg.destin_reecrit","with":["' + nomJ + '"],"fallback":"%s a réécrit son destin.","color":"gold"}')
+    } catch (eT) { console.error('[classes_rp] message de destin : ' + eT) }
+    retour(ctx, cible.username + ' est maintenant ' + classe.nom + ' (reroll annoncé, sans encre ni compteur).')
+    console.info('[classes_rp] /classe reroll : ' + cible.username + ' -> ' + classe.nom)
+    return 1
+  } catch (e) {
+    console.error('[classes_rp] Erreur dans /classe reroll : ' + e)
+    retour(ctx, 'Erreur (voir logs/kubejs/server.log).')
+    return 0
+  }
+}
+
 // /classe reset <joueur> : nouveau tirage immédiat et gratuit (ne consomme pas de changement).
 function cmdAdminReset(ctx, cible) {
   try {
@@ -1774,6 +1817,10 @@ ServerEvents.commandRegistry(function (event) {
         .requires(estModo)
         .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
           .then(editerClasseArg(Commands, Arguments, event))))
+      .then(Commands.literal('reroll')
+        .requires(estModo)
+        .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+          .then(rerollArg(Commands, Arguments, event))))
       .then(Commands.literal('reset')
         .requires(estModo)
         .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
