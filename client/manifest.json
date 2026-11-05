@@ -1,5 +1,5 @@
 {
- "version": "2026-11-05T17:56:18.204Z",
+ "version": "2026-11-05T18:03:23.686Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6202,8 +6202,8 @@
   },
   {
    "path": "kubejs/server_scripts/armures_butin.js",
-   "sha1": "f800ffd9473f401b242621af8e955d4f9e530817",
-   "size": 14588
+   "sha1": "0c696160051ceae414fdf37fb8d7cd69637c23aa",
+   "size": 14912
   },
   {
    "path": "kubejs/server_scripts/baton_neant.js",
@@ -6227,8 +6227,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_desactives.js",
-   "sha1": "f61e5d288b4b9d15e0160f52dbeadf9e4359ad6a",
-   "size": 48336
+   "sha1": "e5c612f805982f272668a2b3c8ea06df6530a54c",
+   "size": 48605
   },
   {
    "path": "kubejs/server_scripts/classes_dump_armes.js",
@@ -6344,6 +6344,11 @@
    "path": "kubejs/server_scripts/starter.js",
    "sha1": "f4eef756f02ade1e2fc3220be1abdb923a7b8c57",
    "size": 11937
+  },
+  {
+   "path": "kubejs/server_scripts/test_butin.js",
+   "sha1": "dd32be8f1086d2367b89b94fd97a9aacdb2dcc28",
+   "size": 14194
   },
   {
    "path": "kubejs/server_scripts/waystones_halo.js",
