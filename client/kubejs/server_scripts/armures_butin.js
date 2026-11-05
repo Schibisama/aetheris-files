@@ -17,11 +17,11 @@ var AR_AUTRES = [
   [/^irons_spellbooks:(?!copper_|iron_)[a-z_]*spell_book$/, 0.6],         // grimoires supérieurs (sauf cuivre et fer)
   [/^irons_spellbooks:[a-z_]*upgrade_orb$/, 0.5]                          // orbes d'amélioration
 ]
-// Pages de Codex : AR_CODEX_TAUX des pages sont retirées ; parmi celles qui restent, une page de sort rare, épique ou légendaire
-// n'est gardée telle quelle qu'1 fois sur 20 (AR_CODEX_GARDE_RARE) ; sinon elle devient la page d'un sort commun ou peu commun
-// (même école si possible, sort actif, trouvable en butin et non désactivé). Même principe que parchemins_coffres.js.
-var AR_CODEX_TAUX = 0.9
-var AR_CODEX_GARDE_RARE = 0.05
+// Pages de Codex : AR_CODEX_TAUX des pages sont retirées ; chaque page conservée est recréée au niveau le plus bas, pour un sort tiré
+// au hasard (sort actif, trouvable en butin, non désactivé), pondéré par la rareté : voir AR_CODEX_POIDS.
+// Parchemins de sorts de la classe Réprouvé : AR_REPROUVE_TAUX des parchemins sont retirés des coffres (ils étaient sur-représentés).
+var AR_CODEX_TAUX = 0.98   // 98 % des pages retirées (÷5 par rapport à 90 %)
+var AR_REPROUVE_TAUX = 0.6
 var AR_PAGE = null, AR_SR = null, AR_CATALOGUE = null
 function arRareteSort(sp) { try { return String(sp.getMinRarity()).toUpperCase() } catch (e) { return 'COMMON' } }
 function arSortListable(sp) {
@@ -65,6 +65,20 @@ function arPageCodex(pile) {
     }
     return null
   } catch (e) { console.error('[armures_butin] page de codex : ' + e); return null }
+}
+
+// Parchemin d'un sort de la classe Réprouvé (hors sorts « pour tous ») ?
+function arEstParcheminReprouve(pile) {
+  try {
+    if (String(pile.id) !== 'irons_spellbooks:scroll') return false
+    if (typeof desactSortDuParchemin !== 'function' || typeof classeParNom !== 'function' || typeof sortInterditPourJoueur !== 'function') return false
+    var s = desactSortDuParchemin(pile)
+    if (!s) return false
+    var cl = classeParNom('Réprouvé')
+    if (!cl) return false
+    if (typeof SORTS_PAR_CLASSE !== 'undefined' && SORTS_PAR_CLASSE[s.id] && SORTS_PAR_CLASSE[s.id].indexOf('*') !== -1) return false
+    return !sortInterditPourJoueur(cl, s.id)
+  } catch (e) { return false }
 }
 
 function arTauxAutre(pile) {
@@ -146,6 +160,7 @@ function arFiltrerConteneur(event) {
         else if (res) { slot.set(res); vus++ }
         continue
       }
+      if (arEstParcheminReprouve(pile)) { vus++; if (Math.random() < AR_REPROUVE_TAUX) { slot.set(vide); retires++ } continue }
       var taux = arEstArmure(pile) ? arTaux(pile) : arTauxAutre(pile)
       if (taux <= 0) continue
       vus++
