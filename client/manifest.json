@@ -1,5 +1,5 @@
 {
- "version": "2026-11-05T14:47:28.537Z",
+ "version": "2026-11-05T14:53:16.161Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6107,8 +6107,8 @@
   },
   {
    "path": "kubejs/client_scripts/classes_tooltips.js",
-   "sha1": "8e8ac6c10bf14b5226f64b83b1b8aadd02f0448c",
-   "size": 89940
+   "sha1": "ca3f2eaaf644880e505c5af2290a950bfccb3e29",
+   "size": 92214
   },
   {
    "path": "kubejs/client_scripts/main.js",
@@ -6307,8 +6307,8 @@
   },
   {
    "path": "kubejs/startup_scripts/classes_equip_ecoles.js",
-   "sha1": "aed6e223c996f1ad411c320a715e5a448334e99d",
-   "size": 41339
+   "sha1": "f243ac3efd6da0d1a3f8dc06ef71ef22880c5814",
+   "size": 43613
   },
   {
    "path": "kubejs/startup_scripts/classes_niveaux.js",
