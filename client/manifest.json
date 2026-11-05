@@ -1,5 +1,5 @@
 {
- "version": "2026-11-05T17:27:56.525Z",
+ "version": "2026-11-05T17:38:20.439Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6512,8 +6512,8 @@
   },
   {
    "path": "mods/chronomancy-1.0.5.jar",
-   "sha1": "01cc8d33265e042a4b3279d721e25dc2f5880640",
-   "size": 5895554
+   "sha1": "fc4f684f92aa59030beb1438058012e80bd0da30",
+   "size": 5895513
   },
   {
    "path": "mods/citadel-1.21.1-2.7.6.jar",
@@ -6542,8 +6542,8 @@
   },
   {
    "path": "mods/colormagic-1.3.0.jar",
-   "sha1": "76add0d3758eb8fc0a62caa8920426e622b8f955",
-   "size": 923015
+   "sha1": "752d56f15f1f9ccd8bddb327d1d90dfbaced042b",
+   "size": 933976
   },
   {
    "path": "mods/comforts-neoforge-9.0.5+1.21.1.jar",
@@ -6597,8 +6597,8 @@
   },
   {
    "path": "mods/cursespells-1.21.1-1.0.0.jar",
-   "sha1": "6caaf2ec39d3bd5e2a218e2fcd7f80b6e53e3c7c",
-   "size": 24515359
+   "sha1": "4a9f429f75823ca84a73e81704e5d135e12696a3",
+   "size": 24515260
   },
   {
    "path": "mods/d4239400-immersivedamageindicators-neoforge-1.0.0-1.21.1.jar",
@@ -6667,8 +6667,8 @@
   },
   {
    "path": "mods/esoteric_spell-1.3.53.jar",
-   "sha1": "0f2a49e07fecf3c6a01ed91ccc7869734af57b37",
-   "size": 6721701
+   "sha1": "4056c911c236a6012540cfa517c502f9d2ed27bf",
+   "size": 6741601
   },
   {
    "path": "mods/expandability-12.0.0.jar",
