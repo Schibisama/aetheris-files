@@ -707,6 +707,10 @@ function verrouillerSortsInterdits(server, joueur, classe) {
     if (connus && !connus[liste[i]]) continue
     cmd(server, 'specs_codex spell lock ' + joueur.username + ' ' + liste[i])
   }
+  // Sorts « pour tous » découverts ailleurs qu'en cours : reverrouillés
+  if (connus) {
+    for (var id in connus) if (coursVerrouille(joueur, id)) cmd(server, 'specs_codex spell lock ' + joueur.username + ' ' + id)
+  }
 }
 
 // Écoles qui doivent rester ouvertes pour cette classe (école, écoles supplémentaires, écoles libres, écoles des sorts permis).
@@ -2038,6 +2042,17 @@ var ParcheminJ = null, PageCodexJ = null
 try { PageCodexJ = Java.loadClass('com.specs.irons_spellbooks.item.CodexPageItem') } catch (e) {}
 try { ParcheminJ = Java.loadClass('io.redspace.ironsspellbooks.item.Scroll') } catch (e) {}
 
+// Sorts « pour tous » (liste « * ») : ils ne s'obtiennent QUE par /cours. Verrouillé tant que /cours ne l'a pas donné à ce joueur
+// (sort de départ de la classe excepté), quelle que soit la façon de le découvrir (Codex, parchemin, page, encre...).
+function coursVerrouille(joueur, id) {
+  try {
+    var perm = SORTS_PAR_CLASSE[id]
+    if (!perm || perm.indexOf('*') === -1) return false
+    if (String(joueur.persistentData.getString(SORT_DEBUT_CLE)) === id) return false
+    return String(joueur.persistentData.getString(COURS_CLE)).indexOf('|' + id + '|') < 0
+  } catch (e) { return false }
+}
+
 function sortInterditPourJoueur(classe, id) {
   sortsInterditsDeLaClasse(classe)
   return CACHE_SET_INTERDITS[classe.nom][id] === true
@@ -2067,6 +2082,11 @@ ItemEvents.rightClicked(function (event) {
         joueur.tell(Text.red('Ce sort n\'appartient pas à ta classe.'))
         return
       }
+      if (coursVerrouille(joueur, ids[k])) {
+        event.cancel()
+        joueur.tell(Text.red('Ce sort ne s\'apprend qu\'en cours.'))
+        return
+      }
     }
   } catch (e) {}
 })
@@ -2093,7 +2113,7 @@ function reverrouillerDecouverts(serveur, joueur, classe) {
   var aVerrouiller = []
   while (it.hasNext()) {
     var id = String(it.next())
-    if (sortInterditPourJoueur(classe, id)) aVerrouiller.push(id)
+    if (sortInterditPourJoueur(classe, id) || coursVerrouille(joueur, id)) aVerrouiller.push(id)
   }
   for (var i = 0; i < aVerrouiller.length; i++) cmd(serveur, 'specs_codex spell lock ' + joueur.username + ' ' + aVerrouiller[i])
 }
