@@ -185,6 +185,8 @@ ServerEvents.recipes(function (event) {
   ajout(function () { event.shaped('iss_magicfromtheeast:ritual_orihon', ['ABB', 'DCC', 'ABB'], { A: 'iss_magicfromtheeast:spirit_rune', B: 'iss_magicfromtheeast:refined_jade_ingot', C: IS + 'hogskin', D: IS + 'diamond_spell_book' }).id('aetheris:ritual_orihon') })
   // Améliorations à l'Upgrade Forge (niveaux II et III) pour Soullit Testament et Axiomatic Codex
   function amelioration(id, base, res, ecole, ings) {
+    // L'Upgrade Forge exige EXACTEMENT 4 ingrédients : on complète avec de l'essence arcanique (16 au palier II, 32 au palier III).
+    if (ings.length < 4) ings = ings.concat([[IS + 'arcane_essence', id.indexOf('t2_to_t3') >= 0 ? 32 : 16]])
     ajout(function () {
       event.custom({ type: 'somakespells:upgrade_forge', base_book: { item: base }, result_book: { id: res }, school: ecole, requires_max_progress: true,
         ingredients: ings.map(function (x) { return { ingredient: { item: x[0] }, count: x[1] } }) }).id('aetheris:' + id)
