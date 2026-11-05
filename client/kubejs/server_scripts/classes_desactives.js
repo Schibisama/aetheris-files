@@ -174,6 +174,23 @@ ServerEvents.recipes(function (event) {
   pieces.forEach(function (pc) {
     ajout(function () { event.smithing(HZ + 'garments_of_the_first_flamebearer_soul_' + pc, 'minecraft:soul_sand', HZ + 'garments_of_the_first_flamebearer_' + pc, IS + 'divine_soulshard').id('aetheris:garments_soul_' + pc) })
   })
+  // Livres de sorts : un livre craftable pour les écoles Aéromancien, Spiritualiste et Symétriste
+  ajout(function () { event.shaped('wind_spellbooks:wind_spell_book', ['ABB', 'DCC', 'ABB'], { A: 'wind_spellbooks:wind_rune', B: IS + 'arcane_ingot', C: IS + 'hogskin', D: IS + 'diamond_spell_book' }).id('aetheris:wind_spell_book') })
+  ajout(function () { event.shaped('somakespells:soullit_testament_spell_book', ['ABB', 'DCC', 'ABB'], { A: 'iss_magicfromtheeast:spirit_rune', B: IS + 'arcane_ingot', C: IS + 'hogskin', D: IS + 'gold_spell_book' }).id('aetheris:soullit_testament_spell_book') })
+  ajout(function () { event.shaped('somakespells:axiomatic_codex_spell_book', ['ABB', 'DCC', 'ABB'], { A: 'iss_magicfromtheeast:symmetry_rune', B: IS + 'arcane_ingot', C: IS + 'hogskin', D: IS + 'gold_spell_book' }).id('aetheris:axiomatic_codex_spell_book') })
+  ajout(function () { event.shaped('iss_magicfromtheeast:ritual_orihon', ['ABB', 'DCC', 'ABB'], { A: 'iss_magicfromtheeast:spirit_rune', B: 'iss_magicfromtheeast:refined_jade_ingot', C: IS + 'hogskin', D: IS + 'diamond_spell_book' }).id('aetheris:ritual_orihon') })
+  // Améliorations à l'Upgrade Forge (niveaux II et III) pour Soullit Testament et Axiomatic Codex
+  function amelioration(id, base, res, ecole, ings) {
+    ajout(function () {
+      event.custom({ type: 'somakespells:upgrade_forge', base_book: { item: base }, result_book: { id: res }, school: ecole, requires_max_progress: true,
+        ingredients: ings.map(function (x) { return { ingredient: { item: x[0] }, count: x[1] } }) }).id('aetheris:' + id)
+    })
+  }
+  var SPI = 'iss_magicfromtheeast:', SO = 'somakespells:'
+  amelioration('soullit_testament_t1_to_t2', SO + 'soullit_testament_spell_book', SO + 'soullit_testament_2_spell_book', SPI + 'spirit', [[SPI + 'crystallized_soul', 16], [IS + 'arcane_ingot', 4], [SPI + 'spirit_upgrade_orb', 2]])
+  amelioration('soullit_testament_t2_to_t3', SO + 'soullit_testament_2_spell_book', SO + 'soullit_testament_3_spell_book', SPI + 'spirit', [[SPI + 'crystallized_soul', 32], [IS + 'divine_soulshard', 1], [SPI + 'spirit_upgrade_orb', 3]])
+  amelioration('axiomatic_codex_t1_to_t2', SO + 'axiomatic_codex_spell_book', SO + 'axiomatic_codex_2_spell_book', SPI + 'symmetry', [[SPI + 'jade', 16], [IS + 'arcane_ingot', 4], [SPI + 'symmetry_upgrade_orb', 2]])
+  amelioration('axiomatic_codex_t2_to_t3', SO + 'axiomatic_codex_2_spell_book', SO + 'axiomatic_codex_3_spell_book', SPI + 'symmetry', [[SPI + 'refined_jade_ingot', 16], [IS + 'arcane_ingot', 8], [SPI + 'symmetry_upgrade_orb', 3]])
   console.info('[classes_desactives] ' + n + ' recettes ajoutées (armes sans source).')
 })
 
