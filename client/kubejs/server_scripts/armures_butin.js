@@ -192,7 +192,26 @@ if (AR_MOBS) {
 
 // ───────────── Butin supplémentaire : poussière d'étoile sur le papillon lunaire ─────────────
 var BUTIN_SUPPL = [
-  { mob: 'asterismarcanum:lunar_moth', objet: 'hazennstuff:stardust', chance: 0.33, min: 1, max: 1 }
+  { mob: 'asterismarcanum:lunar_moth', objet: 'hazennstuff:stardust', chance: 0.33, min: 1, max: 1 },
+  // Rod of Discord : aussi sur les variantes d'Enderman Overhaul (1 %, tué par un joueur)
+  { mob: 'endermanoverhaul:windswept_hills_enderman', objet: 'hazennstuff:rod_of_discord', chance: 0.01, min: 1, max: 1, joueur: true },
+  { mob: 'endermanoverhaul:flower_fields_enderman', objet: 'hazennstuff:rod_of_discord', chance: 0.01, min: 1, max: 1, joueur: true },
+  { mob: 'endermanoverhaul:soulsand_valley_enderman', objet: 'hazennstuff:rod_of_discord', chance: 0.01, min: 1, max: 1, joueur: true },
+  { mob: 'endermanoverhaul:savanna_enderman', objet: 'hazennstuff:rod_of_discord', chance: 0.01, min: 1, max: 1, joueur: true },
+  { mob: 'endermanoverhaul:end_enderman', objet: 'hazennstuff:rod_of_discord', chance: 0.01, min: 1, max: 1, joueur: true },
+  { mob: 'endermanoverhaul:end_islands_enderman', objet: 'hazennstuff:rod_of_discord', chance: 0.01, min: 1, max: 1, joueur: true },
+  { mob: 'endermanoverhaul:badlands_enderman', objet: 'hazennstuff:rod_of_discord', chance: 0.01, min: 1, max: 1, joueur: true },
+  { mob: 'endermanoverhaul:mushroom_fields_enderman', objet: 'hazennstuff:rod_of_discord', chance: 0.01, min: 1, max: 1, joueur: true },
+  { mob: 'endermanoverhaul:warped_forest_enderman', objet: 'hazennstuff:rod_of_discord', chance: 0.01, min: 1, max: 1, joueur: true },
+  { mob: 'endermanoverhaul:ice_spikes_enderman', objet: 'hazennstuff:rod_of_discord', chance: 0.01, min: 1, max: 1, joueur: true },
+  { mob: 'endermanoverhaul:crimson_forest_enderman', objet: 'hazennstuff:rod_of_discord', chance: 0.01, min: 1, max: 1, joueur: true },
+  { mob: 'endermanoverhaul:snowy_enderman', objet: 'hazennstuff:rod_of_discord', chance: 0.01, min: 1, max: 1, joueur: true },
+  { mob: 'endermanoverhaul:dark_oak_enderman', objet: 'hazennstuff:rod_of_discord', chance: 0.01, min: 1, max: 1, joueur: true },
+  { mob: 'endermanoverhaul:desert_enderman', objet: 'hazennstuff:rod_of_discord', chance: 0.01, min: 1, max: 1, joueur: true },
+  { mob: 'endermanoverhaul:nether_wastes_enderman', objet: 'hazennstuff:rod_of_discord', chance: 0.01, min: 1, max: 1, joueur: true },
+  { mob: 'endermanoverhaul:swamp_enderman', objet: 'hazennstuff:rod_of_discord', chance: 0.01, min: 1, max: 1, joueur: true },
+  { mob: 'endermanoverhaul:coral_enderman', objet: 'hazennstuff:rod_of_discord', chance: 0.01, min: 1, max: 1, joueur: true },
+  { mob: 'endermanoverhaul:cave_enderman', objet: 'hazennstuff:rod_of_discord', chance: 0.01, min: 1, max: 1, joueur: true }
 ]
 try {
   var ItemEntiteJ = Java.loadClass('net.minecraft.world.entity.item.ItemEntity')
@@ -206,6 +225,7 @@ try {
         for (var i = 0; i < BUTIN_SUPPL.length; i++) {
           var b = BUTIN_SUPPL[i]
           if (b.mob !== type || Math.random() >= b.chance) continue
+          if (b.joueur) { var tu = event.getSource().getEntity(); if (!tu || !tu.isPlayer()) continue }
           var n = b.min + Math.floor(Math.random() * (b.max - b.min + 1))
           event.getDrops().add(new ItemEntiteJ(ent.level, ent.x, ent.y, ent.z, Item.of(b.objet, n)))
         }
@@ -214,3 +234,25 @@ try {
   )
   console.info('[armures_butin] Butin supplémentaire actif.')
 } catch (e) { console.error('[armures_butin] Butin supplémentaire indisponible : ' + e) }
+
+
+// ───────────── Butin sur joueur : Meowmere (0,2 %) quand un joueur en tue un autre ─────────────
+var BUTIN_JOUEUR = { objet: 'hazennstuff:meowmere', chance: 0.002 }
+try {
+  var ItemEntiteJ2 = Java.loadClass('net.minecraft.world.entity.item.ItemEntity')
+  NativeEvents.onEvent(
+    Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingDropsEvent'),
+    function (event) {
+      try {
+        var victime = event.getEntity()
+        if (!victime.isPlayer() || victime.level.isClientSide()) return
+        var tueur = event.getSource().getEntity()
+        if (!tueur || !tueur.isPlayer() || String(tueur.uuid) === String(victime.uuid)) return
+        if (Math.random() >= BUTIN_JOUEUR.chance) return
+        event.getDrops().add(new ItemEntiteJ2(victime.level, victime.x, victime.y, victime.z, Item.of(BUTIN_JOUEUR.objet, 1)))
+        console.info('[armures_butin] Meowmere lâché par ' + victime.username + ' (tué par ' + tueur.username + ')')
+      } catch (e) { console.error('[armures_butin] Butin sur joueur : ' + e) }
+    }
+  )
+  console.info('[armures_butin] Butin sur joueur actif.')
+} catch (e) { console.error('[armures_butin] Butin sur joueur indisponible : ' + e) }
