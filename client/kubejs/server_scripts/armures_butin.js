@@ -156,9 +156,12 @@ function arPositions(c) {
 function arCle(joueur, menu) {
   try {
     var pos = arPositions(menu.getContainer())
+    if (pos.length === 0) {   // coffres Lootr : l'inventaire du joueur est une copie (ILootrInventory), la position est dans son « info »
+      try { var inf = menu.getContainer().getInfo(); pos = [inf.getInfoPos()] } catch (eL) {}
+    }
     if (pos.length === 0) return null
     var dim = String(joueur.level.dimension.location())
-    var nom = String(menu.getClass().getName()).toLowerCase()
+    var nom = String(menu.getClass().getName()).toLowerCase() + String(menu.getContainer().getClass().getName()).toLowerCase()
     var lootr = nom.indexOf('lootr') !== -1
     var s = dim + '@'
     for (var i = 0; i < pos.length; i++) s += pos[i].x + ',' + pos[i].y + ',' + pos[i].z + ';'
