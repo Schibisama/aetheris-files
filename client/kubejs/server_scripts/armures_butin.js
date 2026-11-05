@@ -269,7 +269,13 @@ function arFiltrerConteneur(event) {
         if (sl.isSameInventory(repere)) continue
         if (sl.getItem().isEmpty()) libres.push(sl)
       }
-      if (libres.length) libres[Math.floor(Math.random() * libres.length)].set(neuf)
+      if (libres.length) {
+        libres[Math.floor(Math.random() * libres.length)].set(neuf)
+        try {
+          var info = desactSortDuParchemin(neuf)
+          console.info('[armures_butin] AJOUT ' + (String(neuf.id).indexOf('codex_page') >= 0 ? 'page' : 'parchemin') + ' : ' + (info ? info.id + ' niveau ' + info.niveau : String(neuf.id)) + ' (' + cle + ')')
+        } catch (eJ) {}
+      }
     }
     if (vus > 0) console.info('[armures_butin] ' + retires + '/' + vus + ' objet(s) filtré(s) retiré(s) (' + cle + ')')
   } catch (e) {
