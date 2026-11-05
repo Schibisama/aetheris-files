@@ -1,5 +1,5 @@
 {
- "version": "2026-11-05T14:53:16.161Z",
+ "version": "2026-11-05T14:56:33.049Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6727,7 +6727,7 @@
   },
   {
    "path": "mods/hazennstuff-1.4.0.14.jar",
-   "sha1": "58f90d8f748c73a6e89c7d979ab41f536632f27d",
+   "sha1": "3cdda18783e15242af28283a6f9513ad46c77b31",
    "size": 8017505
   },
   {
