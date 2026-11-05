@@ -1,0 +1,34 @@
+{
+  "descriptionId": "material.monsterspellbooks.sanguinite",
+  "ingredient": {
+    "item": "monsterspellbooks:sanguinite_ingot"
+  },
+  "materialType": [
+    "metal"
+  ],
+  "paletteLocation": "monsterspellbooks:palettes/sanguinite",
+  "quality": 2,
+  "bonusParameters": {
+    "irons_jewelry:attribute": {
+      "amount": 0.1,
+      "attribute": "aces_spell_utils:life_recovery",
+      "operation": "add_value"
+    },
+    "irons_jewelry:negative_effect": {
+      "effect": "monsterspellbooks:bleeding"
+    },
+    "irons_jewelry:positive_effect": {
+      "effect": "irons_spellbooks:vigor"
+    },
+    "irons_jewelry:action": {
+      "targetSelf": true,
+      "action": {
+        "type": "irons_jewelry:heal",
+        "amount": {
+          "base": 1.5,
+          "scalar": 2.0
+        }
+      }
+    }
+  }
+}

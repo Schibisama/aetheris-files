@@ -1,0 +1,34 @@
+{
+  "bonusParameters": {
+    "irons_jewelry:action": {
+      "action": {
+        "type": "irons_jewelry:apply_effect",
+        "amplifier": {
+          "base": 0.0,
+          "max": 2.0,
+          "scalar": 1.0
+        },
+        "duration": {
+          "base": 100.0,
+          "scalar": 0.0
+        },
+        "effect": "apprenticecodex:mana_regeneration"
+      },
+      "targetSelf": true
+    },
+    "irons_jewelry:attribute": {
+      "amount": 0.1,
+      "attribute": "irons_spellbooks:mana_regen",
+      "operation": "add_multiplied_total"
+    },
+    "irons_jewelry:negative_effect": {
+      "effect": "irons_spellbooks:soul_burn"
+    }
+  },
+  "descriptionId": "material.apprenticecodex.spellstained_diamond",
+  "ingredient": {
+    "item": "apprenticecodex:spellstained_diamond"
+  },
+  "paletteLocation": "apprenticecodex:palettes/spellstained_diamond",
+  "quality": 2
+}
