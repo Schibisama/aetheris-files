@@ -318,6 +318,14 @@ function desactNettoyerOffres(menu) {
   if (retires > 0) console.info('[classes_desactives] ' + retires + ' échange(s) retiré(s) chez un PNJ.')
 }
 
+// Décision pour UNE pile de coffre : undefined = gardée ; null = retirée ; ou une pile de remplacement (parchemin interdit).
+// Utilisée aussi par le test de butin (test_butin.js).
+function desactFiltrerPile(pile) {
+  if (desactParcheminInterdit(pile)) { var neuf = desactRemplacant(pile); return neuf ? neuf : null }
+  if (!desactSansButin(pile.id) && !desactSansCoffre(pile.id)) return undefined
+  return null
+}
+
 function desactNettoyerConteneur(event) {
   try {
     var joueur = event.getEntity()
@@ -348,14 +356,9 @@ function desactNettoyerConteneur(event) {
       if (slot.isSameInventory(repere)) continue
       var pile = slot.getItem()
       if (!pile || pile.isEmpty()) continue
-      if (desactParcheminInterdit(pile)) {
-        var neuf = desactRemplacant(pile)
-        slot.set(neuf ? neuf : vide)
-        retires++
-        continue
-      }
-      if (!desactSansButin(pile.id) && !desactSansCoffre(pile.id)) continue
-      slot.set(vide)
+      var dec = desactFiltrerPile(pile)
+      if (dec === undefined) continue
+      slot.set(dec ? dec : vide)
       retires++
     }
     if (retires > 0) console.info('[classes_desactives] ' + retires + ' objet(s) désactivé(s) retiré(s) d\'un conteneur.')

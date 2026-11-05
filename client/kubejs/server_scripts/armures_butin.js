@@ -86,6 +86,19 @@ function arTauxAutre(pile) {
   for (var i = 0; i < AR_AUTRES.length; i++) if (AR_AUTRES[i][0].test(id)) return AR_AUTRES[i][1]
   return 0
 }
+// Décision pour UNE pile de coffre. Retourne : undefined = objet non concerné par le filtre ; null = gardé ;
+// 'retirer' = supprimé ; ou une nouvelle pile (page de Codex recréée). Utilisée aussi par le test de butin (test_butin.js).
+function arFiltrerPile(pile) {
+  if (String(pile.id) === 'specs_irons_spellbooks:codex_page') {
+    var res = arPageCodex(pile)
+    return res === null ? null : res
+  }
+  if (arEstParcheminReprouve(pile)) return Math.random() < AR_REPROUVE_TAUX ? 'retirer' : null
+  var taux = arEstArmure(pile) ? arTaux(pile) : arTauxAutre(pile)
+  if (taux <= 0) return undefined
+  return Math.random() < taux ? 'retirer' : null
+}
+
 var AR_CLE = 'armures_coffres_filtres'
 
 var AR_CLASSE_ARMURE = null
@@ -154,17 +167,11 @@ function arFiltrerConteneur(event) {
       if (slot.isSameInventory(repere)) continue
       var pile = slot.getItem()
       if (!pile || pile.isEmpty()) continue
-      if (String(pile.id) === 'specs_irons_spellbooks:codex_page') {
-        var res = arPageCodex(pile)
-        if (res === 'retirer') { slot.set(vide); retires++; vus++ }
-        else if (res) { slot.set(res); vus++ }
-        continue
-      }
-      if (arEstParcheminReprouve(pile)) { vus++; if (Math.random() < AR_REPROUVE_TAUX) { slot.set(vide); retires++ } continue }
-      var taux = arEstArmure(pile) ? arTaux(pile) : arTauxAutre(pile)
-      if (taux <= 0) continue
+      var dec = arFiltrerPile(pile)
+      if (dec === undefined) continue            // objet non concerné
       vus++
-      if (Math.random() < taux) { slot.set(vide); retires++ }
+      if (dec === 'retirer') { slot.set(vide); retires++ }
+      else if (dec) slot.set(dec)
     }
     if (vus > 0) console.info('[armures_butin] ' + retires + '/' + vus + ' objet(s) filtré(s) retiré(s) (' + cle + ')')
   } catch (e) {
