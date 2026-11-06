@@ -1,7 +1,9 @@
 // Course de balai : traverser des anneaux, dans l'ordre, le plus vite possible.
 //
 // Parcours (professeurs et ops) :
-//   /course anneau ajouter [rayon]   pose un anneau à hauteur des yeux, face à la direction du regard (rayon 3 par défaut)
+//   /course anneau ajouter [rayon] [vertical|horizontal]   pose un anneau à hauteur des yeux (rayon 3 par défaut).
+//        vertical (par défaut) : debout, face à la direction du regard, on le traverse à l'horizontale ;
+//        horizontal : à plat comme un cerceau au sol, on le traverse en montant ou en descendant.
 //   /course anneau retirer           retire l'anneau le plus proche       /course anneau liste
 //   /course effacer                  supprime tout le parcours
 //   /course boucle oui|non           oui : circuit (chaque tour repasse par l'anneau 1) ; non : du 1er au dernier anneau
@@ -14,14 +16,16 @@
 //   /course lancer         décompte de 5 s puis départ ; le chrono de chacun part au GO, l'anneau 1 doit être franchi en premier
 //   /course arreter        arrête la course groupée en cours
 // Règles : il faut rester sur son balai du début à la fin ; pendant la course, sorts et téléportations sont interdits
-// (une téléportation = abandon). Le vainqueur d'une course groupée rapporte CR.POINTS_VAINQUEUR points à son équipe (equipes.js).
+// (une téléportation = abandon). Course groupée (equipes.js) : chaque participant rapporte des points à son équipe (CR.POINTS_PARTICIPATION :
+// 7,5 par membre d'une équipe de 2, 5 par membre d'une équipe de 3), et les 3 premiers arrivés en rapportent en plus (CR.POINTS_PODIUM).
 // Records : meilleur temps de chaque joueur ; tableau flottant avec /classement tableau poser course (equipes.js).
 
 var CR = {
   CLE: 'mcrp_course',
   RAYON_DEFAUT: 3,
   DEPART_MAX: 40,            // distance max de l'anneau 1 pour lancer un contre-la-montre
-  POINTS_VAINQUEUR: 20,
+  POINTS_PODIUM: [20, 15, 10],
+  POINTS_PARTICIPATION: { 2: 7.5, 3: 5 },   // par participant, selon la taille de son équipe
   FIN_APRES_VAINQUEUR: 120,  // secondes laissées aux autres après l'arrivée du vainqueur
   VUE: 72                    // distance d'affichage des anneaux
 }
@@ -72,8 +76,9 @@ function crAnneauDuPassage(d, k) { return k % d.anneaux.length }
 
 // ───────── Passage d'un anneau : le segment parcouru pendant le tick traverse le disque de l'anneau ─────────
 function crTraverse(a, x0, y0, z0, x1, y1, z1) {
-  var r = a.yaw * Math.PI / 180, nx = -Math.sin(r), nz = Math.cos(r)
-  var d0 = (x0 - a.x) * nx + (z0 - a.z) * nz, d1 = (x1 - a.x) * nx + (z1 - a.z) * nz
+  var r = a.yaw * Math.PI / 180, nx = -Math.sin(r), ny = 0, nz = Math.cos(r)
+  if (a.plat) { nx = 0; ny = 1; nz = 0 }   // anneau horizontal : on le traverse verticalement
+  var d0 = (x0 - a.x) * nx + (y0 - a.y) * ny + (z0 - a.z) * nz, d1 = (x1 - a.x) * nx + (y1 - a.y) * ny + (z1 - a.z) * nz
   if ((d0 > 0 && d1 > 0) || (d0 < 0 && d1 < 0)) {
     // pas de changement de côté : accepté quand même si on passe très près du centre (balai très lent ou à l'arrêt dans l'anneau)
     var dc = Math.sqrt(Math.pow(x1 - a.x, 2) + Math.pow(y1 - a.y, 2) + Math.pow(z1 - a.z, 2))
@@ -95,15 +100,16 @@ function crArrivee(sv, p, c) {
     var rang = CR_GROUPE.arrivees.length
     crAnnoncer(sv, nom + ' franchit la ligne en ' + rang + (rang === 1 ? 'er' : 'e') + ' position (' + crTemps(t) + ')' + (nouveau ? ' — record personnel !' : ''),
       nom + ' crosses the line in position ' + rang + ' (' + crTemps(t) + ')' + (nouveau ? ' — personal best!' : ''), 'gold')
-    if (rang === 1) {
-      CR_GROUPE.finVainqueur = sv.tickCount + CR.FIN_APRES_VAINQUEUR * 20
+    if (rang === 1) CR_GROUPE.finVainqueur = sv.tickCount + CR.FIN_APRES_VAINQUEUR * 20
+    var bonus = CR.POINTS_PODIUM[rang - 1]
+    if (bonus) {
       try {
         if (typeof eqEquipeDe === 'function') {
           var slug = eqEquipeDe(sv, p)
           if (slug) {
-            eqAjouterPoints(sv, slug, CR.POINTS_VAINQUEUR); eqSauver(sv)
+            eqAjouterPoints(sv, slug, bonus); eqSauver(sv)
             var eq = eqCharger(sv).equipes[slug]
-            crAnnoncer(sv, "L'équipe " + eq.nom + ' gagne ' + CR.POINTS_VAINQUEUR + ' points grâce à ' + nom + ' !', 'Team ' + eq.nom + ' earns ' + CR.POINTS_VAINQUEUR + ' points thanks to ' + nom + '!', 'green')
+            crAnnoncer(sv, "L'équipe " + eq.nom + ' gagne ' + bonus + ' points grâce à ' + nom + ' !', 'Team ' + eq.nom + ' earns ' + bonus + ' points thanks to ' + nom + '!', 'green')
           }
         }
       } catch (eP) {}
@@ -130,6 +136,22 @@ function crFinGroupeSiFini(sv) {
 function crTerminerGroupe(sv) {
   if (!CR_GROUPE) return
   for (var u in CR_COUREURS) if (CR_COUREURS[u].mode === 'groupe') delete CR_COUREURS[u]
+  // points de participation : chaque partant rapporte des points à son équipe selon la taille de l'équipe
+  try {
+    if (typeof eqCharger === 'function' && CR_GROUPE.partants && CR_GROUPE.partants.length) {
+      var d0 = eqCharger(sv), parEquipe = {}
+      for (var s0 in d0.equipes) {
+        var eq0 = d0.equipes[s0], n0 = 0
+        for (var m0 = 0; m0 < CR_GROUPE.partants.length; m0++) if (eq0.membres.indexOf(CR_GROUPE.partants[m0]) !== -1) n0++
+        var parTete = CR.POINTS_PARTICIPATION[eq0.membres.length] || 0
+        if (n0 && parTete) { eqAjouterPoints(sv, s0, n0 * parTete); parEquipe[eq0.nom] = n0 * parTete }
+      }
+      eqSauver(sv)
+      var lp = []
+      for (var nomEq in parEquipe) lp.push(nomEq + ' +' + parEquipe[nomEq])
+      if (lp.length) crAnnoncer(sv, 'Points de participation : ' + lp.join(', ') + '.', 'Participation points: ' + lp.join(', ') + '.', 'green')
+    }
+  } catch (eP) { console.error('[course] participation : ' + eP) }
   var a = CR_GROUPE.arrivees, fr = [], en = []
   for (var i = 0; i < a.length && i < 5; i++) { fr.push((i + 1) + '. ' + a[i].nom + ' (' + crTemps(a[i].t) + ')'); en.push((i + 1) + '. ' + a[i].nom + ' (' + crTemps(a[i].t) + ')') }
   crAnnoncer(sv, 'Course terminée ! ' + (fr.length ? fr.join('  ') : 'Personne n\'a franchi la ligne.'), 'Race over! ' + (en.length ? en.join('  ') : 'Nobody crossed the line.'), 'gold')
@@ -151,7 +173,8 @@ ServerEvents.tick(function (event) {
         for (var k2 = 0; k2 < CR_GROUPE.inscrits.length; k2++) {
           var u2 = CR_GROUPE.inscrits[k2], p2 = crJoueur(sv, u2)
           if (!p2 || !crEstBalai(p2.getVehicle())) { if (p2) crDire(p2, "Tu n'étais pas sur ton balai au départ : course perdue.", 'You were not on your broom at the start: race lost.', 'red'); continue }
-          CR_COUREURS[u2] = { mode: 'groupe', idx: 0, debut: tick, px: p2.getX(), py: p2.getY(), pz: p2.getZ(), nom: String(p2.username) }
+          CR_COUREURS[u2] = { mode: 'groupe', idx: 0, debut: tick, px: p2.getX(), py: p2.getY() + 0.8, pz: p2.getZ(), nom: String(p2.username) }
+          CR_GROUPE.partants.push(u2)
           try { sv.runCommandSilent('title ' + p2.username + ' title {"text":"GO !","color":"green"}') } catch (e) {}
         }
         crFinGroupeSiFini(sv)
@@ -207,7 +230,9 @@ function crDessiner(sv, d) {
       var pts = Math.max(16, Math.round(a.r * 8))
       for (var q = 0; q < pts; q++) {
         var ang = q * 2 * Math.PI / pts, h = Math.cos(ang) * a.r, v = Math.sin(ang) * a.r
-        try { lvl.sendParticles(p, opt, true, a.x + ux * h, a.y + v, a.z + uz * h, 1, 0, 0, 0, 0) } catch (e) {}
+        // vertical : cercle debout (axe horizontal + hauteur) ; horizontal : cercle à plat (x, z)
+        var px = a.plat ? a.x + h : a.x + ux * h, py = a.plat ? a.y : a.y + v, pz = a.plat ? a.z + v : a.z + uz * h
+        try { lvl.sendParticles(p, opt, true, px, py, pz, 1, 0, 0, 0, 0) } catch (e) {}
       }
     }
   }
@@ -248,20 +273,24 @@ function crTexteRecords() {
 ServerEvents.commandRegistry(function (event) {
   var C = event.commands, A = event.arguments
   function prof(ctx, f) { if (!crProf(ctx)) return crRep(ctx, 'Réservé aux professeurs.', 'Teachers only.'); return f() }
-  function ajouter(ctx, rayon) {
+  function ajouter(ctx, rayon, plat) {
     return prof(ctx, function () {
       var p = ctx.source.player
       if (!p) return 0
       var sv = ctx.source.server, d = crCharger(sv)
-      d.anneaux.push({ x: Number(p.getX()), y: Number(p.getEyeY()), z: Number(p.getZ()), yaw: Number(p.getYRot()), r: Math.max(1, Math.min(10, rayon)), dim: String(p.level().dimension().location()) })
+      d.anneaux.push({ x: Number(p.getX()), y: Number(p.getEyeY()), z: Number(p.getZ()), yaw: Number(p.getYRot()), r: Math.max(1, Math.min(10, rayon)), plat: !!plat, dim: String(p.level().dimension().location()) })
       crSauver(sv)
-      return crRep(ctx, 'Anneau ' + d.anneaux.length + ' posé (rayon ' + rayon + ').', 'Ring ' + d.anneaux.length + ' placed (radius ' + rayon + ').')
+      return crRep(ctx, 'Anneau ' + d.anneaux.length + ' posé (rayon ' + rayon + ', ' + (plat ? 'horizontal' : 'vertical') + ').', 'Ring ' + d.anneaux.length + ' placed (radius ' + rayon + ', ' + (plat ? 'horizontal' : 'vertical') + ').')
     })
   }
   event.register(C.literal('course')
     .then(C.literal('anneau')
-      .then(C.literal('ajouter').executes(function (ctx) { return ajouter(ctx, CR.RAYON_DEFAUT) })
-        .then(C.argument('rayon', A.FLOAT.create(event)).executes(function (ctx) { return ajouter(ctx, A.FLOAT.getResult(ctx, 'rayon')) })))
+      .then(C.literal('ajouter').executes(function (ctx) { return ajouter(ctx, CR.RAYON_DEFAUT, false) })
+        .then(C.literal('vertical').executes(function (ctx) { return ajouter(ctx, CR.RAYON_DEFAUT, false) }))
+        .then(C.literal('horizontal').executes(function (ctx) { return ajouter(ctx, CR.RAYON_DEFAUT, true) }))
+        .then(C.argument('rayon', A.FLOAT.create(event)).executes(function (ctx) { return ajouter(ctx, A.FLOAT.getResult(ctx, 'rayon'), false) })
+          .then(C.literal('vertical').executes(function (ctx) { return ajouter(ctx, A.FLOAT.getResult(ctx, 'rayon'), false) }))
+          .then(C.literal('horizontal').executes(function (ctx) { return ajouter(ctx, A.FLOAT.getResult(ctx, 'rayon'), true) }))))
       .then(C.literal('retirer').executes(function (ctx) {
         return prof(ctx, function () {
           var p = ctx.source.player, sv = ctx.source.server, d = crCharger(sv), best = -1, bd = 1e9
@@ -274,7 +303,7 @@ ServerEvents.commandRegistry(function (event) {
       }))
       .then(C.literal('liste').executes(function (ctx) {
         var d = crCharger(ctx.source.server), l = []
-        for (var i = 0; i < d.anneaux.length; i++) l.push((i + 1) + ': ' + Math.round(d.anneaux[i].x) + ' ' + Math.round(d.anneaux[i].y) + ' ' + Math.round(d.anneaux[i].z) + ' (r ' + d.anneaux[i].r + ')')
+        for (var i = 0; i < d.anneaux.length; i++) l.push((i + 1) + ': ' + Math.round(d.anneaux[i].x) + ' ' + Math.round(d.anneaux[i].y) + ' ' + Math.round(d.anneaux[i].z) + ' (r ' + d.anneaux[i].r + (d.anneaux[i].plat ? ', horizontal' : '') + ')')
         return crRep(ctx, (l.length ? l.join('\n') : 'Aucun anneau.') + '\nCircuit : ' + (d.boucle ? 'oui, ' + d.tours + ' tour(s)' : 'non'), (l.length ? l.join('\n') : 'No rings.') + '\nLoop: ' + (d.boucle ? 'yes, ' + d.tours + ' lap(s)' : 'no'))
       })))
     .then(C.literal('effacer').executes(function (ctx) {
@@ -303,7 +332,7 @@ ServerEvents.commandRegistry(function (event) {
         var sv = ctx.source.server
         if (crCharger(sv).anneaux.length < 2) return crRep(ctx, "Le parcours n'est pas encore prêt (2 anneaux minimum).", 'The course is not ready yet (at least 2 rings).')
         if (CR_GROUPE) return crRep(ctx, 'Une course groupée est déjà en cours.', 'A group race is already running.')
-        CR_GROUPE = { etat: 'inscriptions', inscrits: [], arrivees: [] }
+        CR_GROUPE = { etat: 'inscriptions', inscrits: [], arrivees: [], partants: [] }
         crAnnoncer(sv, 'Course de balai ! Les inscriptions sont ouvertes : tape /course rejoindre et rejoins la ligne de départ.', 'Broom race! Sign-ups are open: type /course rejoindre and head to the starting line.', 'gold')
         return 1
       })

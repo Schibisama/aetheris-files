@@ -1,5 +1,5 @@
 {
- "version": "2026-11-06T15:32:35.492Z",
+ "version": "2026-11-06T15:51:08.644Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6347,8 +6347,8 @@
   },
   {
    "path": "kubejs/server_scripts/course_balai.js",
-   "sha1": "77307566252cb51e10c5699eab6170fd180ed7cd",
-   "size": 22264
+   "sha1": "bbb3833147f0f4ecec7a265e160f31386992bd19",
+   "size": 24732
   },
   {
    "path": "kubejs/server_scripts/decouverte_lieux.js",
