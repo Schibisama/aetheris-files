@@ -1,0 +1,139 @@
+{
+ "providers": [
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/bouclier.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue100"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/couronne.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue101"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/epee.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue102"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/etoile.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue103"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/lune.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue104"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/soleil.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue105"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/flamme.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue106"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/goutte.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue107"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/feuille.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue108"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/crane.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue109"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/oeil.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue10a"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/aile.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue10b"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/eclair.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue10c"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/cle.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue10d"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/serpent.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue10e"
+   ]
+  }
+ ]
+}

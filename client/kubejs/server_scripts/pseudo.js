@@ -10,8 +10,17 @@ var PS = {
   MAX: 24
 }
 
+// Nom de l'équipe d'affichage : il sert aussi à RANGER la liste des joueurs (Tab), triée par nom d'équipe puis par pseudo.
+// ps_a<ordre de l'équipe d'élèves><uuid> pour les membres d'une équipe (equipes.js), ps_z<uuid> pour les autres (en bas de la liste).
+// Tous les joueurs ont une équipe d'affichage, dont le nom d'affichage est leur pseudo (ou leur vrai nom).
 function psId(joueur) {
-  return 'ps_' + String(joueur.uuid).replace(/-/g, '').substring(0, 12)
+  var u = String(joueur.uuid).replace(/-/g, '')
+  var o = null
+  try { if (typeof eqOrdreTab === 'function') o = eqOrdreTab(joueur) } catch (e) {}
+  return o ? 'ps_a' + o + u.substring(0, 10) : 'ps_z' + u.substring(0, 12)
+}
+function psNomAffiche(joueur) {
+  return psPseudo(joueur) || String(joueur.username)
 }
 
 function psCmd(serveur, texte) {
@@ -50,6 +59,12 @@ function psSupprimerAffichage(serveur, joueur) {
 function psEquipe(serveur, joueur, actif, nom) {
   var id = psId(joueur)
   if (actif) {
+    // ancienne équipe d'affichage (changement d'équipe d'élèves) : retirée
+    try {
+      var ancienne = joueur.getTeam()
+      var an = ancienne ? String(ancienne.getName()) : ''
+      if (an && an.indexOf('ps_') === 0 && an !== id) { psCmd(serveur, 'team leave ' + joueur.username); psCmd(serveur, 'team remove ' + an) }
+    } catch (eA) {}
     psCmd(serveur, 'team add ' + id)
     psCmd(serveur, 'team modify ' + id + ' nametagVisibility always')
     psCmd(serveur, 'team modify ' + id + ' displayName ' + psTexteJson(nom))
@@ -66,18 +81,22 @@ function psRafraichirNoms(joueur) {
   try { joueur.refreshTabListName() } catch (e2) {}
 }
 
+// Remet l'équipe d'affichage (nom, rangement) et les noms affichés du joueur à jour
+function psSync(serveur, joueur) {
+  psEquipe(serveur, joueur, true, psNomAffiche(joueur))
+  psRafraichirNoms(joueur)
+}
+
 function psAppliquer(serveur, joueur, nom) {
   joueur.persistentData.putString(PS.CLE, nom)
   psSupprimerAffichage(serveur, joueur)
-  psEquipe(serveur, joueur, true, nom)
-  psRafraichirNoms(joueur)
+  psSync(serveur, joueur)
 }
 
 function psRetirer(serveur, joueur) {
   try { joueur.persistentData.remove(PS.CLE) } catch (e) {}
   psSupprimerAffichage(serveur, joueur)
-  psEquipe(serveur, joueur, false)
-  psRafraichirNoms(joueur)
+  psSync(serveur, joueur)
 }
 
 // Surveillance : rétablit l'équipe si besoin (reconnexion, redémarrage, équipe retirée par une commande...).
@@ -88,11 +107,9 @@ ServerEvents.tick(function (event) {
   for (var i = 0; i < joueurs.length; i++) {
     try {
       var j = joueurs[i]
-      var nom = psPseudo(j)
-      if (!nom) continue
       var equipe = null
       try { equipe = j.getTeam() } catch (eT) {}
-      if (!equipe || String(equipe.getName()) !== psId(j)) { psEquipe(serveur, j, true, nom); psRafraichirNoms(j) }
+      if (!equipe || String(equipe.getName()) !== psId(j)) psSync(serveur, j)
     } catch (e) {}
   }
 })
@@ -112,23 +129,17 @@ PlayerEvents.loggedIn(function (event) {
   try {
     var serveur = event.server
     var j = event.player
-    var nom = psPseudo(j)
-    if (!nom) return
-    psEquipe(serveur, j, true, nom)
-    psRafraichirNoms(j)
+    psSync(serveur, j)
     var reappliquer = function () {
       try {
         var jj = serveur.getPlayerList().getPlayer(j.getUUID())
-        if (!jj) return
-        var n2 = psPseudo(jj)
-        if (!n2) return
-        psEquipe(serveur, jj, true, n2)
-        psRafraichirNoms(jj)
+        if (jj) psSync(serveur, jj)
       } catch (e2) {}
     }
+    var nom = psPseudo(j)
     serveur.scheduleInTicks(20, reappliquer)
     serveur.scheduleInTicks(100, reappliquer)
-    j.tell(Text.gray('Ton pseudo : ').append(Text.white(nom)).append(Text.gray(' (/pseudo reset pour reprendre ton vrai nom)')))
+    if (nom) j.tell(Text.gray('Ton pseudo : ').append(Text.white(nom)).append(Text.gray(' (/pseudo reset pour reprendre ton vrai nom)')))
   } catch (e) { console.error('[pseudo] connexion : ' + e) }
 })
 
@@ -144,8 +155,13 @@ try {
 try {
   NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.player.PlayerEvent$TabListNameFormat'), function (e) {
     try {
-      var nom = psPseudo(e.getEntity())
-      if (nom) e.setDisplayName(Text.of(nom))
+      // liste des joueurs : [logo] Équipe (couleur de l'équipe) + pseudo ou vrai nom
+      var j = e.getEntity()
+      var nom = psPseudo(j)
+      var pre = null
+      try { if (typeof eqPrefixeTab === 'function') pre = eqPrefixeTab(j) } catch (eP) {}
+      if (pre) e.setDisplayName(pre.append(Text.white(nom || String(j.username))))
+      else if (nom) e.setDisplayName(Text.of(nom))
     } catch (err) {}
   })
 } catch (e3) { console.error('[pseudo] nom dans la liste des joueurs indisponible : ' + e3) }

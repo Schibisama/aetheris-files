@@ -1,7 +1,10 @@
 // Équipes d'élèves (2 ou 3 joueurs), points d'équipe, classements (permanent, trimestre, épreuve) et épreuves d'équipe.
 //
 // Joueurs :
-//   /equipe creer <nom>        crée une équipe (on en devient le premier membre)
+//   /equipe creer <nom> <logo> <couleur>   crée une équipe (on en devient le premier membre)
+//   /equipe logo <logo> <couleur>          change le logo et la couleur de son équipe
+//   Logos et couleurs : voir EQ_LOGOS et EQ_COULEURS ci-dessous (police kubejs:equipes, une image blanche teintée par la couleur).
+//   Dans la liste des joueurs (Tab), chaque joueur affiche le logo et le nom de son équipe, et les joueurs sont rangés par équipe (voir pseudo.js).
 //   /equipe inviter <joueur>   invite un joueur (3 membres maximum)
 //   /equipe rejoindre          accepte la dernière invitation reçue
 //   /equipe quitter            quitte son équipe (délai avant d'en rejoindre une autre : EQ.DELAI_QUITTER_H heures)
@@ -31,6 +34,54 @@ var EQ = {
   DELAI_QUITTER_H: 72,
   BONUS: [0.5, 0.25]
 }
+// 15 logos (caractères de la police kubejs:equipes) et 15 couleurs (couleurs du chat de Minecraft)
+var EQ_LOGOS = ['bouclier', 'couronne', 'epee', 'etoile', 'lune', 'soleil', 'flamme', 'goutte', 'feuille', 'crane', 'oeil', 'aile', 'eclair', 'cle', 'serpent']
+var EQ_COULEURS = { rouge_fonce: 'DARK_RED', rouge: 'RED', or: 'GOLD', jaune: 'YELLOW', vert: 'GREEN', vert_fonce: 'DARK_GREEN', cyan: 'AQUA', bleu_canard: 'DARK_AQUA',
+  bleu: 'BLUE', bleu_nuit: 'DARK_BLUE', rose: 'LIGHT_PURPLE', violet: 'DARK_PURPLE', blanc: 'WHITE', gris: 'GRAY', gris_fonce: 'DARK_GRAY' }
+var EQ_J = null
+function eqJ() {
+  if (!EQ_J) EQ_J = { C: Java.loadClass('net.minecraft.network.chat.Component'), Style: Java.loadClass('net.minecraft.network.chat.Style'),
+    CF: Java.loadClass('net.minecraft.ChatFormatting'), RL: Java.loadClass('net.minecraft.resources.ResourceLocation') }
+  return EQ_J
+}
+// Préfixe de la liste des joueurs : [logo coloré] Nom de l'équipe (coloré), ou null sans équipe
+function eqPrefixeTab(joueur) {
+  try {
+    var serveur = joueur.server, slug = eqEquipeDe(serveur, joueur)
+    if (!slug) return null
+    var eq = eqCharger(serveur).equipes[slug], J = eqJ()
+    var i = EQ_LOGOS.indexOf(eq.logo); if (i < 0) i = 0
+    var cf = J.CF.valueOf(EQ_COULEURS[eq.couleur] || 'WHITE')
+    var logo = J.C.literal(String.fromCharCode(0xE100 + i)).setStyle(J.Style.EMPTY.withFont(J.RL.parse('kubejs:equipes')).withColor(cf))
+    return J.C.empty().append(logo).append(J.C.literal(' ' + eq.nom + ' ').withStyle(cf))
+  } catch (e) { return null }
+}
+// Clé de tri de la liste des joueurs (ordre de création de l'équipe), ou null sans équipe
+function eqOrdreTab(joueur) {
+  try {
+    var serveur = joueur.server, slug = eqEquipeDe(serveur, joueur)
+    if (!slug) return null
+    var o = eqCharger(serveur).equipes[slug].ordre || 0
+    return ('00' + o.toString(36)).slice(-2)
+  } catch (e) { return null }
+}
+// Met à jour le nom (Tab) et le rangement des membres connectés d'une équipe
+function eqRafraichir(serveur, uuids) {
+  for (var i = 0; i < uuids.length; i++) {
+    try {
+      var p = serveur.getPlayerList().getPlayer(EQ_UUID.fromString(uuids[i]))
+      if (p && typeof psSync === 'function') psSync(serveur, p)
+    } catch (e) {}
+  }
+}
+function eqLireLogoCouleur(logo, couleur) {
+  logo = eqSlug(logo || ''); couleur = eqSlug(couleur || '')
+  if (EQ_LOGOS.indexOf(logo) < 0 || !EQ_COULEURS[couleur]) return null
+  return { logo: logo, couleur: couleur }
+}
+var EQ_AIDE_LOGO_FR = 'Logos : ' + EQ_LOGOS.join(', ') + '. Couleurs : ' + Object.keys(EQ_COULEURS).join(', ') + '.'
+var EQ_AIDE_LOGO_EN = 'Logos: ' + EQ_LOGOS.join(', ') + '. Colors: ' + Object.keys(EQ_COULEURS).join(', ') + '.'
+
 var EQ_DATA = null
 var EQ_UUID = Java.loadClass('java.util.UUID')
 var EQ_INVIT = {}   // uuid invité -> slug de l'équipe
@@ -46,6 +97,7 @@ function eqCharger(serveur) {
   if (!EQ_DATA.equipes) EQ_DATA.equipes = {}
   if (!EQ_DATA.epreuves) EQ_DATA.epreuves = []
   if (!EQ_DATA.prochain) EQ_DATA.prochain = 1
+  if (!EQ_DATA.ordre) EQ_DATA.ordre = 1
   if (!EQ_DATA.trimestre) EQ_DATA.trimestre = { num: 1, debut: Date.now(), historique: [] }
   return EQ_DATA
 }
@@ -184,11 +236,15 @@ EntityEvents.death(function (event) {
 })
 
 // ───────── Commandes ─────────
-function eqCmdCreer(ctx, nom) {
+function eqCmdCreer(ctx, texte) {
   var p = ctx.source.player
   if (!p) return 0
   var serveur = ctx.source.server, d = eqCharger(serveur)
-  nom = String(nom).replace(/§./g, '').replace(/\s+/g, ' ').trim()
+  var mots = String(texte).replace(/§./g, '').replace(/\s+/g, ' ').trim().split(' ')
+  if (mots.length < 3) return eqRepondre(ctx, 'Usage : /equipe creer <nom> <logo> <couleur>. ' + EQ_AIDE_LOGO_FR, 'Usage: /equipe creer <name> <logo> <color>. ' + EQ_AIDE_LOGO_EN)
+  var lc = eqLireLogoCouleur(mots[mots.length - 2], mots[mots.length - 1])
+  if (!lc) return eqRepondre(ctx, 'Logo ou couleur inconnu. ' + EQ_AIDE_LOGO_FR, 'Unknown logo or color. ' + EQ_AIDE_LOGO_EN)
+  var nom = mots.slice(0, mots.length - 2).join(' ')
   var slug = eqSlug(nom)
   if (nom.length < 3 || nom.length > 20 || !slug) return eqRepondre(ctx, "Le nom de l'équipe doit faire entre 3 et 20 caractères.", 'The team name must be 3 to 20 characters long.')
   if (eqEquipeDe(serveur, p)) return eqRepondre(ctx, 'Tu fais déjà partie d\'une équipe.', 'You are already in a team.')
@@ -198,10 +254,24 @@ function eqCmdCreer(ctx, nom) {
   var reste = quit + EQ.DELAI_QUITTER_H * 3600000 - Date.now()
   if (reste > 0) { var h = Math.ceil(reste / 3600000); return eqRepondre(ctx, 'Tu as quitté une équipe récemment : attends encore ' + h + ' h.', 'You left a team recently: wait ' + h + ' more hours.') }
   var noms = {}; noms[eqUuid(p)] = String(p.username)
-  d.equipes[slug] = { nom: nom, membres: [eqUuid(p)], noms: noms, total: 0, trimestre: 0, cree: Date.now() }
+  d.equipes[slug] = { nom: nom, membres: [eqUuid(p)], noms: noms, total: 0, trimestre: 0, cree: Date.now(), logo: lc.logo, couleur: lc.couleur, ordre: d.ordre++ }
   eqSauver(serveur)
+  eqRafraichir(serveur, [eqUuid(p)])
   eqAnnoncer(serveur, String(p.username) + " fonde l'équipe " + nom + ' !', String(p.username) + ' founds team ' + nom + '!', 'aqua')
   return 1
+}
+function eqCmdLogo(ctx, texte) {
+  var p = ctx.source.player
+  if (!p) return 0
+  var serveur = ctx.source.server, slug = eqEquipeDe(serveur, p)
+  if (!slug) return eqRepondre(ctx, "Tu n'as pas d'équipe.", 'You have no team.')
+  var mots = String(texte).trim().split(/\s+/), lc = eqLireLogoCouleur(mots[0], mots[1])
+  if (!lc) return eqRepondre(ctx, 'Usage : /equipe logo <logo> <couleur>. ' + EQ_AIDE_LOGO_FR, 'Usage: /equipe logo <logo> <color>. ' + EQ_AIDE_LOGO_EN)
+  var eq = eqCharger(serveur).equipes[slug]
+  eq.logo = lc.logo; eq.couleur = lc.couleur
+  eqSauver(serveur)
+  eqRafraichir(serveur, eq.membres)
+  return eqRepondre(ctx, "Nouveau logo de l'équipe : " + lc.logo + ' ' + lc.couleur + '.', 'New team logo: ' + lc.logo + ' ' + lc.couleur + '.')
 }
 function eqCmdInviter(ctx, cible) {
   var p = ctx.source.player
@@ -230,6 +300,7 @@ function eqCmdRejoindre(ctx) {
   eq.membres.push(eqUuid(p)); eq.noms[eqUuid(p)] = String(p.username)
   delete EQ_INVIT[eqUuid(p)]
   eqSauver(serveur)
+  eqRafraichir(serveur, [eqUuid(p)])
   eqAnnoncer(serveur, String(p.username) + " rejoint l'équipe " + eq.nom + '.', String(p.username) + ' joins team ' + eq.nom + '.', 'aqua')
   return 1
 }
@@ -237,6 +308,8 @@ function eqRetirerMembre(serveur, slug, uuid, nom) {
   var d = eqCharger(serveur), eq = d.equipes[slug]
   eq.membres.splice(eq.membres.indexOf(uuid), 1)
   delete eq.noms[uuid]
+  eqSauver(serveur)
+  eqRafraichir(serveur, [uuid])
   if (!eq.membres.length) {
     delete d.equipes[slug]
     eqAnnoncer(serveur, "L'équipe " + eq.nom + ' est dissoute.', 'Team ' + eq.nom + ' has been disbanded.', 'gray')
@@ -429,6 +502,7 @@ function eqCmdDissoudre(ctx, nom) {
   if (!eq) return eqRepondre(ctx, 'Équipe introuvable.', 'Team not found.')
   delete d.equipes[slug]
   eqSauver(serveur)
+  eqRafraichir(serveur, eq.membres)
   eqAnnoncer(serveur, "L'équipe " + eq.nom + ' a été dissoute par un professeur.', 'Team ' + eq.nom + ' was disbanded by a teacher.', 'gray')
   return 1
 }
@@ -444,6 +518,7 @@ ServerEvents.commandRegistry(function (event) {
   var C = event.commands, A = event.arguments
   event.register(C.literal('equipe')
     .then(C.literal('creer').then(C.argument('nom', A.GREEDY_STRING.create(event)).executes(function (ctx) { return eqCmdCreer(ctx, A.GREEDY_STRING.getResult(ctx, 'nom')) })))
+    .then(C.literal('logo').then(C.argument('texte', A.GREEDY_STRING.create(event)).executes(function (ctx) { return eqCmdLogo(ctx, A.GREEDY_STRING.getResult(ctx, 'texte')) })))
     .then(C.literal('inviter').then(C.argument('joueur', A.PLAYER.create(event)).executes(function (ctx) { return eqCmdInviter(ctx, A.PLAYER.getResult(ctx, 'joueur')) })))
     .then(C.literal('rejoindre').executes(function (ctx) { return eqCmdRejoindre(ctx) }))
     .then(C.literal('quitter').executes(function (ctx) { return eqCmdQuitter(ctx) }))
