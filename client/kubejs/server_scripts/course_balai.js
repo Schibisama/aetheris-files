@@ -235,12 +235,24 @@ ServerEvents.tick(function (event) {
     if (tick % 10 === 0 && d.anneaux.length) crDessiner(sv, d)
   } catch (e) { if (!CR._err) { CR._err = true; console.error('[course] ' + e) } }
 })
+// Qui voit les anneaux : ops et professeurs (pour les poser et les régler), et les joueurs en course (épreuve de Vroom, contre-la-montre,
+// décompte, course groupée inscrite). Les autres ne les voient jamais.
+function crVoitAnneaux(p) {
+  var u = String(p.uuid)
+  try { if (CR_COUREURS[u] || (typeof CR_ATTENTE !== 'undefined' && CR_ATTENTE[u])) return true } catch (e0) {}
+  try { if (CR_GROUPE && CR_GROUPE.inscrits && CR_GROUPE.inscrits.indexOf(u) !== -1) return true } catch (e1) {}
+  try { if (p.hasPermissions(2)) return true } catch (e2) {}
+  try { if (typeof profOuOp === 'function' && profOuOp(p.createCommandSourceStack())) return true } catch (e3) {}
+  try { if (p.getTags().contains('professeur')) return true } catch (e4) {}
+  return false
+}
 function crDessiner(sv, d) {
   var J = crJ()
   var blanc = new J.Dust(new J.V3(1, 1, 1), 1.4), vert = new J.Dust(new J.V3(0.2, 1, 0.2), 2), jaune = new J.Dust(new J.V3(1, 0.9, 0.2), 1.6)
   var js = sv.players
   for (var i = 0; i < js.length; i++) {
     var p = js[i], lvl = p.level, dim = eqDimId(p)
+    if (!crVoitAnneaux(p)) continue   // anneaux masqués : seulement pour les ops/professeurs et les participants
     var c = CR_COUREURS[String(p.uuid)], vise = -1, apres = -1
     if (c) { vise = crAnneauDuPassage(d, c.idx); if (c.idx + 1 < crTotal(d)) apres = crAnneauDuPassage(d, c.idx + 1) }
     for (var k = 0; k < d.anneaux.length; k++) {
