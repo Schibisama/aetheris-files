@@ -64,7 +64,13 @@ function crProf(ctx) {
   try { if (typeof profOuOp === 'function') return profOuOp(ctx.source) } catch (e) {}
   try { return ctx.source.hasPermission(2) } catch (e2) { return false }
 }
-function crEstBalai(v) { try { return !!v && String(v.getClass().getSimpleName()).indexOf('Broom') !== -1 } catch (e) { return false } }
+// Le balai du mod est une entité apprenticecodex:floatmount_broom / hoverride_broom (getClass() n'existe pas sous KubeJS : on lit le type et le nom).
+function crEstBalai(v) {
+  if (!v) return false
+  try { if (String(v.type).toLowerCase().indexOf('broom') !== -1) return true } catch (e) {}
+  try { if (String(v).toLowerCase().indexOf('broom') !== -1) return true } catch (e2) {}
+  return false
+}
 function crJoueur(sv, uuid) { try { return sv.getPlayerList().getPlayer(crJ().UUID.fromString(uuid)) } catch (e) { return null } }
 function crTemps(ticks) {
   var cs = Math.round(ticks * 5), m = Math.floor(cs / 6000), s = Math.floor((cs % 6000) / 100), c = cs % 100
@@ -132,6 +138,7 @@ function crArrivee(sv, p, c) {
   }
 }
 function crAbandon(sv, uuid, fr, en) {
+  if (typeof CR_ATTENTE !== 'undefined' && CR_ATTENTE[uuid]) { delete CR_ATTENTE[uuid]; crRetirerBalaiEpreuve(sv, uuid) }
   var c = CR_COUREURS[uuid]
   if (!c) return
   delete CR_COUREURS[uuid]
@@ -280,6 +287,95 @@ function crTexteRecords() {
   return parts
 }
 
+// ───────── Épreuve du Professeur Vroom : contre-la-montre proposé par un PNJ ─────────
+// Le joueur est téléporté sur un balai neuf au départ, décompte de 5 s, puis chrono jusqu'au dernier anneau (records + tableau).
+var CR_TENTER = { x: 1056, y: 441, z: 994, dim: 'minecraft:overworld', decompte: 5, balai: 'apprenticecodex:floatmount_broom' }
+var CR_ATTENTE = {}   // uuid -> { go (tick), tag }
+var CR_BALAIS = {}    // uuid -> { tag, t0 } : balais de l'épreuve à retirer une fois le joueur descendu
+function crTenter(sv, p) {
+  var d = crCharger(sv), u = String(p.uuid), nom = String(p.username)
+  if (d.anneaux.length < 2) return { ok: false, fr: "Le parcours n'est pas encore prêt.", en: 'The course is not ready yet.' }
+  if (CR_COUREURS[u] || CR_ATTENTE[u]) return { ok: false, fr: 'Tu es déjà en course (/course abandon pour arrêter).', en: 'You are already racing (/course abandon to stop).' }
+  var tag = 'cr_ep_' + u.substring(0, 8), T = CR_TENTER, pos = T.x + ' ' + T.y + ' ' + T.z
+  try { sv.runCommandSilent('ride ' + nom + ' dismount') } catch (e0) {}
+  sv.runCommandSilent('execute in ' + T.dim + ' run tp ' + nom + ' ' + pos)
+  sv.runCommandSilent('execute in ' + T.dim + ' run summon ' + T.balai + ' ' + pos + ' {Tags:["' + tag + '"]}')
+  sv.runCommandSilent('execute in ' + T.dim + ' run ride ' + nom + ' mount @e[type=' + T.balai + ',tag=' + tag + ',limit=1,sort=nearest]')
+  sv.runCommandSilent('effect give ' + nom + ' minecraft:slow_falling 25 0 true')
+  CR_ATTENTE[u] = { go: sv.tickCount + T.decompte * 20, tag: tag }
+  CR_BALAIS[u] = { tag: tag, t0: sv.tickCount }
+  return { ok: true }
+}
+function crRetirerBalaiEpreuve(sv, u) {
+  var b = CR_BALAIS[u]; if (!b) return
+  try { sv.runCommandSilent('kill @e[type=' + CR_TENTER.balai + ',tag=' + b.tag + ']') } catch (e) {}
+  delete CR_BALAIS[u]
+}
+ServerEvents.tick(function (event) {
+  var sv = event.server, tick = sv.tickCount
+  try {
+    for (var u in CR_ATTENTE) {
+      var a = CR_ATTENTE[u], p = crJoueur(sv, u)
+      if (!p || !crEstBalai(p.getVehicle())) { delete CR_ATTENTE[u]; if (p) crDire(p, 'Tu as quitté le balai : épreuve annulée.', 'You left the broom: trial cancelled.', 'red'); crRetirerBalaiEpreuve(sv, u); continue }
+      var reste = a.go - tick
+      if (reste > 0 && reste % 20 === 0) { try { sv.runCommandSilent('title ' + p.username + ' title {"text":"' + (reste / 20) + '","color":"yellow"}') } catch (e1) {} }
+      if (reste <= 0) {
+        delete CR_ATTENTE[u]
+        CR_COUREURS[u] = { mode: 'solo', idx: 0, debut: tick, px: p.getX(), py: p.getY() + 0.8, pz: p.getZ(), nom: String(p.username) }
+        try { sv.runCommandSilent('title ' + p.username + ' title {"text":"GO !","color":"green"}') } catch (e2) {}
+        crDire(p, 'Traverse tous les anneaux, dans l\'ordre. Le chrono tourne !', 'Fly through every ring, in order. The clock is ticking!', 'green')
+      }
+    }
+    if (tick % 20 === 0) {
+      for (var u2 in CR_BALAIS) {
+        var b = CR_BALAIS[u2], p2 = crJoueur(sv, u2)
+        if (CR_ATTENTE[u2] || CR_COUREURS[u2] || tick - b.t0 < 100) continue
+        if (!p2 || !crEstBalai(p2.getVehicle())) crRetirerBalaiEpreuve(sv, u2)   // course finie et joueur descendu : le balai de l'épreuve disparaît
+      }
+    }
+  } catch (e) { if (!CR._err2) { CR._err2 = true; console.error('[course] épreuve : ' + e) } }
+})
+
+// PNJ « Professeur Vroom » (Easy NPC, nom commençant par « Professeur Vroom ») : clic droit = discours puis boutons cliquables.
+var CR_PNJ = 'Professeur Vroom'
+var CR_VROOM_LAST = {}
+var CR_VROOM = {
+  fr: [
+    'Hmph. Un élève qui ose m\'adresser la parole sans même se présenter... Passe pour cette fois.',
+    'Je suis le professeur Vroom. Oui, LE Vroom. Triple champion des Anneaux d\'Aetheris, trois années de suite, sans la moindre égratignure sur mon balai.',
+    'À mon époque, on ne volait pas : on fendait le ciel. Vous autres, vous planez comme des feuilles mortes en automne.',
+    'Mais soyons beau joueur. Je t\'offre l\'épreuve : un balai, tous les anneaux, et le chronomètre pour seul juge. Ton temps sera gravé au tableau des records... sous le mien, naturellement.'
+  ],
+  en: [
+    'Hmph. A student who dares speak to me without even introducing themselves... I shall allow it, just this once.',
+    'I am Professor Vroom. Yes, THE Vroom. Three-time champion of the Aetheris Rings, three years running, without a single scratch on my broom.',
+    'In my day, we did not fly: we tore the sky open. You lot drift like dead leaves in autumn.',
+    'But let us be sporting. I offer you the trial: one broom, every ring, and the clock as sole judge. Your time shall be carved on the records board... below mine, naturally.'
+  ],
+  oui: ['[Relever le défi]', '[Take the challenge]'], non: ['[Pas aujourd\'hui]', '[Not today]'],
+  refus: ['Mais bien sûr. Les meilleurs savent toujours quand reculer... enfin, surtout ceux qui ne sont pas moi.', 'But of course. The wise always know when to retreat... well, those who are not me.']
+}
+function crParoleVroom(p) {
+  var en = crEn(p), L = en ? CR_VROOM.en : CR_VROOM.fr, nom = String(p.username)
+  for (var i = 0; i < L.length; i++) p.tell(Text.gold(CR_PNJ + ' ▸ ').append(Text.white(L[i])))
+  var oui = '{"text":"' + CR_VROOM.oui[en ? 1 : 0] + '","color":"green","bold":true,"clickEvent":{"action":"run_command","value":"/course tenter"}}'
+  var non = '{"text":"' + CR_VROOM.non[en ? 1 : 0].replace(/"/g, '\\"') + '","color":"red","clickEvent":{"action":"run_command","value":"/course refuser"}}'
+  try { p.server.runCommandSilent('tellraw ' + nom + ' ["  ",' + oui + ',"   ",' + non + ']') } catch (e) {}
+}
+ItemEvents.entityInteracted(function (event) {
+  try {
+    var cible = event.target
+    if (!cible || String(cible.type).indexOf('easy_npc:') !== 0) return
+    var nom = ''
+    try { nom = String(cible.name.getString()) } catch (e) { nom = String(cible.name) }
+    if (nom.indexOf(CR_PNJ) !== 0) return
+    var j = event.player, u = String(j.uuid), t = j.server.tickCount
+    if (CR_VROOM_LAST[u] !== undefined && t - CR_VROOM_LAST[u] < 20) return   // un clic droit déclenche deux fois (deux mains)
+    CR_VROOM_LAST[u] = t
+    crParoleVroom(j)
+  } catch (e) { console.error('[course] Vroom : ' + e) }
+})
+
 // ───────── Commandes ─────────
 ServerEvents.commandRegistry(function (event) {
   var C = event.commands, A = event.arguments
@@ -362,6 +458,18 @@ ServerEvents.commandRegistry(function (event) {
       if (a.dim !== eqDimId(p) || Math.pow(a.x - p.getX(), 2) + Math.pow(a.z - p.getZ(), 2) > CR.DEPART_MAX * CR.DEPART_MAX) return crRep(ctx, "Approche-toi de l'anneau de départ (moins de " + CR.DEPART_MAX + ' blocs).', 'Get closer to the start ring (within ' + CR.DEPART_MAX + ' blocks).')
       CR_COUREURS[String(p.uuid)] = { mode: 'solo', idx: 0, debut: -1, px: p.getX(), py: p.getY() + 0.8, pz: p.getZ(), nom: String(p.username) }
       return crRep(ctx, "Contre-la-montre ! Le chrono part quand tu franchis l'anneau 1 (en vert).", 'Time trial! The clock starts when you cross ring 1 (in green).')
+    }))
+    .then(C.literal('tenter').executes(function (ctx) {
+      var p = ctx.source.player, sv = ctx.source.server
+      if (!p) return 0
+      var r = crTenter(sv, p)
+      if (!r.ok) return crRep(ctx, r.fr, r.en)
+      return crRep(ctx, 'Bonne chance ! Départ dans ' + CR_TENTER.decompte + ' secondes. Reste sur ton balai !', 'Good luck! Start in ' + CR_TENTER.decompte + ' seconds. Stay on your broom!')
+    }))
+    .then(C.literal('refuser').executes(function (ctx) {
+      var p = ctx.source.player
+      if (p) p.tell(Text.gold(CR_PNJ + ' ▸ ').append(Text.white(CR_VROOM.refus[crEn(p) ? 1 : 0])))
+      return 1
     }))
     .then(C.literal('abandon').executes(function (ctx) { var p = ctx.source.player; if (p) crAbandon(ctx.source.server, String(p.uuid)); return 1 }))
     .then(C.literal('inscriptions').executes(function (ctx) {
