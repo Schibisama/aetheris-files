@@ -2870,7 +2870,143 @@ var BALISE_OBJETS_CLASSE = {
   'minecraft:note_block': 'Barde',
   'minecraft:jukebox': 'Barde'
 }
+// Objet -> structure (clé de nom « mcrp.structure.<clé> »), et identifiant de structure -> clé (pour afficher un joli nom)
+var BALISE_OBJET_STRUCT = {
+ "irons_spellbooks:divine_pearl": "village",
+ "minecraft:blaze_rod": "tour_du_pyromancien",
+ "irons_spellbooks:fire_rune": "arene_ardente",
+ "minecraft:magma_cream": "puits_de_feu",
+ "irons_spellbooks:frozen_bone": "tour_de_montagne",
+ "irons_spellbooks:ice_rune": "prison_gelee",
+ "minecraft:fermented_spider_eye": "antre_araignee_de_glace",
+ "minecraft:blue_ice": "brise_glace_empale",
+ "minecraft:packed_ice": "temple_givre",
+ "irons_spellbooks:lightning_rune": "acropole",
+ "minecraft:lightning_rod": "ruines_tour_ancienne",
+ "irons_spellbooks:holy_rune": "cathedrale",
+ "minecraft:bell": "chapelle_abandonnee",
+ "minecraft:golden_carrot": "chateau_acolyte",
+ "minecraft:chiseled_stone_bricks": "forteresse_ancienne",
+ "irons_spellbooks:blood_rune": "ancien_champ_de_bataille",
+ "minecraft:bone_block": "tertre_des_chiens",
+ "irons_spellbooks:ender_rune": "bibliotheque_de_l_end",
+ "minecraft:phantom_membrane": "citadelle_fantome",
+ "minecraft:ender_eye": "cour_d_enderkeep",
+ "minecraft:shulker_shell": "tour_de_shulkers",
+ "irons_spellbooks:nature_rune": "temple_moussu",
+ "minecraft:acacia_sapling": "bosquet_umvuthana",
+ "minecraft:chorus_flower": "jardin_mythique",
+ "minecraft:moss_block": "ruine_de_foret_dense",
+ "minecraft:clock": "tour_de_l_horloge",
+ "minecraft:echo_shard": "donjon_ancien",
+ "minecraft:amethyst_shard": "nid_d_amethyste",
+ "minecraft:sandstone": "nid_du_ver_des_sables",
+ "minecraft:raw_iron_block": "chambre_forgee",
+ "minecraft:feather": "moulin_a_vent",
+ "minecraft:breeze_rod": "temple_nuageux",
+ "minecraft:wind_charge": "iles_flottantes",
+ "minecraft:painting": "atelier_chromatique",
+ "minecraft:nautilus_shell": "cite_engloutie",
+ "minecraft:ink_sac": "navire_du_kraken",
+ "minecraft:oak_boat": "galion",
+ "minecraft:skeleton_skull": "catacombes",
+ "minecraft:rotten_flesh": "camp_draugr",
+ "minecraft:bone": "cimetiere",
+ "minecraft:soul_soil": "forteresse_des_ames",
+ "minecraft:ominous_bottle": "pyramide_maudite",
+ "minecraft:crying_obsidian": "tour_sombre",
+ "minecraft:candle": "autel_des_vestiges",
+ "minecraft:soul_lantern": "temple_heretique",
+ "minecraft:wither_skeleton_skull": "trone_du_transcendant",
+ "minecraft:spyglass": "observatoire_astral",
+ "minecraft:glowstone_dust": "repaire_astral",
+ "minecraft:fire_charge": "meteorite_astrale",
+ "minecraft:firework_rocket": "station_spatiale",
+ "minecraft:paper": "sanctuaire_onmyoji",
+ "minecraft:soul_torch": "forgeron_des_ames",
+ "minecraft:bamboo": "maison_taoiste",
+ "minecraft:quartz": "porte_de_sunzi",
+ "minecraft:piston": "usine_ancienne",
+ "minecraft:observer": "vaisseau_stellaire",
+ "minecraft:note_block": "caravane_de_clowns",
+ "minecraft:jukebox": "feu_de_camp",
+ "minecraft:emerald": "fort_de_l_evocateur",
+ "minecraft:poisonous_potato": "hutte_de_la_mangrove",
+ "minecraft:sculk_sensor": "cite_antique"
+}
+var BALISE_STRUCT_PAR_ID = {
+ "#minecraft:village": "village",
+ "irons_spellbooks:pyromancer_tower": "tour_du_pyromancien",
+ "cataclysm:burning_arena": "arene_ardente",
+ "born_in_chaos_v1:firewell": "puits_de_feu",
+ "irons_spellbooks:mountain_tower": "tour_de_montagne",
+ "cataclysm:frosted_prison": "prison_gelee",
+ "irons_spellbooks:ice_spider_den": "antre_araignee_de_glace",
+ "irons_spellbooks:impaled_icebreaker": "brise_glace_empale",
+ "legendary_monsters:frostbitten_temple": "temple_givre",
+ "cataclysm:acropolis": "acropole",
+ "legendary_monsters:ancient_tower_remains": "ruines_tour_ancienne",
+ "mvs:cathedral": "cathedrale",
+ "structory:abandoned_chapel": "chapelle_abandonnee",
+ "acolyte:castle/castle_0": "chateau_acolyte",
+ "acolyte:castle/castle_1": "chateau_acolyte",
+ "acolyte:castle/castle_2": "chateau_acolyte",
+ "legendary_monsters:ancient_stronghold": "forteresse_ancienne",
+ "irons_spellbooks:ancient_battleground": "ancien_champ_de_bataille",
+ "born_in_chaos_v1:mound_of_hounds": "tertre_des_chiens",
+ "firesenderexpansion:end_library": "bibliotheque_de_l_end",
+ "mes:phantom_citadel": "citadelle_fantome",
+ "mes:enderkeep_courtyard": "cour_d_enderkeep",
+ "legendary_monsters:shulker_tower": "tour_de_shulkers",
+ "legendary_monsters:mossy_temple": "temple_moussu",
+ "mowziesmobs:umvuthana_grove": "bosquet_umvuthana",
+ "mes:mythic_garden": "jardin_mythique",
+ "structory:dense_forest_ruin": "ruine_de_foret_dense",
+ "chronomancy:clock_tower": "tour_de_l_horloge",
+ "archaion:ancient_keep": "donjon_ancien",
+ "cataclysm:amethyst_nest": "nid_d_amethyste",
+ "block_factorys_bosses:sandworm_nest": "nid_du_ver_des_sables",
+ "mowziesmobs:wrought_chamber": "chambre_forgee",
+ "wind_spellbooks:windmill": "moulin_a_vent",
+ "legendary_monsters:cloudy_temple": "temple_nuageux",
+ "mvs:floating_islands": "iles_flottantes",
+ "mvs:large_floating_island": "iles_flottantes",
+ "colormagic:workshop": "atelier_chromatique",
+ "colormagic:abandoned_workshop": "atelier_chromatique",
+ "cataclysm:sunken_city": "cite_engloutie",
+ "block_factorys_bosses:kraken_ship": "navire_du_kraken",
+ "supplementaries:galleon": "galion",
+ "irons_spellbooks:catacombs": "catacombes",
+ "monsterspellbooks:draugr_camp": "camp_draugr",
+ "structory:graveyard": "cimetiere",
+ "legendary_monsters:soul_fortress_remains": "forteresse_des_ames",
+ "cataclysm:cursed_pyramid": "pyramide_maudite",
+ "born_in_chaos_v1:dark_tower_forest": "tour_sombre",
+ "born_in_chaos_v1:dark_tower_plain": "tour_sombre",
+ "born_in_chaos_v1:dark_tower_taiga": "tour_sombre",
+ "cursespells:altar_of_remnants": "autel_des_vestiges",
+ "cursespells:heretic_temple": "temple_heretique",
+ "cursespells:throne_of_the_transcendent": "trone_du_transcendant",
+ "asterismarcanum:astral_observatory": "observatoire_astral",
+ "mes:astral_hideaway": "repaire_astral",
+ "mes:astral_meteorite": "meteorite_astrale",
+ "legendary_monsters:space_station": "station_spatiale",
+ "iss_magicfromtheeast:onmyoji_shrine": "sanctuaire_onmyoji",
+ "cataclysm:soul_black_smith": "forgeron_des_ames",
+ "iss_magicfromtheeast:taoist_house": "maison_taoiste",
+ "mvs:sunzi_gate": "porte_de_sunzi",
+ "cataclysm:ancient_factory": "usine_ancienne",
+ "mes:starlight_voyager": "vaisseau_stellaire",
+ "born_in_chaos_v1:clown_caravan_plains": "caravane_de_clowns",
+ "born_in_chaos_v1:clown_caravan_savanna": "caravane_de_clowns",
+ "born_in_chaos_v1:clown_caravan_taiga": "caravane_de_clowns",
+ "mvs:fire_camp": "feu_de_camp",
+ "irons_spellbooks:evoker_fort": "fort_de_l_evocateur",
+ "irons_spellbooks:mangrove_hut": "hutte_de_la_mangrove",
+ "minecraft:ancient_city": "cite_antique"
+}
 var BALISES = []          // braseros actifs
+var BALISE_LABEL = {}     // uuid du brasero -> dernière cible annoncée
 var BALISE_AVERTI = {}    // propriétaire + objet -> tick du dernier message (évite le spam)
 var ItemEntityJ = null
 try { ItemEntityJ = Java.loadClass('net.minecraft.world.entity.item.ItemEntity') } catch (e) { console.error('[classes_rp] balise : ItemEntity introuvable : ' + e) }
@@ -2916,7 +3052,23 @@ EntityEvents.spawned(function (event) {
   try {
     var e = event.entity
     var type = String(e.type)
-    if (type === 'apprenticecodex:search_beacon') { BALISES.push(e); return }
+    if (type === 'apprenticecodex:search_beacon') {
+      BALISES.push(e)
+      // indice : une offrande au hasard parmi celles de la classe du propriétaire (et celles ouvertes à tous)
+      e.server.scheduleInTicks(30, function () {
+        try {
+          if (!e.isAlive()) return
+          var proprio = baliseProprietaire(e)
+          if (!proprio) return
+          var choix = []
+          for (var id in BALISE_OBJET_STRUCT) if (!baliseRefuse(proprio, id)) choix.push(id)
+          if (!choix.length) return
+          var o = choix[Math.floor(Math.random() * choix.length)]
+          proprio.tell(Text.translate('mcrp.msg.brasero_indice', Item.of(o).getHoverName(), Text.translate('mcrp.structure.' + BALISE_OBJET_STRUCT[o])).gold().italic())
+        } catch (err) {}
+      })
+      return
+    }
     if (type !== 'minecraft:item' || !BALISES.length) return
     // objet qui apparaît déjà tout près d'un brasero : vérifié tout de suite, avant la première absorption
     for (var i = 0; i < BALISES.length; i++) {
@@ -2934,7 +3086,14 @@ ServerEvents.tick(perfWrap('classes_rp:balise', function (event) {
   for (var i = BALISES.length - 1; i >= 0; i--) {
     var b = BALISES[i]
     try {
-      if (!b.isAlive()) { BALISES.splice(i, 1); continue }
+      if (!b.isAlive()) { delete BALISE_LABEL[String(b.getUUID())]; BALISES.splice(i, 1); continue }
+      // offrande acceptée : annonce le joli nom de la structure recherchée (le mod n'affiche que son identifiant)
+      var lab = String(b.getTargetLabel() || ''), cle = String(b.getUUID())
+      if (lab && BALISE_LABEL[cle] !== lab) {
+        BALISE_LABEL[cle] = lab
+        var p0 = baliseProprietaire(b), nomStruct = BALISE_STRUCT_PAR_ID[lab.split(', ')[0]]
+        if (p0 && nomStruct) p0.tell(Text.translate('mcrp.msg.brasero_cherche', Text.translate('mcrp.structure.' + nomStruct)).gold())
+      }
       var objets = b.level().getEntitiesOfClass(ItemEntityJ, b.getBoundingBox().inflate(1.6))
       if (!objets.size()) continue
       var proprio = baliseProprietaire(b)
