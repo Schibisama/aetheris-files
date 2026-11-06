@@ -1,5 +1,5 @@
 {
- "version": "2026-11-06T15:21:49.140Z",
+ "version": "2026-11-06T15:32:00.920Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6172,8 +6172,8 @@
   },
   {
    "path": "kubejs/client_scripts/classes_langue_messages.js",
-   "sha1": "fd9c2641cb492113ee4124b6026e5b7d8b897018",
-   "size": 22239
+   "sha1": "20a4f96961bf0286462175503f249fee794d2bb3",
+   "size": 22450
   },
   {
    "path": "kubejs/client_scripts/classes_langue.js",
@@ -6346,6 +6346,11 @@
    "size": 18725
   },
   {
+   "path": "kubejs/server_scripts/course_balai.js",
+   "sha1": "77307566252cb51e10c5699eab6170fd180ed7cd",
+   "size": 22264
+  },
+  {
    "path": "kubejs/server_scripts/decouverte_lieux.js",
    "sha1": "b297b3ea3e55609382490aab78fc14c27ef45d3e",
    "size": 2606
@@ -6362,8 +6367,8 @@
   },
   {
    "path": "kubejs/server_scripts/equipes.js",
-   "sha1": "f93dc34fb5d51412319877dc26aa4f52207e3498",
-   "size": 45311
+   "sha1": "c6a1514bceda87158c8204d74ec4ca836353c45b",
+   "size": 45843
   },
   {
    "path": "kubejs/server_scripts/ftb_aide.js",

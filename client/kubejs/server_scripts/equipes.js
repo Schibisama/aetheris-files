@@ -603,6 +603,7 @@ function eqDuelResultat(serveur, gagnant, perdant) {
 // ───────── Tableaux flottants (afficheurs de texte) ─────────
 // /classement tableau poser equipes [taille]   classement général + trimestre + épreuve en cours (à l'école)
 // /classement tableau poser duels [taille]     top 10 des duellistes (au Colisée)
+// /classement tableau poser course [taille]    top 10 des records de la course de balai (course_balai.js)
 // /classement tableau retirer                  retire le tableau le plus proche (moins de 8 blocs)
 // Le tableau est posé 3 blocs devant le joueur, face à lui. Textes traduits côté client (clés mcrp.tableau.*).
 var EQ_FOND = -1778384896   // 0x96000000 : fond noir semi-transparent
@@ -671,6 +672,7 @@ function eqTexteDuels(d) {
 // Morceaux d'un tableau : [suffixe du tag, décalage à droite, décalage en hauteur, texte]
 function eqMorceaux(d, t) {
   if (t.type === 'duels') return [['t', 0, 0, eqTexteDuels(d)]]
+  if (t.type === 'course') return [['t', 0, 0, typeof crTexteRecords === 'function' ? crTexteRecords() : ['', { text: '?' }]]]   // records de la course de balai (course_balai.js)
   return [
     ['h', 0, 3.2, ['', eqTr('titre', null, 'gold'), { text: '\n' }, eqTr('academie', null, 'gray')]],
     ['g', -2.6, 0, eqColonne(d, 'total', eqTr('general', null, 'yellow'))],
@@ -746,7 +748,9 @@ ServerEvents.commandRegistry(function (event) {
       .then(C.literal('equipes').executes(function (ctx) { return poser(ctx, 'equipes', 0.7) })
         .then(C.argument('taille', A.FLOAT.create(event)).executes(function (ctx) { return poser(ctx, 'equipes', A.FLOAT.getResult(ctx, 'taille')) })))
       .then(C.literal('duels').executes(function (ctx) { return poser(ctx, 'duels', 0.7) })
-        .then(C.argument('taille', A.FLOAT.create(event)).executes(function (ctx) { return poser(ctx, 'duels', A.FLOAT.getResult(ctx, 'taille')) }))))
+        .then(C.argument('taille', A.FLOAT.create(event)).executes(function (ctx) { return poser(ctx, 'duels', A.FLOAT.getResult(ctx, 'taille')) })))
+      .then(C.literal('course').executes(function (ctx) { return poser(ctx, 'course', 0.7) })
+        .then(C.argument('taille', A.FLOAT.create(event)).executes(function (ctx) { return poser(ctx, 'course', A.FLOAT.getResult(ctx, 'taille')) }))))
     .then(C.literal('retirer').executes(function (ctx) {
       if (!eqProf(ctx)) return eqRepondre(ctx, 'Réservé aux professeurs.', 'Teachers only.')
       var p = ctx.source.player
