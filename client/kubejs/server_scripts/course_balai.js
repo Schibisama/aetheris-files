@@ -232,7 +232,7 @@ ServerEvents.tick(function (event) {
     }
 
     // anneaux en particules (toutes les 10 ticks) : blanc pour tous ; pour un coureur, vert = suivant, jaune = celui d'après
-    if (tick % 10 === 0 && d.anneaux.length) crDessiner(sv, d)
+    if (tick % 5 === 0 && d.anneaux.length) crDessiner(sv, d)
   } catch (e) { if (!CR._err) { CR._err = true; console.error('[course] ' + e) } }
 })
 // Qui voit les anneaux : ops et professeurs (pour les poser et les régler), et les joueurs en course (épreuve de Vroom, contre-la-montre,
@@ -248,7 +248,7 @@ function crVoitAnneaux(p) {
 }
 function crDessiner(sv, d) {
   var J = crJ()
-  var blanc = new J.Dust(new J.V3(1, 1, 1), 1.4), vert = new J.Dust(new J.V3(0.2, 1, 0.2), 2), jaune = new J.Dust(new J.V3(1, 0.9, 0.2), 1.6)
+  var blanc = new J.Dust(new J.V3(0.4, 0.9, 1), 3), vert = new J.Dust(new J.V3(0.2, 1, 0.2), 4), jaune = new J.Dust(new J.V3(1, 0.85, 0.1), 3.5)
   var js = sv.players
   for (var i = 0; i < js.length; i++) {
     var p = js[i], lvl = p.level, dim = eqDimId(p)
@@ -262,12 +262,16 @@ function crDessiner(sv, d) {
       if (dist2 > CR.VUE * CR.VUE && k !== vise) continue
       var opt = k === vise ? vert : (k === apres ? jaune : blanc)
       var B = crBase(a)
-      var pts = Math.max(16, Math.round(a.r * 8))
-      for (var q = 0; q < pts; q++) {
-        var ang = q * 2 * Math.PI / pts, h = Math.cos(ang) * a.r, v = Math.sin(ang) * a.r
-        // cercle dans le plan de l'anneau : axe horizontal u et axe w (debout, penché ou à plat selon l'inclinaison)
-        var px = a.x + B.u[0] * h + B.w[0] * v, py = a.y + B.u[1] * h + B.w[1] * v, pz = a.z + B.u[2] * h + B.w[2] * v
-        try { lvl.sendParticles(p, opt, true, px, py, pz, 1, 0, 0, 0, 0) } catch (e) {}
+      var pts = Math.max(32, Math.round(a.r * 16))
+      // deux cercles concentriques (épaisseur) + particules denses = anneau bien visible
+      for (var e2 = 0; e2 < 2; e2++) {
+        var rr = a.r - e2 * 0.18
+        for (var q = 0; q < pts; q++) {
+          var ang = q * 2 * Math.PI / pts, h = Math.cos(ang) * rr, v = Math.sin(ang) * rr
+          // cercle dans le plan de l'anneau : axe horizontal u et axe w (debout, penché ou à plat selon l'inclinaison)
+          var px = a.x + B.u[0] * h + B.w[0] * v, py = a.y + B.u[1] * h + B.w[1] * v, pz = a.z + B.u[2] * h + B.w[2] * v
+          try { lvl.sendParticles(p, opt, true, px, py, pz, 1, 0, 0, 0, 0) } catch (e) {}
+        }
       }
     }
   }
