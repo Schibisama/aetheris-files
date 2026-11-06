@@ -2,6 +2,7 @@
 //
 // Parcours (professeurs et ops) :
 //   /course anneau ajouter [rayon] [vertical|horizontal|incline <angle>|regard]   pose un anneau à hauteur des yeux (rayon 3 par défaut).
+//        horizontal <angle> : à plat puis penché de <angle> degrés (ex. horizontal 30) ;
 //        incline <angle> : plan penché (0 = debout, 90 = à plat, 30 = diagonal, -30 = penché dans l'autre sens) ; regard : perpendiculaire à ta direction de regard (haut/bas compris).
 //        vertical (par défaut) : debout, face à la direction du regard, on le traverse à l'horizontale ;
 //        horizontal : à plat comme un cerceau au sol, on le traverse en montant ou en descendant.
@@ -299,7 +300,8 @@ ServerEvents.commandRegistry(function (event) {
   function opts(noeud, rayonDe) {
     return noeud
       .then(C.literal('vertical').executes(function (ctx) { return ajouter(ctx, rayonDe(ctx), 0) }))
-      .then(C.literal('horizontal').executes(function (ctx) { return ajouter(ctx, rayonDe(ctx), 90) }))
+      .then(C.literal('horizontal').executes(function (ctx) { return ajouter(ctx, rayonDe(ctx), 90) })
+        .then(C.argument('penche', A.INTEGER.create(event)).executes(function (ctx) { return ajouter(ctx, rayonDe(ctx), 90 - A.INTEGER.getResult(ctx, 'penche')) })))
       .then(C.literal('regard').executes(function (ctx) { return ajouter(ctx, rayonDe(ctx), 'regard') }))
       .then(C.literal('incline').then(C.argument('angle', A.INTEGER.create(event)).executes(function (ctx) { return ajouter(ctx, rayonDe(ctx), A.INTEGER.getResult(ctx, 'angle')) })))
   }
