@@ -1,5 +1,5 @@
 {
- "version": "2026-11-06T21:10:30.980Z",
+ "version": "2026-11-06T21:41:12.840Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6156,6 +6156,11 @@
    "size": 4854
   },
   {
+   "path": "kubejs/assets/mcrp/textures/entity/vroom.png",
+   "sha1": "6b97d811a31c289a036231cc5e2416a477793cff",
+   "size": 3002
+  },
+  {
    "path": "kubejs/client_scripts/aaa_traduction.js",
    "sha1": "b1f9c15a6995f58203403781c372a2107d138071",
    "size": 1847
@@ -6347,8 +6352,8 @@
   },
   {
    "path": "kubejs/server_scripts/course_balai.js",
-   "sha1": "eefba58c63c2b591cb3557e1f3fa1b1b52e79214",
-   "size": 27768
+   "sha1": "c94a3d9ecdfd0828a900537d166260fb4b16077a",
+   "size": 35064
   },
   {
    "path": "kubejs/server_scripts/decouverte_lieux.js",
