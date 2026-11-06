@@ -1,0 +1,378 @@
+{
+  "values": [
+    {
+      "item": "minecraft:blaze_rod",
+      "targets": [
+        "irons_spellbooks:pyromancer_tower"
+      ]
+    },
+    {
+      "item": "irons_spellbooks:fire_rune",
+      "targets": [
+        "cataclysm:burning_arena"
+      ]
+    },
+    {
+      "item": "irons_spellbooks:divine_pearl",
+      "targets": [
+        "#minecraft:village"
+      ]
+    },
+    {
+      "item": "minecraft:magma_cream",
+      "targets": [
+        "born_in_chaos_v1:firewell"
+      ]
+    },
+    {
+      "item": "irons_spellbooks:frozen_bone",
+      "targets": [
+        "irons_spellbooks:mountain_tower"
+      ]
+    },
+    {
+      "item": "irons_spellbooks:ice_rune",
+      "targets": [
+        "cataclysm:frosted_prison"
+      ]
+    },
+    {
+      "item": "minecraft:fermented_spider_eye",
+      "targets": [
+        "irons_spellbooks:ice_spider_den"
+      ]
+    },
+    {
+      "item": "minecraft:blue_ice",
+      "targets": [
+        "irons_spellbooks:impaled_icebreaker"
+      ]
+    },
+    {
+      "item": "minecraft:packed_ice",
+      "targets": [
+        "legendary_monsters:frostbitten_temple"
+      ]
+    },
+    {
+      "item": "irons_spellbooks:lightning_rune",
+      "targets": [
+        "cataclysm:acropolis"
+      ]
+    },
+    {
+      "item": "minecraft:lightning_rod",
+      "targets": [
+        "legendary_monsters:ancient_tower_remains"
+      ]
+    },
+    {
+      "item": "irons_spellbooks:holy_rune",
+      "targets": [
+        "mvs:cathedral"
+      ]
+    },
+    {
+      "item": "minecraft:bell",
+      "targets": [
+        "structory:abandoned_chapel"
+      ]
+    },
+    {
+      "item": "minecraft:golden_carrot",
+      "targets": [
+        "acolyte:castle/castle_0",
+        "acolyte:castle/castle_1",
+        "acolyte:castle/castle_2"
+      ]
+    },
+    {
+      "item": "minecraft:chiseled_stone_bricks",
+      "targets": [
+        "legendary_monsters:ancient_stronghold"
+      ]
+    },
+    {
+      "item": "irons_spellbooks:blood_rune",
+      "targets": [
+        "irons_spellbooks:ancient_battleground"
+      ]
+    },
+    {
+      "item": "minecraft:bone_block",
+      "targets": [
+        "born_in_chaos_v1:mound_of_hounds"
+      ]
+    },
+    {
+      "item": "irons_spellbooks:ender_rune",
+      "targets": [
+        "firesenderexpansion:end_library"
+      ]
+    },
+    {
+      "item": "minecraft:phantom_membrane",
+      "targets": [
+        "mes:phantom_citadel"
+      ]
+    },
+    {
+      "item": "minecraft:ender_eye",
+      "targets": [
+        "mes:enderkeep_courtyard"
+      ]
+    },
+    {
+      "item": "minecraft:shulker_shell",
+      "targets": [
+        "legendary_monsters:shulker_tower"
+      ]
+    },
+    {
+      "item": "irons_spellbooks:nature_rune",
+      "targets": [
+        "legendary_monsters:mossy_temple"
+      ]
+    },
+    {
+      "item": "minecraft:acacia_sapling",
+      "targets": [
+        "mowziesmobs:umvuthana_grove"
+      ]
+    },
+    {
+      "item": "minecraft:chorus_flower",
+      "targets": [
+        "mes:mythic_garden"
+      ]
+    },
+    {
+      "item": "minecraft:moss_block",
+      "targets": [
+        "structory:dense_forest_ruin"
+      ]
+    },
+    {
+      "item": "minecraft:clock",
+      "targets": [
+        "chronomancy:clock_tower"
+      ]
+    },
+    {
+      "item": "minecraft:echo_shard",
+      "targets": [
+        "archaion:ancient_keep"
+      ]
+    },
+    {
+      "item": "minecraft:amethyst_shard",
+      "targets": [
+        "cataclysm:amethyst_nest"
+      ]
+    },
+    {
+      "item": "minecraft:sandstone",
+      "targets": [
+        "block_factorys_bosses:sandworm_nest"
+      ]
+    },
+    {
+      "item": "minecraft:raw_iron_block",
+      "targets": [
+        "mowziesmobs:wrought_chamber"
+      ]
+    },
+    {
+      "item": "minecraft:feather",
+      "targets": [
+        "wind_spellbooks:windmill"
+      ]
+    },
+    {
+      "item": "minecraft:breeze_rod",
+      "targets": [
+        "legendary_monsters:cloudy_temple"
+      ]
+    },
+    {
+      "item": "minecraft:wind_charge",
+      "targets": [
+        "mvs:floating_islands",
+        "mvs:large_floating_island"
+      ]
+    },
+    {
+      "item": "minecraft:painting",
+      "targets": [
+        "colormagic:workshop",
+        "colormagic:abandoned_workshop"
+      ]
+    },
+    {
+      "item": "minecraft:nautilus_shell",
+      "targets": [
+        "cataclysm:sunken_city"
+      ]
+    },
+    {
+      "item": "minecraft:ink_sac",
+      "targets": [
+        "block_factorys_bosses:kraken_ship"
+      ]
+    },
+    {
+      "item": "minecraft:oak_boat",
+      "targets": [
+        "supplementaries:galleon"
+      ]
+    },
+    {
+      "item": "minecraft:skeleton_skull",
+      "targets": [
+        "irons_spellbooks:catacombs"
+      ]
+    },
+    {
+      "item": "minecraft:rotten_flesh",
+      "targets": [
+        "monsterspellbooks:draugr_camp"
+      ]
+    },
+    {
+      "item": "minecraft:bone",
+      "targets": [
+        "structory:graveyard"
+      ]
+    },
+    {
+      "item": "minecraft:soul_soil",
+      "targets": [
+        "legendary_monsters:soul_fortress_remains"
+      ]
+    },
+    {
+      "item": "minecraft:ominous_bottle",
+      "targets": [
+        "cataclysm:cursed_pyramid"
+      ]
+    },
+    {
+      "item": "minecraft:crying_obsidian",
+      "targets": [
+        "born_in_chaos_v1:dark_tower_forest",
+        "born_in_chaos_v1:dark_tower_plain",
+        "born_in_chaos_v1:dark_tower_taiga"
+      ]
+    },
+    {
+      "item": "minecraft:candle",
+      "targets": [
+        "cursespells:altar_of_remnants"
+      ]
+    },
+    {
+      "item": "minecraft:soul_lantern",
+      "targets": [
+        "cursespells:heretic_temple"
+      ]
+    },
+    {
+      "item": "minecraft:wither_skeleton_skull",
+      "targets": [
+        "cursespells:throne_of_the_transcendent"
+      ]
+    },
+    {
+      "item": "minecraft:spyglass",
+      "targets": [
+        "asterismarcanum:astral_observatory"
+      ]
+    },
+    {
+      "item": "minecraft:glowstone_dust",
+      "targets": [
+        "mes:astral_hideaway"
+      ]
+    },
+    {
+      "item": "minecraft:fire_charge",
+      "targets": [
+        "mes:astral_meteorite"
+      ]
+    },
+    {
+      "item": "minecraft:firework_rocket",
+      "targets": [
+        "legendary_monsters:space_station"
+      ]
+    },
+    {
+      "item": "minecraft:paper",
+      "targets": [
+        "iss_magicfromtheeast:onmyoji_shrine"
+      ]
+    },
+    {
+      "item": "minecraft:soul_torch",
+      "targets": [
+        "cataclysm:soul_black_smith"
+      ]
+    },
+    {
+      "item": "minecraft:bamboo",
+      "targets": [
+        "iss_magicfromtheeast:taoist_house"
+      ]
+    },
+    {
+      "item": "minecraft:quartz",
+      "targets": [
+        "mvs:sunzi_gate"
+      ]
+    },
+    {
+      "item": "minecraft:piston",
+      "targets": [
+        "cataclysm:ancient_factory"
+      ]
+    },
+    {
+      "item": "minecraft:observer",
+      "targets": [
+        "mes:starlight_voyager"
+      ]
+    },
+    {
+      "item": "minecraft:note_block",
+      "targets": [
+        "born_in_chaos_v1:clown_caravan_plains",
+        "born_in_chaos_v1:clown_caravan_savanna",
+        "born_in_chaos_v1:clown_caravan_taiga"
+      ]
+    },
+    {
+      "item": "minecraft:jukebox",
+      "targets": [
+        "mvs:fire_camp"
+      ]
+    },
+    {
+      "item": "minecraft:emerald",
+      "targets": [
+        "irons_spellbooks:evoker_fort"
+      ]
+    },
+    {
+      "item": "minecraft:poisonous_potato",
+      "targets": [
+        "irons_spellbooks:mangrove_hut"
+      ]
+    },
+    {
+      "item": "minecraft:sculk_sensor",
+      "targets": [
+        "minecraft:ancient_city"
+      ]
+    }
+  ]
+}

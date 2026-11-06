@@ -2806,3 +2806,154 @@ ServerEvents.tick(perfWrap('classes_rp:2424', function (event) {
     }
   }
 }))
+
+// ===== Balise de Recherche (Apprentice's Codex) : offrandes réservées à une classe =====
+// Liste des structures et objets : kubejs/data/apprenticecodex/search_beacon_targets/default.json (remplace celle du mod).
+// Un objet de cette table n'est accepté par le brasero que si son propriétaire (le lanceur du sort) est de la bonne classe ou en mode testeur.
+// Les autres offrandes (Village, Fort de l'Évocateur, Hutte de la mangrove, Cité antique) restent ouvertes à tous.
+var BALISE_OBJETS_CLASSE = {
+  'minecraft:blaze_rod': 'Pyromancien',
+  'irons_spellbooks:fire_rune': 'Pyromancien',
+  'minecraft:magma_cream': 'Pyromancien',
+  'irons_spellbooks:frozen_bone': 'Cryomancien',
+  'irons_spellbooks:ice_rune': 'Cryomancien',
+  'minecraft:fermented_spider_eye': 'Cryomancien',
+  'minecraft:blue_ice': 'Cryomancien',
+  'minecraft:packed_ice': 'Cryomancien',
+  'irons_spellbooks:lightning_rune': 'Électro-Sorcier',
+  'minecraft:lightning_rod': 'Électro-Sorcier',
+  'irons_spellbooks:holy_rune': 'Paladin',
+  'minecraft:bell': 'Paladin',
+  'minecraft:golden_carrot': 'Paladin',
+  'minecraft:chiseled_stone_bricks': 'Paladin',
+  'irons_spellbooks:blood_rune': 'Hémomancien',
+  'minecraft:bone_block': 'Hémomancien',
+  'irons_spellbooks:ender_rune': 'Voyageur du Vide',
+  'minecraft:phantom_membrane': 'Voyageur du Vide',
+  'minecraft:ender_eye': 'Voyageur du Vide',
+  'minecraft:shulker_shell': 'Voyageur du Vide',
+  'irons_spellbooks:nature_rune': 'Druide',
+  'minecraft:acacia_sapling': 'Druide',
+  'minecraft:chorus_flower': 'Druide',
+  'minecraft:moss_block': 'Druide',
+  'minecraft:clock': 'Chronomancien',
+  'minecraft:echo_shard': 'Chronomancien',
+  'minecraft:amethyst_shard': 'Géomancien',
+  'minecraft:sandstone': 'Géomancien',
+  'minecraft:raw_iron_block': 'Géomancien',
+  'minecraft:feather': 'Aéromancien',
+  'minecraft:breeze_rod': 'Aéromancien',
+  'minecraft:wind_charge': 'Aéromancien',
+  'minecraft:painting': 'Chromancien',
+  'minecraft:nautilus_shell': 'Hydromancien',
+  'minecraft:ink_sac': 'Hydromancien',
+  'minecraft:oak_boat': 'Hydromancien',
+  'minecraft:skeleton_skull': 'Nécromancien',
+  'minecraft:rotten_flesh': 'Nécromancien',
+  'minecraft:bone': 'Nécromancien',
+  'minecraft:soul_soil': 'Nécromancien',
+  'minecraft:ominous_bottle': 'Réprouvé',
+  'minecraft:crying_obsidian': 'Réprouvé',
+  'minecraft:candle': 'Envoûteur',
+  'minecraft:soul_lantern': 'Envoûteur',
+  'minecraft:wither_skeleton_skull': 'Envoûteur',
+  'minecraft:spyglass': 'Astromancien',
+  'minecraft:glowstone_dust': 'Astromancien',
+  'minecraft:fire_charge': 'Astromancien',
+  'minecraft:firework_rocket': 'Astromancien',
+  'minecraft:paper': 'Spiritualiste',
+  'minecraft:soul_torch': 'Spiritualiste',
+  'minecraft:bamboo': 'Symétriste',
+  'minecraft:quartz': 'Symétriste',
+  'minecraft:piston': 'Technomancien',
+  'minecraft:observer': 'Technomancien',
+  'minecraft:note_block': 'Barde',
+  'minecraft:jukebox': 'Barde'
+}
+var BALISES = []          // braseros actifs
+var BALISE_AVERTI = {}    // propriétaire + objet -> tick du dernier message (évite le spam)
+var ItemEntityJ = null
+try { ItemEntityJ = Java.loadClass('net.minecraft.world.entity.item.ItemEntity') } catch (e) { console.error('[classes_rp] balise : ItemEntity introuvable : ' + e) }
+
+function baliseProprietaire(b) {
+  try {
+    var nom = b.getOwnerName()
+    if (!nom) return null
+    return b.getServer().getPlayerList().getPlayerByName(String(nom))
+  } catch (e) { return null }
+}
+// true si l'offrande doit être refusée
+function baliseRefuse(proprio, idObjet) {
+  var cl = BALISE_OBJETS_CLASSE[idObjet]
+  if (!cl) return false
+  if (!proprio) return true
+  if (estTest(proprio)) return false
+  var c = classeDe(proprio)
+  return !c || c.nom !== cl
+}
+function baliseAvertir(proprio, idObjet, tick) {
+  if (!proprio) return
+  var k = String(proprio.getUUID()) + '|' + idObjet
+  if (BALISE_AVERTI[k] && tick - BALISE_AVERTI[k] < 60) return
+  BALISE_AVERTI[k] = tick
+  try { proprio.setStatusMessage(Text.translate('mcrp.msg.brasero_refus').gold()) } catch (e) {}
+}
+
+// Repousse un objet refusé hors de portée du brasero b
+function baliseVerifierObjet(b, it, proprio, tick) {
+  var id = String(it.getItem().id)
+  if (!baliseRefuse(proprio, id)) return
+  var dx = it.getX() - b.getX(), dz = it.getZ() - b.getZ()
+  var d = Math.sqrt(dx * dx + dz * dz)
+  if (d < 0.05) { dx = Math.random() - 0.5; dz = Math.random() - 0.5; d = Math.sqrt(dx * dx + dz * dz) }
+  it.setPos(b.getX() + dx / d * 2.2, it.getY() + 0.2, b.getZ() + dz / d * 2.2)
+  it.setDeltaMovement(dx / d * 0.25, 0.2, dz / d * 0.25)
+  it.hurtMarked = true
+  baliseAvertir(proprio, id, tick)
+}
+
+EntityEvents.spawned(function (event) {
+  try {
+    var e = event.entity
+    var type = String(e.type)
+    if (type === 'apprenticecodex:search_beacon') { BALISES.push(e); return }
+    if (type !== 'minecraft:item' || !BALISES.length) return
+    // objet qui apparaît déjà tout près d'un brasero : vérifié tout de suite, avant la première absorption
+    for (var i = 0; i < BALISES.length; i++) {
+      var b = BALISES[i]
+      if (!b.isAlive() || b.level() !== e.level()) continue
+      if (b.distanceToSqr(e) < 9) { baliseVerifierObjet(b, e, baliseProprietaire(b), e.server.tickCount); return }
+    }
+  } catch (err) {}
+})
+
+// Objet jeté près du brasero : repoussé avant qu'il ne l'absorbe
+ServerEvents.tick(perfWrap('classes_rp:balise', function (event) {
+  if (!BALISES.length || !ItemEntityJ) return
+  var tick = event.server.tickCount
+  for (var i = BALISES.length - 1; i >= 0; i--) {
+    var b = BALISES[i]
+    try {
+      if (!b.isAlive()) { BALISES.splice(i, 1); continue }
+      var objets = b.level().getEntitiesOfClass(ItemEntityJ, b.getBoundingBox().inflate(1.6))
+      if (!objets.size()) continue
+      var proprio = baliseProprietaire(b)
+      for (var j = 0; j < objets.size(); j++) baliseVerifierObjet(b, objets.get(j), proprio, tick)
+    } catch (e) {
+      if (!BALISES._err) { BALISES._err = true; console.error('[classes_rp] balise : ' + e) }
+    }
+  }
+}))
+
+// Offrande par clic droit sur le brasero
+ItemEvents.entityInteracted(function (event) {
+  try {
+    if (String(event.target.type) !== 'apprenticecodex:search_beacon') return
+    var id = String(event.item.id)
+    if (!BALISE_OBJETS_CLASSE[id]) return
+    var proprio = baliseProprietaire(event.target) || event.player
+    if (!baliseRefuse(proprio, id)) return
+    baliseAvertir(event.player, id, event.server.tickCount)
+    event.cancel()
+  } catch (e) {}
+})

@@ -1,5 +1,5 @@
 {
- "version": "2026-11-06T09:59:57.128Z",
+ "version": "2026-11-06T11:53:47.133Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6092,13 +6092,13 @@
   },
   {
    "path": "kubejs/client_scripts/classes_langue_messages.js",
-   "sha1": "a9683ea14e8ba44cdeca7235625da7d9fbe110f8",
-   "size": 11823
+   "sha1": "baeadb073710e8531db1859393acc7e31d580b4e",
+   "size": 12039
   },
   {
    "path": "kubejs/client_scripts/classes_langue.js",
-   "sha1": "727780716e93999421e498dee0a54ce4fb81bcf1",
-   "size": 483489
+   "sha1": "ddd6151c07decbdc5c92aab4e34753ad3f55f825",
+   "size": 483635
   },
   {
    "path": "kubejs/client_scripts/classes_tooltips.js",
@@ -6134,6 +6134,11 @@
    "path": "kubejs/data/apprenticecodex/irons_jewelry/material/wisdom.json",
    "sha1": "34340dfc5cc12f486e322fecd91db9678f42c5c2",
    "size": 830
+  },
+  {
+   "path": "kubejs/data/apprenticecodex/search_beacon_targets/default.json",
+   "sha1": "a951653091088fd74969da02d6c641b2cd86ecc0",
+   "size": 7536
   },
   {
    "path": "kubejs/data/hazennstuff/irons_jewelry/material/chlorophyte.json",
@@ -6242,8 +6247,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "ee72f33fc6d8a42d74206a4c8bd15d304754d33e",
-   "size": 158834
+   "sha1": "992b8e09f4036bd51dab55df7f71640421ccd3e1",
+   "size": 165339
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
