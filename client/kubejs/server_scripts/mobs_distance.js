@@ -433,7 +433,9 @@ ServerEvents.commandRegistry(function (event) {
 // Une part des apparitions NATURELLES de monstres est annulée (réglage : SPAWN_LEGER.part, 0 à 1). Ni les boss, ni les invocations,
 // ni les œufs/commandes/spawners/zones de boss ne sont concernés.
 // Réglage en jeu (op) : /spawnleger  /spawnleger <0-100>
-var SPAWN_LEGER = { part: 0.35 }
+// Born in Chaos : en plus, une apparition naturelle sur deux de ses monstres est annulée (SPAWN_LEGER.bic),
+// pour réduire de moitié sa part parmi les monstres (les places libérées reviennent aux autres mobs).
+var SPAWN_LEGER = { part: 0.35, bic: 0.5 }
 try {
   NativeEvents.onEvent(
     Java.loadClass('net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent'),
@@ -443,7 +445,8 @@ try {
         if (String(event.getSpawnType().name()) !== 'NATURAL') return
         var m = event.getEntity()
         if (String(m.getType().getCategory().getName()) !== 'monster') return
-        if (Math.random() < SPAWN_LEGER.part) event.setSpawnCancelled(true)
+        if (Math.random() < SPAWN_LEGER.part) { event.setSpawnCancelled(true); return }
+        if (SPAWN_LEGER.bic > 0 && String(m.getType().builtInRegistryHolder().key().location().getNamespace()) === 'born_in_chaos_v1' && Math.random() < SPAWN_LEGER.bic) event.setSpawnCancelled(true)
       } catch (e1) {}
     }
   )
