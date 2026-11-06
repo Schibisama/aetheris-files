@@ -552,12 +552,19 @@ ServerEvents.commandRegistry(function (event) {
 console.info('[zone_pirates] Zone des anciens matelots chargée.')
 
 // Suivi de la vie x3 : à chaque tick.
+var zpCacheMobs = null
 ServerEvents.tick(perfWrap('zone_pirates:537', function (event) {
   try {
     var niveau = zpNiveau(event.server)
     if (!niveau || !AABB_ZP) return
-    var liste = zpMobs(niveau)
-    if (liste.length > 0) zpNbJoueurs = zpCompterJoueurs(event.server)
-    for (var i = 0; i < liste.length; i++) zpVieFictive(liste[i])
+    // recherche des mobs de la zone une fois par seconde ; à chaque tick, suivi des seuls mobs déjà trouvés
+    var tk = event.server.tickCount
+    if (!zpCacheMobs || tk - zpCacheMobs.t >= 20 || tk < zpCacheMobs.t) {
+      var trouves = zpMobs(niveau)
+      zpCacheMobs = { t: tk, liste: trouves }
+      if (trouves.length > 0) zpNbJoueurs = zpCompterJoueurs(event.server)
+    }
+    var liste = zpCacheMobs.liste
+    for (var i = 0; i < liste.length; i++) { if (!liste[i].isRemoved() && liste[i].isAlive()) zpVieFictive(liste[i]) }
   } catch (err) {}
 }))

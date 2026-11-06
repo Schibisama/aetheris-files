@@ -19,6 +19,7 @@ try {
   PlayerEvents.tick(function (event) {
     try {
       var joueur = event.player
+      if (joueur.tickCount % 4 !== 0) return   // inutile à chaque tick
       var aRetirer = null
       for (var i = 0; i < EMPLACEMENTS_SETS.length; i++) {
         var piece = joueur.getItemBySlot(EMPLACEMENTS_SETS[i])

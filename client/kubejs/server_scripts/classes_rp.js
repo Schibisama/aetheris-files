@@ -2645,17 +2645,23 @@ function parchScanObjets(joueur) {
   return { vus: vus, nb: nb }
 }
 
+var CACHE_CONNUS = {}   // uuid -> { n, connus } : la liste n'est reparcourue que si le nombre de sorts découverts change (ou une fois par seconde)
 function parchScanConnus(joueur) {
   if (!UnlockAttachJ) UnlockAttachJ = Java.loadClass('com.specs.irons_spellbooks.unlock.SpellUnlockAttachments')
+  var ens = joueur.getData(UnlockAttachJ.UNLOCKS).getDiscoveredSpells()
+  var cle = String(joueur.uuid), n = Number(ens.size()), t = joueur.tickCount
+  var c = CACHE_CONNUS[cle]
+  if (c && c.n === n && t - c.t < 20) return c.connus
   var connus = {}
-  var it = joueur.getData(UnlockAttachJ.UNLOCKS).getDiscoveredSpells().iterator()
+  var it = ens.iterator()
   while (it.hasNext()) connus[String(it.next())] = true
+  CACHE_CONNUS[cle] = { n: n, t: t, connus: connus }
   return connus
 }
 
 ServerEvents.tick(perfWrap('classes_rp:2371', function (event) {
   var serveur = event.server
-  if (serveur.tickCount % 5 !== 0) return
+  if (serveur.tickCount % 10 !== 0) return
   var joueurs = serveur.players
   for (var i = 0; i < joueurs.size(); i++) {
     var j = joueurs.get(i)
@@ -2776,7 +2782,7 @@ function respecPhoto(j) {
 }
 ServerEvents.tick(perfWrap('classes_rp:2424', function (event) {
   var serveur = event.server
-  if (serveur.tickCount % 4 !== 0) return
+  if (serveur.tickCount % 10 !== 0) return
   var joueurs = serveur.players
   for (var i = 0; i < joueurs.size(); i++) {
     var j = joueurs.get(i)

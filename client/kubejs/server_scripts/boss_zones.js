@@ -923,18 +923,27 @@ try {
 } catch (e) { console.error('[boss_zones] blocage des téléportations indisponible : ' + e) }
 
 // Suivi de la vie x3 : à chaque tick (pas toutes les 5 ticks) pour ne rater aucune perte de PV.
+var bzCacheListe = {}
 ServerEvents.tick(perfWrap('boss_zones:908', function (event) {
   try {
     var niveau = bzNiveau(event.server)
     if (!niveau || !AABB_BZ) return
+    // La recherche des boss dans la zone (requête d'entités sur une grande boîte) ne se fait qu'une fois par seconde ;
+    // à chaque tick on ne suit que les boss déjà trouvés, ce qui garde le suivi exact des pertes de PV.
+    var tk = event.server.tickCount
     for (var nom in BOSSES) {
       var b = BOSSES[nom]
-      var liste = bzBoss(niveau, b, b.rayon + 40)
-      if (liste.length > 0) {
-        var nb = bzCompterJoueurs(event.server, b)
-        for (var k = 0; k < liste.length; k++) bzNbJoueurs[String(liste[k].uuid)] = nb
+      var c = bzCacheListe[nom]
+      if (!c || tk - c.t >= 20 || tk < c.t) {
+        var trouves = bzBoss(niveau, b, b.rayon + 40)
+        c = bzCacheListe[nom] = { t: tk, liste: trouves }
+        if (trouves.length > 0) {
+          var nb = bzCompterJoueurs(event.server, b)
+          for (var k = 0; k < trouves.length; k++) bzNbJoueurs[String(trouves[k].uuid)] = nb
+        }
       }
-      for (var i = 0; i < liste.length; i++) bzVieFictive(liste[i])
+      var liste = c.liste
+      for (var i = 0; i < liste.length; i++) { if (!liste[i].isRemoved()) bzVieFictive(liste[i]) }
     }
   } catch (err) {}
 }))
