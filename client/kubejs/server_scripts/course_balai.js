@@ -6,6 +6,7 @@
 //        incline <angle> : plan penché (0 = debout, 90 = à plat, 30 = diagonal, -30 = penché dans l'autre sens) ; regard : perpendiculaire à ta direction de regard (haut/bas compris).
 //        vertical (par défaut) : debout, face à la direction du regard, on le traverse à l'horizontale ;
 //        horizontal : à plat comme un cerceau au sol, on le traverse en montant ou en descendant.
+//   /course anneau tourner <angle>    tourne le DERNIER anneau posé de <angle>° vers la droite/gauche (négatif = autre sens) ; /course anneau incliner <angle> : change son inclinaison haut/bas
 //   /course anneau retirer           retire l'anneau le plus proche       /course anneau liste
 //   /course effacer                  supprime tout le parcours
 //   /course boucle oui|non           oui : circuit (chaque tour repasse par l'anneau 1) ; non : du 1er au dernier anneau
@@ -309,6 +310,24 @@ ServerEvents.commandRegistry(function (event) {
     .then(C.literal('anneau')
       .then(opts(C.literal('ajouter').executes(function (ctx) { return ajouter(ctx, CR.RAYON_DEFAUT, 0) }), function () { return CR.RAYON_DEFAUT })
         .then(opts(C.argument('rayon', A.FLOAT.create(event)).executes(function (ctx) { return ajouter(ctx, A.FLOAT.getResult(ctx, 'rayon'), 0) }), function (ctx) { return A.FLOAT.getResult(ctx, 'rayon') })))
+      .then(C.literal('tourner').then(C.argument('angle', A.INTEGER.create(event)).executes(function (ctx) {
+        return prof(ctx, function () {
+          var sv = ctx.source.server, d = crCharger(sv)
+          if (!d.anneaux.length) return crRep(ctx, 'Aucun anneau.', 'No ring.')
+          var a = d.anneaux[d.anneaux.length - 1]
+          a.yaw = Number(a.yaw) + A.INTEGER.getResult(ctx, 'angle'); crSauver(sv)
+          return crRep(ctx, 'Anneau ' + d.anneaux.length + ' tourné de ' + A.INTEGER.getResult(ctx, 'angle') + '° (gauche/droite).', 'Ring ' + d.anneaux.length + ' turned by ' + A.INTEGER.getResult(ctx, 'angle') + '°.')
+        })
+      })))
+      .then(C.literal('incliner').then(C.argument('angle', A.INTEGER.create(event)).executes(function (ctx) {
+        return prof(ctx, function () {
+          var sv = ctx.source.server, d = crCharger(sv)
+          if (!d.anneaux.length) return crRep(ctx, 'Aucun anneau.', 'No ring.')
+          var a = d.anneaux[d.anneaux.length - 1], ang = Math.max(-90, Math.min(90, A.INTEGER.getResult(ctx, 'angle')))
+          a.incl = ang; a.plat = ang === 90; crSauver(sv)
+          return crRep(ctx, 'Anneau ' + d.anneaux.length + ' : inclinaison ' + ang + '°.', 'Ring ' + d.anneaux.length + ': tilt ' + ang + '°.')
+        })
+      })))
       .then(C.literal('retirer').executes(function (ctx) {
         return prof(ctx, function () {
           var p = ctx.source.player, sv = ctx.source.server, d = crCharger(sv), best = -1, bd = 1e9
