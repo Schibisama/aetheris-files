@@ -446,7 +446,10 @@ ServerEvents.commandRegistry(function (event) {
       if (!r.ok) return crRep(ctx, r.fr, r.en)
       return crRep(ctx, 'Bonne chance ! Départ dans ' + CR_TENTER.decompte + ' secondes. Reste sur ton balai !', 'Good luck! Start in ' + CR_TENTER.decompte + ' seconds. Stay on your broom!')
     }))
-    .then(C.literal('tenter_pour').requires(function (src) { try { return src.hasPermission(2) } catch (e) { return false } })
+    .then(C.literal('tenter_pour').requires(function (src) {
+      try { if (src.hasPermission(2)) return true } catch (e) {}
+      try { var ent = src.entity; return !!ent && String(ent.type).indexOf('easy_npc:') === 0 } catch (e2) { return false }
+    })
       .then(C.argument('joueur', A.PLAYER.create(event)).executes(function (ctx) {
         var p = A.PLAYER.getResult(ctx, 'joueur'), sv = ctx.source.server
         console.info('[course] tenter_pour : ' + String(p.username))
