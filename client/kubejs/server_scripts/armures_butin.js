@@ -31,9 +31,15 @@ var AR_PARCHEMIN_AJOUT = 0.023
 var AR_DEBUG = false   // journal de chaque ouverture de conteneur (mettre false une fois le filtre vérifié)
 var AR_PAGE = null, AR_SR = null, AR_CATALOGUE = null
 // Rareté du sort à son niveau minimum (COMMON..LEGENDARY). NB : getMinRarity() renvoie un entier, pas un nom : les poids de rareté ne s'appliquaient jamais.
+// Rareté d'un sort pour les tirages : la plus haute entre sa rareté minimale propre (getMinRarity, 0 = commun ... 4 = légendaire)
+// et la rareté affichée de son niveau le plus bas. (Avec la répartition des raretés réglée sur le serveur, le niveau minimum
+// ressort « commun » pour presque tous les sorts : seule, elle annulait les poids de rareté.)
+var AR_RARETES = ['COMMON', 'UNCOMMON', 'RARE', 'EPIC', 'LEGENDARY']
 function arRareteSort(sp) {
-  try { return String(sp.getRarity(Math.max(1, Number(sp.getMinLevel()))).name()).toUpperCase() } catch (e) {}
-  try { return ['COMMON', 'UNCOMMON', 'RARE', 'EPIC', 'LEGENDARY'][Number(sp.getMinRarity())] || 'COMMON' } catch (e2) { return 'COMMON' }
+  var r = 0
+  try { r = Math.max(r, Number(sp.getMinRarity()) || 0) } catch (e) {}
+  try { r = Math.max(r, AR_RARETES.indexOf(String(sp.getRarity(Math.max(1, Number(sp.getMinLevel()))).name()).toUpperCase())) } catch (e2) {}
+  return AR_RARETES[Math.max(0, Math.min(4, r))]
 }
 function arSortListable(sp) {
   try { if (!sp.allowLooting()) return false } catch (e) {}
