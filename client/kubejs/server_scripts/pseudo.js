@@ -147,8 +147,14 @@ PlayerEvents.loggedIn(function (event) {
 try {
   NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.player.PlayerEvent$NameFormat'), function (e) {
     try {
-      var nom = psPseudo(e.getEntity())
-      if (nom) e.setDisplayname(Text.of(nom))
+      var j = e.getEntity()
+      var nom = psPseudo(j)
+      var logo = null
+      try { if (typeof eqLogoSeul === 'function') logo = eqLogoSeul(j) } catch (eL) {}
+      // [logo] devant le nom (au-dessus de la tête et dans le chat)
+      if (logo) logo.append(nom ? Text.of(nom) : e.getDisplayname())
+      if (logo) e.setDisplayname(logo)
+      else if (nom) e.setDisplayname(Text.of(nom))
     } catch (err) {}
   })
 } catch (e) { console.error('[pseudo] nom dans le chat indisponible : ' + e) }
