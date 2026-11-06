@@ -1,5 +1,5 @@
 {
- "version": "2026-11-06T16:01:59.419Z",
+ "version": "2026-11-06T16:08:52.856Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6506,6 +6506,11 @@
    "size": 621837
   },
   {
+   "path": "mods/aetheris_balai-neoforge-1.21.1-1.1.0.jar",
+   "sha1": "2deed276a8d0b9626eb5de816350bfd86a850395",
+   "size": 6461
+  },
+  {
    "path": "mods/aetheris_cthulhu-neoforge-1.21.1-1.10.2.jar",
    "sha1": "3795eb41917dd44a37cc67f7d435fe65c02be67e",
    "size": 5762760
@@ -6989,11 +6994,6 @@
    "path": "mods/mafglib-0.4.3+mc1.21.1.jar",
    "sha1": "9f62df832b1d5c9fe1aead873bd65cb8defacac7",
    "size": 1314767
-  },
-  {
-   "path": "mods/mcrp_balai-1.0.0.jar",
-   "sha1": "953af380c8f1c68c54290f6eac65d509c3481002",
-   "size": 6429
   },
   {
    "path": "mods/mcrp_voice-1.0.0.jar",
