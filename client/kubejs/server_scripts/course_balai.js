@@ -217,7 +217,7 @@ function crDessiner(sv, d) {
   var blanc = new J.Dust(new J.V3(1, 1, 1), 1.4), vert = new J.Dust(new J.V3(0.2, 1, 0.2), 2), jaune = new J.Dust(new J.V3(1, 0.9, 0.2), 1.6)
   var js = sv.players
   for (var i = 0; i < js.length; i++) {
-    var p = js[i], lvl = p.level(), dim = String(lvl.dimension().location())
+    var p = js[i], lvl = p.level, dim = eqDimId(p)
     var c = CR_COUREURS[String(p.uuid)], vise = -1, apres = -1
     if (c) { vise = crAnneauDuPassage(d, c.idx); if (c.idx + 1 < crTotal(d)) apres = crAnneauDuPassage(d, c.idx + 1) }
     for (var k = 0; k < d.anneaux.length; k++) {
@@ -278,7 +278,7 @@ ServerEvents.commandRegistry(function (event) {
       var p = ctx.source.player
       if (!p) return 0
       var sv = ctx.source.server, d = crCharger(sv)
-      d.anneaux.push({ x: Number(p.getX()), y: Number(p.getEyeY()), z: Number(p.getZ()), yaw: (typeof eqYaw === 'function' ? eqYaw(p) : 0), r: Math.max(1, Math.min(10, rayon)), plat: !!plat, dim: String(p.level().dimension().location()) })
+      d.anneaux.push({ x: Number(p.getX()), y: Number(p.getEyeY()), z: Number(p.getZ()), yaw: (typeof eqYaw === 'function' ? eqYaw(p) : 0), r: Math.max(1, Math.min(10, rayon)), plat: !!plat, dim: eqDimId(p) })
       crSauver(sv)
       return crRep(ctx, 'Anneau ' + d.anneaux.length + ' posé (rayon ' + rayon + ', ' + (plat ? 'horizontal' : 'vertical') + ').', 'Ring ' + d.anneaux.length + ' placed (radius ' + rayon + ', ' + (plat ? 'horizontal' : 'vertical') + ').')
     })
@@ -322,7 +322,7 @@ ServerEvents.commandRegistry(function (event) {
       if (CR_COUREURS[String(p.uuid)]) return crRep(ctx, 'Tu es déjà en course (/course abandon pour arrêter).', 'You are already racing (/course abandon to stop).')
       if (!crEstBalai(p.getVehicle())) return crRep(ctx, 'Monte sur ton balai d\'abord.', 'Get on your broom first.')
       var a = d.anneaux[0]
-      if (a.dim !== String(p.level().dimension().location()) || Math.pow(a.x - p.getX(), 2) + Math.pow(a.z - p.getZ(), 2) > CR.DEPART_MAX * CR.DEPART_MAX) return crRep(ctx, "Approche-toi de l'anneau de départ (moins de " + CR.DEPART_MAX + ' blocs).', 'Get closer to the start ring (within ' + CR.DEPART_MAX + ' blocks).')
+      if (a.dim !== eqDimId(p) || Math.pow(a.x - p.getX(), 2) + Math.pow(a.z - p.getZ(), 2) > CR.DEPART_MAX * CR.DEPART_MAX) return crRep(ctx, "Approche-toi de l'anneau de départ (moins de " + CR.DEPART_MAX + ' blocs).', 'Get closer to the start ring (within ' + CR.DEPART_MAX + ' blocks).')
       CR_COUREURS[String(p.uuid)] = { mode: 'solo', idx: 0, debut: -1, px: p.getX(), py: p.getY() + 0.8, pz: p.getZ(), nom: String(p.username) }
       return crRep(ctx, "Contre-la-montre ! Le chrono part quand tu franchis l'anneau 1 (en vert).", 'Time trial! The clock starts when you cross ring 1 (in green).')
     }))

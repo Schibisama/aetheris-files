@@ -157,7 +157,7 @@ function eqEquipeComplete(serveur, slug, centre, rayon) {
     try { p = serveur.getPlayerList().getPlayer(EQ_UUID.fromString(eq.membres[i])) } catch (e) {}
     if (!p || !p.isAlive()) return null
     try {
-      if (String(p.level().dimension().location()) !== String(centre.level().dimension().location())) return null
+      if (eqDimId(p) !== eqDimId(centre)) return null
       if (p.distanceToSqr(centre) > rayon * rayon) return null
     } catch (e2) { return null }
     presents.push(p)
@@ -707,6 +707,12 @@ function eqSnbtComp(v) {
   return '{' + champs.join(',') + '}'
 }
 function eqSnbtTexte(parts) { return eqSnbtComp(parts) }
+// Identifiant de la dimension du joueur (ex. minecraft:overworld) : sous KubeJS, level est une propriété, pas une méthode.
+function eqDimId(j) {
+  try { return String(j.level.dimension) } catch (e) {}
+  try { return String(j.level.dimension.location()) } catch (e2) {}
+  return 'minecraft:overworld'
+}
 // Lacet (yaw) du joueur en degrés : getYRot() n'existe pas sous KubeJS, on essaie plusieurs accès puis le vecteur de regard.
 function eqYaw(j) {
   var v
@@ -723,7 +729,7 @@ function eqPoserTableau(serveur, joueur, type, taille) {
   if (!d.prochainTableau) d.prochainTableau = 1
   var yaw = eqYaw(joueur), rad = yaw * Math.PI / 180
   var fx = -Math.sin(rad), fz = Math.cos(rad)   // devant le joueur
-  var t = { id: d.prochainTableau++, type: type, taille: taille, dim: String(joueur.level().dimension().location()),
+  var t = { id: d.prochainTableau++, type: type, taille: taille, dim: eqDimId(joueur),
     x: Number(joueur.getX()) + fx * 3, y: Number(joueur.getY()) + 0.5, z: Number(joueur.getZ()) + fz * 3, yaw: yaw + 180 }
   d.tableaux.push(t)
   var rx = -fz, rz = fx   // vecteur « droite » du joueur qui regarde le tableau (décalage positif = à sa droite)
@@ -753,7 +759,7 @@ function eqRedessiner(serveur) {
 function eqRetirerTableau(serveur, joueur) {
   var d = eqCharger(serveur), meilleur = -1, dist = 64
   if (!d.tableaux) return null
-  var dim = String(joueur.level().dimension().location())
+  var dim = eqDimId(joueur)
   for (var i = 0; i < d.tableaux.length; i++) {
     var t = d.tableaux[i]
     if (t.dim !== dim) continue
