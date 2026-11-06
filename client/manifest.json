@@ -1,5 +1,5 @@
 {
- "version": "2026-11-06T20:44:43.814Z",
+ "version": "2026-11-06T21:04:26.508Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6347,8 +6347,8 @@
   },
   {
    "path": "kubejs/server_scripts/course_balai.js",
-   "sha1": "95da9bc970df30fe0fe7f0f505fc5fceb17728f2",
-   "size": 24671
+   "sha1": "1c53fd192abc6ca361c32935f721e2c1e0c15610",
+   "size": 26021
   },
   {
    "path": "kubejs/server_scripts/decouverte_lieux.js",
@@ -6367,8 +6367,8 @@
   },
   {
    "path": "kubejs/server_scripts/equipes.js",
-   "sha1": "02ee1bf2d90b84d4a438b685d4806422fc8f908a",
-   "size": 47775
+   "sha1": "2b03c1abddcf6426b652cc9808f2815ff82a12fb",
+   "size": 48282
   },
   {
    "path": "kubejs/server_scripts/ftb_aide.js",
