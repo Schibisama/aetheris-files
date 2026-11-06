@@ -40,6 +40,8 @@ var EQ_LOGOS = ['bouclier', 'couronne', 'epee', 'etoile', 'lune', 'soleil', 'fla
 var EQ_COULEURS = { rouge_fonce: 'DARK_RED', rouge: 'RED', or: 'GOLD', jaune: 'YELLOW', vert: 'GREEN', vert_fonce: 'DARK_GREEN', cyan: 'AQUA', bleu_canard: 'DARK_AQUA',
   bleu: 'BLUE', bleu_nuit: 'DARK_BLUE', rose: 'LIGHT_PURPLE', violet: 'DARK_PURPLE', blanc: 'WHITE', gris: 'GRAY', gris_fonce: 'DARK_GRAY' }
 var EQ_J = null
+var EQ_ERR_LOGO = false
+function eqErrLogo(e) { if (!EQ_ERR_LOGO) { EQ_ERR_LOGO = true; console.error('[equipes] logo/nom d\'équipe (Tab, nameplate) : ' + e) } }
 function eqJ() {
   if (!EQ_J) EQ_J = { C: Java.loadClass('net.minecraft.network.chat.Component'), Style: Java.loadClass('net.minecraft.network.chat.Style'),
     CF: Java.loadClass('net.minecraft.ChatFormatting'), RL: Java.loadClass('net.minecraft.resources.ResourceLocation') }
@@ -55,7 +57,7 @@ function eqPrefixeTab(joueur) {
     var cf = J.CF.valueOf(EQ_COULEURS[eq.couleur] || 'WHITE')
     var logo = J.C.literal(String.fromCharCode(0xE100 + i)).setStyle(J.Style.EMPTY.withFont(J.RL.parse('kubejs:equipes')).withColor(cf))
     return J.C.empty().append(logo).append(J.C.literal(' '))
-  } catch (e) { return null }
+  } catch (e) { eqErrLogo(e); return null }
 }
 // Logo seul (couleur de l'équipe) + espace, pour le nom au-dessus de la tête, ou null sans équipe
 function eqLogoSeul(joueur) {
@@ -67,7 +69,7 @@ function eqLogoSeul(joueur) {
     var cf = J.CF.valueOf(EQ_COULEURS[eq.couleur] || 'WHITE')
     var logo = J.C.literal(String.fromCharCode(0xE100 + i)).setStyle(J.Style.EMPTY.withFont(J.RL.parse('kubejs:equipes')).withColor(cf))
     return J.C.empty().append(logo).append(J.C.literal(' ' + eq.nom + ' ').withStyle(cf))
-  } catch (e) { return null }
+  } catch (e) { eqErrLogo(e); return null }
 }
 // Clé de tri de la liste des joueurs (ordre de création de l'équipe), ou null sans équipe
 function eqOrdreTab(joueur) {
