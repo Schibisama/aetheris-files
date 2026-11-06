@@ -954,7 +954,18 @@ function estGrimoire(idObjet) {
   return REGEX_GRIMOIRE.test(chemin)
 }
 
+// Résultat mis en cache par identifiant d'objet (la table est statique) : sans cela chaque contrôle d'un objet parcourait toutes les règles
+// (des centaines d'expressions régulières) à chaque tick et pour chaque joueur.
+var CACHE_RESTRICTION = {}
 function restriction(idObjet) {
+  var cle = '_' + idObjet
+  var c = CACHE_RESTRICTION[cle]
+  if (c !== undefined) return c === false ? null : c
+  var res = restrictionCalc(idObjet)
+  CACHE_RESTRICTION[cle] = res === null ? false : res
+  return res
+}
+function restrictionCalc(idObjet) {
   if (LIBRES.indexOf(idObjet) !== -1) return null
   if (estGrimoire(idObjet)) return null
   for (var i = 0; i < RESTRICTIONS.length; i++) {
