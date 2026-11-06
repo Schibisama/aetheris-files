@@ -66,7 +66,7 @@ function eqLogoSeul(joueur) {
     var i = EQ_LOGOS.indexOf(eq.logo); if (i < 0) i = 0
     var cf = J.CF.valueOf(EQ_COULEURS[eq.couleur] || 'WHITE')
     var logo = J.C.literal(String.fromCharCode(0xE100 + i)).setStyle(J.Style.EMPTY.withFont(J.RL.parse('kubejs:equipes')).withColor(cf))
-    return J.C.empty().append(logo).append(J.C.literal(' '))
+    return J.C.empty().append(logo).append(J.C.literal(' ' + eq.nom + ' ').withStyle(cf))
   } catch (e) { return null }
 }
 // Clé de tri de la liste des joueurs (ordre de création de l'équipe), ou null sans équipe
