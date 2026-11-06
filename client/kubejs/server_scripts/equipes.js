@@ -692,7 +692,28 @@ function eqMorceaux(d, t) {
     ['b', 0, -0.7, eqBas(d)]
   ]
 }
-function eqSnbtTexte(parts) { return "'" + eqJson(parts).replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'" }
+// Texte au format SNBT (1.21 : un composant de texte en NBT est un compound, plus une chaîne JSON). Une liste est toujours une liste de compounds.
+function eqSnbtStr(t) { return '"' + String(t).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n') + '"' }
+function eqSnbtComp(v) {
+  if (v === null || v === undefined) return '{text:""}'
+  if (typeof v === 'string' || typeof v === 'number') return '{text:' + eqSnbtStr(v) + '}'
+  if (Array.isArray(v)) {
+    var ex = [], deb = (v.length && v[0] === '') ? 1 : 0
+    for (var i = deb; i < v.length; i++) ex.push(eqSnbtComp(v[i]))
+    return '{text:"",extra:[' + ex.join(',') + ']}'
+  }
+  var champs = []
+  for (var k in v) {
+    var x = v[k], val
+    if (k === 'with') { var w = []; for (var j = 0; j < x.length; j++) w.push(eqSnbtComp(x[j])); val = '[' + w.join(',') + ']' }
+    else if (typeof x === 'string') val = eqSnbtStr(x)
+    else if (typeof x === 'boolean') val = x ? '1b' : '0b'
+    else val = String(x)
+    champs.push(k + ':' + val)
+  }
+  return '{' + champs.join(',') + '}'
+}
+function eqSnbtTexte(parts) { return eqSnbtComp(parts) }
 function eqPoserTableau(serveur, joueur, type, taille) {
   var d = eqCharger(serveur)
   if (!d.tableaux) d.tableaux = []
@@ -708,7 +729,10 @@ function eqPoserTableau(serveur, joueur, type, taille) {
     var m = morceaux[i], ox = t.x + rx * m[1] * taille, oz = t.z + rz * m[1] * taille, oy = t.y + m[2] * taille
     var nbt = '{Tags:["mcrp_tableau","mcrp_tab_' + t.id + '","mcrp_tab_' + t.id + '_' + m[0] + '"],Rotation:[' + t.yaw.toFixed(1) + 'f,0f],billboard:"fixed",alignment:"' + (m[0] === 'g' || m[0] === 'd' || m[0] === 't' ? 'left' : 'center') +
       '",line_width:400,background:' + EQ_FOND + ',shadow:1b,transformation:{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],translation:[0f,0f,0f],scale:[' + taille + 'f,' + taille + 'f,' + taille + 'f]},text:' + eqSnbtTexte(m[3]) + '}'
-    serveur.runCommandSilent('execute in ' + t.dim + ' run summon minecraft:text_display ' + ox.toFixed(2) + ' ' + oy.toFixed(2) + ' ' + oz.toFixed(2) + ' ' + nbt)
+    var cmd = 'execute in ' + t.dim + ' run summon minecraft:text_display ' + ox.toFixed(2) + ' ' + oy.toFixed(2) + ' ' + oz.toFixed(2) + ' ' + nbt
+    var res = 0
+    try { res = serveur.runCommandSilent(cmd) } catch (eC) { console.error('[equipes] tableau : ' + eC) }
+    if (!res) console.error('[equipes] tableau : la commande summon a échoué : ' + cmd)
   }
   eqSauver(serveur)
   return t
