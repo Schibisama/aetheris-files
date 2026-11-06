@@ -47,28 +47,19 @@ function eqJ() {
     CF: Java.loadClass('net.minecraft.ChatFormatting'), RL: Java.loadClass('net.minecraft.resources.ResourceLocation') }
   return EQ_J
 }
-// Préfixe de la liste des joueurs : [logo coloré] Nom de l'équipe (coloré), ou null sans équipe
-function eqPrefixeTab(joueur) {
+// Éléments de texte (objets JSON) à placer devant le pseudo : [logo coloré] (+ nom d'équipe coloré si avecNom), ou null sans équipe.
+// Construits avec Text.of({...}) (API KubeJS) : plus fiable que l'assemblage Java à la main.
+function eqPrefixeObj(joueur, avecNom) {
   try {
     var serveur = joueur.server, slug = eqEquipeDe(serveur, joueur)
     if (!slug) return null
-    var eq = eqCharger(serveur).equipes[slug], J = eqJ()
+    var eq = eqCharger(serveur).equipes[slug]
     var i = EQ_LOGOS.indexOf(eq.logo); if (i < 0) i = 0
-    var cf = J.CF.valueOf(EQ_COULEURS[eq.couleur] || 'WHITE')
-    var logo = J.C.literal(String.fromCharCode(0xE100 + i)).setStyle(J.Style.EMPTY.withFont(J.RL.parse('kubejs:equipes')).withColor(cf))
-    return J.C.empty().append(logo).append(J.C.literal(' '))
-  } catch (e) { eqErrLogo(e); return null }
-}
-// Logo seul (couleur de l'équipe) + espace, pour le nom au-dessus de la tête, ou null sans équipe
-function eqLogoSeul(joueur) {
-  try {
-    var serveur = joueur.server, slug = eqEquipeDe(serveur, joueur)
-    if (!slug) return null
-    var eq = eqCharger(serveur).equipes[slug], J = eqJ()
-    var i = EQ_LOGOS.indexOf(eq.logo); if (i < 0) i = 0
-    var cf = J.CF.valueOf(EQ_COULEURS[eq.couleur] || 'WHITE')
-    var logo = J.C.literal(String.fromCharCode(0xE100 + i)).setStyle(J.Style.EMPTY.withFont(J.RL.parse('kubejs:equipes')).withColor(cf))
-    return J.C.empty().append(logo).append(J.C.literal(' ' + eq.nom + ' ').withStyle(cf))
+    var coul = String(EQ_COULEURS[eq.couleur] || 'WHITE').toLowerCase()
+    var parts = [{ text: String.fromCharCode(0xE100 + i), font: 'kubejs:equipes', color: coul }]
+    if (avecNom) parts.push({ text: ' ' + eq.nom, color: coul })
+    parts.push({ text: ' ' })
+    return parts
   } catch (e) { eqErrLogo(e); return null }
 }
 // Clé de tri de la liste des joueurs (ordre de création de l'équipe), ou null sans équipe

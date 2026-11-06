@@ -143,32 +143,39 @@ PlayerEvents.loggedIn(function (event) {
   } catch (e) { console.error('[pseudo] connexion : ' + e) }
 })
 
-// Nom affiché dans le chat et dans la liste des joueurs.
+// Nom affiché dans le chat, au-dessus de la tête et dans la liste des joueurs.
+// Au-dessus de la tête / chat : [logo] pseudo. Liste des joueurs : [logo] Équipe pseudo.
+var PS_LOG_TAB = {}
+function psComposer(j, avecNom, base) {
+  var pre = null
+  try { if (typeof eqPrefixeObj === 'function') pre = eqPrefixeObj(j, avecNom) } catch (eP) { console.error('[pseudo] préfixe d\'équipe : ' + eP) }
+  if (!pre) return null
+  var extra = pre.concat([base])
+  return Text.of({ text: '', extra: extra })
+}
 try {
   NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.player.PlayerEvent$NameFormat'), function (e) {
     try {
       var j = e.getEntity()
       var nom = psPseudo(j)
-      var logo = null
-      try { if (typeof eqLogoSeul === 'function') logo = eqLogoSeul(j) } catch (eL) {}
-      // [logo] devant le nom (au-dessus de la tête et dans le chat)
-      if (logo) logo.append(nom ? Text.of(nom) : e.getDisplayname())
-      if (logo) e.setDisplayname(logo)
+      var r = psComposer(j, false, nom ? { text: nom } : { text: String(j.username) })
+      if (r) e.setDisplayname(r)
       else if (nom) e.setDisplayname(Text.of(nom))
-    } catch (err) {}
+    } catch (err) { console.error('[pseudo] nom (chat/nameplate) : ' + err) }
   })
 } catch (e) { console.error('[pseudo] nom dans le chat indisponible : ' + e) }
 try {
   NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.player.PlayerEvent$TabListNameFormat'), function (e) {
     try {
-      // liste des joueurs : [logo] Équipe (couleur de l'équipe) + pseudo ou vrai nom
       var j = e.getEntity()
       var nom = psPseudo(j)
-      var pre = null
-      try { if (typeof eqPrefixeTab === 'function') pre = eqPrefixeTab(j) } catch (eP) {}
-      if (pre) e.setDisplayName(pre.append(Text.white(nom || String(j.username))))
-      else if (nom) e.setDisplayName(Text.of(nom))
-    } catch (err) {}
+      var r = psComposer(j, true, { text: nom || String(j.username), color: 'white' })
+      if (r) {
+        e.setDisplayName(r)
+        var k = String(j.username)
+        if (!PS_LOG_TAB[k]) { PS_LOG_TAB[k] = true; console.info('[pseudo] liste des joueurs : préfixe d\'équipe appliqué à ' + k) }
+      } else if (nom) e.setDisplayName(Text.of(nom))
+    } catch (err) { console.error('[pseudo] nom (liste des joueurs) : ' + err) }
   })
 } catch (e3) { console.error('[pseudo] nom dans la liste des joueurs indisponible : ' + e3) }
 
