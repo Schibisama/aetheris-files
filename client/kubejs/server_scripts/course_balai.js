@@ -336,45 +336,7 @@ ServerEvents.tick(function (event) {
   } catch (e) { if (!CR._err2) { CR._err2 = true; console.error('[course] épreuve : ' + e) } }
 })
 
-// PNJ « Professeur Vroom » (Easy NPC, nom commençant par « Professeur Vroom ») : clic droit = discours puis boutons cliquables.
-var CR_PNJ = 'Professeur Vroom'
-var CR_VROOM_LAST = {}
-var CR_VROOM = {
-  fr: [
-    'Hmph. Un élève qui ose m\'adresser la parole sans même se présenter... Passe pour cette fois.',
-    'Je suis le professeur Vroom. Oui, LE Vroom. Triple champion des Anneaux d\'Aetheris, trois années de suite, sans la moindre égratignure sur mon balai.',
-    'À mon époque, on ne volait pas : on fendait le ciel. Vous autres, vous planez comme des feuilles mortes en automne.',
-    'Mais soyons beau joueur. Je t\'offre l\'épreuve : un balai, tous les anneaux, et le chronomètre pour seul juge. Ton temps sera gravé au tableau des records... sous le mien, naturellement.'
-  ],
-  en: [
-    'Hmph. A student who dares speak to me without even introducing themselves... I shall allow it, just this once.',
-    'I am Professor Vroom. Yes, THE Vroom. Three-time champion of the Aetheris Rings, three years running, without a single scratch on my broom.',
-    'In my day, we did not fly: we tore the sky open. You lot drift like dead leaves in autumn.',
-    'But let us be sporting. I offer you the trial: one broom, every ring, and the clock as sole judge. Your time shall be carved on the records board... below mine, naturally.'
-  ],
-  oui: ['[Relever le défi]', '[Take the challenge]'], non: ['[Pas aujourd\'hui]', '[Not today]'],
-  refus: ['Mais bien sûr. Les meilleurs savent toujours quand reculer... enfin, surtout ceux qui ne sont pas moi.', 'But of course. The wise always know when to retreat... well, those who are not me.']
-}
-function crParoleVroom(p) {
-  var en = crEn(p), L = en ? CR_VROOM.en : CR_VROOM.fr, nom = String(p.username)
-  for (var i = 0; i < L.length; i++) p.tell(Text.gold(CR_PNJ + ' ▸ ').append(Text.white(L[i])))
-  var oui = '{"text":"' + CR_VROOM.oui[en ? 1 : 0] + '","color":"green","bold":true,"clickEvent":{"action":"run_command","value":"/course tenter"}}'
-  var non = '{"text":"' + CR_VROOM.non[en ? 1 : 0].replace(/"/g, '\\"') + '","color":"red","clickEvent":{"action":"run_command","value":"/course refuser"}}'
-  try { p.server.runCommandSilent('tellraw ' + nom + ' ["  ",' + oui + ',"   ",' + non + ']') } catch (e) {}
-}
-ItemEvents.entityInteracted(function (event) {
-  try {
-    var cible = event.target
-    if (!cible || String(cible.type).indexOf('easy_npc:') !== 0) return
-    var nom = ''
-    try { nom = String(cible.name.getString()) } catch (e) { nom = String(cible.name) }
-    if (nom.indexOf(CR_PNJ) !== 0) return
-    var j = event.player, u = String(j.uuid), t = j.server.tickCount
-    if (CR_VROOM_LAST[u] !== undefined && t - CR_VROOM_LAST[u] < 20) return   // un clic droit déclenche deux fois (deux mains)
-    CR_VROOM_LAST[u] = t
-    crParoleVroom(j)
-  } catch (e) { console.error('[course] Vroom : ' + e) }
-})
+// PNJ « Professeur Vroom » : preset Easy NPC (professeur_vroom.npc.nbt), son bouton « Relever le défi » lance /course tenter_pour @initiator.
 
 // ───────── Commandes ─────────
 ServerEvents.commandRegistry(function (event) {
@@ -466,11 +428,14 @@ ServerEvents.commandRegistry(function (event) {
       if (!r.ok) return crRep(ctx, r.fr, r.en)
       return crRep(ctx, 'Bonne chance ! Départ dans ' + CR_TENTER.decompte + ' secondes. Reste sur ton balai !', 'Good luck! Start in ' + CR_TENTER.decompte + ' seconds. Stay on your broom!')
     }))
-    .then(C.literal('refuser').executes(function (ctx) {
-      var p = ctx.source.player
-      if (p) p.tell(Text.gold(CR_PNJ + ' ▸ ').append(Text.white(CR_VROOM.refus[crEn(p) ? 1 : 0])))
-      return 1
-    }))
+    .then(C.literal('tenter_pour').requires(function (src) { try { return src.hasPermission(2) } catch (e) { return false } })
+      .then(C.argument('joueur', A.PLAYER.create(event)).executes(function (ctx) {
+        var p = A.PLAYER.getResult(ctx, 'joueur'), sv = ctx.source.server
+        var r = crTenter(sv, p)
+        if (!r.ok) { crDire(p, r.fr, r.en, 'red'); return 0 }
+        crDire(p, 'Bonne chance ! Départ dans ' + CR_TENTER.decompte + ' secondes. Reste sur ton balai !', 'Good luck! Start in ' + CR_TENTER.decompte + ' seconds. Stay on your broom!', 'green')
+        return 1
+      })))
     .then(C.literal('abandon').executes(function (ctx) { var p = ctx.source.player; if (p) crAbandon(ctx.source.server, String(p.uuid)); return 1 }))
     .then(C.literal('inscriptions').executes(function (ctx) {
       return prof(ctx, function () {
