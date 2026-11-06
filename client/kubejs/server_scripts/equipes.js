@@ -739,10 +739,9 @@ function eqPoserTableau(serveur, joueur, type, taille) {
     var nbt = '{Tags:["mcrp_tableau","mcrp_tab_' + t.id + '","mcrp_tab_' + t.id + '_' + m[0] + '"],Rotation:[' + t.yaw.toFixed(1) + 'f,0f],billboard:"fixed",alignment:"' + (m[0] === 'g' || m[0] === 'd' || m[0] === 't' ? 'left' : 'center') +
       '",line_width:400,background:' + EQ_FOND + ',shadow:1b,transformation:{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],translation:[0f,0f,0f],scale:[' + taille + 'f,' + taille + 'f,' + taille + 'f]},text:' + eqSnbtTexte(m[3]) + '}'
     var cmd = 'execute in ' + t.dim + ' run summon minecraft:text_display ' + ox.toFixed(2) + ' ' + oy.toFixed(2) + ' ' + oz.toFixed(2) + ' ' + nbt
-    var res = 0
-    try { res = serveur.runCommandSilent(cmd) } catch (eC) { console.error('[equipes] tableau : ' + eC) }
-    console.info('[equipes] tableau n°' + t.id + ' morceau ' + m[0] + ' : résultat ' + res + ' | ' + cmd.substring(0, 330))
-    if (!res) console.error('[equipes] tableau : la commande summon a échoué : ' + cmd)
+    // runCommand (et non Silent) : le retour de la commande (« Summoned new Text Display » ou l'erreur) est écrit dans le journal du serveur
+    try { serveur.runCommand(cmd) } catch (eC) { console.error('[equipes] tableau : ' + eC) }
+    console.info('[equipes] tableau n°' + t.id + ' morceau ' + m[0] + ' posé en ' + ox.toFixed(1) + ' ' + oy.toFixed(1) + ' ' + oz.toFixed(1) + ' (échelle ' + taille + ')')
   }
   eqSauver(serveur)
   return t
