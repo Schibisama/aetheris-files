@@ -188,6 +188,16 @@ ServerEvents.tick(function (event) {
     // décompte et fin de course groupée
     if (CR_GROUPE && CR_GROUPE.etat === 'decompte') {
       var reste = Math.ceil((CR_GROUPE.go - tick) / 20)
+      if (tick < CR_GROUPE.go) {   // pas de déplacement pendant le décompte : chacun reste où il était au lancement
+        if (!CR_GROUPE.fige) CR_GROUPE.fige = {}
+        for (var kf = 0; kf < CR_GROUPE.inscrits.length; kf++) {
+          var uf = CR_GROUPE.inscrits[kf], pf = crJoueur(sv, uf)
+          if (!pf || !crEstBalai(crVehicule(pf))) continue
+          if (!CR_GROUPE.fige[uf]) CR_GROUPE.fige[uf] = { x: pf.getX(), y: pf.getY(), z: pf.getZ() }
+          var fp = CR_GROUPE.fige[uf]
+          crFiger(sv, pf, fp.x, fp.y, fp.z)
+        }
+      }
       if ((CR_GROUPE.go - tick) % 20 === 0 && reste > 0) {
         for (var k = 0; k < CR_GROUPE.inscrits.length; k++) { var pk = crJoueur(sv, CR_GROUPE.inscrits[k]); if (pk) { try { sv.runCommandSilent('title ' + pk.username + ' title {"text":"' + reste + '","color":"yellow"}') } catch (e) {} } }
       }
@@ -313,6 +323,11 @@ function crTexteRecords() {
 var CR_TENTER = { x: 1056, y: 441, z: 994, dim: 'minecraft:overworld', decompte: 5, balai: 'apprenticecodex:floatmount_broom' }
 var CR_ATTENTE = {}   // uuid -> { go (tick), tag }
 var CR_BALAIS = {}    // uuid -> { tag, t0 } : balais de l'épreuve à retirer une fois le joueur descendu
+// Immobilise le balai d'un joueur à (x,y,z) pendant le décompte : on ramène le balai (et son cavalier) au point de départ à chaque tick
+function crFiger(sv, p, x, y, z) {
+  try { sv.runCommandSilent('execute as ' + p.username + ' on vehicle run tp @s ' + x + ' ' + y + ' ' + z) } catch (e) {}
+  try { var v = crVehicule(p); if (v) v.setDeltaMovement(0, 0, 0) } catch (e2) {}
+}
 function crTenter(sv, p) {
   var d = crCharger(sv), u = String(p.uuid), nom = String(p.username)
   if (d.anneaux.length < 2) return { ok: false, fr: "Le parcours n'est pas encore prêt.", en: 'The course is not ready yet.' }
@@ -340,6 +355,7 @@ ServerEvents.tick(function (event) {
       var a = CR_ATTENTE[u], p = crJoueur(sv, u)
       if (!p || !crEstBalai(crVehicule(p))) { delete CR_ATTENTE[u]; if (p) crDire(p, 'Tu as quitté le balai : épreuve annulée.', 'You left the broom: trial cancelled.', 'red'); crRetirerBalaiEpreuve(sv, u); continue }
       var reste = a.go - tick
+      if (reste > 0) crFiger(sv, p, CR_TENTER.x, CR_TENTER.y, CR_TENTER.z)   // pas de déplacement pendant le décompte
       if (reste > 0 && reste % 20 === 0) { try { sv.runCommandSilent('title ' + p.username + ' title {"text":"' + (reste / 20) + '","color":"yellow"}') } catch (e1) {} }
       if (reste <= 0) {
         delete CR_ATTENTE[u]
