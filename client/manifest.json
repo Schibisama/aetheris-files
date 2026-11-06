@@ -1,5 +1,5 @@
 {
- "version": "2026-11-06T12:12:18.567Z",
+ "version": "2026-11-06T12:15:50.171Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6322,8 +6322,8 @@
   },
   {
    "path": "kubejs/server_scripts/portails_bloques.js",
-   "sha1": "e65bb312c64f046d4aa52630ab2586edfe7215f6",
-   "size": 4390
+   "sha1": "4532f433f985073f034f7996108bacdd0db86543",
+   "size": 4707
   },
   {
    "path": "kubejs/server_scripts/professeur.js",

@@ -42,25 +42,28 @@ try {
 
 // Filet de sécurité : le blocage ci-dessus ne voit que le briquet / la boule de feu cliqués sur l'obsidienne. Or un portail du Nether
 // s'allume avec N'IMPORTE QUELLE source de feu (briquet cliqué sur un autre bloc du cadre, sort de feu, flèche enflammée, lave,
-// foudre, distributeur, ghast...). On annule donc la création elle-même : PortalSpawnEvent, sauf si un opérateur est à moins de 12 blocs.
-try {
-  Java.loadClass('net.neoforged.neoforge.common.NeoForge').EVENT_BUS.addListener(
-    Java.loadClass('net.neoforged.bus.api.EventPriority').HIGHEST, false,
-    Java.loadClass('net.neoforged.neoforge.event.level.BlockEvent$PortalSpawnEvent'),
-    function (e) {
-      try {
-        var niveau = e.getLevel()
-        var pos = e.getPos()
-        var joueurs = niveau.players()
-        for (var i = 0; i < joueurs.size(); i++) {
-          var j = joueurs.get(i)
-          if (pbOp(j) && j.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 144) return
-        }
-        e.setCanceled(true)
-        console.info('[portails_bloques] Portail du Nether annulé en ' + pos.getX() + ' ' + pos.getY() + ' ' + pos.getZ())
-      } catch (err) { console.error('[portails_bloques] PortalSpawnEvent : ' + err) }
+// foudre, distributeur, ghast...). On annule donc la création elle-même (PortalSpawnEvent), sauf si un opérateur est à moins de PB_RAYON_OP blocs.
+// L'annulation se fait AVANT toute autre vérification : si la vérification de l'op plante, le portail reste bloqué.
+var PB_RAYON_OP = 6
+function pbPortalSpawn(e) {
+  var pos = null
+  try { e.setCanceled(true) } catch (c) { console.error('[portails_bloques] annulation impossible : ' + c); return }
+  try {
+    pos = e.getPos()
+    var joueurs = e.getLevel().players()
+    for (var i = 0; i < joueurs.size(); i++) {
+      var j = joueurs.get(i)
+      if (pbOp(j) && j.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < PB_RAYON_OP * PB_RAYON_OP) {
+        e.setCanceled(false)
+        console.info('[portails_bloques] Portail du Nether autorisé (op ' + j.getName().getString() + ') en ' + pos.getX() + ' ' + pos.getY() + ' ' + pos.getZ())
+        return
+      }
     }
-  )
+  } catch (err) { console.error('[portails_bloques] vérification op : ' + err) }
+  try { console.info('[portails_bloques] Portail du Nether annulé en ' + pos.getX() + ' ' + pos.getY() + ' ' + pos.getZ()) } catch (x) {}
+}
+try {
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.level.BlockEvent$PortalSpawnEvent'), pbPortalSpawn)
   console.info('[portails_bloques] Création de portail du Nether annulée quelle que soit la source de feu.')
 } catch (e) {
   console.error('[portails_bloques] PortalSpawnEvent indisponible : ' + e)
