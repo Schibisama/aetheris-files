@@ -1,7 +1,8 @@
 // Course de balai : traverser des anneaux, dans l'ordre, le plus vite possible.
 //
 // Parcours (professeurs et ops) :
-//   /course anneau ajouter [rayon] [vertical|horizontal]   pose un anneau à hauteur des yeux (rayon 3 par défaut).
+//   /course anneau ajouter [rayon] [vertical|horizontal|incline <angle>|regard]   pose un anneau à hauteur des yeux (rayon 3 par défaut).
+//        incline <angle> : plan penché (0 = debout, 90 = à plat, 30 = diagonal, -30 = penché dans l'autre sens) ; regard : perpendiculaire à ta direction de regard (haut/bas compris).
 //        vertical (par défaut) : debout, face à la direction du regard, on le traverse à l'horizontale ;
 //        horizontal : à plat comme un cerceau au sol, on le traverse en montant ou en descendant.
 //   /course anneau retirer           retire l'anneau le plus proche       /course anneau liste
@@ -75,9 +76,17 @@ function crTotal(d) {
 function crAnneauDuPassage(d, k) { return k % d.anneaux.length }
 
 // ───────── Passage d'un anneau : le segment parcouru pendant le tick traverse le disque de l'anneau ─────────
+// Orientation d'un anneau : incl = inclinaison du plan en degrés (0 = debout, 90 = à plat ; 30 = penché de 30° ; négatif = penché dans l'autre sens).
+// Retourne la normale n (sens de traversée) et deux axes u (horizontal) et w (dans le plan de l'anneau).
+function crIncl(a) { return a.incl !== undefined && a.incl !== null ? Number(a.incl) : (a.plat ? 90 : 0) }
+function crBase(a) {
+  var r = a.yaw * Math.PI / 180, i = crIncl(a) * Math.PI / 180, ci = Math.cos(i), si = Math.sin(i)
+  var n = [-Math.sin(r) * ci, si, Math.cos(r) * ci], u = [Math.cos(r), 0, Math.sin(r)]
+  var w = [n[1] * u[2] - n[2] * u[1], n[2] * u[0] - n[0] * u[2], n[0] * u[1] - n[1] * u[0]]
+  return { n: n, u: u, w: w }
+}
 function crTraverse(a, x0, y0, z0, x1, y1, z1) {
-  var r = a.yaw * Math.PI / 180, nx = -Math.sin(r), ny = 0, nz = Math.cos(r)
-  if (a.plat) { nx = 0; ny = 1; nz = 0 }   // anneau horizontal : on le traverse verticalement
+  var B = crBase(a), nx = B.n[0], ny = B.n[1], nz = B.n[2]
   var d0 = (x0 - a.x) * nx + (y0 - a.y) * ny + (z0 - a.z) * nz, d1 = (x1 - a.x) * nx + (y1 - a.y) * ny + (z1 - a.z) * nz
   if ((d0 > 0 && d1 > 0) || (d0 < 0 && d1 < 0)) {
     // pas de changement de côté : accepté quand même si on passe très près du centre (balai très lent ou à l'arrêt dans l'anneau)
@@ -226,12 +235,12 @@ function crDessiner(sv, d) {
       var dist2 = Math.pow(a.x - p.getX(), 2) + Math.pow(a.y - p.getY(), 2) + Math.pow(a.z - p.getZ(), 2)
       if (dist2 > CR.VUE * CR.VUE && k !== vise) continue
       var opt = k === vise ? vert : (k === apres ? jaune : blanc)
-      var r = a.yaw * Math.PI / 180, ux = Math.cos(r), uz = Math.sin(r)   // axe horizontal de l'anneau (perpendiculaire à sa normale)
+      var B = crBase(a)
       var pts = Math.max(16, Math.round(a.r * 8))
       for (var q = 0; q < pts; q++) {
         var ang = q * 2 * Math.PI / pts, h = Math.cos(ang) * a.r, v = Math.sin(ang) * a.r
-        // vertical : cercle debout (axe horizontal + hauteur) ; horizontal : cercle à plat (x, z)
-        var px = a.plat ? a.x + h : a.x + ux * h, py = a.plat ? a.y : a.y + v, pz = a.plat ? a.z + v : a.z + uz * h
+        // cercle dans le plan de l'anneau : axe horizontal u et axe w (debout, penché ou à plat selon l'inclinaison)
+        var px = a.x + B.u[0] * h + B.w[0] * v, py = a.y + B.u[1] * h + B.w[1] * v, pz = a.z + B.u[2] * h + B.w[2] * v
         try { lvl.sendParticles(p, opt, true, px, py, pz, 1, 0, 0, 0, 0) } catch (e) {}
       }
     }
@@ -273,24 +282,31 @@ function crTexteRecords() {
 ServerEvents.commandRegistry(function (event) {
   var C = event.commands, A = event.arguments
   function prof(ctx, f) { if (!crProf(ctx)) return crRep(ctx, 'Réservé aux professeurs.', 'Teachers only.'); return f() }
-  function ajouter(ctx, rayon, plat) {
+  // incl : null = vertical ; nombre = inclinaison en degrés (0 debout, 90 à plat, 30 diagonal) ; 'regard' = perpendiculaire à la direction du regard
+  function ajouter(ctx, rayon, incl) {
     return prof(ctx, function () {
       var p = ctx.source.player
       if (!p) return 0
       var sv = ctx.source.server, d = crCharger(sv)
-      d.anneaux.push({ x: Number(p.getX()), y: Number(p.getEyeY()), z: Number(p.getZ()), yaw: (typeof eqYaw === 'function' ? eqYaw(p) : 0), r: Math.max(1, Math.min(10, rayon)), plat: !!plat, dim: eqDimId(p) })
+      var ang = incl === 'regard' ? -(typeof eqPitch === 'function' ? eqPitch(p) : 0) : (incl === null || incl === undefined ? 0 : Number(incl))
+      ang = Math.max(-90, Math.min(90, Math.round(ang)))
+      d.anneaux.push({ x: Number(p.getX()), y: Number(p.getEyeY()), z: Number(p.getZ()), yaw: (typeof eqYaw === 'function' ? eqYaw(p) : 0), r: Math.max(1, Math.min(10, rayon)), incl: ang, plat: ang === 90, dim: eqDimId(p) })
       crSauver(sv)
-      return crRep(ctx, 'Anneau ' + d.anneaux.length + ' posé (rayon ' + rayon + ', ' + (plat ? 'horizontal' : 'vertical') + ').', 'Ring ' + d.anneaux.length + ' placed (radius ' + rayon + ', ' + (plat ? 'horizontal' : 'vertical') + ').')
+      return crRep(ctx, 'Anneau ' + d.anneaux.length + ' posé (rayon ' + rayon + ', inclinaison ' + ang + '°).', 'Ring ' + d.anneaux.length + ' placed (radius ' + rayon + ', tilt ' + ang + '°).')
     })
+  }
+  // Options d'orientation ajoutées à un nœud : vertical | horizontal | incline <angle> | regard
+  function opts(noeud, rayonDe) {
+    return noeud
+      .then(C.literal('vertical').executes(function (ctx) { return ajouter(ctx, rayonDe(ctx), 0) }))
+      .then(C.literal('horizontal').executes(function (ctx) { return ajouter(ctx, rayonDe(ctx), 90) }))
+      .then(C.literal('regard').executes(function (ctx) { return ajouter(ctx, rayonDe(ctx), 'regard') }))
+      .then(C.literal('incline').then(C.argument('angle', A.INTEGER.create(event)).executes(function (ctx) { return ajouter(ctx, rayonDe(ctx), A.INTEGER.getResult(ctx, 'angle')) })))
   }
   event.register(C.literal('course')
     .then(C.literal('anneau')
-      .then(C.literal('ajouter').executes(function (ctx) { return ajouter(ctx, CR.RAYON_DEFAUT, false) })
-        .then(C.literal('vertical').executes(function (ctx) { return ajouter(ctx, CR.RAYON_DEFAUT, false) }))
-        .then(C.literal('horizontal').executes(function (ctx) { return ajouter(ctx, CR.RAYON_DEFAUT, true) }))
-        .then(C.argument('rayon', A.FLOAT.create(event)).executes(function (ctx) { return ajouter(ctx, A.FLOAT.getResult(ctx, 'rayon'), false) })
-          .then(C.literal('vertical').executes(function (ctx) { return ajouter(ctx, A.FLOAT.getResult(ctx, 'rayon'), false) }))
-          .then(C.literal('horizontal').executes(function (ctx) { return ajouter(ctx, A.FLOAT.getResult(ctx, 'rayon'), true) }))))
+      .then(opts(C.literal('ajouter').executes(function (ctx) { return ajouter(ctx, CR.RAYON_DEFAUT, 0) }), function () { return CR.RAYON_DEFAUT })
+        .then(opts(C.argument('rayon', A.FLOAT.create(event)).executes(function (ctx) { return ajouter(ctx, A.FLOAT.getResult(ctx, 'rayon'), 0) }), function (ctx) { return A.FLOAT.getResult(ctx, 'rayon') })))
       .then(C.literal('retirer').executes(function (ctx) {
         return prof(ctx, function () {
           var p = ctx.source.player, sv = ctx.source.server, d = crCharger(sv), best = -1, bd = 1e9
@@ -303,7 +319,7 @@ ServerEvents.commandRegistry(function (event) {
       }))
       .then(C.literal('liste').executes(function (ctx) {
         var d = crCharger(ctx.source.server), l = []
-        for (var i = 0; i < d.anneaux.length; i++) l.push((i + 1) + ': ' + Math.round(d.anneaux[i].x) + ' ' + Math.round(d.anneaux[i].y) + ' ' + Math.round(d.anneaux[i].z) + ' (r ' + d.anneaux[i].r + (d.anneaux[i].plat ? ', horizontal' : '') + ')')
+        for (var i = 0; i < d.anneaux.length; i++) l.push((i + 1) + ': ' + Math.round(d.anneaux[i].x) + ' ' + Math.round(d.anneaux[i].y) + ' ' + Math.round(d.anneaux[i].z) + ' (r ' + d.anneaux[i].r + (crIncl(d.anneaux[i]) ? ', inclinaison ' + crIncl(d.anneaux[i]) + '°' : '') + ')')
         return crRep(ctx, (l.length ? l.join('\n') : 'Aucun anneau.') + '\nCircuit : ' + (d.boucle ? 'oui, ' + d.tours + ' tour(s)' : 'non'), (l.length ? l.join('\n') : 'No rings.') + '\nLoop: ' + (d.boucle ? 'yes, ' + d.tours + ' lap(s)' : 'no'))
       })))
     .then(C.literal('effacer').executes(function (ctx) {

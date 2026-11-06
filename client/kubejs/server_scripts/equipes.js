@@ -693,6 +693,15 @@ function eqDimId(j) {
   try { return String(j.level.dimension.location()) } catch (e2) {}
   return 'minecraft:overworld'
 }
+// Inclinaison de la tête du joueur en degrés (positif = regarde vers le bas)
+function eqPitch(j) {
+  var v
+  try { v = Number(j.xRot); if (!isNaN(v)) return v } catch (e1) {}
+  try { v = Number(j.pitch); if (!isNaN(v)) return v } catch (e2) {}
+  try { var l = j.lookAngle; return -Math.asin(Math.max(-1, Math.min(1, Number(l.y())))) * 180 / Math.PI } catch (e3) {}
+  try { var l2 = j.getLookAngle(); return -Math.asin(Math.max(-1, Math.min(1, Number(l2.y)))) * 180 / Math.PI } catch (e4) {}
+  return 0
+}
 // Lacet (yaw) du joueur en degrés : getYRot() n'existe pas sous KubeJS, on essaie plusieurs accès puis le vecteur de regard.
 function eqYaw(j) {
   var v
