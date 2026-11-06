@@ -9,7 +9,7 @@ var perfWrap = (typeof perfWrap === 'function') ? perfWrap : (function () {
         cumul += SYS.getNanos() - t0; n++
         if (n >= 1200) {
           var ms = cumul / 1e6
-          if (ms > 1500) console.info('[perf] ' + nom + ' : ' + (ms / n).toFixed(3) + ' ms par appel, ' + ms.toFixed(0) + ' ms par ' + n + ' appels')
+          if (ms > 360) console.info('[perf] ' + nom + ' : ' + (ms / n).toFixed(3) + ' ms par appel, ' + ms.toFixed(0) + ' ms par ' + n + ' appels')
           cumul = 0; n = 0
         }
       }

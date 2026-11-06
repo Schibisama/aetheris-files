@@ -2765,7 +2765,7 @@ function respecPhoto(j) {
 }
 ServerEvents.tick(perfWrap('classes_rp:2424', function (event) {
   var serveur = event.server
-  if (serveur.tickCount % 2 !== 0) return
+  if (serveur.tickCount % 4 !== 0) return
   var joueurs = serveur.players
   for (var i = 0; i < joueurs.size(); i++) {
     var j = joueurs.get(i)
