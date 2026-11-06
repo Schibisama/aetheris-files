@@ -65,6 +65,11 @@ function crProf(ctx) {
   try { return ctx.source.hasPermission(2) } catch (e2) { return false }
 }
 // Le balai du mod est une entité apprenticecodex:floatmount_broom / hoverride_broom (getClass() n'existe pas sous KubeJS : on lit le type et le nom).
+function crVehicule(p) {
+  try { return p.getVehicle() } catch (e) {}
+  try { return p.vehicle } catch (e2) {}
+  return null
+}
 function crEstBalai(v) {
   if (!v) return false
   try { if (String(v.type).toLowerCase().indexOf('broom') !== -1) return true } catch (e) {}
@@ -190,7 +195,7 @@ ServerEvents.tick(function (event) {
         CR_GROUPE.etat = 'course'
         for (var k2 = 0; k2 < CR_GROUPE.inscrits.length; k2++) {
           var u2 = CR_GROUPE.inscrits[k2], p2 = crJoueur(sv, u2)
-          if (!p2 || !crEstBalai(p2.getVehicle())) { if (p2) crDire(p2, "Tu n'étais pas sur ton balai au départ : course perdue.", 'You were not on your broom at the start: race lost.', 'red'); continue }
+          if (!p2 || !crEstBalai(crVehicule(p2))) { if (p2) crDire(p2, "Tu n'étais pas sur ton balai au départ : course perdue.", 'You were not on your broom at the start: race lost.', 'red'); continue }
           CR_COUREURS[u2] = { mode: 'groupe', idx: 0, debut: tick, px: p2.getX(), py: p2.getY() + 0.8, pz: p2.getZ(), nom: String(p2.username) }
           CR_GROUPE.partants.push(u2)
           try { sv.runCommandSilent('title ' + p2.username + ' title {"text":"GO !","color":"green"}') } catch (e) {}
@@ -206,7 +211,7 @@ ServerEvents.tick(function (event) {
       var c = CR_COUREURS[u], p = crJoueur(sv, u)
       if (!p) { crAbandon(sv, u); continue }
       if (!d.anneaux.length) { crAbandon(sv, u, 'Le parcours a été retiré.', 'The course was removed.'); continue }
-      if (!crEstBalai(p.getVehicle())) { crAbandon(sv, u, 'Tu es descendu de ton balai : course perdue.', 'You got off your broom: race lost.'); continue }
+      if (!crEstBalai(crVehicule(p))) { crAbandon(sv, u, 'Tu es descendu de ton balai : course perdue.', 'You got off your broom: race lost.'); continue }
       var x = p.getX(), y = p.getY() + 0.8, z = p.getZ()
       var a = d.anneaux[crAnneauDuPassage(d, c.idx)]
       if (crTraverse(a, c.px, c.py, c.pz, x, y, z)) {
@@ -303,6 +308,7 @@ function crTenter(sv, p) {
   sv.runCommandSilent('execute in ' + T.dim + ' run ride ' + nom + ' mount @e[type=' + T.balai + ',tag=' + tag + ',limit=1,sort=nearest]')
   sv.runCommandSilent('effect give ' + nom + ' minecraft:slow_falling 25 0 true')
   CR_ATTENTE[u] = { go: sv.tickCount + T.decompte * 20, tag: tag }
+  console.info('[course] épreuve Vroom : ' + nom + ' téléporté sur un balai (' + pos + '), départ dans ' + T.decompte + ' s')
   CR_BALAIS[u] = { tag: tag, t0: sv.tickCount }
   return { ok: true }
 }
@@ -316,7 +322,7 @@ ServerEvents.tick(function (event) {
   try {
     for (var u in CR_ATTENTE) {
       var a = CR_ATTENTE[u], p = crJoueur(sv, u)
-      if (!p || !crEstBalai(p.getVehicle())) { delete CR_ATTENTE[u]; if (p) crDire(p, 'Tu as quitté le balai : épreuve annulée.', 'You left the broom: trial cancelled.', 'red'); crRetirerBalaiEpreuve(sv, u); continue }
+      if (!p || !crEstBalai(crVehicule(p))) { delete CR_ATTENTE[u]; if (p) crDire(p, 'Tu as quitté le balai : épreuve annulée.', 'You left the broom: trial cancelled.', 'red'); crRetirerBalaiEpreuve(sv, u); continue }
       var reste = a.go - tick
       if (reste > 0 && reste % 20 === 0) { try { sv.runCommandSilent('title ' + p.username + ' title {"text":"' + (reste / 20) + '","color":"yellow"}') } catch (e1) {} }
       if (reste <= 0) {
@@ -330,7 +336,7 @@ ServerEvents.tick(function (event) {
       for (var u2 in CR_BALAIS) {
         var b = CR_BALAIS[u2], p2 = crJoueur(sv, u2)
         if (CR_ATTENTE[u2] || CR_COUREURS[u2] || tick - b.t0 < 100) continue
-        if (!p2 || !crEstBalai(p2.getVehicle())) crRetirerBalaiEpreuve(sv, u2)   // course finie et joueur descendu : le balai de l'épreuve disparaît
+        if (!p2 || !crEstBalai(crVehicule(p2))) crRetirerBalaiEpreuve(sv, u2)   // course finie et joueur descendu : le balai de l'épreuve disparaît
       }
     }
   } catch (e) { if (!CR._err2) { CR._err2 = true; console.error('[course] épreuve : ' + e) } }
@@ -415,7 +421,7 @@ ServerEvents.commandRegistry(function (event) {
       if (!p) return 0
       if (d.anneaux.length < 2) return crRep(ctx, "Le parcours n'est pas encore prêt.", 'The course is not ready yet.')
       if (CR_COUREURS[String(p.uuid)]) return crRep(ctx, 'Tu es déjà en course (/course abandon pour arrêter).', 'You are already racing (/course abandon to stop).')
-      if (!crEstBalai(p.getVehicle())) return crRep(ctx, 'Monte sur ton balai d\'abord.', 'Get on your broom first.')
+      if (!crEstBalai(crVehicule(p))) return crRep(ctx, 'Monte sur ton balai d\'abord.', 'Get on your broom first.')
       var a = d.anneaux[0]
       if (a.dim !== eqDimId(p) || Math.pow(a.x - p.getX(), 2) + Math.pow(a.z - p.getZ(), 2) > CR.DEPART_MAX * CR.DEPART_MAX) return crRep(ctx, "Approche-toi de l'anneau de départ (moins de " + CR.DEPART_MAX + ' blocs).', 'Get closer to the start ring (within ' + CR.DEPART_MAX + ' blocks).')
       CR_COUREURS[String(p.uuid)] = { mode: 'solo', idx: 0, debut: -1, px: p.getX(), py: p.getY() + 0.8, pz: p.getZ(), nom: String(p.username) }
@@ -431,6 +437,7 @@ ServerEvents.commandRegistry(function (event) {
     .then(C.literal('tenter_pour').requires(function (src) { try { return src.hasPermission(2) } catch (e) { return false } })
       .then(C.argument('joueur', A.PLAYER.create(event)).executes(function (ctx) {
         var p = A.PLAYER.getResult(ctx, 'joueur'), sv = ctx.source.server
+        console.info('[course] tenter_pour : ' + String(p.username))
         var r = crTenter(sv, p)
         if (!r.ok) { crDire(p, r.fr, r.en, 'red'); return 0 }
         crDire(p, 'Bonne chance ! Départ dans ' + CR_TENTER.decompte + ' secondes. Reste sur ton balai !', 'Good luck! Start in ' + CR_TENTER.decompte + ' seconds. Stay on your broom!', 'green')
