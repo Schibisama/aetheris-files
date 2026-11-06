@@ -1,5 +1,5 @@
 {
- "version": "2026-11-06T13:29:04.128Z",
+ "version": "2026-11-06T15:21:16.102Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6172,8 +6172,8 @@
   },
   {
    "path": "kubejs/client_scripts/classes_langue_messages.js",
-   "sha1": "b0e1f7bdc94f16bf0d1e5dd4e1d31b71de93b48a",
-   "size": 20547
+   "sha1": "fd9c2641cb492113ee4124b6026e5b7d8b897018",
+   "size": 22239
   },
   {
    "path": "kubejs/client_scripts/classes_langue.js",
@@ -6342,8 +6342,8 @@
   },
   {
    "path": "kubejs/server_scripts/colisee_duel.js",
-   "sha1": "49faeb14e34a5979194195c24efaf67b9506b74c",
-   "size": 18581
+   "sha1": "9f3065a83707a093003d194974eb312438e1eca5",
+   "size": 18725
   },
   {
    "path": "kubejs/server_scripts/decouverte_lieux.js",
@@ -6362,8 +6362,8 @@
   },
   {
    "path": "kubejs/server_scripts/equipes.js",
-   "sha1": "5a5c12213655ea995681342f1e0809f379192958",
-   "size": 35483
+   "sha1": "f93dc34fb5d51412319877dc26aa4f52207e3498",
+   "size": 45311
   },
   {
    "path": "kubejs/server_scripts/ftb_aide.js",

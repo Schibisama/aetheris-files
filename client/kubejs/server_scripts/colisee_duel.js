@@ -150,6 +150,7 @@ function duVictoire(sv, perdant, raison) {
   duCmd(sv, 'title @a title ' + JSON.stringify({ text: gagnant + ' est le vainqueur', color: 'gold' }))
   duCmd(sv, 'execute as @a at @s run playsound minecraft:ui.toast.challenge_complete master @s ~ ~ ~ 1 1')
   console.info('[duel] ' + gagnant + ' bat ' + perdant + (raison ? ' (' + raison + ')' : ''))
+  try { if (typeof eqDuelResultat === 'function') eqDuelResultat(sv, gagnant, perdant) } catch (eS) {}   // tableau des duellistes (equipes.js)
 }
 function duTerminer(sv) {
   if (!DUEL) return

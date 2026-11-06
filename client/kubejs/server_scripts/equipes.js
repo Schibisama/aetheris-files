@@ -24,7 +24,7 @@
 // Coéquipiers : ils ne peuvent pas se blesser entre eux, sauf pendant un duel du Colisée qui les oppose.
 // Règles des épreuves : seule une équipe d'au moins 2 membres peut y participer, et TOUS ses membres doivent être connectés
 // et proches (EQ.RAYON blocs, même dimension ; EQ.RAYON_RENDRE pour rendre une collecte) au moment où l'action compte.
-// Bonus : 1re équipe à finir +50 % des points, 2e +25 %.
+// Bonus : les 3 premières équipes à finir gagnent +30 %, +20 % et +10 % des points.
 
 var EQ = {
   CLE: 'mcrp_equipes',
@@ -33,7 +33,7 @@ var EQ = {
   RAYON: 64,
   RAYON_RENDRE: 10,
   DELAI_QUITTER_H: 72,
-  BONUS: [0.5, 0.25]
+  BONUS: [0.3, 0.2, 0.1]
 }
 // 15 logos (caractères de la police kubejs:equipes) et 15 couleurs (couleurs du chat de Minecraft)
 var EQ_LOGOS = ['bouclier', 'couronne', 'epee', 'etoile', 'lune', 'soleil', 'flamme', 'goutte', 'feuille', 'crane', 'oeil', 'aile', 'eclair', 'cle', 'serpent']
@@ -102,7 +102,9 @@ function eqCharger(serveur) {
   if (!EQ_DATA.trimestre) EQ_DATA.trimestre = { num: 1, debut: Date.now(), historique: [] }
   return EQ_DATA
 }
+var EQ_SALE = true   // tableaux à redessiner
 function eqSauver(serveur) {
+  EQ_SALE = true
   try { serveur.persistentData.putString(EQ.CLE, JSON.stringify(EQ_DATA)) } catch (e) { console.error('[equipes] sauvegarde : ' + e) }
 }
 function eqSlug(nom) {
@@ -579,4 +581,177 @@ ServerEvents.loaded(function (event) {
   var n = 0
   for (var s in d.equipes) n++
   console.info('[equipes] ' + n + ' équipe(s), trimestre ' + d.trimestre.num + ', ' + d.epreuves.length + ' épreuve(s).')
+})
+
+// ───────── Duels du Colisée : victoires et défaites (appelé par colisee_duel.js) ─────────
+function eqDuelResultat(serveur, gagnant, perdant) {
+  try {
+    var d = eqCharger(serveur)
+    if (!d.duels) d.duels = {}
+    var noms = [String(gagnant), String(perdant)]
+    for (var i = 0; i < 2; i++) {
+      var j = serveur.getPlayerList().getPlayerByName(noms[i])
+      var cle = j ? String(j.uuid) : 'nom:' + noms[i].toLowerCase()
+      if (!d.duels[cle]) d.duels[cle] = { nom: noms[i], v: 0, d: 0 }
+      d.duels[cle].nom = noms[i]
+      if (i === 0) d.duels[cle].v++; else d.duels[cle].d++
+    }
+    eqSauver(serveur)
+  } catch (e) { console.error('[equipes] duel : ' + e) }
+}
+
+// ───────── Tableaux flottants (afficheurs de texte) ─────────
+// /classement tableau poser equipes [taille]   classement général + trimestre + épreuve en cours (à l'école)
+// /classement tableau poser duels [taille]     top 10 des duellistes (au Colisée)
+// /classement tableau retirer                  retire le tableau le plus proche (moins de 8 blocs)
+// Le tableau est posé 3 blocs devant le joueur, face à lui. Textes traduits côté client (clés mcrp.tableau.*).
+var EQ_FOND = -1778384896   // 0x96000000 : fond noir semi-transparent
+
+function eqJson(o) { return JSON.stringify(o) }
+function eqTr(cle, args, couleur) { var o = { translate: 'mcrp.tableau.' + cle, color: couleur || 'white' }; if (args) o['with'] = args; return o }
+function eqCouleurJson(eq) { return String(EQ_COULEURS[eq.couleur] || 'WHITE').toLowerCase() }
+function eqLogoJson(eq) {
+  var i = EQ_LOGOS.indexOf(eq.logo); if (i < 0) i = 0
+  return { text: String.fromCharCode(0xE100 + i), font: 'kubejs:equipes', color: eqCouleurJson(eq) }
+}
+function eqColonne(d, champ, titreObj) {
+  var l = [], parts = ['', titreObj, { text: '\n' }]
+  for (var s in d.equipes) l.push(d.equipes[s])
+  l.sort(function (a, b) { return (b[champ] || 0) - (a[champ] || 0) })
+  if (!l.length) parts.push(eqTr('vide', null, 'gray'))
+  var rangs = ['gold', 'gray', '#CD7F32']
+  for (var i = 0; i < l.length && i < 10; i++) {
+    var eq = l[i]
+    parts.push({ text: '\n' + (i + 1) + '. ', color: rangs[i] || 'white' }, eqLogoJson(eq), { text: ' ' + eq.nom + '  ', color: eqCouleurJson(eq) },
+      eqTr('pts', [String(eq[champ] || 0)], 'white'))
+  }
+  return parts
+}
+function eqDescJson(ep) {
+  if (ep.type === 'chasse') {
+    if (!ep.cible) return eqTr('chasse', [String(ep.quantite)], 'light_purple')
+    var r = String(ep.cible).split(':')
+    return eqTr('chasse_mob', [String(ep.quantite), { translate: 'entity.' + r[0] + '.' + r[1] }], 'light_purple')
+  }
+  if (ep.type === 'boss') return eqTr('boss', null, 'light_purple')
+  var cleObjet = ep.cible
+  try { cleObjet = String(Item.of(ep.cible).getDescriptionId()) } catch (e) {}
+  return eqTr('collecte', [String(ep.quantite), { translate: cleObjet }], 'light_purple')
+}
+function eqBas(d) {
+  var ep = null
+  for (var i = d.epreuves.length - 1; i >= 0 && !ep; i--) if (d.epreuves[i].actif) ep = d.epreuves[i]
+  if (!ep) return ['', eqTr('aucune', null, 'gray')]
+  var parts = ['', eqTr('epreuve', [String(ep.id), eqDescJson(ep), String(ep.points)], 'light_purple'), { text: '\n' }]
+  var noms = []
+  for (var f = 0; f < ep.finis.length; f++) { var e = d.equipes[ep.finis[f].slug]; if (e) noms.push(e.nom) }
+  parts.push(noms.length ? eqTr('reussie', [noms.join(', ')], 'gray') : eqTr('personne', null, 'gray'))
+  return parts
+}
+function eqTexteDuels(d) {
+  var l = [], parts = ['', eqTr('duels', null, 'gold'), { text: '\n' }]
+  if (d.duels) for (var k in d.duels) l.push(d.duels[k])
+  l.sort(function (a, b) { return (b.v - a.v) || (a.d - b.d) })
+  if (!l.length) parts.push({ text: '\n' }, eqTr('aucun_duel', null, 'gray'))
+  var rangs = ['gold', 'gray', '#CD7F32']
+  for (var i = 0; i < l.length && i < 10; i++) {
+    parts.push({ text: '\n' + (i + 1) + '. ', color: rangs[i] || 'white' })
+    // emblème de l'équipe du duelliste, s'il en a une
+    try {
+      for (var s in d.equipes) {
+        var eq = d.equipes[s], trouve = false
+        for (var m in eq.noms) if (String(eq.noms[m]).toLowerCase() === String(l[i].nom).toLowerCase()) trouve = true
+        if (trouve) { parts.push(eqLogoJson(eq), { text: ' ' }); break }
+      }
+    } catch (e) {}
+    parts.push({ text: l[i].nom + '  ', color: 'white' }, eqTr('duel_ligne', [String(l[i].v), String(l[i].d)], 'gray'))
+  }
+  return parts
+}
+// Morceaux d'un tableau : [suffixe du tag, décalage à droite, décalage en hauteur, texte]
+function eqMorceaux(d, t) {
+  if (t.type === 'duels') return [['t', 0, 0, eqTexteDuels(d)]]
+  return [
+    ['h', 0, 3.2, ['', eqTr('titre', null, 'gold'), { text: '\n' }, eqTr('academie', null, 'gray')]],
+    ['g', -2.6, 0, eqColonne(d, 'total', eqTr('general', null, 'yellow'))],
+    ['d', 2.6, 0, eqColonne(d, 'trimestre', eqTr('trimestre', [String(d.trimestre.num)], 'yellow'))],
+    ['b', 0, -0.7, eqBas(d)]
+  ]
+}
+function eqSnbtTexte(parts) { return "'" + eqJson(parts).replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'" }
+function eqPoserTableau(serveur, joueur, type, taille) {
+  var d = eqCharger(serveur)
+  if (!d.tableaux) d.tableaux = []
+  if (!d.prochainTableau) d.prochainTableau = 1
+  var yaw = Number(joueur.getYRot()), rad = yaw * Math.PI / 180
+  var fx = -Math.sin(rad), fz = Math.cos(rad)   // devant le joueur
+  var t = { id: d.prochainTableau++, type: type, taille: taille, dim: String(joueur.level().dimension().location()),
+    x: Number(joueur.getX()) + fx * 3, y: Number(joueur.getY()) + 0.5, z: Number(joueur.getZ()) + fz * 3, yaw: yaw + 180 }
+  d.tableaux.push(t)
+  var rx = -fz, rz = fx   // vecteur « droite » du joueur qui regarde le tableau (décalage positif = à sa droite)
+  var morceaux = eqMorceaux(d, t)
+  for (var i = 0; i < morceaux.length; i++) {
+    var m = morceaux[i], ox = t.x + rx * m[1] * taille, oz = t.z + rz * m[1] * taille, oy = t.y + m[2] * taille
+    var nbt = '{Tags:["mcrp_tableau","mcrp_tab_' + t.id + '","mcrp_tab_' + t.id + '_' + m[0] + '"],Rotation:[' + t.yaw.toFixed(1) + 'f,0f],billboard:"fixed",alignment:"' + (m[0] === 'g' || m[0] === 'd' || m[0] === 't' ? 'left' : 'center') +
+      '",line_width:400,background:' + EQ_FOND + ',shadow:1b,transformation:{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],translation:[0f,0f,0f],scale:[' + taille + 'f,' + taille + 'f,' + taille + 'f]},text:' + eqSnbtTexte(m[3]) + '}'
+    serveur.runCommandSilent('execute in ' + t.dim + ' run summon minecraft:text_display ' + ox.toFixed(2) + ' ' + oy.toFixed(2) + ' ' + oz.toFixed(2) + ' ' + nbt)
+  }
+  eqSauver(serveur)
+  return t
+}
+function eqRedessiner(serveur) {
+  var d = eqCharger(serveur)
+  if (!d.tableaux || !d.tableaux.length) return
+  for (var i = 0; i < d.tableaux.length; i++) {
+    var t = d.tableaux[i], morceaux = eqMorceaux(d, t)
+    for (var k = 0; k < morceaux.length; k++) {
+      try { serveur.runCommandSilent('execute in ' + t.dim + ' run data merge entity @e[type=minecraft:text_display,tag=mcrp_tab_' + t.id + '_' + morceaux[k][0] + ',limit=1] {text:' + eqSnbtTexte(morceaux[k][3]) + '}') } catch (e) {}
+    }
+  }
+}
+function eqRetirerTableau(serveur, joueur) {
+  var d = eqCharger(serveur), meilleur = -1, dist = 64
+  if (!d.tableaux) return null
+  var dim = String(joueur.level().dimension().location())
+  for (var i = 0; i < d.tableaux.length; i++) {
+    var t = d.tableaux[i]
+    if (t.dim !== dim) continue
+    var dd = Math.pow(t.x - joueur.getX(), 2) + Math.pow(t.y - joueur.getY(), 2) + Math.pow(t.z - joueur.getZ(), 2)
+    if (dd < dist) { dist = dd; meilleur = i }
+  }
+  if (meilleur < 0) return null
+  var t2 = d.tableaux.splice(meilleur, 1)[0]
+  serveur.runCommandSilent('execute in ' + t2.dim + ' run kill @e[type=minecraft:text_display,tag=mcrp_tab_' + t2.id + ']')
+  eqSauver(serveur)
+  return t2
+}
+ServerEvents.tick(function (event) {
+  var sv = event.server
+  if (sv.tickCount % 20 !== 7) return
+  if (!EQ_SALE && sv.tickCount % 1200 !== 7) return   // dès qu'un classement change, sinon toutes les minutes (chunks rechargés)
+  EQ_SALE = false
+  try { eqRedessiner(sv) } catch (e) { console.error('[equipes] tableaux : ' + e) }
+})
+ServerEvents.commandRegistry(function (event) {
+  var C = event.commands, A = event.arguments
+  function poser(ctx, type, taille) {
+    if (!eqProf(ctx)) return eqRepondre(ctx, 'Réservé aux professeurs.', 'Teachers only.')
+    var p = ctx.source.player
+    if (!p) return 0
+    var t = eqPoserTableau(ctx.source.server, p, type, Math.max(0.5, Math.min(4, taille)))
+    return eqRepondre(ctx, 'Tableau n°' + t.id + ' posé (' + type + ').', 'Board #' + t.id + ' placed (' + type + ').')
+  }
+  event.register(C.literal('classement').then(C.literal('tableau')
+    .then(C.literal('poser')
+      .then(C.literal('equipes').executes(function (ctx) { return poser(ctx, 'equipes', 0.7) })
+        .then(C.argument('taille', A.FLOAT.create(event)).executes(function (ctx) { return poser(ctx, 'equipes', A.FLOAT.getResult(ctx, 'taille')) })))
+      .then(C.literal('duels').executes(function (ctx) { return poser(ctx, 'duels', 0.7) })
+        .then(C.argument('taille', A.FLOAT.create(event)).executes(function (ctx) { return poser(ctx, 'duels', A.FLOAT.getResult(ctx, 'taille')) }))))
+    .then(C.literal('retirer').executes(function (ctx) {
+      if (!eqProf(ctx)) return eqRepondre(ctx, 'Réservé aux professeurs.', 'Teachers only.')
+      var p = ctx.source.player
+      if (!p) return 0
+      var t = eqRetirerTableau(ctx.source.server, p)
+      return t ? eqRepondre(ctx, 'Tableau n°' + t.id + ' retiré.', 'Board #' + t.id + ' removed.') : eqRepondre(ctx, 'Aucun tableau à moins de 8 blocs.', 'No board within 8 blocks.')
+    }))))
 })
