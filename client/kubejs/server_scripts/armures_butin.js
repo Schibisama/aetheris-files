@@ -41,6 +41,17 @@ function arRareteSort(sp) {
   try { r = Math.max(r, AR_RARETES.indexOf(String(sp.getRarity(Math.max(1, Number(sp.getMinLevel()))).name()).toUpperCase())) } catch (e2) {}
   return AR_RARETES[Math.max(0, Math.min(4, r))]
 }
+// Niveau le plus bas d'un sort qui garde sa rareté propre : un sort légendaire sort à son premier niveau légendaire.
+var AR_SPELL_RARITY = null
+function arNiveauMin(sp) {
+  var n = Math.max(1, Number(sp.getMinLevel()))
+  try {
+    if (!AR_SPELL_RARITY) AR_SPELL_RARITY = Java.loadClass('io.redspace.ironsspellbooks.api.spells.SpellRarity')
+    var mr = Number(sp.getMinRarity()) || 0
+    if (mr > 0) n = Math.max(n, Math.min(Number(sp.getMaxLevel()), Number(sp.getMinLevelForRarity(AR_SPELL_RARITY.values()[mr]))))
+  } catch (e) {}
+  return n
+}
 function arSortListable(sp) {
   try { if (!sp.allowLooting()) return false } catch (e) {}
   try { if (typeof desactSortInterdit === 'function' && desactSortInterdit(sp.getSpellId())) return false } catch (e2) {}   // désactivés et sorts de cours
@@ -117,7 +128,7 @@ function arRemplacerParcheminReprouve(pile) {
     }
     if (!liste.length) return 'retirer'
     var choix = liste[Math.floor(Math.random() * liste.length)]
-    var niveau = Math.max(1, choix.getMinLevel())   // niveau le plus bas
+    var niveau = arNiveauMin(choix)   // niveau le plus bas (à sa rareté propre)
     var neuf = Item.of('irons_spellbooks:scroll')
     DESACT_ISC.set(neuf, DESACT_ISC.createScrollContainer(choix, niveau, neuf))
     return neuf
@@ -144,7 +155,7 @@ function arCreerParchemin() {
     if (!liste.length) return null
     var t = Math.random() * total, choix = liste[liste.length - 1].sp
     for (var k = 0; k < liste.length; k++) { if (t <= liste[k].cumul) { choix = liste[k].sp; break } }
-    var niveau = Math.max(1, choix.getMinLevel())   // niveau le plus bas : sa rareté est celle du niveau minimum (légendaire pour un sort légendaire dès le niveau 1)
+    var niveau = arNiveauMin(choix)   // niveau le plus bas à sa rareté propre (un sort légendaire sort à son 1er niveau légendaire)
     var neuf = Item.of('irons_spellbooks:scroll')
     DESACT_ISC.set(neuf, DESACT_ISC.createScrollContainer(choix, niveau, neuf))
     return neuf
@@ -165,7 +176,7 @@ function arParcheminAuMin(pile) {
     if (!s) return null
     if (!AR_SR) AR_SR = Java.loadClass('io.redspace.ironsspellbooks.api.registry.SpellRegistry')
     var sp = AR_SR.getSpell(Java.loadClass('net.minecraft.resources.ResourceLocation').parse(s.id))
-    var mn = Math.max(1, Number(sp.getMinLevel()))
+    var mn = arNiveauMin(sp)
     if (Number(s.niveau) <= mn) return null
     var neuf = Item.of('irons_spellbooks:scroll')
     DESACT_ISC.set(neuf, DESACT_ISC.createScrollContainer(sp, mn, neuf))
