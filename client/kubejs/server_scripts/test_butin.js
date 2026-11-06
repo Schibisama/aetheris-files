@@ -174,7 +174,7 @@ function tbRapport(o, titre) {
   L.push('    répartition des qualités de bijoux : ' + (q.length ? q.join(', ') : 'aucun bijou'))
   L.push('  - objets désactivés / craft seulement restant dans le butin final : ' + o.interditsRestants.length + (o.interditsRestants.length === 0 ? '  [OK]' : '  [À CORRIGER] ' + o.interditsRestants.slice(0, 8).join(', ')))
   L.push('  - pages de Codex : attendu ' + AR_PAGE_PAR_COFFRE.toFixed(3) + ' par coffre (1 sur ' + Math.round(1 / AR_PAGE_PAR_COFFRE) + ') ; mesuré ' + (o.coffres ? o.fin.page_codex / o.coffres : 0).toFixed(3) + ' | parchemins : attendu ' + AR_PARCHEMIN_PAR_COFFRE.toFixed(3) + ' (1 sur ' + Math.round(1 / AR_PARCHEMIN_PAR_COFFRE) + ') ; mesuré ' + (o.coffres ? o.fin.parchemin / o.coffres : 0).toFixed(3))
-  L.push('  - parchemins Réprouvé : attendu environ ' + ((1 - AR_REPROUVE_TAUX) * 100).toFixed(0) + ' % conservés ; mesuré ' + tbPct(o.repro.fin, o.repro.brut) + ' (' + o.repro.brut + ' avant, ' + o.repro.fin + ' après)')
+  L.push('  - parchemins Réprouvé (tirés comme les autres parchemins) : ' + o.repro.fin + ' sur ' + o.fin.parchemin + ' parchemins (' + o.repro.brut + ' avant, ' + o.repro.fin + ' après)')
   L.push('  - armures : attendu ' + ((1 - AR_TAUX_VANILLA) * 100).toFixed(0) + ' % (vanilla) et ' + ((1 - AR_TAUX_MOD) * 100).toFixed(0) + ' % (mods) conservées ; mesuré '
     + tbPct(o.fin.armure_vanilla, o.brut.armure_vanilla) + ' / ' + tbPct(o.fin.armure_mod, o.brut.armure_mod) + ' (les désactivées retirées en plus)')
   var rb = [], rf = []

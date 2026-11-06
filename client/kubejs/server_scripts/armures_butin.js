@@ -19,7 +19,7 @@ var AR_AUTRES = [
 ]
 // Pages de Codex et parchemins : tous ceux du butin d'origine sont retirés ; chaque coffre reçoit 1 page de Codex avec une chance sur 35 et, séparément,
 // 1 parchemin avec une chance sur 35, toujours au niveau le plus bas du sort. Sort tiré selon AR_CODEX_POIDS (rareté au niveau minimum : un sort légendaire
-// dès le niveau 1 sort donc en légendaire niveau 1, mais très rarement) ; parchemin : hors sorts Réprouvé.
+// dès le niveau 1 sort donc en légendaire niveau 1, mais très rarement) ; parchemins Réprouvé tirés comme les autres.
 // (AR_CODEX_TAUX et AR_REPROUVE_TAUX ne servent plus.)
 var AR_CODEX_TAUX = 0.74   // 74 % des pages retirées : environ 1 page de Codex tous les 15 coffres (brut mesuré : 0,255 page par coffre)
 var AR_REPROUVE_TAUX = 0.6
@@ -118,21 +118,18 @@ function arRemplacerParcheminReprouve(pile) {
   } catch (e) { return 'retirer' }
 }
 
-// Parchemin ajouté : sort au hasard (actif, trouvable en butin, ni désactivé ni Réprouvé), niveau le plus souvent bas
-// (3 fois sur 4 dans le premier 70 % de la plage de niveaux, sinon toute la plage).
+// Parchemin ajouté : sort tiré selon AR_CODEX_POIDS (actif, trouvable en butin, ni désactivé ni réservé au /cours), Réprouvé compris
+// avec les mêmes règles que les autres classes, toujours au niveau le plus bas du sort.
 function arCreerParchemin() {
   try {
     if (!AR_SR) AR_SR = Java.loadClass('io.redspace.ironsspellbooks.api.registry.SpellRegistry')
     var modele = Item.of('irons_spellbooks:scroll')
     desactSortDuParchemin(modele)   // initialise DESACT_ISC
-    var cl = classeParNom('Réprouvé')
     var tous = AR_SR.getEnabledSpells(), liste = [], total = 0
     for (var i = 0; i < tous.size(); i++) {
       var sp = tous.get(i), id = String(sp.getSpellId())
       if (desactSortInterdit(id)) continue
       try { if (!sp.allowLooting()) continue } catch (e1) {}
-      var pourTous = (typeof SORTS_PAR_CLASSE !== 'undefined' && SORTS_PAR_CLASSE[id] && SORTS_PAR_CLASSE[id].indexOf('*') !== -1)
-      if (!pourTous && !sortInterditPourJoueur(cl, id)) continue
       var w = AR_CODEX_POIDS[arRareteSort(sp)]   // mêmes poids de rareté que les pages : plus le sort est rare au niveau minimum, moins il tombe
       if (w === undefined) w = 1
       total += w
@@ -413,7 +410,6 @@ function arRapportRarete(server) {
   if (!AR_SR) AR_SR = Java.loadClass('io.redspace.ironsspellbooks.api.registry.SpellRegistry')
   if (!AR_CATALOGUE) { try { AR_CATALOGUE = Java.loadClass('com.specs.irons_spellbooks.catalog.SpellCatalog') } catch (eC) {} }
   var tous = AR_SR.getEnabledSpells()
-  var cl = classeParNom('Réprouvé')
   var pages = {}, parch = {}, totP = 0, totS = 0
   for (var i = 0; i < tous.size(); i++) {
     var sp = tous.get(i), id = String(sp.getSpellId()), r = arRareteSort(sp)
@@ -424,10 +420,6 @@ function arRapportRarete(server) {
     }
     var ok = !desactSortInterdit(id)
     try { if (!sp.allowLooting()) ok = false } catch (e1) {}
-    if (ok) {
-      var pourTous = (typeof SORTS_PAR_CLASSE !== 'undefined' && SORTS_PAR_CLASSE[id] && SORTS_PAR_CLASSE[id].indexOf('*') !== -1)
-      if (!pourTous && !sortInterditPourJoueur(cl, id)) ok = false
-    }
     if (ok) {
       if (!parch[r]) parch[r] = { n: 0, w: 0 }
       parch[r].n++; parch[r].w += w; totS += w
