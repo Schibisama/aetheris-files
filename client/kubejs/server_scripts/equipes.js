@@ -685,28 +685,8 @@ function eqMorceaux(d, t) {
     ['b', 0, -0.7, eqBas(d)]
   ]
 }
-// Texte au format SNBT (1.21 : un composant de texte en NBT est un compound, plus une chaîne JSON). Une liste est toujours une liste de compounds.
-function eqSnbtStr(t) { return '"' + String(t).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n') + '"' }
-function eqSnbtComp(v) {
-  if (v === null || v === undefined) return '{text:""}'
-  if (typeof v === 'string' || typeof v === 'number') return '{text:' + eqSnbtStr(v) + '}'
-  if (Array.isArray(v)) {
-    var ex = [], deb = (v.length && v[0] === '') ? 1 : 0
-    for (var i = deb; i < v.length; i++) ex.push(eqSnbtComp(v[i]))
-    return '{text:"",extra:[' + ex.join(',') + ']}'
-  }
-  var champs = []
-  for (var k in v) {
-    var x = v[k], val
-    if (k === 'with') { var w = []; for (var j = 0; j < x.length; j++) w.push(eqSnbtComp(x[j])); val = '[' + w.join(',') + ']' }
-    else if (typeof x === 'string') val = eqSnbtStr(x)
-    else if (typeof x === 'boolean') val = x ? '1b' : '0b'
-    else val = String(x)
-    champs.push(k + ':' + val)
-  }
-  return '{' + champs.join(',') + '}'
-}
-function eqSnbtTexte(parts) { return eqSnbtComp(parts) }
+// Texte d'un text_display : en 1.21.1 le champ « text » est une CHAÎNE JSON (le format NBT en compound n'arrive qu'en 1.21.5 : il donnait un texte vide).
+function eqSnbtTexte(parts) { return "'" + eqJson(parts).replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'" }
 // Identifiant de la dimension du joueur (ex. minecraft:overworld) : sous KubeJS, level est une propriété, pas une méthode.
 function eqDimId(j) {
   try { return String(j.level.dimension) } catch (e) {}
