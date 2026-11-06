@@ -21,6 +21,7 @@
 //   /trimestre nouveau         annonce l'équipe championne du trimestre et remet les points du trimestre à zéro
 //   /equipe dissoudre <équipe>     /equipe retirer <joueur>
 //
+// Coéquipiers : ils ne peuvent pas se blesser entre eux, sauf pendant un duel du Colisée qui les oppose.
 // Règles des épreuves : seule une équipe d'au moins 2 membres peut y participer, et TOUS ses membres doivent être connectés
 // et proches (EQ.RAYON blocs, même dimension ; EQ.RAYON_RENDRE pour rendre une collecte) au moment où l'action compte.
 // Bonus : 1re équipe à finir +50 % des points, 2e +25 %.
@@ -234,6 +235,35 @@ EntityEvents.death(function (event) {
     for (var j = 0; j < boss.length; j++) if (!boss[j].cible || boss[j].cible === type) eqProgres(serveur, boss[j], slug, 1, presents)
   } catch (e) { console.error('[equipes] mort : ' + e) }
 })
+
+// ───────── Pas de dégâts entre coéquipiers ─────────
+// Un membre d'une équipe ne peut pas blesser un autre membre de la même équipe (coups, flèches, sorts, invocations, familiers),
+// sauf pendant un duel du Colisée qui les oppose (colisee_duel.js).
+function eqAuteurJoueur(src) {
+  var a = null
+  try { a = src.getEntity() } catch (e) {}
+  if (!a) return null
+  try { if (a.isPlayer()) return a } catch (e1) {}
+  try { if (typeof a.getSummoner === 'function') { var s1 = a.getSummoner(); if (s1 && s1.isPlayer()) return s1 } } catch (e2) {}
+  try { if (typeof a.getOwner === 'function') { var o = a.getOwner(); if (o && o.isPlayer && o.isPlayer()) return o } } catch (e3) {}
+  return null
+}
+try {
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent'), function (event) {
+    try {
+      var cible = event.getEntity()
+      if (!cible || !cible.isPlayer()) return
+      var att = eqAuteurJoueur(event.getSource())
+      if (!att || String(att.uuid) === String(cible.uuid)) return
+      var serveur = cible.server
+      var slug = eqEquipeDe(serveur, cible)
+      if (!slug || eqEquipeDe(serveur, att) !== slug) return
+      // duel du Colisée entre ces deux joueurs : autorisé
+      try { if (typeof duEstDuelliste === 'function' && duEstDuelliste(att.username) && duAdversaire(att.username) === String(cible.username)) return } catch (eD) {}
+      event.setCanceled(true)
+    } catch (err) {}
+  })
+} catch (e) { console.error('[equipes] protection entre coéquipiers indisponible : ' + e) }
 
 // ───────── Commandes ─────────
 function eqCmdCreer(ctx, texte) {
