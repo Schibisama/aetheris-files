@@ -54,7 +54,7 @@ function eqPrefixeTab(joueur) {
     var i = EQ_LOGOS.indexOf(eq.logo); if (i < 0) i = 0
     var cf = J.CF.valueOf(EQ_COULEURS[eq.couleur] || 'WHITE')
     var logo = J.C.literal(String.fromCharCode(0xE100 + i)).setStyle(J.Style.EMPTY.withFont(J.RL.parse('kubejs:equipes')).withColor(cf))
-    return J.C.empty().append(logo).append(J.C.literal(' ' + eq.nom + ' ').withStyle(cf))
+    return J.C.empty().append(logo).append(J.C.literal(' '))
   } catch (e) { return null }
 }
 // Logo seul (couleur de l'équipe) + espace, pour le nom au-dessus de la tête, ou null sans équipe
