@@ -1,5 +1,5 @@
 {
- "version": "2026-11-06T19:42:36.968Z",
+ "version": "2026-11-06T20:00:24.298Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6506,9 +6506,9 @@
    "size": 621837
   },
   {
-   "path": "mods/aetheris_balai-neoforge-1.21.1-1.3.3.jar",
-   "sha1": "d1cb174f1c79ec47cbe7433264c68754a7930cc7",
-   "size": 7735
+   "path": "mods/aetheris_balai-neoforge-1.21.1-1.4.0.jar",
+   "sha1": "11af924c048b1df9acbad5160bb1ef36997e0f4a",
+   "size": 7746
   },
   {
    "path": "mods/aetheris_cthulhu-neoforge-1.21.1-1.10.2.jar",
