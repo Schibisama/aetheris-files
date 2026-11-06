@@ -1,5 +1,5 @@
 {
- "version": "2026-11-06T16:26:16.064Z",
+ "version": "2026-11-06T17:09:45.644Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6367,8 +6367,8 @@
   },
   {
    "path": "kubejs/server_scripts/equipes.js",
-   "sha1": "c6a1514bceda87158c8204d74ec4ca836353c45b",
-   "size": 45843
+   "sha1": "9fa83f1c6ef47384646ea4fe55b8590169236ca4",
+   "size": 46483
   },
   {
    "path": "kubejs/server_scripts/ftb_aide.js",
@@ -6422,8 +6422,8 @@
   },
   {
    "path": "kubejs/server_scripts/pseudo.js",
-   "sha1": "8c92fc51cb8c141b76f51a8460362edc6e07136c",
-   "size": 9594
+   "sha1": "29f5440c4d4030e6178471ecb7d69162e32495f8",
+   "size": 9902
   },
   {
    "path": "kubejs/server_scripts/reinit_joueur.js",
