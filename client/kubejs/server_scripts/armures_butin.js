@@ -17,16 +17,16 @@ var AR_AUTRES = [
   [/^irons_spellbooks:(?!copper_|iron_)[a-z_]*spell_book$/, 0.6],         // grimoires supérieurs (sauf cuivre et fer)
   [/^irons_spellbooks:[a-z_]*upgrade_orb$/, 0.5]                          // orbes d'amélioration
 ]
-// Pages de Codex et parchemins : tous ceux du butin d'origine sont retirés ; chaque coffre reçoit 1 page de Codex avec une chance sur 25 et, séparément,
-// 1 parchemin avec une chance sur 25, toujours au niveau le plus bas du sort. Sort tiré selon AR_CODEX_POIDS (rareté au niveau minimum : un sort légendaire
+// Pages de Codex et parchemins : tous ceux du butin d'origine sont retirés ; chaque coffre reçoit 1 page de Codex avec une chance sur 35 et, séparément,
+// 1 parchemin avec une chance sur 35, toujours au niveau le plus bas du sort. Sort tiré selon AR_CODEX_POIDS (rareté au niveau minimum : un sort légendaire
 // dès le niveau 1 sort donc en légendaire niveau 1, mais très rarement) ; parchemin : hors sorts Réprouvé.
 // (AR_CODEX_TAUX et AR_REPROUVE_TAUX ne servent plus.)
 var AR_CODEX_TAUX = 0.74   // 74 % des pages retirées : environ 1 page de Codex tous les 15 coffres (brut mesuré : 0,255 page par coffre)
 var AR_REPROUVE_TAUX = 0.6
 // Parchemin supplémentaire : chance par coffre d'en ajouter un (en plus de ceux déjà présents, environ 0,017 par coffre),
-// pour viser environ 1 parchemin tous les 25 coffres (0,04 par coffre).
-var AR_PAGE_PAR_COFFRE = 0.04       // 1 page de Codex tous les 25 coffres (toutes les autres sont retirées)
-var AR_PARCHEMIN_PAR_COFFRE = 0.04  // 1 parchemin tous les 25 coffres (tous les autres sont retirés)
+// pour viser environ 1 parchemin tous les 35 coffres (environ 0,029 par coffre).
+var AR_PAGE_PAR_COFFRE = 1 / 35     // 1 page de Codex tous les 35 coffres (toutes les autres sont retirées)
+var AR_PARCHEMIN_PAR_COFFRE = 1 / 35  // 1 parchemin tous les 35 coffres (tous les autres sont retirés)
 var AR_PARCHEMIN_AJOUT = 0.023
 var AR_DEBUG = false   // journal de chaque ouverture de conteneur (mettre false une fois le filtre vérifié)
 var AR_PAGE = null, AR_SR = null, AR_CATALOGUE = null
@@ -262,8 +262,8 @@ function arFiltrerConteneur(event) {
       else if (dec) slot.set(dec)
     }
     var ajouts = []
-    if (Math.random() < AR_PAGE_PAR_COFFRE) ajouts.push(arPageNeuve())            // 1 page de Codex tous les 25 coffres
-    if (Math.random() < AR_PARCHEMIN_PAR_COFFRE) ajouts.push(arCreerParchemin())  // 1 parchemin tous les 25 coffres
+    if (Math.random() < AR_PAGE_PAR_COFFRE) ajouts.push(arPageNeuve())            // 1 page de Codex tous les 35 coffres
+    if (Math.random() < AR_PARCHEMIN_PAR_COFFRE) ajouts.push(arCreerParchemin())  // 1 parchemin tous les 35 coffres
     for (var a = 0; a < ajouts.length; a++) {
       var neuf = ajouts[a]
       if (!neuf) continue
