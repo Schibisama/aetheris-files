@@ -741,6 +741,7 @@ function eqPoserTableau(serveur, joueur, type, taille) {
     var cmd = 'execute in ' + t.dim + ' run summon minecraft:text_display ' + ox.toFixed(2) + ' ' + oy.toFixed(2) + ' ' + oz.toFixed(2) + ' ' + nbt
     var res = 0
     try { res = serveur.runCommandSilent(cmd) } catch (eC) { console.error('[equipes] tableau : ' + eC) }
+    console.info('[equipes] tableau n°' + t.id + ' morceau ' + m[0] + ' : résultat ' + res + ' | ' + cmd.substring(0, 330))
     if (!res) console.error('[equipes] tableau : la commande summon a échoué : ' + cmd)
   }
   eqSauver(serveur)
