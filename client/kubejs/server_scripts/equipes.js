@@ -714,11 +714,21 @@ function eqSnbtComp(v) {
   return '{' + champs.join(',') + '}'
 }
 function eqSnbtTexte(parts) { return eqSnbtComp(parts) }
+// Lacet (yaw) du joueur en degrés : getYRot() n'existe pas sous KubeJS, on essaie plusieurs accès puis le vecteur de regard.
+function eqYaw(j) {
+  var v
+  try { v = Number(j.yRot); if (!isNaN(v)) return v } catch (e1) {}
+  try { v = Number(j.yaw); if (!isNaN(v)) return v } catch (e2) {}
+  try { v = Number(j.getYaw()); if (!isNaN(v)) return v } catch (e3) {}
+  try { var l = j.lookAngle; return Math.atan2(-Number(l.x()), Number(l.z())) * 180 / Math.PI } catch (e4) {}
+  try { var l2 = j.getLookAngle(); return Math.atan2(-Number(l2.x), Number(l2.z)) * 180 / Math.PI } catch (e5) {}
+  return 0
+}
 function eqPoserTableau(serveur, joueur, type, taille) {
   var d = eqCharger(serveur)
   if (!d.tableaux) d.tableaux = []
   if (!d.prochainTableau) d.prochainTableau = 1
-  var yaw = Number(joueur.getYRot()), rad = yaw * Math.PI / 180
+  var yaw = eqYaw(joueur), rad = yaw * Math.PI / 180
   var fx = -Math.sin(rad), fz = Math.cos(rad)   // devant le joueur
   var t = { id: d.prochainTableau++, type: type, taille: taille, dim: String(joueur.level().dimension().location()),
     x: Number(joueur.getX()) + fx * 3, y: Number(joueur.getY()) + 0.5, z: Number(joueur.getZ()) + fz * 3, yaw: yaw + 180 }

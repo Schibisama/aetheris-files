@@ -278,7 +278,7 @@ ServerEvents.commandRegistry(function (event) {
       var p = ctx.source.player
       if (!p) return 0
       var sv = ctx.source.server, d = crCharger(sv)
-      d.anneaux.push({ x: Number(p.getX()), y: Number(p.getEyeY()), z: Number(p.getZ()), yaw: Number(p.getYRot()), r: Math.max(1, Math.min(10, rayon)), plat: !!plat, dim: String(p.level().dimension().location()) })
+      d.anneaux.push({ x: Number(p.getX()), y: Number(p.getEyeY()), z: Number(p.getZ()), yaw: (typeof eqYaw === 'function' ? eqYaw(p) : 0), r: Math.max(1, Math.min(10, rayon)), plat: !!plat, dim: String(p.level().dimension().location()) })
       crSauver(sv)
       return crRep(ctx, 'Anneau ' + d.anneaux.length + ' posé (rayon ' + rayon + ', ' + (plat ? 'horizontal' : 'vertical') + ').', 'Ring ' + d.anneaux.length + ' placed (radius ' + rayon + ', ' + (plat ? 'horizontal' : 'vertical') + ').')
     })
