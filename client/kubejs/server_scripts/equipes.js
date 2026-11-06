@@ -776,9 +776,14 @@ ServerEvents.commandRegistry(function (event) {
     if (!eqProf(ctx)) return eqRepondre(ctx, 'Réservé aux professeurs.', 'Teachers only.')
     var p = ctx.source.player
     if (!p) return 0
-    var t = eqPoserTableau(ctx.source.server, p, type, Math.max(0.5, Math.min(4, taille)))
+    var t
+    try { t = eqPoserTableau(ctx.source.server, p, type, Math.max(0.5, Math.min(4, taille))) } catch (eT) {
+      console.error('[equipes] tableau : ' + eT + (eT && eT.stack ? ' | ' + eT.stack : ''))
+      return eqRepondre(ctx, 'Erreur en posant le tableau : ' + eT, 'Error placing the board: ' + eT)
+    }
     return eqRepondre(ctx, 'Tableau n°' + t.id + ' posé (' + type + ').', 'Board #' + t.id + ' placed (' + type + ').')
   }
+  console.info('[equipes] commandes /classement tableau enregistrées')
   event.register(C.literal('classement').then(C.literal('tableau')
     .then(C.literal('poser')
       .then(C.literal('equipes').executes(function (ctx) { return poser(ctx, 'equipes', 0.7) })
