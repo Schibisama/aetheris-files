@@ -1,5 +1,5 @@
 {
- "version": "2026-11-06T23:13:23.943Z",
+ "version": "2026-11-06T23:53:06.626Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6302,8 +6302,8 @@
   },
   {
    "path": "kubejs/server_scripts/boss_zones.js",
-   "sha1": "62c2daeb01a76f73ef63eb0299f3f63dc36e5631",
-   "size": 49790
+   "sha1": "1b78990cc761cefbdc449b2c39ac979f4027f65d",
+   "size": 49896
   },
   {
    "path": "kubejs/server_scripts/chasse_quetes.js",
@@ -6312,13 +6312,13 @@
   },
   {
    "path": "kubejs/server_scripts/classes_boosts.js",
-   "sha1": "32c615ae118d3a3c0acd9bd1d0306a0bab07fa9e",
-   "size": 5919
+   "sha1": "812372d9f502c73ddc87451ddd1b800f4f4491c6",
+   "size": 5952
   },
   {
    "path": "kubejs/server_scripts/classes_desactives.js",
-   "sha1": "686d82461935012da191e7cac6b62d3857b91483",
-   "size": 49173
+   "sha1": "74f3d17f9ab898baa3fff1f5027122f846b2d19d",
+   "size": 49307
   },
   {
    "path": "kubejs/server_scripts/classes_dump_armes.js",
@@ -6332,13 +6332,13 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "6df25b60ff9b59507ef118d19188a293efcbf887",
-   "size": 174164
+   "sha1": "03078d75688be68905ce2bb3a1aec74ebf491c11",
+   "size": 174237
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
-   "sha1": "d053af2e6dd305dcb0f757bf91e46c8c8e593494",
-   "size": 2384
+   "sha1": "28af0c9df27601d2cbbf76c215d853655719bf57",
+   "size": 2413
   },
   {
    "path": "kubejs/server_scripts/classes_sons.js",
@@ -6397,8 +6397,8 @@
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
-   "sha1": "c3004e188c1f5ccebd7742d210dac68c8167d55b",
-   "size": 26160
+   "sha1": "e6e4be7ec2d817e2f787b04153c3a87a70814e7c",
+   "size": 26269
   },
   {
    "path": "kubejs/server_scripts/parchemins_coffres.js",
@@ -6422,8 +6422,8 @@
   },
   {
    "path": "kubejs/server_scripts/professeur.js",
-   "sha1": "b24d09dbff838f69aa6fdcd90aefedba42e0a423",
-   "size": 16767
+   "sha1": "4c2022162046c19d87d50ef4aae2f1e08924f00b",
+   "size": 16840
   },
   {
    "path": "kubejs/server_scripts/pseudo.js",
@@ -6457,8 +6457,8 @@
   },
   {
    "path": "kubejs/server_scripts/zone_pirates.js",
-   "sha1": "d736265a1dd8d14f346b1da6a5db61e772757dda",
-   "size": 27493
+   "sha1": "0957e6da06ec96ed9304335a5c222cb18b0d3b3f",
+   "size": 27566
   },
   {
    "path": "kubejs/startup_scripts/aura_professeur_effet.js",

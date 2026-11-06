@@ -120,11 +120,11 @@ function appliquerFusion(joueur) {
 
 try {
   initFusion()
-  PlayerEvents.tick(function (event) {
+  PlayerEvents.tick(perfWrap('classes_boosts:tick', function (event) {
     var joueur = event.player
     if (joueur.level.time % 20 !== 7) return
     try { appliquerFusion(joueur) } catch (e) { console.error('[classes_boosts] ' + e) }
-  })
+  }))
   console.info('[classes_boosts] Fusion des bonus entre mods active (' + FU.regles.length + ' règles).')
 } catch (e) {
   console.error('[classes_boosts] Indisponible : ' + e)

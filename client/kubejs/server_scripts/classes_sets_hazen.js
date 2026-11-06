@@ -16,7 +16,7 @@ var SETS_HAZEN = [
 var EMPLACEMENTS_SETS = ['head', 'chest', 'legs', 'feet']
 
 try {
-  PlayerEvents.tick(function (event) {
+  PlayerEvents.tick(perfWrap('sets_hazen:tick', function (event) {
     try {
       var joueur = event.player
       if (joueur.tickCount % 4 !== 0) return   // inutile à chaque tick
@@ -36,7 +36,7 @@ try {
       if (!aRetirer) return
       for (var k = 0; k < aRetirer.length; k++) joueur.removeEffect(PREFIXE_HAZEN_SETS + aRetirer[k])
     } catch (e) {}
-  })
+  }))
   console.info('[classes_sets_hazen] ' + SETS_HAZEN.length + ' règles de bonus d\'ensemble actives.')
 } catch (e) {
   console.error('[classes_sets_hazen] Impossible d\'installer le retrait des bonus : ' + e)

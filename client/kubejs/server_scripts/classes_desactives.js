@@ -1,16 +1,17 @@
-// [perf] mesure du temps des handlers de tick : écrit « [perf] ... » dans la console si > 1,5 s cumulées par 1200 appels
+// [perf] mesure du temps des handlers : écrit « [perf] nom : X ms en 60 s » dans la console quand un handler dépasse 80 ms cumulées par minute
 var perfWrap = (typeof perfWrap === 'function') ? perfWrap : (function () {
-  var SYS = { getNanos: function () { return Date.now() * 1e6 } }
+  var SYS = Java.loadClass('java.lang.System')
   return function (nom, fn) {
-    var cumul = 0, n = 0
+    var cumul = 0, n = 0, debut = SYS.nanoTime()
     return function (ev) {
-      var t0 = SYS.getNanos()
+      var t0 = SYS.nanoTime()
       try { return fn(ev) } finally {
-        cumul += SYS.getNanos() - t0; n++
-        if (n >= 1200) {
+        var t1 = SYS.nanoTime()
+        cumul += t1 - t0; n++
+        if (t1 - debut >= 6e10) {
           var ms = cumul / 1e6
-          if (ms > 1500) console.info('[perf] ' + nom + ' : ' + (ms / n).toFixed(3) + ' ms par appel, ' + ms.toFixed(0) + ' ms par ' + n + ' appels')
-          cumul = 0; n = 0
+          if (ms > 80) console.info('[perf] ' + nom + ' : ' + ms.toFixed(0) + ' ms en 60 s (' + n + ' appels, ' + (ms / n).toFixed(3) + ' ms par appel)')
+          cumul = 0; n = 0; debut = t1
         }
       }
     }
@@ -290,7 +291,7 @@ function desactButinMobs(event) {
 try {
   NativeEvents.onEvent(
     Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingDropsEvent'),
-    function (event) { desactButinMobs(event) }
+    perfWrap('desact:butin_mobs', function (event) { desactButinMobs(event) })
   )
   console.info('[classes_desactives] Filtre du butin des mobs actif.')
 } catch (e) {
@@ -410,7 +411,7 @@ function desactObjetAuSol(event) {
 try {
   NativeEvents.onEvent(
     Java.loadClass('net.neoforged.neoforge.event.entity.EntityJoinLevelEvent'),
-    function (event) { desactObjetAuSol(event) }
+    perfWrap('desact:objet_sol', function (event) { desactObjetAuSol(event) })
   )
   console.info('[classes_desactives] Filtre des objets au sol actif (pêche, troc, archéologie, chambres d\'épreuve).')
 } catch (e) {
