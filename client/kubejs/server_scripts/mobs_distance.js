@@ -437,15 +437,16 @@ ServerEvents.commandRegistry(function (event) {
 // pour réduire de moitié sa part parmi les monstres (les places libérées reviennent aux autres mobs).
 // Plafond : plus aucune apparition naturelle de monstre dans une dimension au-delà de (max par joueur × joueurs présents) monstres déjà vivants.
 // /spawnleger max <n> pour le régler (0 = pas de plafond).
-var SPAWN_LEGER = { part: 0.6, bic: 0.5, parJoueur: 25, compte: {} }
+var SPAWN_LEGER = { part: 0.6, bic: 0.5, parJoueur: 25, passifs: 0.6, passifsParJoueur: 40, compte: {} }
+var SPAWN_PASSIFS = ['creature', 'ambient', 'water_creature', 'water_ambient', 'underground_water_creature', 'axolotls']   // catégories « passives »
 ServerEvents.tick(perfWrap('mobs_distance:cap', function (event) {
   if (event.server.tickCount % 100 !== 7) return
   var niveaux = event.server.getAllLevels().iterator()
   while (niveaux.hasNext()) {
     try {
-      var niveau = niveaux.next(), n = 0, it = niveau.getAllEntities().iterator()
-      while (it.hasNext()) { var en = it.next(); try { if (String(en.getType().getCategory().getName()) === 'monster') n++ } catch (e0) {} }
-      SPAWN_LEGER.compte[String(niveau.dimension)] = { n: n, j: niveau.players().size() }
+      var niveau = niveaux.next(), n = 0, np = 0, it = niveau.getAllEntities().iterator()
+      while (it.hasNext()) { var en = it.next(); try { var cat = String(en.getType().getCategory().getName()); if (cat === 'monster') n++; else if (SPAWN_PASSIFS.indexOf(cat) >= 0) np++ } catch (e0) {} }
+      SPAWN_LEGER.compte[String(niveau.dimension)] = { n: n, np: np, j: niveau.players().size() }
     } catch (e) {}
   }
 }))
@@ -454,10 +455,21 @@ try {
     Java.loadClass('net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent'),
     function (event) {
       try {
-        if (SPAWN_LEGER.part <= 0) return
         if (String(event.getSpawnType().name()) !== 'NATURAL') return
         var m = event.getEntity()
-        if (String(m.getType().getCategory().getName()) !== 'monster') return
+        var cat = String(m.getType().getCategory().getName())
+        if (SPAWN_PASSIFS.indexOf(cat) >= 0) {   // animaux, ambiants, aquatiques : même principe, plafond et part propres
+          if (SPAWN_LEGER.passifs <= 0 && SPAWN_LEGER.passifsParJoueur <= 0) return
+          var cq = SPAWN_LEGER.compte[String(m.level.dimension)]
+          if (SPAWN_LEGER.passifsParJoueur > 0 && cq && cq.j > 0) {
+            if (cq.np >= SPAWN_LEGER.passifsParJoueur * cq.j) { event.setSpawnCancelled(true); return }
+            cq.np++
+          }
+          if (Math.random() < SPAWN_LEGER.passifs) event.setSpawnCancelled(true)
+          return
+        }
+        if (cat !== 'monster') return
+        if (SPAWN_LEGER.part <= 0 && SPAWN_LEGER.parJoueur <= 0) return
         if (SPAWN_LEGER.parJoueur > 0) {
           var cp = SPAWN_LEGER.compte[String(m.level.dimension)]
           if (cp && cp.j > 0 && cp.n >= SPAWN_LEGER.parJoueur * cp.j) { event.setSpawnCancelled(true); return }
@@ -478,6 +490,12 @@ ServerEvents.commandRegistry(function (event) {
     .then(C.literal('max').then(C.argument('n', A.INTEGER.create(event)).executes(function (ctx) {
       SPAWN_LEGER.parJoueur = Math.max(0, A.INTEGER.getResult(ctx, 'n'))
       var p = ctx.source.player; var t = 'Plafond de monstres : ' + SPAWN_LEGER.parJoueur + ' par joueur présent (0 = aucun)'
+      if (p) p.tell(Text.gray(t)); else console.info('[spawn_leger] ' + t)
+      return 1
+    })))
+    .then(C.literal('passifs').then(C.argument('pourcent', A.INTEGER.create(event)).executes(function (ctx) {
+      SPAWN_LEGER.passifs = Math.max(0, Math.min(95, A.INTEGER.getResult(ctx, 'pourcent'))) / 100
+      var p = ctx.source.player; var t = 'Spawn naturel des mobs passifs annulé à ' + Math.round(SPAWN_LEGER.passifs * 100) + ' %'
       if (p) p.tell(Text.gray(t)); else console.info('[spawn_leger] ' + t)
       return 1
     })))
