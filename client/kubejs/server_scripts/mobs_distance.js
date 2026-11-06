@@ -435,7 +435,20 @@ ServerEvents.commandRegistry(function (event) {
 // Réglage en jeu (op) : /spawnleger  /spawnleger <0-100>
 // Born in Chaos : en plus, une apparition naturelle sur deux de ses monstres est annulée (SPAWN_LEGER.bic),
 // pour réduire de moitié sa part parmi les monstres (les places libérées reviennent aux autres mobs).
-var SPAWN_LEGER = { part: 0.35, bic: 0.5 }
+// Plafond : plus aucune apparition naturelle de monstre dans une dimension au-delà de (max par joueur × joueurs présents) monstres déjà vivants.
+// /spawnleger max <n> pour le régler (0 = pas de plafond).
+var SPAWN_LEGER = { part: 0.6, bic: 0.5, parJoueur: 25, compte: {} }
+ServerEvents.tick(perfWrap('mobs_distance:cap', function (event) {
+  if (event.server.tickCount % 100 !== 7) return
+  var niveaux = event.server.getAllLevels().iterator()
+  while (niveaux.hasNext()) {
+    try {
+      var niveau = niveaux.next(), n = 0, it = niveau.getAllEntities().iterator()
+      while (it.hasNext()) { var en = it.next(); try { if (String(en.getType().getCategory().getName()) === 'monster') n++ } catch (e0) {} }
+      SPAWN_LEGER.compte[String(niveau.dimension)] = { n: n, j: niveau.players().size() }
+    } catch (e) {}
+  }
+}))
 try {
   NativeEvents.onEvent(
     Java.loadClass('net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent'),
@@ -445,6 +458,11 @@ try {
         if (String(event.getSpawnType().name()) !== 'NATURAL') return
         var m = event.getEntity()
         if (String(m.getType().getCategory().getName()) !== 'monster') return
+        if (SPAWN_LEGER.parJoueur > 0) {
+          var cp = SPAWN_LEGER.compte[String(m.level.dimension)]
+          if (cp && cp.j > 0 && cp.n >= SPAWN_LEGER.parJoueur * cp.j) { event.setSpawnCancelled(true); return }
+          if (cp) cp.n++
+        }
         if (Math.random() < SPAWN_LEGER.part) { event.setSpawnCancelled(true); return }
         if (SPAWN_LEGER.bic > 0 && String(m.getType().builtInRegistryHolder().key().location().getNamespace()) === 'born_in_chaos_v1' && Math.random() < SPAWN_LEGER.bic) event.setSpawnCancelled(true)
       } catch (e1) {}
@@ -457,6 +475,12 @@ ServerEvents.commandRegistry(function (event) {
   var C = event.commands, A = event.arguments
   event.register(C.literal('spawnleger').requires(function (s) { return s.hasPermission(2) })
     .executes(function (ctx) { var p = ctx.source.player; var t = 'Spawn naturel de monstres annulé à ' + Math.round(SPAWN_LEGER.part * 100) + ' %'; if (p) p.tell(Text.gray(t)); else console.info('[spawn_leger] ' + t); return 1 })
+    .then(C.literal('max').then(C.argument('n', A.INTEGER.create(event)).executes(function (ctx) {
+      SPAWN_LEGER.parJoueur = Math.max(0, A.INTEGER.getResult(ctx, 'n'))
+      var p = ctx.source.player; var t = 'Plafond de monstres : ' + SPAWN_LEGER.parJoueur + ' par joueur présent (0 = aucun)'
+      if (p) p.tell(Text.gray(t)); else console.info('[spawn_leger] ' + t)
+      return 1
+    })))
     .then(C.argument('pourcent', A.INTEGER.create(event)).executes(function (ctx) {
       SPAWN_LEGER.part = Math.max(0, Math.min(90, A.INTEGER.getResult(ctx, 'pourcent'))) / 100
       var p = ctx.source.player; var t = 'Spawn naturel de monstres annulé à ' + Math.round(SPAWN_LEGER.part * 100) + ' %'
