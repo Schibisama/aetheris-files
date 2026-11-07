@@ -1,6 +1,6 @@
 // [perf] mesure du temps des handlers : écrit « [perf] nom : X ms en 60 s » dans la console quand un handler dépasse 80 ms cumulées par minute
 var perfWrap = (typeof perfWrap === 'function') ? perfWrap : (function () {
-  var SYS = Java.loadClass('java.lang.System')
+  var SYS = { nanoTime: function () { return Date.now() * 1e6 } }   // java.lang.System est interdit par le filtre de classes de KubeJS ; l'erreur de quantification s'annule en moyenne
   return function (nom, fn) {
     var cumul = 0, n = 0, debut = SYS.nanoTime()
     return function (ev) {
