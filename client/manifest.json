@@ -1,5 +1,5 @@
 {
- "version": "2026-11-07T12:08:39.925Z",
+ "version": "2026-11-07T12:20:42.627Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6372,8 +6372,8 @@
   },
   {
    "path": "kubejs/server_scripts/boss_zones.js",
-   "sha1": "c4974660089d2b8a309ee71a831b8842f51c7526",
-   "size": 50034
+   "sha1": "acf49a06bb7c96043e5b8c72c49159d4aea23d18",
+   "size": 50300
   },
   {
    "path": "kubejs/server_scripts/chasse_quetes.js",
@@ -6402,8 +6402,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "b8bedf345fb4af10181a3030e9d591af4724af47",
-   "size": 174375
+   "sha1": "7a6ea361fa34135cf811204761e1d420c06dd9e9",
+   "size": 174478
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -6417,13 +6417,13 @@
   },
   {
    "path": "kubejs/server_scripts/colisee_duel.js",
-   "sha1": "9f3065a83707a093003d194974eb312438e1eca5",
-   "size": 18725
+   "sha1": "95351fba6dfde33f8fc5f44497a3b58c0d7cea2c",
+   "size": 18815
   },
   {
    "path": "kubejs/server_scripts/course_balai.js",
-   "sha1": "28ad83ba756a5d6580ee3750c6aafe94bd1c2851",
-   "size": 35282
+   "sha1": "793cb456f30c3aa94a8d9808d8fafc0375a02c00",
+   "size": 35420
   },
   {
    "path": "kubejs/server_scripts/decouverte_lieux.js",
@@ -6442,13 +6442,13 @@
   },
   {
    "path": "kubejs/server_scripts/equipes.js",
-   "sha1": "4186d77f676a28756fe985201015326cf7cb78f4",
-   "size": 48427
+   "sha1": "11eb4467050d43d470bb4cc79342b3495a45d9aa",
+   "size": 48799
   },
   {
    "path": "kubejs/server_scripts/ftb_aide.js",
-   "sha1": "6a9e3f36c1a57c91baae0cfd5051ce49475a2ee9",
-   "size": 2171
+   "sha1": "5a0348c6ebf4fedd43f783ef6b7cfb2ddeb009ce",
+   "size": 3000
   },
   {
    "path": "kubejs/server_scripts/furniture_ops.js",
