@@ -171,6 +171,12 @@ function eqAjouterPoints(serveur, slug, n) {
   if (!eq) return
   eq.total = (eq.total || 0) + n
   eq.trimestre = (eq.trimestre || 0) + n
+  if (n > 0) {   // quête « L'esprit d'équipe » pour les membres connectés
+    try {
+      var js = serveur.players
+      for (var iq = 0; iq < js.size(); iq++) { if (eq.membres.indexOf(eqUuid(js.get(iq))) !== -1) ftbFait(js.get(iq), 'equipe_points') }
+    } catch (eF) {}
+  }
 }
 function eqClassement(liste, champ) {
   return liste.slice().sort(function (a, b) { return (b[champ] || 0) - (a[champ] || 0) })
@@ -295,6 +301,7 @@ function eqCmdCreer(ctx, texte) {
   eqSauver(serveur)
   eqRafraichir(serveur, [eqUuid(p)])
   eqAnnoncer(serveur, String(p.username) + " fonde l'équipe " + nom + ' !', String(p.username) + ' founds team ' + nom + '!', 'aqua')
+  try { ftbFait(p, 'equipe') } catch (eF) {}
   return 1
 }
 function eqCmdLogo(ctx, texte) {
@@ -339,6 +346,7 @@ function eqCmdRejoindre(ctx) {
   eqSauver(serveur)
   eqRafraichir(serveur, [eqUuid(p)])
   eqAnnoncer(serveur, String(p.username) + " rejoint l'équipe " + eq.nom + '.', String(p.username) + ' joins team ' + eq.nom + '.', 'aqua')
+  try { ftbFait(p, 'equipe') } catch (eF) {}
   return 1
 }
 function eqRetirerMembre(serveur, slug, uuid, nom) {

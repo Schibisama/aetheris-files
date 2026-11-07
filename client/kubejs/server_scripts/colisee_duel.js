@@ -138,6 +138,7 @@ function duDebutCombat(sv) {
 function duVictoire(sv, perdant, raison) {
   if (!DUEL || DUEL.phase === 'fin') return
   var gagnant = duAdversaire(perdant)
+  try { var jg = duJoueur(sv, gagnant); if (jg) ftbFait(jg, 'duel_gagne') } catch (eF) {}
   DUEL.phase = 'fin'; DUEL.perdant = String(perdant); DUEL.t = sv.tickCount
   var jp = duJoueur(sv, perdant)
   if (jp) {

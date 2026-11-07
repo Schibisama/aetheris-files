@@ -1085,6 +1085,7 @@ function echangerClasse(server, joueur, direct) {
   data.putBoolean(CLE_TEST, false)
   appliquerClasse(server, joueur, nouvelle, true)
   annoncer(server, joueur, nouvelle, 'Ton destin a changé.')
+  try { ftbFait(joueur, 'destin') } catch (eF) {}
   // Message à l'écran de tous les autres joueurs : « X a réécrit son destin. » (seulement auprès du Maître du Destin)
   try {
     var nomJ = String(joueur.username)
@@ -2495,6 +2496,7 @@ function parchAppliquer(joueur, id, niveau) {
   var rl = ResourceLocationJ.tryParse(id)
   var donnees = joueur.getData(UnlockAttachJ.UNLOCKS)
   if (!donnees.isSpellUnlocked(rl)) { console.info('[parchemin] ' + id + ' non découvert, palier inchangé'); return false }
+  try { ftbFait(joueur, 'parchemin') } catch (eF) {}
   var cible = niveau
   try { cible = Math.min(niveau, Number(SpellRegistryJ.getSpell(rl).getMaxLevel())) } catch (e0) {}
   console.info('[parchemin] ' + id + ' : palier actuel ' + donnees.getUnlockedTier(rl) + ', parchemin ' + cible)

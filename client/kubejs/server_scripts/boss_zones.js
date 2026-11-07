@@ -438,6 +438,10 @@ function bzMort(server, nom, b, e, src) {
   delete bzDernierCoup[cle]
   var parts = bzParticipants[cle] || {}
   delete bzParticipants[cle]
+  try {   // quête « Terreur des gardiens » : le tueur et ceux qui ont frappé le boss
+    if (tueur && tueur.isPlayer()) ftbFait(tueur, 'boss')
+    for (var npF in parts) { var pjF = bzJoueurParNom(server, npF); if (pjF) ftbFait(pjF, 'boss') }
+  } catch (eF) {}
   console.info('[boss_zones] ' + nom + ' vaincu' + (tueur ? ' par ' + tueur.username : ' (aucun joueur identifié)'))
   try { if (typeof autelBossTue === 'function') autelBossTue(server, nom) } catch (eA) { console.error('[boss_zones] autel : ' + eA) }   // étape Force de l'Autel du Sceau
   if (!b.quete) return

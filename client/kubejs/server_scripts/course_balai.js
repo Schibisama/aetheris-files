@@ -114,6 +114,7 @@ function crTraverse(a, x0, y0, z0, x1, y1, z1) {
 function crArrivee(sv, p, c) {
   var d = crCharger(sv), t = sv.tickCount - c.debut, u = String(p.uuid), nom = String(p.username)
   delete CR_COUREURS[u]
+  try { ftbFait(p, c.mode === 'groupe' ? 'course_groupe' : 'vroom_fini') } catch (eF) {}
   var rec = d.records[u], nouveau = !rec || t < rec.t
   if (nouveau) { d.records[u] = { nom: nom, t: t }; crSauver(sv) }
   try { sv.runCommandSilent('execute as ' + nom + ' at @s run playsound minecraft:ui.toast.challenge_complete master @s ~ ~ ~ 1 1') } catch (e) {}
@@ -341,6 +342,7 @@ function crTenter(sv, p) {
   CR_ATTENTE[u] = { go: sv.tickCount + T.decompte * 20, tag: tag }
   console.info('[course] épreuve Vroom : ' + nom + ' téléporté sur un balai (' + pos + '), départ dans ' + T.decompte + ' s')
   CR_BALAIS[u] = { tag: tag, t0: sv.tickCount }
+  try { ftbFait(p, 'vroom_defi') } catch (eF) {}
   return { ok: true }
 }
 function crRetirerBalaiEpreuve(sv, u) {
