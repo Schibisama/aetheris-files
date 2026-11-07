@@ -1,5 +1,5 @@
 {
- "version": "2026-11-07T11:53:38.430Z",
+ "version": "2026-11-07T12:04:44.769Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -367,8 +367,8 @@
   },
   {
    "path": "kubejs/assets/kubejs/font/equipes.json",
-   "sha1": "b174ed17795a34f2e06fc07ad5b6a4bdd5de8e1b",
-   "size": 2100
+   "sha1": "b5ea1de87f67a693fbd5ab574c7b7cee39f0417e",
+   "size": 4051
   },
   {
    "path": "kubejs/assets/kubejs/font/runes.json",
@@ -4536,79 +4536,149 @@
    "size": 3744
   },
   {
-   "path": "kubejs/assets/kubejs/textures/font/equipes/aile.png",
-   "sha1": "27428667f1c7fb9f8d2604051a47b169bc0adae9",
-   "size": 168
+   "path": "kubejs/assets/kubejs/textures/font/equipes/baguette.png",
+   "sha1": "54ebf9f563591230df1299cdb53f845127f96a11",
+   "size": 176
   },
   {
    "path": "kubejs/assets/kubejs/textures/font/equipes/bouclier.png",
-   "sha1": "16eb5df06587c3635f64bf3eaac086dc92c1c657",
-   "size": 169
+   "sha1": "43142a3e5de402f5cd5c947ee87766d4f9fd63f6",
+   "size": 181
   },
   {
-   "path": "kubejs/assets/kubejs/textures/font/equipes/cle.png",
-   "sha1": "17cb402b3086809832cc7553e884fa407a51f2b2",
-   "size": 169
-  },
-  {
-   "path": "kubejs/assets/kubejs/textures/font/equipes/couronne.png",
-   "sha1": "073aaeb8535b2903fb87701e73b97fa4f688ee72",
-   "size": 156
-  },
-  {
-   "path": "kubejs/assets/kubejs/textures/font/equipes/crane.png",
-   "sha1": "b4d8a077753e1206053e5ffc60746fa9b849dc60",
-   "size": 173
-  },
-  {
-   "path": "kubejs/assets/kubejs/textures/font/equipes/eclair.png",
-   "sha1": "b7e6570053cf899f15d5f1b827d1046495b6db3d",
-   "size": 160
-  },
-  {
-   "path": "kubejs/assets/kubejs/textures/font/equipes/epee.png",
-   "sha1": "e12de1f59ec53f037eb92a638a23a72bc5285310",
+   "path": "kubejs/assets/kubejs/textures/font/equipes/chapeau.png",
+   "sha1": "e89246cd53cdfe29dee06b932a8e2a6dbfdfc542",
    "size": 166
   },
   {
-   "path": "kubejs/assets/kubejs/textures/font/equipes/etoile.png",
-   "sha1": "2fc2a96cdcafc311e91acbcd6353188ca9db0dce",
-   "size": 168
+   "path": "kubejs/assets/kubejs/textures/font/equipes/cle.png",
+   "sha1": "367af32d76520280dc5894ad1f14a87a2faef890",
+   "size": 179
   },
   {
-   "path": "kubejs/assets/kubejs/textures/font/equipes/feuille.png",
-   "sha1": "9591cae0439ec43af255a2438189917b92238c35",
-   "size": 172
+   "path": "kubejs/assets/kubejs/textures/font/equipes/couronne.png",
+   "sha1": "b905cc3f5d2f2a10ee1af69aa1e115d735f603f9",
+   "size": 164
   },
   {
-   "path": "kubejs/assets/kubejs/textures/font/equipes/flamme.png",
-   "sha1": "4ba6cc96b6b1fea6c47f0254027e38d6894c4178",
-   "size": 171
+   "path": "kubejs/assets/kubejs/textures/font/equipes/crane.png",
+   "sha1": "f5905a48c6f2836d52d109ab34d2c13458d9edad",
+   "size": 170
   },
   {
-   "path": "kubejs/assets/kubejs/textures/font/equipes/goutte.png",
-   "sha1": "b24d56a0efde7f7fd04e50fa7e096c99d8f52ca3",
+   "path": "kubejs/assets/kubejs/textures/font/equipes/cristal.png",
+   "sha1": "f3c25eb2b5512e5ff913e7e367191d5acfded5c2",
+   "size": 157
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/equipes/eclair.png",
+   "sha1": "83cc54c9f8888a3045e6550e8d22c4c606fc8a77",
    "size": 160
   },
   {
+   "path": "kubejs/assets/kubejs/textures/font/equipes/engrenage.png",
+   "sha1": "25e561a39d0cd6f242bda578f2c06944e564a256",
+   "size": 173
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/equipes/epee.png",
+   "sha1": "d2b596b44a0182c5fbbabf7943d29e2d702ba83b",
+   "size": 177
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/equipes/etoile.png",
+   "sha1": "13ca55353856882e528dea58eb1037429a69623d",
+   "size": 178
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/equipes/feuille.png",
+   "sha1": "5424ffa7d6da02c07dd90d0aeb50ac827bc486d4",
+   "size": 172
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/equipes/fiole.png",
+   "sha1": "23d488607f94e89e6c130f7dd113efd3611adfa6",
+   "size": 167
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/equipes/flamme.png",
+   "sha1": "b1928fcd7d5b18f87572ce803929217eb405d60b",
+   "size": 167
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/equipes/flocon.png",
+   "sha1": "5039e81fd08467da34e94df422fdf7f868254e9c",
+   "size": 191
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/equipes/goutte.png",
+   "sha1": "9aaccc823a3ca1852ce6547ceef9cae5adb7a210",
+   "size": 152
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/equipes/grimoire.png",
+   "sha1": "0e4b291dd1a638c40ff3f9072f82fa12bb385f7e",
+   "size": 166
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/equipes/hibou.png",
+   "sha1": "c1adb1fc19db872b30e165156fa7947acc20ad57",
+   "size": 187
+  },
+  {
    "path": "kubejs/assets/kubejs/textures/font/equipes/lune.png",
-   "sha1": "04a91899c057d89d46fd3d40bec71e1fd3900f66",
+   "sha1": "47bc0a29f7c496564cba22ff9d857247ebff1dff",
+   "size": 166
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/equipes/montagne.png",
+   "sha1": "91a3fd952937dcea8a037f9d1b3928213f59b13b",
+   "size": 159
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/equipes/note.png",
+   "sha1": "0a36c765102a32da24e8a0ef64eb05c27186994e",
    "size": 150
   },
   {
    "path": "kubejs/assets/kubejs/textures/font/equipes/oeil.png",
-   "sha1": "33e913bbce825047f761a8e869f19e002d970ca4",
-   "size": 153
+   "sha1": "e8b00578d8116ffb484f4b1a58527e89a1fc4e25",
+   "size": 172
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/equipes/planete.png",
+   "sha1": "c34490f6bbec3775d89396251e98eb45a38317cb",
+   "size": 183
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/equipes/rune.png",
+   "sha1": "b4133fd1531b6efaa53fddbc515d2d4b07b31e24",
+   "size": 180
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/equipes/sablier.png",
+   "sha1": "0e6ef2cae26e7af936d342cd127fb4db9c82d489",
+   "size": 173
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/equipes/sang.png",
+   "sha1": "41acbbe13ef4524aec0cf8eafd87ac697bff0799",
+   "size": 165
   },
   {
    "path": "kubejs/assets/kubejs/textures/font/equipes/serpent.png",
-   "sha1": "900f9e764f8839b9867b770d8f427e64f0287106",
-   "size": 174
+   "sha1": "e639ab793c07989ec068d007ceb1e1f698d91dd3",
+   "size": 166
   },
   {
    "path": "kubejs/assets/kubejs/textures/font/equipes/soleil.png",
-   "sha1": "a4c6e05de02d78aa15cd261630780f1064508520",
-   "size": 168
+   "sha1": "5fb689b3254a53e5289dfea847dc669f026850fd",
+   "size": 186
+  },
+  {
+   "path": "kubejs/assets/kubejs/textures/font/equipes/vent.png",
+   "sha1": "567e27c45fdcccd278151cf0174869be16764a20",
+   "size": 173
   },
   {
    "path": "kubejs/assets/kubejs/textures/font/rune_a.png",
@@ -6372,8 +6442,8 @@
   },
   {
    "path": "kubejs/server_scripts/equipes.js",
-   "sha1": "2b03c1abddcf6426b652cc9808f2815ff82a12fb",
-   "size": 48282
+   "sha1": "4186d77f676a28756fe985201015326cf7cb78f4",
+   "size": 48427
   },
   {
    "path": "kubejs/server_scripts/ftb_aide.js",

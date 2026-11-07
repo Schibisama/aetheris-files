@@ -35,8 +35,8 @@ var EQ = {
   DELAI_QUITTER_H: 72,
   BONUS: [0.3, 0.2, 0.1]
 }
-// 15 logos (caractères de la police kubejs:equipes) et 15 couleurs (couleurs du chat de Minecraft)
-var EQ_LOGOS = ['bouclier', 'couronne', 'epee', 'etoile', 'lune', 'soleil', 'flamme', 'goutte', 'feuille', 'crane', 'oeil', 'aile', 'eclair', 'cle', 'serpent']
+// 29 logos (caractères de la police kubejs:equipes) et 15 couleurs (couleurs du chat de Minecraft)
+var EQ_LOGOS = ['etoile', 'lune', 'soleil', 'flamme', 'goutte', 'feuille', 'eclair', 'crane', 'oeil', 'cle', 'serpent', 'bouclier', 'couronne', 'epee', 'grimoire', 'baguette', 'cristal', 'flocon', 'sablier', 'rune', 'chapeau', 'planete', 'note', 'vent', 'engrenage', 'fiole', 'hibou', 'sang', 'montagne']
 var EQ_COULEURS = { rouge_fonce: 'DARK_RED', rouge: 'RED', or: 'GOLD', jaune: 'YELLOW', vert: 'GREEN', vert_fonce: 'DARK_GREEN', cyan: 'AQUA', bleu_canard: 'DARK_AQUA',
   bleu: 'BLUE', bleu_nuit: 'DARK_BLUE', rose: 'LIGHT_PURPLE', violet: 'DARK_PURPLE', blanc: 'WHITE', gris: 'GRAY', gris_fonce: 'DARK_GRAY' }
 var EQ_J = null

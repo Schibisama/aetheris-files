@@ -2,7 +2,7 @@
  "providers": [
   {
    "type": "bitmap",
-   "file": "kubejs:font/equipes/bouclier.png",
+   "file": "kubejs:font/equipes/etoile.png",
    "ascent": 7,
    "height": 8,
    "chars": [
@@ -11,7 +11,7 @@
   },
   {
    "type": "bitmap",
-   "file": "kubejs:font/equipes/couronne.png",
+   "file": "kubejs:font/equipes/lune.png",
    "ascent": 7,
    "height": 8,
    "chars": [
@@ -20,7 +20,7 @@
   },
   {
    "type": "bitmap",
-   "file": "kubejs:font/equipes/epee.png",
+   "file": "kubejs:font/equipes/soleil.png",
    "ascent": 7,
    "height": 8,
    "chars": [
@@ -29,7 +29,7 @@
   },
   {
    "type": "bitmap",
-   "file": "kubejs:font/equipes/etoile.png",
+   "file": "kubejs:font/equipes/flamme.png",
    "ascent": 7,
    "height": 8,
    "chars": [
@@ -38,7 +38,7 @@
   },
   {
    "type": "bitmap",
-   "file": "kubejs:font/equipes/lune.png",
+   "file": "kubejs:font/equipes/goutte.png",
    "ascent": 7,
    "height": 8,
    "chars": [
@@ -47,7 +47,7 @@
   },
   {
    "type": "bitmap",
-   "file": "kubejs:font/equipes/soleil.png",
+   "file": "kubejs:font/equipes/feuille.png",
    "ascent": 7,
    "height": 8,
    "chars": [
@@ -56,7 +56,7 @@
   },
   {
    "type": "bitmap",
-   "file": "kubejs:font/equipes/flamme.png",
+   "file": "kubejs:font/equipes/eclair.png",
    "ascent": 7,
    "height": 8,
    "chars": [
@@ -65,7 +65,7 @@
   },
   {
    "type": "bitmap",
-   "file": "kubejs:font/equipes/goutte.png",
+   "file": "kubejs:font/equipes/crane.png",
    "ascent": 7,
    "height": 8,
    "chars": [
@@ -74,7 +74,7 @@
   },
   {
    "type": "bitmap",
-   "file": "kubejs:font/equipes/feuille.png",
+   "file": "kubejs:font/equipes/oeil.png",
    "ascent": 7,
    "height": 8,
    "chars": [
@@ -83,7 +83,7 @@
   },
   {
    "type": "bitmap",
-   "file": "kubejs:font/equipes/crane.png",
+   "file": "kubejs:font/equipes/cle.png",
    "ascent": 7,
    "height": 8,
    "chars": [
@@ -92,7 +92,7 @@
   },
   {
    "type": "bitmap",
-   "file": "kubejs:font/equipes/oeil.png",
+   "file": "kubejs:font/equipes/serpent.png",
    "ascent": 7,
    "height": 8,
    "chars": [
@@ -101,7 +101,7 @@
   },
   {
    "type": "bitmap",
-   "file": "kubejs:font/equipes/aile.png",
+   "file": "kubejs:font/equipes/bouclier.png",
    "ascent": 7,
    "height": 8,
    "chars": [
@@ -110,7 +110,7 @@
   },
   {
    "type": "bitmap",
-   "file": "kubejs:font/equipes/eclair.png",
+   "file": "kubejs:font/equipes/couronne.png",
    "ascent": 7,
    "height": 8,
    "chars": [
@@ -119,7 +119,7 @@
   },
   {
    "type": "bitmap",
-   "file": "kubejs:font/equipes/cle.png",
+   "file": "kubejs:font/equipes/epee.png",
    "ascent": 7,
    "height": 8,
    "chars": [
@@ -128,11 +128,137 @@
   },
   {
    "type": "bitmap",
-   "file": "kubejs:font/equipes/serpent.png",
+   "file": "kubejs:font/equipes/grimoire.png",
    "ascent": 7,
    "height": 8,
    "chars": [
     "\ue10e"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/baguette.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue10f"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/cristal.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue110"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/flocon.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue111"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/sablier.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue112"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/rune.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue113"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/chapeau.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue114"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/planete.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue115"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/note.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue116"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/vent.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue117"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/engrenage.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue118"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/fiole.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue119"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/hibou.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue11a"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/sang.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue11b"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "kubejs:font/equipes/montagne.png",
+   "ascent": 7,
+   "height": 8,
+   "chars": [
+    "\ue11c"
    ]
   }
  ]
