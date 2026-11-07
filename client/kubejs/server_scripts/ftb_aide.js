@@ -24,7 +24,6 @@ var FTB_EPREUVES = {
   nether: '668F3EAF369511C4',
   purge: '4867D999133483CC',
   course_rapide: 'CC88675BDC65A959',
-  course_record: 'B11EF45F30AE604D',
   boss: 'C98C76C2FC4CD776'
 }
 // ftbFait(joueur, cle) : coche la quête correspondante (sans effet si le joueur ou la clé est inconnu, ou si la quête est déjà faite)
