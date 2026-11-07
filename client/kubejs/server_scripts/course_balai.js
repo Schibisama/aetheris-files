@@ -116,6 +116,7 @@ function crArrivee(sv, p, c) {
   delete CR_COUREURS[u]
   try { ftbFait(p, c.mode === 'groupe' ? 'course_groupe' : 'vroom_fini') } catch (eF) {}
   var rec = d.records[u], nouveau = !rec || t < rec.t
+  try { if (t < 1700) ftbFait(p, 'course_rapide'); if (rec && nouveau) ftbFait(p, 'course_record') } catch (eF) {}   // < 1 min 25 s ; record personnel battu
   if (nouveau) { d.records[u] = { nom: nom, t: t }; crSauver(sv) }
   try { sv.runCommandSilent('execute as ' + nom + ' at @s run playsound minecraft:ui.toast.challenge_complete master @s ~ ~ ~ 1 1') } catch (e) {}
   if (c.mode === 'groupe' && CR_GROUPE) {
