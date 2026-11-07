@@ -354,18 +354,22 @@ function desactNettoyerConteneur(event) {
     // Le dernier emplacement appartient toujours à l'inventaire du joueur : sert de repère.
     var repere = menu.getSlot(total - 1)
     var vide = Item.of('minecraft:air')
-    var retires = 0
+    var retires = 0, noms = []
     for (var i = 0; i < total; i++) {
       var slot = menu.getSlot(i)
       if (slot.isSameInventory(repere)) continue
+      // Sécurité : ne JAMAIS toucher à l'inventaire du joueur (ni armure, ni main secondaire), quel que soit le menu (sacs à dos, bijoux, etc.)
+      if (!DESACT_CLASSE_INV_JOUEUR) DESACT_CLASSE_INV_JOUEUR = Java.loadClass('net.minecraft.world.entity.player.Inventory')
+      try { if (slot.container instanceof DESACT_CLASSE_INV_JOUEUR) continue } catch (eI) {}
       var pile = slot.getItem()
       if (!pile || pile.isEmpty()) continue
       var dec = desactFiltrerPile(pile)
       if (dec === undefined) continue
+      noms.push(String(pile.id) + (pile.count > 1 ? ' x' + pile.count : ''))
       slot.set(dec ? dec : vide)
       retires++
     }
-    if (retires > 0) console.info('[classes_desactives] ' + retires + ' objet(s) désactivé(s) retiré(s) d\'un conteneur.')
+    if (retires > 0) console.info('[classes_desactives] ' + retires + ' objet(s) désactivé(s) retiré(s) d\'un conteneur (' + joueur.username + ', ' + String(menu.getClass().getName()) + ') : ' + noms.join(', '))
   } catch (e) {
     console.error('[classes_desactives] Conteneur : ' + e)
   }
@@ -385,6 +389,7 @@ try {
 // Tout objet désactivé qui apparaît au sol sans avoir été lancé par un joueur est supprimé.
 // (Les objets lâchés par un joueur, eux, ne sont pas touchés.)
 var DESACT_CLASSE_OBJET_SOL = null
+var DESACT_CLASSE_INV_JOUEUR = null
 
 function desactObjetAuSol(event) {
   try {
