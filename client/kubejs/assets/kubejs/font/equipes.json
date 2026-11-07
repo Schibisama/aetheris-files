@@ -3,8 +3,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/etoile.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue100"
    ]
@@ -12,8 +12,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/lune.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue101"
    ]
@@ -21,8 +21,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/soleil.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue102"
    ]
@@ -30,8 +30,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/flamme.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue103"
    ]
@@ -39,8 +39,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/goutte.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue104"
    ]
@@ -48,8 +48,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/feuille.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue105"
    ]
@@ -57,8 +57,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/eclair.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue106"
    ]
@@ -66,8 +66,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/crane.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue107"
    ]
@@ -75,8 +75,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/oeil.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue108"
    ]
@@ -84,8 +84,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/cle.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue109"
    ]
@@ -93,8 +93,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/serpent.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue10a"
    ]
@@ -102,8 +102,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/bouclier.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue10b"
    ]
@@ -111,8 +111,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/couronne.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue10c"
    ]
@@ -120,8 +120,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/epee.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue10d"
    ]
@@ -129,8 +129,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/grimoire.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue10e"
    ]
@@ -138,8 +138,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/baguette.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue10f"
    ]
@@ -147,8 +147,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/cristal.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue110"
    ]
@@ -156,8 +156,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/flocon.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue111"
    ]
@@ -165,8 +165,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/sablier.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue112"
    ]
@@ -174,8 +174,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/rune.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue113"
    ]
@@ -183,8 +183,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/chapeau.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue114"
    ]
@@ -192,8 +192,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/planete.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue115"
    ]
@@ -201,8 +201,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/note.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue116"
    ]
@@ -210,8 +210,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/vent.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue117"
    ]
@@ -219,8 +219,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/engrenage.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue118"
    ]
@@ -228,8 +228,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/fiole.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue119"
    ]
@@ -237,8 +237,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/hibou.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue11a"
    ]
@@ -246,8 +246,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/sang.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue11b"
    ]
@@ -255,8 +255,8 @@
   {
    "type": "bitmap",
    "file": "kubejs:font/equipes/montagne.png",
-   "ascent": 7,
-   "height": 8,
+   "ascent": 8,
+   "height": 9,
    "chars": [
     "\ue11c"
    ]
