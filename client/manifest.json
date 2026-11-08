@@ -1,5 +1,5 @@
 {
- "version": "2026-11-07T17:42:43.726Z",
+ "version": "2026-11-08T00:16:01.123Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6457,8 +6457,8 @@
   },
   {
    "path": "kubejs/server_scripts/livraison_quetes.js",
-   "sha1": "1b8d4fa3f753730e9051125792f73e492c95d72c",
-   "size": 35565
+   "sha1": "12801d67f99830e486fd341d9206685b2ea46ba9",
+   "size": 37497
   },
   {
    "path": "kubejs/server_scripts/livres_aetheris.js",

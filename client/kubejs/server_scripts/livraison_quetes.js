@@ -238,6 +238,44 @@ function lvChoisir(server, joueur, q, option) {
   return 1
 }
 
+// Position du PNJ qui donne la quête : retenue quand le PNJ lance une commande (clic sur son bouton), sinon cherchée parmi les PNJ chargés.
+function lvMemoriser(source, q) {
+  try {
+    var e = source.entity
+    if (!e || String(e.type).indexOf('easy_npc:') !== 0) return
+    source.server.persistentData.putString('lv_pos_' + q.pnj, Math.floor(e.x) + ',' + Math.floor(e.y) + ',' + Math.floor(e.z) + ',' + String(e.level.dimension))
+  } catch (eM) {}
+}
+function lvPosition(server, q) {
+  var cle = 'lv_pos_' + q.pnj
+  var m = ''
+  try { m = String(server.persistentData.getString(cle)) } catch (e0) {}
+  if (!m) {
+    try {
+      var niveaux = server.levels.iterator()
+      while (niveaux.hasNext() && !m) {
+        var niv = niveaux.next()
+        var it = niv.getAllEntities().iterator()
+        while (it.hasNext()) {
+          var e = it.next()
+          if (String(e.type).indexOf('easy_npc:') !== 0) continue
+          var nom = ''
+          try { nom = String(e.name.string).toLowerCase() } catch (e1) {}
+          if (nom.indexOf(String(q.pnj).toLowerCase()) < 0) continue
+          m = Math.floor(e.x) + ',' + Math.floor(e.y) + ',' + Math.floor(e.z) + ',' + String(niv.dimension)
+          server.persistentData.putString(cle, m)
+          break
+        }
+      }
+    } catch (e2) {}
+  }
+  if (!m) return null
+  var p = m.split(',')
+  var dim = p[3] || 'minecraft:overworld'
+  var noms = { 'minecraft:overworld': 'Overworld', 'minecraft:the_nether': 'Nether', 'minecraft:the_end': 'End' }
+  return 'X ' + p[0] + '  Y ' + p[1] + '  Z ' + p[2] + (dim === 'minecraft:overworld' ? '' : ' (' + (noms[dim] || dim) + ')')
+}
+
 // /livraison info : quêtes acceptées (état 1) ou en attente de choix (état 2), avec l'avancement dans le sac.
 function lvInfo(demandeur, cible) {
   if (!demandeur || !cible) return 0
@@ -249,15 +287,18 @@ function lvInfo(demandeur, cible) {
     if (etat !== 1 && etat !== 2) continue
     if (lignes === 0) demandeur.tell(Text.gold('Quêtes de livraison en cours' + (cible === demandeur ? '' : ' (' + cible.username + ')') + ' :'))
     lignes++
+    var pos = null
+    try { pos = lvPosition(demandeur.server, q) } catch (eP) {}
+    var lieu = pos ? Text.aqua('  → ' + pos) : Text.darkGray('  → position inconnue (reparle au PNJ)')
     var objet = String(q.objet)
     try { objet = String(Item.of(q.objet).hoverName.string) } catch (e) {}
     if (etat === 2) {
-      demandeur.tell(Text.yellow('• ' + q.pnj + ' : ').append(Text.gray('objets remis, il reste à choisir ta récompense.')))
+      demandeur.tell(Text.yellow('• ' + q.pnj + ' : ').append(Text.gray('objets remis, il reste à choisir ta récompense.')).append(lieu))
     } else {
       var a = 0
       try { a = Number(cible.inventory.count(q.objet)) } catch (e2) {}
       var ok = a >= q.nombre
-      demandeur.tell(Text.yellow('• ' + q.pnj + ' : ').append(Text.white(q.nombre + ' × ' + objet)).append((ok ? Text.green : Text.gray)(' (dans ton sac : ' + a + '/' + q.nombre + ')')))
+      demandeur.tell(Text.yellow('• ' + q.pnj + ' : ').append(Text.white(q.nombre + ' × ' + objet)).append((ok ? Text.green : Text.gray)(' (dans ton sac : ' + a + '/' + q.nombre + ')')).append(lieu))
     }
   }
   if (lignes === 0) demandeur.tell(Text.gray('Aucune quête de livraison en cours.'))
@@ -280,9 +321,9 @@ ServerEvents.commandRegistry(function (event) {
     ;(function (n) {
       var q = LIVRAISONS[n]
       accepter = accepter.then(Commands.literal(n).then(Commands.argument('joueur', Arguments.PLAYER.create(event))
-        .executes(function (ctx) { return lvAccepter(Arguments.PLAYER.getResult(ctx, 'joueur'), q) })))
+        .executes(function (ctx) { lvMemoriser(ctx.source, q); return lvAccepter(Arguments.PLAYER.getResult(ctx, 'joueur'), q) })))
       rendre = rendre.then(Commands.literal(n).then(Commands.argument('joueur', Arguments.PLAYER.create(event))
-        .executes(function (ctx) { return lvRendre(ctx.source.server, Arguments.PLAYER.getResult(ctx, 'joueur'), q) })))
+        .executes(function (ctx) { lvMemoriser(ctx.source, q); return lvRendre(ctx.source.server, Arguments.PLAYER.getResult(ctx, 'joueur'), q) })))
       reset = reset.then(Commands.literal(n).then(Commands.argument('joueur', Arguments.PLAYER.create(event))
         .executes(function (ctx) { Arguments.PLAYER.getResult(ctx, 'joueur').persistentData.putInt(q.cle, 0); return 1 })))
       if (q.choix) {
@@ -290,7 +331,7 @@ ServerEvents.commandRegistry(function (event) {
         for (var opt in q.choix) {
           ;(function (o) {
             noeud = noeud.then(Commands.literal(o).then(Commands.argument('joueur', Arguments.PLAYER.create(event))
-              .executes(function (ctx) { return lvChoisir(ctx.source.server, Arguments.PLAYER.getResult(ctx, 'joueur'), q, o) })))
+              .executes(function (ctx) { lvMemoriser(ctx.source, q); return lvChoisir(ctx.source.server, Arguments.PLAYER.getResult(ctx, 'joueur'), q, o) })))
           })(opt)
         }
         choix = choix.then(noeud)
