@@ -93,7 +93,7 @@ function auditerClasses() {
 try {
   ClientEvents.loggedIn(function (event) {
     MONDE_PRET = true
-    rechargeDans = 100
+    rechargeDans = 2   // quasi immédiat : le rechargement se fait pendant l'écran de chargement du monde (le rechargement d'avant, 5 s plus tard, se voyait en jeu)
   })
 } catch (e) { console.error('[classes_langue] loggedIn indisponible : ' + e) }
 try {
