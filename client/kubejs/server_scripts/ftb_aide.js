@@ -14,17 +14,17 @@ function ftbObjet(file, idHex) {
 var FTB_EPREUVES = {
   vroom_defi: '71073031615B7D58',
   vroom_fini: '08C3BAB2CEC79213',
-  course_groupe: 'BB516E65265EDE5B',
+  course_groupe: '3B516E65265EDE5B',
   equipe: '4FF51C699BA759FC',
-  duel_gagne: 'FCA34FC83E6CAABC',
-  equipe_points: 'B022777F37B1584A',
-  parchemin: 'FCA07F5D1244E52A',
+  duel_gagne: '7CA34FC83E6CAABC',
+  equipe_points: '3022777F37B1584A',
+  parchemin: '7CA07F5D1244E52A',
   etoile: '4FB9581E8EA1269F',
   destin: '2682F634108B9A50',
   nether: '668F3EAF369511C4',
   purge: '4867D999133483CC',
-  course_rapide: 'CC88675BDC65A959',
-  boss: 'C98C76C2FC4CD776'
+  boss: '498C76C2FC4CD776',
+  course_rapide: '4C88675BDC65A959'
 }
 // ftbFait(joueur, cle) : coche la quête correspondante (sans effet si le joueur ou la clé est inconnu, ou si la quête est déjà faite)
 function ftbFait(joueur, cle) {
