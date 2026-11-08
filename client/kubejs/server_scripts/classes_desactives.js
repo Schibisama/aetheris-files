@@ -515,3 +515,31 @@ ServerEvents.tick(perfWrap('classes_desactives:415', function (ev) {
     }
   } catch (e) {}
 }))
+
+// ───────────── Parade (Sword Blocking Mechanics) pour toutes les armes ─────────────
+// Le mod ne laisse parer qu'avec le tag #minecraft:swords. On y ajoute toutes les épées de mods (classe Java SwordItem :
+// Simply Swords, Hazen, bâtons et sceptres d'Iron's Spells, etc.) et, par le nom, les autres formes : chakrams, dagues, faux, bâtons, sceptres, baguettes...
+// Pour retirer une arme de la parade : la retirer du tag swordblockingmechanics:can_perform_sword_blocking (ou ajouter son id à PARADE_EXCLUS).
+var PARADE_EXCLUS = []
+var PARADE_NOMS = /^(?!minecraft:|farmersdelight:|mcwfences:|refurbished_furniture:)[a-z0-9_.-]+:[a-z0-9_\/.-]*(sword|blade|saber|sabre|rapier|katana|cleaver|claymore|scimitar|cutlass|dagger|chakram|glaive|scythe|sickle|twinblade|knife|staff|scepter|sceptre|wand)(_throwing)?$/
+ServerEvents.tags('item', function (event) {
+  try {
+    var SwordItemJ = Java.loadClass('net.minecraft.world.item.SwordItem')
+    var liste = Item.getList().iterator()
+    var n = 0
+    while (liste.hasNext()) {
+      var pile = liste.next()
+      var id = String(pile.id)
+      if (id.indexOf('minecraft:') === 0 || PARADE_EXCLUS.indexOf(id) !== -1) continue
+      var ok = false
+      try { ok = SwordItemJ.isInstance(pile.item) } catch (e1) {}
+      if (!ok) ok = PARADE_NOMS.test(id)
+      if (!ok) continue
+      event.add('swordblockingmechanics:can_perform_sword_blocking', id)
+      n++
+    }
+    console.info('[classes_desactives] Parade : ' + n + ' armes de mods ajoutées au tag de la parade.')
+  } catch (e) {
+    console.error('[classes_desactives] Parade : ' + e)
+  }
+})
