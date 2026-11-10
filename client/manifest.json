@@ -1,5 +1,5 @@
 {
- "version": "2026-11-10T13:28:37.227Z",
+ "version": "2026-11-10T13:33:20.250Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -216,34 +216,29 @@
    "size": 50062
   },
   {
-   "path": "kubejs/assets/apprenticecodex/geo/magi_agent_suit.geo.json",
-   "sha1": "94aef9ca7b954af60ccfd43c258b579658b4cbe2",
-   "size": 10386
-  },
-  {
    "path": "kubejs/assets/apprenticecodex/textures/geo/magi_agent_suit.png",
-   "sha1": "3f09d667f7d36b2d4f42a00a71d9143f5e436a36",
-   "size": 5170
+   "sha1": "a1e9f8de4ec1049df2b88e22fc1c7ebb697b69c4",
+   "size": 5598
   },
   {
    "path": "kubejs/assets/apprenticecodex/textures/item/magi_agent_suit_boots.png",
-   "sha1": "65501824d0a4c31a65c7120a86847106132f35c8",
-   "size": 494
+   "sha1": "4c72831e00f0cd8ddfe0c331085ccf44725b18e0",
+   "size": 488
   },
   {
    "path": "kubejs/assets/apprenticecodex/textures/item/magi_agent_suit_coat.png",
-   "sha1": "460198b1f5f597b2b272827a221efbd6c5b25941",
-   "size": 559
+   "sha1": "28f3c9c30c9011ec767989c5033c99423e3f17c3",
+   "size": 561
   },
   {
    "path": "kubejs/assets/apprenticecodex/textures/item/magi_agent_suit_hood.png",
-   "sha1": "5264c4e9363310978bda26291ad3d306fd7fe998",
-   "size": 436
+   "sha1": "398825193394e5756efec5fb7d9275874001ad4a",
+   "size": 451
   },
   {
    "path": "kubejs/assets/apprenticecodex/textures/item/magi_agent_suit_leggings.png",
-   "sha1": "bca9bde87021e971611fc1369202952a30bc2f54",
-   "size": 327
+   "sha1": "52c893672d3a7ccf7c9e3e6bc419304216883ec6",
+   "size": 328
   },
   {
    "path": "kubejs/assets/hazennstuff/geo/armor/pyrium_battlemage_armor.geo.json",
