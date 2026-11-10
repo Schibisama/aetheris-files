@@ -6,7 +6,7 @@ var RESTRICTIONS = [
   { regle: /^minecraft:elytra$/, classes: [] },
   // ═══════════ RÈGLES PERSONNALISÉES (prioritaires : la première règle qui correspond l'emporte) ═══════════
   // ── Désactivés (aucune classe) ──
-  // Chronomancien : tenue de base (Magi-Agent) et son amélioration, la tenue du Chronomancien (mod aetheris_armures)
+  // Chronomancien : tenue de base Élève du Temps (Magi-Agent) et son amélioration, le Maître du Temps (mod aetheris_armures)
   { regle: /^(apprenticecodex:magi_agent_suit_(hood|coat|leggings|boots)|aetheris_armures:chronomancien_(helmet|chestplate|leggings|boots))$/, classes: ['Chronomancien'] },
   { regle: /^apprenticecodex:(.*_spellcaster_gun|focus_staffbow|multipurpose_staffrifle|fullauto_rapidcast_spellrifle|.*_swingcast_staff|revolvercast_staff|scrollcaster_gauntlet|circuit_heat_staff|charged_twin_blade_staff)$/, classes: [] },
   { regle: /^cataclysm_spellbooks:(excelsius_.*|cursium_mage_.*|ignis_.*|hellfire_forge)$/, classes: [] },

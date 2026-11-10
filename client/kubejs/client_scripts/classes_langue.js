@@ -39,6 +39,14 @@ function corrigerClasse(ns, cle, valeur) {
   } catch (e) { return valeur }
 }
 
+// Chronomancien : la tenue Magi-Agent devient l'Élève du Temps
+var NOMS_OBJETS = {
+  'item.apprenticecodex.magi_agent_suit_hood': "Capuche de l'Élève du Temps",
+  'item.apprenticecodex.magi_agent_suit_coat': "Manteau de l'Élève du Temps",
+  'item.apprenticecodex.magi_agent_suit_leggings': "Jambières de l'Élève du Temps",
+  'item.apprenticecodex.magi_agent_suit_boots': "Bottes de l'Élève du Temps"
+}
+
 function ajouterTextes(langue) {
   var event_ = null
   ClientEvents.lang(langue, function (event) {
@@ -53,6 +61,8 @@ function ajouterTextes(langue) {
         n++
       }
     }
+    // Noms d'objets renommés pour le RP (mêmes noms en français et en anglais)
+    for (var cleNom in NOMS_OBJETS) { event.add(cleNom.split('.')[1], cleNom, NOMS_OBJETS[cleNom]); n++ }
     console.info('[classes_langue] ' + langue + ' : ' + n + ' textes ajoutés.')
   })
 }

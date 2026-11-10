@@ -1,5 +1,5 @@
 {
- "version": "2026-11-10T14:08:54.743Z",
+ "version": "2026-11-10T14:17:57.611Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6277,13 +6277,13 @@
   },
   {
    "path": "kubejs/client_scripts/classes_langue.js",
-   "sha1": "a87a9c5145a68b921623af447a8c3a634100a2be",
-   "size": 486879
+   "sha1": "5f55d7930454fd93e167d0252ad771a48c3cae67",
+   "size": 487483
   },
   {
    "path": "kubejs/client_scripts/classes_tooltips.js",
-   "sha1": "74c66100c0545be2b148edf8cfe2a1dd3a17f6f3",
-   "size": 93776
+   "sha1": "2e8537f792334a1c6bbe1de0e37294f6a8505900",
+   "size": 93787
   },
   {
    "path": "kubejs/client_scripts/main.js",
@@ -6387,8 +6387,8 @@
   },
   {
    "path": "kubejs/server_scripts/armures_butin.js",
-   "sha1": "9bd40e4ced9ceb3d7af1e40087a8f2383b550ef8",
-   "size": 24921
+   "sha1": "dc30b6becf0b44f2c21243f9272e4864eec2f1db",
+   "size": 25086
   },
   {
    "path": "kubejs/server_scripts/baton_neant.js",
@@ -6412,8 +6412,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_desactives.js",
-   "sha1": "19f9389da49f99d9b05779823f7cd80a62162754",
-   "size": 58445
+   "sha1": "3600bf973948526c54506b6465c845925e20b24e",
+   "size": 60694
   },
   {
    "path": "kubejs/server_scripts/classes_dump_armes.js",
@@ -6427,8 +6427,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "7a6ea361fa34135cf811204761e1d420c06dd9e9",
-   "size": 174478
+   "sha1": "1192adc23922a58f60acb3e153c1113567318f3b",
+   "size": 179179
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -6442,13 +6442,13 @@
   },
   {
    "path": "kubejs/server_scripts/colisee_duel.js",
-   "sha1": "95351fba6dfde33f8fc5f44497a3b58c0d7cea2c",
-   "size": 18815
+   "sha1": "3856e7b0b6ddc61a9c256b8630bb5b4a3a38f2ab",
+   "size": 29203
   },
   {
    "path": "kubejs/server_scripts/course_balai.js",
-   "sha1": "1e3bbbfc7315eb5942cbf3040ef0f4a72ff8d3c7",
-   "size": 35511
+   "sha1": "41f8e6b39b00f976296d9513cde5a9a1fffe6282",
+   "size": 38184
   },
   {
    "path": "kubejs/server_scripts/decouverte_lieux.js",
@@ -6462,18 +6462,18 @@
   },
   {
    "path": "kubejs/server_scripts/envouteur_nerf.js",
-   "sha1": "899fcabd4edf209ec6e672f0112774ae04c6b187",
-   "size": 5322
+   "sha1": "79effc8fe220c2afb2f0cad084a761933901bba3",
+   "size": 6888
   },
   {
    "path": "kubejs/server_scripts/equipes.js",
-   "sha1": "11eb4467050d43d470bb4cc79342b3495a45d9aa",
-   "size": 48799
+   "sha1": "b0c38bad9547e863807a1b2847dba24cc3818d0f",
+   "size": 66836
   },
   {
    "path": "kubejs/server_scripts/ftb_aide.js",
-   "sha1": "a3d21a0a673d5e353e72b854e276260917f7ca54",
-   "size": 3037
+   "sha1": "d4efc3e9b62cb1e1982ffe3bcbdb6d1f92de72b0",
+   "size": 4023
   },
   {
    "path": "kubejs/server_scripts/furniture_ops.js",
@@ -6492,8 +6492,8 @@
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
-   "sha1": "a7c0c25cb624a883267133cbaeb8569a69470ab6",
-   "size": 26407
+   "sha1": "4b36e6ddf0cd1ad11f81c6e709dba7124d7de005",
+   "size": 28677
   },
   {
    "path": "kubejs/server_scripts/parchemins_coffres.js",
@@ -6572,8 +6572,8 @@
   },
   {
    "path": "kubejs/startup_scripts/classes_equip_ecoles.js",
-   "sha1": "f577f0b51660ddd733f0af70d2b859db3140f81e",
-   "size": 45591
+   "sha1": "c3082c1029e05cdc50fb1513b6e80f5b472fca1b",
+   "size": 47087
   },
   {
    "path": "kubejs/startup_scripts/classes_niveaux.js",
@@ -6607,8 +6607,8 @@
   },
   {
    "path": "mods/aetheris_armures-neoforge-1.21.1-1.0.0.jar",
-   "sha1": "724f255792eba2f27674f3258abff7e14d964776",
-   "size": 39832
+   "sha1": "0adf2872dbe42a8114e4848bbacdbbe1d718d0cc",
+   "size": 40916
   },
   {
    "path": "mods/aetheris_balai-neoforge-1.21.1-1.4.0.jar",

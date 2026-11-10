@@ -40,7 +40,7 @@ var RESTRICTIONS = [
   { regle: /^minecraft:elytra$/, classes: [] },
   // ═══════════ RÈGLES PERSONNALISÉES (prioritaires : la première règle qui correspond l'emporte) ═══════════
   // ── Désactivés (aucune classe) ──
-  // Chronomancien : tenue de base (Magi-Agent) et son amélioration, la tenue du Chronomancien (mod aetheris_armures)
+  // Chronomancien : tenue de base Élève du Temps (Magi-Agent) et son amélioration, le Maître du Temps (mod aetheris_armures)
   { regle: /^(apprenticecodex:magi_agent_suit_(hood|coat|leggings|boots)|aetheris_armures:chronomancien_(helmet|chestplate|leggings|boots))$/, classes: ['Chronomancien'] },
   { regle: /^apprenticecodex:(.*_spellcaster_gun|focus_staffbow|multipurpose_staffrifle|fullauto_rapidcast_spellrifle|.*_swingcast_staff|revolvercast_staff|scrollcaster_gauntlet|circuit_heat_staff|charged_twin_blade_staff)$/, classes: [] },
   { regle: /^cataclysm_spellbooks:(excelsius_.*|cursium_mage_.*|ignis_.*|hellfire_forge)$/, classes: [] },
@@ -296,6 +296,29 @@ var EQ_LIBRES = ['irons_spellbooks:eldritch', 'aces_spell_utils:ritual', 'crysta
 var EQ_REGEX_GRIMOIRE = /(spell_?book|grimoire|_book$|^book_|tome|codex|palette|journal|necronomicon|bible)/
 var EQ_SUFFIXES = ['_spell_power', '_magic_resist']
 
+// Bonus ajoutés à certains objets (en plus de leurs bonus d'origine), par pièce portée.
+// Élève du Temps (tenue Magi-Agent) : +5 % de puissance de chronomancie par pièce (le Maître du Temps, son amélioration, a +10 %).
+var EQ_BONUS_AJOUTES = {
+  'apprenticecodex:magi_agent_suit_hood': [['chronomancy:chronomancy_spell_power', 0.05, 'ADD_MULTIPLIED_BASE']],
+  'apprenticecodex:magi_agent_suit_coat': [['chronomancy:chronomancy_spell_power', 0.05, 'ADD_MULTIPLIED_BASE']],
+  'apprenticecodex:magi_agent_suit_leggings': [['chronomancy:chronomancy_spell_power', 0.05, 'ADD_MULTIPLIED_BASE']],
+  'apprenticecodex:magi_agent_suit_boots': [['chronomancy:chronomancy_spell_power', 0.05, 'ADD_MULTIPLIED_BASE']]
+}
+function eqBonusAjoutes(event, pile, id) {
+  var liste = EQ_BONUS_AJOUTES[id]
+  if (!liste) return
+  if (!EQ.SlotGroup) {
+    EQ.SlotGroup = Java.loadClass('net.minecraft.world.entity.EquipmentSlotGroup')
+    EQ.Op = Java.loadClass('net.minecraft.world.entity.ai.attributes.AttributeModifier$Operation')
+  }
+  var groupe = EQ.SlotGroup.bySlot(pile.getItem().getEquipmentSlot())
+  for (var i = 0; i < liste.length; i++) {
+    var h = eqHolder(liste[i][0])
+    if (!h) continue
+    event.addModifier(h, new EQ.Modif(EQ.RL.parse('classes_rp:bonus_' + id.replace(':', '_') + '_' + i), liste[i][1], EQ.Op.valueOf(liste[i][2])), groupe)
+  }
+}
+
 var EQ = {}
 function eqInit() {
   var reg = Java.loadClass('net.minecraft.core.registries.BuiltInRegistries')
@@ -418,6 +441,7 @@ function eqTraiter(event) {
   if (!EQ.scanFait) { eqScannerEcoles(); if (!EQ.scanFait) return }
   var pile = event.getItemStack()
   var id = String(EQ.itemReg.getKey(pile.getItem()))
+  try { eqBonusAjoutes(event, pile, id) } catch (eb) { console.error('[classes_equip_ecoles] bonus ajouté ' + id + ' : ' + eb) }
   var classes = eqClassesDe(id)
   if (!classes) return
 
