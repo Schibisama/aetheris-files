@@ -1,5 +1,5 @@
 {
- "version": "2026-11-10T19:43:09.099Z",
+ "version": "2026-11-10T19:43:42.029Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6392,8 +6392,8 @@
   },
   {
    "path": "kubejs/server_scripts/armures_butin.js",
-   "sha1": "dc30b6becf0b44f2c21243f9272e4864eec2f1db",
-   "size": 25086
+   "sha1": "9bd40e4ced9ceb3d7af1e40087a8f2383b550ef8",
+   "size": 24921
   },
   {
    "path": "kubejs/server_scripts/baton_neant.js",
@@ -6402,8 +6402,8 @@
   },
   {
    "path": "kubejs/server_scripts/boss_zones.js",
-   "sha1": "a4d68d779d7bb0785ec4a87e9fac3258b7c37aae",
-   "size": 50479
+   "sha1": "acf49a06bb7c96043e5b8c72c49159d4aea23d18",
+   "size": 50300
   },
   {
    "path": "kubejs/server_scripts/chasse_quetes.js",
@@ -6417,8 +6417,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_desactives.js",
-   "sha1": "3600bf973948526c54506b6465c845925e20b24e",
-   "size": 60694
+   "sha1": "19f9389da49f99d9b05779823f7cd80a62162754",
+   "size": 58445
   },
   {
    "path": "kubejs/server_scripts/classes_dump_armes.js",
@@ -6432,8 +6432,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "1192adc23922a58f60acb3e153c1113567318f3b",
-   "size": 179179
+   "sha1": "7a6ea361fa34135cf811204761e1d420c06dd9e9",
+   "size": 174478
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -6447,13 +6447,13 @@
   },
   {
    "path": "kubejs/server_scripts/colisee_duel.js",
-   "sha1": "3856e7b0b6ddc61a9c256b8630bb5b4a3a38f2ab",
-   "size": 29203
+   "sha1": "95351fba6dfde33f8fc5f44497a3b58c0d7cea2c",
+   "size": 18815
   },
   {
    "path": "kubejs/server_scripts/course_balai.js",
-   "sha1": "41f8e6b39b00f976296d9513cde5a9a1fffe6282",
-   "size": 38184
+   "sha1": "1e3bbbfc7315eb5942cbf3040ef0f4a72ff8d3c7",
+   "size": 35511
   },
   {
    "path": "kubejs/server_scripts/decouverte_lieux.js",
@@ -6467,18 +6467,18 @@
   },
   {
    "path": "kubejs/server_scripts/envouteur_nerf.js",
-   "sha1": "79effc8fe220c2afb2f0cad084a761933901bba3",
-   "size": 6888
+   "sha1": "899fcabd4edf209ec6e672f0112774ae04c6b187",
+   "size": 5322
   },
   {
    "path": "kubejs/server_scripts/equipes.js",
-   "sha1": "b0c38bad9547e863807a1b2847dba24cc3818d0f",
-   "size": 66836
+   "sha1": "11eb4467050d43d470bb4cc79342b3495a45d9aa",
+   "size": 48799
   },
   {
    "path": "kubejs/server_scripts/ftb_aide.js",
-   "sha1": "d4efc3e9b62cb1e1982ffe3bcbdb6d1f92de72b0",
-   "size": 4023
+   "sha1": "a3d21a0a673d5e353e72b854e276260917f7ca54",
+   "size": 3037
   },
   {
    "path": "kubejs/server_scripts/furniture_ops.js",
@@ -6497,8 +6497,8 @@
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
-   "sha1": "4b36e6ddf0cd1ad11f81c6e709dba7124d7de005",
-   "size": 28677
+   "sha1": "a7c0c25cb624a883267133cbaeb8569a69470ab6",
+   "size": 26407
   },
   {
    "path": "kubejs/server_scripts/parchemins_coffres.js",
