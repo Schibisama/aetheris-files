@@ -6,7 +6,9 @@ var RESTRICTIONS = [
   { regle: /^minecraft:elytra$/, classes: [] },
   // ═══════════ RÈGLES PERSONNALISÉES (prioritaires : la première règle qui correspond l'emporte) ═══════════
   // ── Désactivés (aucune classe) ──
-  { regle: /^apprenticecodex:(.*_spellcaster_gun|focus_staffbow|multipurpose_staffrifle|fullauto_rapidcast_spellrifle|.*_swingcast_staff|revolvercast_staff|scrollcaster_gauntlet|circuit_heat_staff|charged_twin_blade_staff|magi_agent_suit_.*)$/, classes: [] },
+  // Chronomancien : tenue de base (mod aetheris_armures) et son amélioration, la tenue Magi-Agent
+  { regle: /^(apprenticecodex:magi_agent_suit_(hood|coat|leggings|boots)|aetheris_armures:chronomancien_(helmet|chestplate|leggings|boots))$/, classes: ['Chronomancien'] },
+  { regle: /^apprenticecodex:(.*_spellcaster_gun|focus_staffbow|multipurpose_staffrifle|fullauto_rapidcast_spellrifle|.*_swingcast_staff|revolvercast_staff|scrollcaster_gauntlet|circuit_heat_staff|charged_twin_blade_staff)$/, classes: [] },
   { regle: /^cataclysm_spellbooks:(excelsius_.*|cursium_mage_.*|ignis_.*|hellfire_forge)$/, classes: [] },
   { regle: /^somakespells:forbidden_hammer$/, classes: [] },
   { regle: /^iss_magicfromtheeast:repeating_crossbow$/, classes: [] },

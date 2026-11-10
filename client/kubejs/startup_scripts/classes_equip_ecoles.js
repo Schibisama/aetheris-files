@@ -40,13 +40,18 @@ var RESTRICTIONS = [
   { regle: /^minecraft:elytra$/, classes: [] },
   // ═══════════ RÈGLES PERSONNALISÉES (prioritaires : la première règle qui correspond l'emporte) ═══════════
   // ── Désactivés (aucune classe) ──
-  { regle: /^apprenticecodex:(.*_spellcaster_gun|focus_staffbow|multipurpose_staffrifle|fullauto_rapidcast_spellrifle|.*_swingcast_staff|revolvercast_staff|scrollcaster_gauntlet|circuit_heat_staff|charged_twin_blade_staff|magi_agent_suit_.*)$/, classes: [] },
+  // Chronomancien : tenue de base (mod aetheris_armures) et son amélioration, la tenue Magi-Agent
+  { regle: /^(apprenticecodex:magi_agent_suit_(hood|coat|leggings|boots)|aetheris_armures:chronomancien_(helmet|chestplate|leggings|boots))$/, classes: ['Chronomancien'] },
+  { regle: /^apprenticecodex:(.*_spellcaster_gun|focus_staffbow|multipurpose_staffrifle|fullauto_rapidcast_spellrifle|.*_swingcast_staff|revolvercast_staff|scrollcaster_gauntlet|circuit_heat_staff|charged_twin_blade_staff)$/, classes: [] },
   { regle: /^cataclysm_spellbooks:(excelsius_.*|cursium_mage_.*|ignis_.*|hellfire_forge)$/, classes: [] },
   { regle: /^somakespells:forbidden_hammer$/, classes: [] },
+  { regle: /^born_in_chaos_v1:(wood_splitter_axe|nightmare_claw|sweet_sword|sweet_axe|staff_of_magic_arrows|skullbreaker_hammer|shell_mace|frostbitten_blade|nut_hammer|nightmare_scythe|stop_hammer|staffof_blindness|dark_rod|dark_ritual_dagger|bonescaller_staff|trident_hayfork|great_reaper_axe|carrot_sword|darkwarblade|pumpkinstaffa|sharpened_dark_metal_sword|spider_bite_sword|spiritual_sword|soul_cutlass|soulbane|intoxicating_dagger|pumpkinhandgun|(dark_metal_armor|nightmare_mantleofthe_night|spiny_shell_armor)_(helmet|chestplate|leggings|boots)|damned_demomans_hat_helmet|killer_rabbit_ears_helmet|lord_pumpkinheads_hat_helmet|missionary_hat_helmet|spiritual_guide_sombrero_helmet)$/, classes: [] },   // Born in Chaos : armes et armures désactivées
+  { regle: /^mowziesmobs:ice_crystal$/, classes: [] },   // Cristal de glace de Mowzie's Mobs : désactivé
   { regle: /^iss_magicfromtheeast:repeating_crossbow$/, classes: [] },
   // ── Legendary Monsters : seuls le Marteau moussu et le Plastron moussu sont gardés (Druide, Géomancien) ; le reste des armes et armures est désactivé ──
   { regle: /^legendary_monsters:(mossy_hammer|mossy_chestplate)$/, classes: ['Druide', 'Géomancien'] },
   { regle: /^(legendary_monsters:sickle_of_harvest)$/, classes: ['Géomancien'] },
+  { regle: /^tunes_n_tomes:(bard_(harp|helmet|chestplate|leggings|boots)|melodic_mastery_(helmet|chestplate|leggings|boots)|affinity_ring_melody)$/, classes: ['Barde'] },
   { regle: /^legendary_monsters:(sharp_battle_axe|spiky_shield|spiky_spear|chorus_blade|chorus_mask|chorus_cannon|shulker_shield|shulker_helmet|the_great_frost|dinosaur_bone_shield|dinosaur_bone_club|dinosaur_bone_helmet|frostbitten_shield|fiery_jaw|fiery_boots|void_sword|ender_hammer|withered_scythe|withered_ribcage|wand_of_clouds|sharp_sai|axe_of_lightning|atmospheric_boots|soul_great_sword|golden_halbert|knights_sword|blastproof_helmet|sand_cannon|monstrous_anchor|reinforced_monstrous_anchor|atom_splitter|the_tesseract|buckler_of_annihilation|resurrected_javelin|shattered_greatsword|hand_cannon|swinging_axe|sapphire_helmet|bronzite_sword|bronzite_axe|enderitium_(sword|axe|sickle)|annihilator_(helmet|chestplate|leggings|boots))$/, classes: [] },
   // ── Bosses'Rise (block_factorys_bosses) : armes et armures désactivées ──
   { regle: /^block_factorys_bosses:(dragon_bones_(boots|chestplate|leggings)|dragon_guard_shield|enhanced_shield|ice_gauntlet|knight_(helmet|chestplate|leggings|boots|sword)|kraken_trident|kraken_cannon_item|large_sword|pirate_saber|sandworm_gauntlet|warrior_sword|dagger)$/, classes: [] },
@@ -60,8 +65,6 @@ var RESTRICTIONS = [
   { regle: /^irons_spellbooks:twilight_gale$/, classes: ['Électro-Sorcier', 'Aéromancien'] },
   // ── Wind Spellbooks ──
   { regle: /^wind_spellbooks:(aeromancer_(helmet|chestplate|leggings|boots)|wind_staff)$/, classes: ['Aéromancien'] },
-  // ── Tunes 'n Tomes ──
-  { regle: /^tunes_n_tomes:(bard_(harp|helmet|chestplate|leggings|boots)|melodic_mastery_(helmet|chestplate|leggings|boots)|affinity_ring_melody)$/, classes: ['Barde'] },
   // ── Cursed School / Curse Spells ──
   { regle: /^cursed_school:margin_reaper$/, classes: ['Réprouvé'] },
   // ── Apprentice's Codex ──
@@ -212,6 +215,7 @@ var RESTRICTIONS = [
   { regle: /^crystal_chronicles:evocation_(knight_(helmet|chestplate|leggings|boots)|twinblade)$/,         classes: ['Paladin'] },
   // Set Prismatic + Anneau de Diffraction -> Géomancien
   { regle: /^crystal_chronicles:(prismatic_knight_(helmet|chestplate|leggings|boots)|diffraction_ring)$/,  classes: ['Géomancien'] },
+  { regle: /^crystal_chronicles:diffraction_ring$/,  classes: ['Géomancien'] },
   // Chronomancy : set Clocksmith, 2 épées (Clock Hand, Rift Creator) et artefacts -> Chronomancien
   { regle: /^chronomancy:(clocksmith_(helmet|chestplate|leggings|boots)|clock_hand|rift_creator)$/,         classes: ['Chronomancien'] },
   { regle: /^chronomancy:(geminated_ring|cracked_dial|ring_of_rifts|second_chance_watch|hourglass_of_focus|timeless_seal|rift_heart|clockwork_key|deferred_pendulum)$/, classes: ['Chronomancien'] },
@@ -304,7 +308,13 @@ function eqInit() {
   EQ.cacheEcole = {}
   EQ.nonResolus = {}
   EQ.journal = {}
-  // Toutes les écoles : id d'attribut (sans suffixe) -> true
+  EQ.attributsEcole = {}
+  eqScannerEcoles()
+}
+
+// Toutes les écoles : id d'attribut (sans suffixe) -> true.
+// Au démarrage les registres sont encore vides (0 école) : le scan est refait au premier objet traité, une fois les mods chargés.
+function eqScannerEcoles() {
   EQ.attributsEcole = {}
   var it = EQ.attrReg.keySet().iterator()
   while (it.hasNext()) {
@@ -318,6 +328,12 @@ function eqInit() {
     }
   }
   delete EQ.attributsEcole['irons_spellbooks:']
+  EQ.cacheEcole = {}
+  EQ.cacheAttr = {}
+  if (Object.keys(EQ.attributsEcole).length > 0 && !EQ.scanFait) {
+    EQ.scanFait = true
+    console.info('[classes_equip_ecoles] ' + Object.keys(EQ.attributsEcole).length + ' écoles détectées.')
+  }
 }
 
 // "ns:ecole" (id d'école) -> base d'attribut ("ns:ecole" en général). null si introuvable.
@@ -399,6 +415,7 @@ function eqEstLibre(base) {
 }
 
 function eqTraiter(event) {
+  if (!EQ.scanFait) { eqScannerEcoles(); if (!EQ.scanFait) return }
   var pile = event.getItemStack()
   var id = String(EQ.itemReg.getKey(pile.getItem()))
   var classes = eqClassesDe(id)
