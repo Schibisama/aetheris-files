@@ -304,7 +304,7 @@ var EQ_BONUS_AJOUTES = {
   'apprenticecodex:magi_agent_suit_leggings': [['chronomancy:chronomancy_spell_power', 0.05, 'ADD_MULTIPLIED_BASE']],
   'apprenticecodex:magi_agent_suit_boots': [['chronomancy:chronomancy_spell_power', 0.05, 'ADD_MULTIPLIED_BASE']]
 }
-// Valeurs REMPLACÉES (le bonus d'origine de l'attribut est retiré, puis remplacé par celui-ci), par pièce portée.
+// Valeurs REMPLACÉES (le bonus d'origine de l'attribut est retiré, puis remplacé par celui-ci ; valeur null = retiré seulement), par pièce portée.
 var EQ_BONUS_REMPLACES = {}
 ;(function () {
   var pieces = ['helmet', 'chestplate', 'leggings', 'boots']
@@ -315,6 +315,13 @@ var EQ_BONUS_REMPLACES = {}
     EQ_BONUS_REMPLACES['hazennstuff:ascended_iron431_' + pieces[i]] = iron
     // Clocksmith (Chronomancy) : 125 -> 225 mana, +10 % -> +15 % de puissance de chronomancie
     EQ_BONUS_REMPLACES['chronomancy:clocksmith_' + pieces[i]] = [['irons_spellbooks:max_mana', 225, 'ADD_VALUE'], ['chronomancy:chronomancy_spell_power', 0.15, 'ADD_MULTIPLIED_BASE']]
+    // Prismatic Knight (Crystal Chronicles) : +20 % de puissance des sorts retiré -> +15 % géomancie et +15 % nature (Druide)
+    EQ_BONUS_REMPLACES['crystal_chronicles:prismatic_knight_' + pieces[i]] = [['irons_spellbooks:spell_power', null], ['gtbcs_geomancy_plus:geo_spell_power', 0.15, 'ADD_MULTIPLIED_BASE'], ['irons_spellbooks:nature_spell_power', 0.15, 'ADD_MULTIPLIED_BASE']]
+  }
+  // Géomancien de Mowzie's Mobs (perles, robe, ceinture, sandales) : +250 mana et +20 % de puissance de géomancie par pièce
+  var mowzie = ['beads', 'robe', 'belt', 'sandals']
+  for (var m = 0; m < mowzie.length; m++) {
+    EQ_BONUS_REMPLACES['mowziesmobs:geomancer_' + mowzie[m]] = [['irons_spellbooks:max_mana', 250, 'ADD_VALUE'], ['gtbcs_geomancy_plus:geo_spell_power', 0.20, 'ADD_MULTIPLIED_BASE']]
   }
 })()
 function eqBonusAjoutes(event, pile, id) {
@@ -330,6 +337,7 @@ function eqBonusAjoutes(event, pile, id) {
       var hr = eqHolder(remp[r][0])
       if (!hr) continue
       event.removeAllModifiersFor(hr)
+      if (remp[r][1] === null) continue   // attribut seulement retiré
       event.addModifier(hr, new EQ.Modif(EQ.RL.parse('classes_rp:valeur_' + id.replace(':', '_') + '_' + r), remp[r][1], EQ.Op.valueOf(remp[r][2])), groupe)
     }
   }
