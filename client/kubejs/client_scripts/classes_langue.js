@@ -47,6 +47,11 @@ var NOMS_OBJETS = {
   'item.apprenticecodex.magi_agent_suit_boots': "Bottes de l'Élève du Temps",
   // effets retirés (munitions de la capuche, recharge des bottes) : description remplacée
   'item.apprenticecodex.magi_agent_suit_hood.desc': "Tenue de base du Chronomancien, améliorable en Maître du Temps.",
+  // Prismatic Knight (Crystal Chronicles) : Terrien Originel
+  'item.crystal_chronicles.prismatic_knight_helmet': "Heaume du Terrien Originel",
+  'item.crystal_chronicles.prismatic_knight_chestplate': "Plastron du Terrien Originel",
+  'item.crystal_chronicles.prismatic_knight_leggings': "Jambières du Terrien Originel",
+  'item.crystal_chronicles.prismatic_knight_boots': "Bottes du Terrien Originel",
   'item.apprenticecodex.magi_agent_suit_boots.desc': "Tenue de base du Chronomancien, améliorable en Maître du Temps."
 }
 
