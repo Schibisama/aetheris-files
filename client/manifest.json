@@ -1,5 +1,5 @@
 {
- "version": "2026-11-10T13:26:27.991Z",
+ "version": "2026-11-10T13:28:02.787Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -216,9 +216,14 @@
    "size": 50062
   },
   {
+   "path": "kubejs/assets/apprenticecodex/geo/magi_agent_suit.geo.json",
+   "sha1": "94aef9ca7b954af60ccfd43c258b579658b4cbe2",
+   "size": 10386
+  },
+  {
    "path": "kubejs/assets/apprenticecodex/textures/geo/magi_agent_suit.png",
-   "sha1": "00f12ea17d3554df3be4fc32fdb34f0c6f4b7b32",
-   "size": 5140
+   "sha1": "3f09d667f7d36b2d4f42a00a71d9143f5e436a36",
+   "size": 5170
   },
   {
    "path": "kubejs/assets/apprenticecodex/textures/item/magi_agent_suit_boots.png",
