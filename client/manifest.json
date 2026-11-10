@@ -1,5 +1,5 @@
 {
- "version": "2026-11-10T19:53:57.879Z",
+ "version": "2026-11-10T19:59:00.592Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -244,6 +244,41 @@
    "path": "kubejs/assets/apprenticecodex/textures/item/magi_agent_suit_leggings.png",
    "sha1": "52c893672d3a7ccf7c9e3e6bc419304216883ec6",
    "size": 328
+  },
+  {
+   "path": "kubejs/assets/crystal_chronicles/textures/armor/prismatic_knight_glowmask.png",
+   "sha1": "84ef857f0ab02d7d93508f18e3b0358fafb36c93",
+   "size": 90201
+  },
+  {
+   "path": "kubejs/assets/crystal_chronicles/textures/armor/prismatic_knight.png",
+   "sha1": "0aa97ca4be5450153e2dc2f778e674a8c9dbc712",
+   "size": 224563
+  },
+  {
+   "path": "kubejs/assets/crystal_chronicles/textures/armor/prismatic_knight.png.mcmeta",
+   "sha1": "c0872e2608fdc3019e35eaf9eb7551b7b8876af4",
+   "size": 348
+  },
+  {
+   "path": "kubejs/assets/crystal_chronicles/textures/item/prismatic_knight_boots.png",
+   "sha1": "e354fa1c21934a9033935a9f95e0229ff2a099f5",
+   "size": 453
+  },
+  {
+   "path": "kubejs/assets/crystal_chronicles/textures/item/prismatic_knight_chestplate.png",
+   "sha1": "d118f8aae29eca13e071c1dcd3de4e05ebbb35ef",
+   "size": 628
+  },
+  {
+   "path": "kubejs/assets/crystal_chronicles/textures/item/prismatic_knight_helmet.png",
+   "sha1": "154f974192d9070da1554022c9a9e007ac6b9703",
+   "size": 597
+  },
+  {
+   "path": "kubejs/assets/crystal_chronicles/textures/item/prismatic_knight_leggings.png",
+   "sha1": "c1fb0ad3e7db0e1a148895a549c9f5ce6b0ce3bb",
+   "size": 501
   },
   {
    "path": "kubejs/assets/hazennstuff/geo/armor/pyrium_battlemage_armor.geo.json",
@@ -6392,8 +6427,8 @@
   },
   {
    "path": "kubejs/server_scripts/armures_butin.js",
-   "sha1": "9bd40e4ced9ceb3d7af1e40087a8f2383b550ef8",
-   "size": 24921
+   "sha1": "dc30b6becf0b44f2c21243f9272e4864eec2f1db",
+   "size": 25086
   },
   {
    "path": "kubejs/server_scripts/baton_neant.js",
@@ -6402,8 +6437,8 @@
   },
   {
    "path": "kubejs/server_scripts/boss_zones.js",
-   "sha1": "acf49a06bb7c96043e5b8c72c49159d4aea23d18",
-   "size": 50300
+   "sha1": "a4d68d779d7bb0785ec4a87e9fac3258b7c37aae",
+   "size": 50479
   },
   {
    "path": "kubejs/server_scripts/chasse_quetes.js",
@@ -6417,8 +6452,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_desactives.js",
-   "sha1": "19f9389da49f99d9b05779823f7cd80a62162754",
-   "size": 58445
+   "sha1": "3600bf973948526c54506b6465c845925e20b24e",
+   "size": 60694
   },
   {
    "path": "kubejs/server_scripts/classes_dump_armes.js",
@@ -6432,8 +6467,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "7a6ea361fa34135cf811204761e1d420c06dd9e9",
-   "size": 174478
+   "sha1": "1192adc23922a58f60acb3e153c1113567318f3b",
+   "size": 179179
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -6447,13 +6482,13 @@
   },
   {
    "path": "kubejs/server_scripts/colisee_duel.js",
-   "sha1": "95351fba6dfde33f8fc5f44497a3b58c0d7cea2c",
-   "size": 18815
+   "sha1": "3856e7b0b6ddc61a9c256b8630bb5b4a3a38f2ab",
+   "size": 29203
   },
   {
    "path": "kubejs/server_scripts/course_balai.js",
-   "sha1": "1e3bbbfc7315eb5942cbf3040ef0f4a72ff8d3c7",
-   "size": 35511
+   "sha1": "41f8e6b39b00f976296d9513cde5a9a1fffe6282",
+   "size": 38184
   },
   {
    "path": "kubejs/server_scripts/decouverte_lieux.js",
@@ -6467,18 +6502,18 @@
   },
   {
    "path": "kubejs/server_scripts/envouteur_nerf.js",
-   "sha1": "899fcabd4edf209ec6e672f0112774ae04c6b187",
-   "size": 5322
+   "sha1": "79effc8fe220c2afb2f0cad084a761933901bba3",
+   "size": 6888
   },
   {
    "path": "kubejs/server_scripts/equipes.js",
-   "sha1": "11eb4467050d43d470bb4cc79342b3495a45d9aa",
-   "size": 48799
+   "sha1": "b0c38bad9547e863807a1b2847dba24cc3818d0f",
+   "size": 66836
   },
   {
    "path": "kubejs/server_scripts/ftb_aide.js",
-   "sha1": "a3d21a0a673d5e353e72b854e276260917f7ca54",
-   "size": 3037
+   "sha1": "d4efc3e9b62cb1e1982ffe3bcbdb6d1f92de72b0",
+   "size": 4023
   },
   {
    "path": "kubejs/server_scripts/furniture_ops.js",
@@ -6497,8 +6532,8 @@
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
-   "sha1": "a7c0c25cb624a883267133cbaeb8569a69470ab6",
-   "size": 26407
+   "sha1": "4b36e6ddf0cd1ad11f81c6e709dba7124d7de005",
+   "size": 28677
   },
   {
    "path": "kubejs/server_scripts/parchemins_coffres.js",
