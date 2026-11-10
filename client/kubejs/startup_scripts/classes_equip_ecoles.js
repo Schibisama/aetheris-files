@@ -214,6 +214,8 @@ var RESTRICTIONS = [
   { regle: /^crystal_chronicles:lightning_(knight_(helmet|chestplate|leggings|boots)|bident|staff)$/,      classes: ['Électro-Sorcier', 'Aéromancien'] },
   { regle: /^crystal_chronicles:evocation_(knight_(helmet|chestplate|leggings|boots)|twinblade)$/,         classes: ['Paladin'] },
   // Set Prismatic + Anneau de Diffraction -> Géomancien
+  // Géomancien : tenue de base (mod aetheris_armures), améliorable en Terrien Originel (Prismatic Knight)
+  { regle: /^aetheris_armures:geomancien_(helmet|chestplate|leggings|boots)$/, classes: ['Géomancien'] },
   { regle: /^crystal_chronicles:(prismatic_knight_(helmet|chestplate|leggings|boots)|diffraction_ring)$/,  classes: ['Géomancien'] },
   { regle: /^crystal_chronicles:diffraction_ring$/,  classes: ['Géomancien'] },
   // Chronomancy : set Clocksmith, 2 épées (Clock Hand, Rift Creator) et artefacts -> Chronomancien
