@@ -766,7 +766,7 @@ var CLASSE_DES_SORTS = {
   'irons_spellbooks:poison_breath': 'Druide',
   'irons_spellbooks:poison_splash': 'Druide',
   'irons_spellbooks:portal': 'Voyageur du Vide',
-  'irons_spellbooks:raise_dead': 'Hémomancien',
+  'irons_spellbooks:raise_dead': 'Hémomancien / Nécromancien',
   'irons_spellbooks:raise_hell': 'Pyromancien',
   'irons_spellbooks:ray_of_frost': 'Cryomancien',
   'irons_spellbooks:ray_of_siphoning': 'Hémomancien',
