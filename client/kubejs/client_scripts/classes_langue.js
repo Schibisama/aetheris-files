@@ -44,7 +44,10 @@ var NOMS_OBJETS = {
   'item.apprenticecodex.magi_agent_suit_hood': "Capuche de l'Élève du Temps",
   'item.apprenticecodex.magi_agent_suit_coat': "Manteau de l'Élève du Temps",
   'item.apprenticecodex.magi_agent_suit_leggings': "Jambières de l'Élève du Temps",
-  'item.apprenticecodex.magi_agent_suit_boots': "Bottes de l'Élève du Temps"
+  'item.apprenticecodex.magi_agent_suit_boots': "Bottes de l'Élève du Temps",
+  // effets retirés (munitions de la capuche, recharge des bottes) : description remplacée
+  'item.apprenticecodex.magi_agent_suit_hood.desc': "Tenue de base du Chronomancien, améliorable en Maître du Temps.",
+  'item.apprenticecodex.magi_agent_suit_boots.desc': "Tenue de base du Chronomancien, améliorable en Maître du Temps."
 }
 
 function ajouterTextes(langue) {
