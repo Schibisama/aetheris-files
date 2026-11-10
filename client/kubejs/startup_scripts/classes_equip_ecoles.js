@@ -304,14 +304,36 @@ var EQ_BONUS_AJOUTES = {
   'apprenticecodex:magi_agent_suit_leggings': [['chronomancy:chronomancy_spell_power', 0.05, 'ADD_MULTIPLIED_BASE']],
   'apprenticecodex:magi_agent_suit_boots': [['chronomancy:chronomancy_spell_power', 0.05, 'ADD_MULTIPLIED_BASE']]
 }
+// Valeurs REMPLACÉES (le bonus d'origine de l'attribut est retiré, puis remplacé par celui-ci), par pièce portée.
+var EQ_BONUS_REMPLACES = {}
+;(function () {
+  var pieces = ['helmet', 'chestplate', 'leggings', 'boots']
+  for (var i = 0; i < pieces.length; i++) {
+    // Iron431 (et sa version Ascended) : 500 -> 250 mana, +25 % -> +20 % de puissance des sorts
+    var iron = [['irons_spellbooks:max_mana', 250, 'ADD_VALUE'], ['irons_spellbooks:spell_power', 0.20, 'ADD_MULTIPLIED_BASE']]
+    EQ_BONUS_REMPLACES['hazennstuff:iron431_' + pieces[i]] = iron
+    EQ_BONUS_REMPLACES['hazennstuff:ascended_iron431_' + pieces[i]] = iron
+    // Clocksmith (Chronomancy) : 125 -> 225 mana, +10 % -> +15 % de puissance de chronomancie
+    EQ_BONUS_REMPLACES['chronomancy:clocksmith_' + pieces[i]] = [['irons_spellbooks:max_mana', 225, 'ADD_VALUE'], ['chronomancy:chronomancy_spell_power', 0.15, 'ADD_MULTIPLIED_BASE']]
+  }
+})()
 function eqBonusAjoutes(event, pile, id) {
-  var liste = EQ_BONUS_AJOUTES[id]
-  if (!liste) return
+  var liste = EQ_BONUS_AJOUTES[id], remp = EQ_BONUS_REMPLACES[id]
+  if (!liste && !remp) return
   if (!EQ.SlotGroup) {
     EQ.SlotGroup = Java.loadClass('net.minecraft.world.entity.EquipmentSlotGroup')
     EQ.Op = Java.loadClass('net.minecraft.world.entity.ai.attributes.AttributeModifier$Operation')
   }
   var groupe = EQ.SlotGroup.bySlot(pile.getItem().getEquipmentSlot())
+  if (remp) {
+    for (var r = 0; r < remp.length; r++) {
+      var hr = eqHolder(remp[r][0])
+      if (!hr) continue
+      event.removeAllModifiersFor(hr)
+      event.addModifier(hr, new EQ.Modif(EQ.RL.parse('classes_rp:valeur_' + id.replace(':', '_') + '_' + r), remp[r][1], EQ.Op.valueOf(remp[r][2])), groupe)
+    }
+  }
+  if (!liste) return
   for (var i = 0; i < liste.length; i++) {
     var h = eqHolder(liste[i][0])
     if (!h) continue
