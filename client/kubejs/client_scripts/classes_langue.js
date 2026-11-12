@@ -56,7 +56,7 @@ var NOMS_OBJETS = {
   // Charme du Lien du Monarque (Apprentice's Codex)
   'item.apprenticecodex.monarch_bond_charm': "Charme du Lien du Monarque",
   'item.apprenticecodex.monarch_bond_charm.desc_1': "Répartit l'excédent de tes soins magiques entre tes invocations proches.",
-  'item.apprenticecodex.monarch_bond_charm.desc_2': "Soin supérieur restaure entièrement les cibles à portée.",
+  'item.apprenticecodex.monarch_bond_charm.desc_2': "Grand Soin restaure entièrement les cibles à portée.",
   'item.apprenticecodex.monarch_bond_charm.desc_3': "Augmente aussi la portée de ravitaillement des invocations qui consomment du mana et les ravitaille automatiquement."
 }
 
