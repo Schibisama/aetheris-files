@@ -1,5 +1,5 @@
 {
- "version": "2026-11-13T15:57:56.170Z",
+ "version": "2026-11-13T16:08:49.996Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6467,8 +6467,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "8ae5745a74d4e1d6e2020642f76a97f0cef0fbe1",
-   "size": 310114
+   "sha1": "acf0a25121851ef851a8369982a4ae7b7de36076",
+   "size": 310494
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -6532,8 +6532,8 @@
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
-   "sha1": "4b36e6ddf0cd1ad11f81c6e709dba7124d7de005",
-   "size": 28677
+   "sha1": "8c446aa5d19d58300be26607bed8cefadc4df5e2",
+   "size": 28675
   },
   {
    "path": "kubejs/server_scripts/parchemins_coffres.js",
@@ -6552,8 +6552,8 @@
   },
   {
    "path": "kubejs/server_scripts/portails_bloques.js",
-   "sha1": "4532f433f985073f034f7996108bacdd0db86543",
-   "size": 4707
+   "sha1": "684b29315c1ff38671f5e52718d1e0331467d428",
+   "size": 4705
   },
   {
    "path": "kubejs/server_scripts/professeur.js",
@@ -6647,8 +6647,8 @@
   },
   {
    "path": "mods/aetheris_armures-neoforge-1.21.1-1.0.0.jar",
-   "sha1": "a1a5e64e4a8caec663186fbf3e3ca6e9c1238424",
-   "size": 521388
+   "sha1": "db640ddc7294cd1ef85f9bde3fa31b3a774e8c65",
+   "size": 521968
   },
   {
    "path": "mods/aetheris_balai-neoforge-1.21.1-1.4.0.jar",
