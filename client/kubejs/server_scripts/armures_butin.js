@@ -264,6 +264,7 @@ function arFiltrerConteneur(event) {
     var vide = Item.of('minecraft:air')
     var retires = 0
     var vus = 0
+    var nomsRetires = []
     for (var i = 0; i < total; i++) {
       var slot = menu.getSlot(i)
       if (slot.isSameInventory(repere)) continue
@@ -272,7 +273,7 @@ function arFiltrerConteneur(event) {
       var dec = arFiltrerPile(pile)
       if (dec === undefined) continue            // objet non concerné
       vus++
-      if (dec === 'retirer') { slot.set(vide); retires++ }
+      if (dec === 'retirer') { nomsRetires.push(String(pile.id) + (pile.count > 1 ? ' x' + pile.count : '')); slot.set(vide); retires++ }
       else if (dec) slot.set(dec)
     }
     var ajouts = []
@@ -295,7 +296,7 @@ function arFiltrerConteneur(event) {
         } catch (eJ) {}
       }
     }
-    if (vus > 0) console.info('[armures_butin] ' + retires + '/' + vus + ' objet(s) filtré(s) retiré(s) (' + cle + ')')
+    if (vus > 0) console.info('[armures_butin] ' + retires + '/' + vus + ' objet(s) filtré(s) retiré(s) (' + cle + ')' + (nomsRetires.length ? ' : ' + nomsRetires.join(', ') : ''))
   } catch (e) {
     console.error('[armures_butin] Conteneur : ' + e)
   }

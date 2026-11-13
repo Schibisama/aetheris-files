@@ -373,7 +373,12 @@ ServerEvents.commandRegistry(function (event) {
 // Les zones d'Iron's Spells (nuages de poison, séismes, blizzards...) s'accumulent et coûtent cher à chaque tick :
 // toute zone de plus de NETTOY.age ticks est retirée, et au-delà de NETTOY.max zones par dimension les plus anciennes partent.
 // Réglage en jeu (op) : /nettoyage  /nettoyage age <ticks>  /nettoyage max <n>  /nettoyage on|off
-var NETTOY = { actif: true, age: 300, max: 40, periode: 40, flecheAge: 200, flecheMax: 2400 }
+// Mobs dont le nombre est limité autour de chaque joueur : « motif » = morceau de l'identifiant du mob
+var NETTOY_LIMITES = [
+  { nom: 'Draugr', motif: 'draugr', max: 10 },
+  { nom: 'Remnant', motif: 'cursespells:remnant', max: 6 }   // invoqués en masse (pas le Remnant invoqué par un joueur : cursespells:summoned_remnant)
+]
+var NETTOY = { actif: true, age: 300, max: 40, periode: 40, flecheAge: 200, flecheMax: 2400, draugrMax: 10, draugrRayon: 64 }
 var NETTOY_FLECHE = null
 try { NETTOY_FLECHE = Java.loadClass('net.minecraft.world.entity.projectile.AbstractArrow') } catch (eF) {}
 var NETTOY_AOE = null
@@ -392,11 +397,15 @@ ServerEvents.tick(perfWrap('mobs_distance:361', function (event) {
       var zones = []
       var retires = 0
       var fleches = 0
+      var groupes = []
+      for (var g0 = 0; g0 < NETTOY_LIMITES.length; g0++) groupes.push([])
       while (it.hasNext()) {
         var ent = it.next()
         if (NETTOY_FLECHE && ent instanceof NETTOY_FLECHE) {
           if (String(ent.type).indexOf('trident') !== -1) continue
           // Flèches : celles sans objet à ramasser font échouer la sauvegarde du chunk (erreur répétée dans les logs).
+          // Flèche sans objet : retirée tout de suite (elle fait planter la sauvegarde du chunk quand il se décharge, quel que soit son âge).
+          try { if (ent.getPickupItem().isEmpty()) { ent.discard(); fleches++; continue } } catch (e7) {}
           if (ent.tickCount > NETTOY.flecheAge) {
             var vide = false
             try { vide = String(ent.pickup) !== 'ALLOWED' } catch (e5) {}
@@ -405,12 +414,41 @@ ServerEvents.tick(perfWrap('mobs_distance:361', function (event) {
           }
           continue
         }
+        try {
+          var tyG = String(ent.type), dansG = false
+          for (var g1 = 0; g1 < NETTOY_LIMITES.length; g1++) if (tyG.indexOf(NETTOY_LIMITES[g1].motif) !== -1) { groupes[g1].push(ent); dansG = true; break }
+          if (dansG) continue
+        } catch (e8) {}
         if (!NETTOY_AOE || !(ent instanceof NETTOY_AOE)) continue
         if (ent.tickCount > NETTOY.age) { ent.discard(); retires++ } else zones.push(ent)
       }
       if (zones.length > NETTOY.max) {
         zones.sort(function (a, b) { return b.tickCount - a.tickCount })
         for (var i = 0; i < zones.length - NETTOY.max; i++) { zones[i].discard(); retires++ }
+      }
+      // Mobs limités (NETTOY_LIMITES) : au plus « max » de chaque groupe autour de chaque joueur (rayon NETTOY.draugrRayon) ;
+      // le surplus (les plus éloignés du joueur) est retiré.
+      for (var gi = 0; gi < NETTOY_LIMITES.length; gi++) {
+        var gr = NETTOY_LIMITES[gi], liste = groupes[gi]
+        if (liste.length <= gr.max) continue
+        var joueursD = event.server.getPlayers()
+        var retiresD = 0
+        var r2 = NETTOY.draugrRayon * NETTOY.draugrRayon
+        for (var pj = 0; pj < joueursD.size(); pj++) {
+          var jd = joueursD.get(pj)
+          if (String(jd.level.dimension) !== String(niveau.dimension)) continue
+          var proches = []
+          for (var di = 0; di < liste.length; di++) {
+            var dr = liste[di]
+            if (dr.isRemoved()) continue
+            var dd = dr.distanceToSqr(jd)
+            if (dd <= r2) proches.push({ e: dr, d: dd })
+          }
+          if (proches.length <= gr.max) continue
+          proches.sort(function (x, y) { return x.d - y.d })
+          for (var k = gr.max; k < proches.length; k++) { proches[k].e.discard(); retiresD++ }
+        }
+        if (retiresD > 0) console.info('[nettoyage] ' + niveau.dimension + ' : ' + retiresD + ' ' + gr.nom + ' en trop retiré(s)')
       }
       if (fleches > 0) console.info('[nettoyage] ' + niveau.dimension + ' : ' + fleches + ' flèche(s) retirée(s)')
       if (retires > 0) console.info('[nettoyage] ' + niveau.dimension + ' : ' + retires + ' zone(s) de sort retirée(s)')

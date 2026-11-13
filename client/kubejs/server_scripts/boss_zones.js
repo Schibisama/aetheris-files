@@ -134,6 +134,7 @@ var BOSSES = {
     rayon: 90,   // plus large que les autres : le dragon vole et plonge
     aggro: 40,   // (plus utilisé : voir BZ_AGGRO)
     soigneSiSort: true,   // sort de sa zone (aggro perdue) : retour au centre ET vie remise au maximum
+    sansRegenInutile: true,   // il vole : ses attaques (souffle, feu au sol) ne sont pas toujours attribuées, il ne doit pas se soigner pendant le combat
     remonteSous: 12,   // s'il descend de plus de 12 blocs sous son point d'apparition : retour au point d'apparition, sans dégâts de chute
     nbtSpawn: 'BossPhase:0,BossBarVisible:1b',   // départ sans cinématique d'intro (comme Skor) ; à ajuster si le dragon reste figé
     respawnMin: 30,
@@ -313,6 +314,51 @@ function bzJoueurProche(server, b) {
 function bzRamener(server, e, b) {
   try { e.setTarget(null) } catch (x) { try { e.target = null } catch (y) {} }
   server.runCommandSilent('tp ' + e.uuid + ' ' + b.x + ' ' + b.y + ' ' + b.z)
+}
+
+// Anti-doublon : un boss resté dans un tronçon pas encore chargé (projeté loin, joueur arrivé de loin...) est invisible pour la
+// recherche ; le script en faisait apparaître un 2e, et les deux se retrouvaient ensemble une fois le tronçon chargé.
+// 1) pas d'apparition tant qu'un tronçon chargé de la zone (rayon + 40) attend encore ses entités ;
+// 2) s'il y a quand même deux exemplaires portant le tag du boss, on garde le plus entamé et on retire les autres (sans butin).
+var BZ_CHUNKPOS = null
+function bzZoneChargee(niveau, b) {
+  try {
+    if (!BZ_CHUNKPOS) BZ_CHUNKPOS = Java.loadClass('net.minecraft.world.level.ChunkPos')
+    var r = b.rayon + 40
+    for (var cx = Math.floor((b.x - r) / 16); cx <= Math.floor((b.x + r) / 16); cx++)
+      for (var cz = Math.floor((b.z - r) / 16); cz <= Math.floor((b.z + r) / 16); cz++)
+        if (niveau.hasChunk(cx, cz) && !niveau.areEntitiesLoaded(BZ_CHUNKPOS.asLong(cx, cz))) return false   // tronçon chargé, entités pas encore
+    return true
+  } catch (e) { return true }
+}
+function bzDedoublonner(nom, liste) {
+  var tag = 'boss_' + nom
+  var vivants = []
+  for (var i = 0; i < liste.length; i++) {
+    var e = liste[i]
+    try {
+      if (!e.isAlive() || bzEnMort(e) || e.persistentData.getInt('bz_mort') === 1) continue
+      if (e.tags && e.tags.contains(tag)) vivants.push(e)
+    } catch (x) {}
+  }
+  if (vivants.length < 2) return liste
+  var garde = vivants[0]
+  var ratio = function (x) { try { return x.health / x.maxHealth } catch (y) { return 1 } }
+  for (var k = 1; k < vivants.length; k++) {
+    var v = vivants[k]
+    if (ratio(v) < ratio(garde) - 0.001 || (Math.abs(ratio(v) - ratio(garde)) <= 0.001 && v.tickCount > garde.tickCount)) garde = v
+  }
+  var res = []
+  for (var j = 0; j < liste.length; j++) {
+    var f = liste[j]
+    if (vivants.indexOf(f) !== -1 && f !== garde) {
+      try { f.discard() } catch (x2) {}
+      console.info('[boss_zones] ' + nom + ' en double : exemplaire en trop retiré (gardé : ' + Math.round(ratio(garde) * 100) + ' % de vie)')
+      continue
+    }
+    res.push(f)
+  }
+  return res
 }
 
 function bzSpawn(server, nom, b) {
@@ -505,7 +551,7 @@ ServerEvents.tick(perfWrap('boss_zones:466', function (event) {
     for (var nom in BOSSES) {
       var b = BOSSES[nom]
       // Zone, aggro et régénération
-      var proches = bzBoss(niveau, b, b.laisseStricte ? b.rayon + 250 : b.rayon + 40)
+      var proches = bzDedoublonner(nom, bzBoss(niveau, b, b.laisseStricte ? b.rayon + 250 : b.rayon + 40))
       if (b.laisseStricte && proches.length > 0) { try { bzSuiviUuid[nom] = String(proches[0].uuid) } catch (xu) {} }
       for (var i = 0; i < proches.length; i++) {
         var e = proches[i]
@@ -585,7 +631,7 @@ ServerEvents.tick(perfWrap('boss_zones:466', function (event) {
         }
         // Boss incapable de blesser un joueur (hors de portée, en vol, bloqué...) : il récupère REGEN_INUTILE_POURCENT % par seconde
         if (!pd.contains('bz_degats')) pd.putLong('bz_degats', Date.now())
-        if (!soigne && bzCompteur % 20 === 0 && e.health < e.maxHealth && Date.now() - pd.getLong('bz_degats') >= REGEN_INUTILE_S * 1000) {
+        if (!soigne && !b.sansRegenInutile && bzCompteur % 20 === 0 && e.health < e.maxHealth && Date.now() - pd.getLong('bz_degats') >= REGEN_INUTILE_S * 1000) {
           try { e.heal(e.maxHealth * REGEN_INUTILE_POURCENT / 100) } catch (x) {}
         }
       }
@@ -598,6 +644,7 @@ ServerEvents.tick(perfWrap('boss_zones:466', function (event) {
       if (Date.now() < quand) continue
       bzAbsent[nom] = (bzAbsent[nom] || 0) + 1
       if (bzAbsent[nom] < 2) continue // laisse aux entités le temps de se charger
+      if (!bzZoneChargee(niveau, b)) { bzAbsent[nom] = 0; continue }   // un exemplaire peut encore être dans un tronçon non chargé
       bzAbsent[nom] = 0
       bzSpawn(server, nom, b)
     }
@@ -673,7 +720,8 @@ try {
           var tgE = ev.getEntity()
           if (tgE.tags && tgE.tags.contains('boss_zone')) {
             var auteur = null
-            try { auteur = ev.getSource().getEntity() } catch (eA) {}
+            try { auteur = ev.getSource().actual } catch (eA) {}
+            if (!auteur) { try { auteur = ev.getSource().getEntity() } catch (eA2) {} }
             if (auteur && auteur.isPlayer && auteur.isPlayer() && !auteur.isCreative()) {
               tgE.persistentData.putBoolean('bz_engage', true)
               try { if (!tgE.getTarget()) tgE.setTarget(auteur) } catch (eT) {}
@@ -747,7 +795,7 @@ EntityEvents.death(function (event) {
       if (b.type !== type) continue
       var dx = event.entity.x - b.x
       var dz = event.entity.z - b.z
-      if (Math.sqrt(dx * dx + dz * dz) > b.rayon + 40) continue   // un autre exemplaire, hors zone : ignoré
+      if (Math.sqrt(dx * dx + dz * dz) > b.rayon + 40) continue   // un autre exemplaire, hors zone : ignoré (seul le boss de la zone donne l'objet de quête)
       bzMort(event.server, nom, b, event.entity, event.source)
     }
   } catch (err) {
@@ -1005,7 +1053,9 @@ try {
       try {
         if (!ev.getEntity().isPlayer()) return
         if (ev.getNewDamage() <= 0) return
-        var at = ev.getSource().getEntity()
+        var at = null
+        try { at = ev.getSource().actual } catch (eA) {}
+        if (!at) { try { at = ev.getSource().getEntity() } catch (eA2) {} }
         if (!at || at.isPlayer()) return
         var tg = at.tags
         if (!tg || !(tg.contains('boss_zone') || tg.contains('pirate_zone') || tg.contains('boss_escorte'))) return

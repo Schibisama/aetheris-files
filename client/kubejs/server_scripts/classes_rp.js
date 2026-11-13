@@ -139,6 +139,8 @@ var SORTS_PAR_CLASSE = {
   'irons_spellbooks:arrow_volley': ['Druide', 'Voyageur du Vide'],
   'irons_spellbooks:summon_horse': ['*'],
   'irons_spellbooks:summon_vex': ['Nécromancien', 'Voyageur du Vide'],
+  // Ressusciter les Morts : Monsters & Spellbooks le range dans l'école Nécromancie ; il reste ouvert à l'Hémomancien (école d'origine : sang)
+  'irons_spellbooks:raise_dead': ['Hémomancien', 'Nécromancien'],
   'irons_spellbooks:shield': ['Paladin', 'Chromancien'],
   'irons_spellbooks:slow': ['Chronomancien', 'Cryomancien'],
   'irons_spellbooks:firecracker': ['Pyromancien', 'Chromancien'],
@@ -387,7 +389,9 @@ var RESTRICTIONS = [
   { regle: /^minecraft:elytra$/, classes: [] },
   // ═══════════ RÈGLES PERSONNALISÉES (prioritaires : la première règle qui correspond l'emporte) ═══════════
   // ── Désactivés (aucune classe) ──
-  { regle: /^apprenticecodex:(.*_spellcaster_gun|focus_staffbow|multipurpose_staffrifle|fullauto_rapidcast_spellrifle|.*_swingcast_staff|revolvercast_staff|scrollcaster_gauntlet|circuit_heat_staff|charged_twin_blade_staff|magi_agent_suit_.*)$/, classes: [] },
+  // Chronomancien : tenue de base Élève du Temps (Magi-Agent) et son amélioration, le Maître du Temps (mod aetheris_armures)
+  { regle: /^(apprenticecodex:magi_agent_suit_(hood|coat|leggings|boots)|aetheris_armures:chronomancien_(helmet|chestplate|leggings|boots))$/, classes: ['Chronomancien'] },
+  { regle: /^apprenticecodex:(.*_spellcaster_gun|focus_staffbow|multipurpose_staffrifle|fullauto_rapidcast_spellrifle|.*_swingcast_staff|revolvercast_staff|scrollcaster_gauntlet|circuit_heat_staff|charged_twin_blade_staff)$/, classes: [] },
   { regle: /^cataclysm_spellbooks:(excelsius_.*|cursium_mage_.*|ignis_.*|hellfire_forge)$/, classes: [] },
   { regle: /^somakespells:forbidden_hammer$/, classes: [] },
   { regle: /^born_in_chaos_v1:(wood_splitter_axe|nightmare_claw|sweet_sword|sweet_axe|staff_of_magic_arrows|skullbreaker_hammer|shell_mace|frostbitten_blade|nut_hammer|nightmare_scythe|stop_hammer|staffof_blindness|dark_rod|dark_ritual_dagger|bonescaller_staff|trident_hayfork|great_reaper_axe|carrot_sword|darkwarblade|pumpkinstaffa|sharpened_dark_metal_sword|spider_bite_sword|spiritual_sword|soul_cutlass|soulbane|intoxicating_dagger|pumpkinhandgun|(dark_metal_armor|nightmare_mantleofthe_night|spiny_shell_armor)_(helmet|chestplate|leggings|boots)|damned_demomans_hat_helmet|killer_rabbit_ears_helmet|lord_pumpkinheads_hat_helmet|missionary_hat_helmet|spiritual_guide_sombrero_helmet)$/, classes: [] },   // Born in Chaos : armes et armures désactivées
@@ -396,7 +400,23 @@ var RESTRICTIONS = [
   // ── Legendary Monsters : seuls le Marteau moussu et le Plastron moussu sont gardés (Druide, Géomancien) ; le reste des armes et armures est désactivé ──
   { regle: /^legendary_monsters:(mossy_hammer|mossy_chestplate)$/, classes: ['Druide', 'Géomancien'] },
   { regle: /^(legendary_monsters:sickle_of_harvest)$/, classes: ['Géomancien'] },
-  { regle: /^tunes_n_tomes:(bard_(harp|helmet|chestplate|leggings|boots)|melodic_mastery_(helmet|chestplate|leggings|boots)|affinity_ring_melody)$/, classes: ['Barde'] },
+  { regle: /^(tunes_n_tomes:(bard_(harp|helmet|chestplate|leggings|boots)|melodic_mastery_(helmet|chestplate|leggings|boots)|affinity_ring_melody)|aetheris_armures:(virtuose_(helmet|chestplate|leggings|boots)|rapiere_cle_de_sol|anneau_(diapason|echo|cadence)|metronome|sourdine|boite_a_musique|derniere_note|bandouliere|medaillon_harmonie))$/, classes: ['Barde'] },   // + Virtuose (aetheris_armures) ; instruments d'Immersive Melodies libres (effet réservé au Barde)
+  // Artefacts de classe (mod aetheris_armures, emplacements Curios)
+  { regle: /^aetheris_armures:(anneau_(marees|corail|courant)|perle_pression|coquille_nautile|conque_profondeurs|larme_leviathan|ceinture_algues|collier_perles_noires)$/, classes: ['Hydromancien'] },
+  { regle: /^aetheris_armures:(anneau_(ronces|seve|saisons)|gland_ancien|totem_meute|pollen_dore|coeur_arbre_monde|ceinture_lierre|collier_crocs)$/, classes: ['Druide'] },
+  { regle: /^aetheris_armures:(anneau_(granit|fracture|tellurique)|pierre_ancrage|geode_vivante|sablier_desert|coeur_montagne|ceinture_filon|collier_fossiles)$/, classes: ['Géomancien'] },
+  { regle: /^aetheris_armures:(anneau_(saignee|pacte|frenesie)|calice_carmin|caillot_sang|dague_rituelle|coeur_battant|ceinture_osselets|collier_vampire)$/, classes: ['Hémomancien'] },
+  { regle: /^aetheris_armures:(anneau_(jugement|serment|aube)|reliquaire|etendard|sceau_lumiere|aureole_sacree|ceinture_croise|pendentif_martyr)$/, classes: ['Paladin'] },
+  { regle: /^aetheris_armures:(anneau_(braise|cendres|fournaise)|peau_salamandre|lanterne_ardente|charbon_eternel|plume_phenix|ceinture_magma|collier_flamme)$/, classes: ['Pyromancien'] },
+  { regle: /^aetheris_armures:(anneau_(givre|eclats|morsure)|flocon_eternel|carapace_glace|cristal_permafrost|larme_boreale|ceinture_frimas|amulette_blizzard)$/, classes: ['Cryomancien'] },
+  { regle: /^aetheris_armures:(anneau_(arc|surtension|ion)|batterie_statique|paratonnerre|bobine_tesla|coeur_orage|ceinture_conductrice|collier_eclair)$/, classes: ['Électro-Sorcier'] },
+  { regle: /^aetheris_armures:(anneau_(horizon|distorsion|seuil)|ancre_vide|oeil_vide|perle_instable|coeur_neant|ceinture_abime|collier_exil)$/, classes: ['Voyageur du Vide'] },
+  { regle: /^aetheris_armures:(anneau_(bourrasque|cyclone|zephyr)|plume_zephyr|souffle_ascendant|sifflet_vent|coeur_tornade|ceinture_alizes|pendentif_rafale)$/, classes: ['Aéromancien'] },
+  { regle: /^aetheris_armures:(anneau_(ossements|putrefaction|tombe)|phylactere|lanterne_morts|crane_explosif|coeur_liche|ceinture_ossuaire|amulette_ectoplasme)$/, classes: ['Nécromancien'] },
+  { regle: /^aetheris_armures:(anneau_(contagion|fletrissure|malediction)|poupee_vaudou|oeil_verite|sceau_maudit|coeur_damne|ceinture_chaines|collier_supplice)$/, classes: ['Envoûteur'] },
+  { regle: /^aetheris_armures:(anneau_(ames_errantes|lien_spirituel|exorcisme)|gardien_esprit|lanterne_spectrale|encens_ancestral|urne_ames|ceinture_talismans|collier_ancetres)$/, classes: ['Spiritualiste'] },
+  { regle: /^aetheris_armures:(anneau_(yin|yang|miroir)|balance_jade|miroir_eau|taijitu|coeur_equilibre|ceinture_dualite|pendentif_contrepoids)$/, classes: ['Symétriste'] },
+  { regle: /^aetheris_armures:(anneau_(circuit|court_circuit|rendement)|batterie_arcanique|scanner_arcanique|bouclier_energie|noyau_reacteur|ceinture_outils|collier_drone)$/, classes: ['Technomancien'] },
   { regle: /^legendary_monsters:(sharp_battle_axe|spiky_shield|spiky_spear|chorus_blade|chorus_mask|chorus_cannon|shulker_shield|shulker_helmet|the_great_frost|dinosaur_bone_shield|dinosaur_bone_club|dinosaur_bone_helmet|frostbitten_shield|fiery_jaw|fiery_boots|void_sword|ender_hammer|withered_scythe|withered_ribcage|wand_of_clouds|sharp_sai|axe_of_lightning|atmospheric_boots|soul_great_sword|golden_halbert|knights_sword|blastproof_helmet|sand_cannon|monstrous_anchor|reinforced_monstrous_anchor|atom_splitter|the_tesseract|buckler_of_annihilation|resurrected_javelin|shattered_greatsword|hand_cannon|swinging_axe|sapphire_helmet|bronzite_sword|bronzite_axe|enderitium_(sword|axe|sickle)|annihilator_(helmet|chestplate|leggings|boots))$/, classes: [] },
   // ── Bosses'Rise (block_factorys_bosses) : armes et armures désactivées ──
   { regle: /^block_factorys_bosses:(dragon_bones_(boots|chestplate|leggings)|dragon_guard_shield|enhanced_shield|ice_gauntlet|knight_(helmet|chestplate|leggings|boots|sword)|kraken_trident|kraken_cannon_item|large_sword|pirate_saber|sandworm_gauntlet|warrior_sword|dagger)$/, classes: [] },
@@ -559,6 +579,8 @@ var RESTRICTIONS = [
   { regle: /^crystal_chronicles:lightning_(knight_(helmet|chestplate|leggings|boots)|bident|staff)$/,      classes: ['Électro-Sorcier', 'Aéromancien'] },
   { regle: /^crystal_chronicles:evocation_(knight_(helmet|chestplate|leggings|boots)|twinblade)$/,         classes: ['Paladin'] },
   // Set Prismatic + Anneau de Diffraction -> Géomancien
+  // Géomancien : tenue de base (mod aetheris_armures), améliorable en Terrien Originel (Prismatic Knight)
+  { regle: /^aetheris_armures:geomancien_(helmet|chestplate|leggings|boots)$/, classes: ['Géomancien'] },
   { regle: /^crystal_chronicles:(prismatic_knight_(helmet|chestplate|leggings|boots)|diffraction_ring)$/,  classes: ['Géomancien'] },
   { regle: /^crystal_chronicles:diffraction_ring$/,  classes: ['Géomancien'] },
   // Chronomancy : set Clocksmith, 2 épées (Clock Hand, Rift Creator) et artefacts -> Chronomancien
@@ -1172,7 +1194,7 @@ function sortRecompenseAleatoire(joueur, rareteNom) {
 function cmdRecompense(ctx, cible, rareteNom) {
   try {
     rareteNom = rareteNom || 'RARE'
-    var texteRarete = Text.translate(rareteNom === 'LEGENDARY' ? 'mcrp.rarete.legendary' : (rareteNom === 'EPIC' ? 'mcrp.rarete.epic' : (rareteNom === 'UNCOMMON' ? 'mcrp.rarete.uncommon' : 'mcrp.rarete.rare')))
+    var texteRarete = rareteNom === 'COMMON' ? Text.of('commun') : Text.translate(rareteNom === 'LEGENDARY' ? 'mcrp.rarete.legendary' : (rareteNom === 'EPIC' ? 'mcrp.rarete.epic' : (rareteNom === 'UNCOMMON' ? 'mcrp.rarete.uncommon' : 'mcrp.rarete.rare')))
     var choix = sortRecompenseAleatoire(cible, rareteNom)
     if (!choix) {
       cible.tell(Text.translate('mcrp.msg.recompense_aucun').red())
@@ -1453,8 +1475,8 @@ function coursDonner(server, joueur) {
     if (suivi.indexOf('|' + id + '|') >= 0) continue
     // UN SEUL sort par appel : on le note d'abord, on le débloque, on s'arrête.
     try { joueur.persistentData.putString(COURS_CLE, suivi + '|' + id + '|') } catch (e2) {}
-    cmd(server, 'specs_codex spell unlock ' + joueur.username + ' ' + id)
-    console.info('[cours] ' + joueur.username + ' reçoit ' + id + ' (n°' + (i + 1) + '/' + ordre.length + ')')
+    var okC = codexDebloquer(server, joueur, id)
+    console.info('[cours] ' + joueur.username + ' reçoit ' + id + ' (n°' + (i + 1) + '/' + ordre.length + ')' + (okC === false ? ' — ÉCHEC du déblocage' : ''))
     return { etat: 'ok', id: id }
   }
   return { etat: 'tout' }
@@ -1475,11 +1497,14 @@ function coursEleves(server, cx, cy, cz, rayon) {
   for (var i = 0; i < joueurs.length; i++) {
     var p = joueurs[i]
     try {
-      if (p.hasPermissions(2)) continue
-      if (!coursDimensionOk(p)) continue
       var dx = p.x - cx, dy = p.y - cy, dz = p.z - cz
-      if (dx * dx + dy * dy + dz * dz <= rayon * rayon) res.push(p)
-    } catch (e) {}
+      var dist = Math.sqrt(dx * dx + dy * dy + dz * dz)
+      // Journal des joueurs proches mais écartés (pour comprendre qui n'a rien reçu)
+      if (p.hasPermissions(2)) { if (dist <= rayon * 3) console.info('[cours] ' + p.username + ' ignoré : opérateur'); continue }
+      if (!coursDimensionOk(p)) continue
+      if (dist <= rayon) res.push(p)
+      else if (dist <= rayon * 3) console.info('[cours] ' + p.username + ' ignoré : hors de la zone (' + Math.round(dist) + ' blocs du centre, rayon ' + rayon + ')')
+    } catch (e) { console.error('[cours] ' + e) }
   }
   return res
 }
@@ -1503,8 +1528,10 @@ function cmdCours(ctx, cx, cy, cz, rayon) {
         retour(ctx, el.username + ' (' + classeDe(el).nom + ') : ' + r.id)
       } else if (r.etat === 'tout') {
         retour(ctx, el.username + ' : a déjà tous les sorts de la liste.')
+        console.info('[cours] ' + el.username + ' : a déjà tous les sorts de la liste')
       } else {
         retour(ctx, el.username + ' : pas de classe, ignoré.')
+        console.info('[cours] ' + el.username + ' ignoré : pas de classe')
       }
     }
     retour(ctx, donnes + '/' + eleves.length + ' élève(s) ont reçu un sort.')
@@ -1673,11 +1700,49 @@ function cmdCodexNiveau(ctx, cible, sort, n) {
   }
 }
 
+// Débloque un sort dans le Codex d'un joueur : ouvre aussi l'école du sort (sans elle le Codex ne l'affiche pas),
+// lance les commandes en mode visible (leur réponse ou leur erreur arrive dans le journal), puis vérifie le résultat.
+// Retourne true si le sort est bien débloqué, false sinon, null si la vérification est impossible.
+function codexDebloquer(server, joueur, id) {
+  var nom = String(joueur.username)
+  var ecole = null
+  try { ecole = ecoleDuSort(id) } catch (e0) {}
+  // Directement par l'API du Codex (et non par commande) : lancée depuis une commande comme /codex, une commande
+  // imbriquée n'est exécutée qu'APRÈS elle (file d'exécution de Minecraft 1.21) et la vérification lisait l'ancien état.
+  var fait = false
+  try {
+    if (!UnlockAttachJ) UnlockAttachJ = Java.loadClass('com.specs.irons_spellbooks.unlock.SpellUnlockAttachments')
+    var dd = joueur.getData(UnlockAttachJ.UNLOCKS)
+    if (ecole) dd.setSchoolUnlocked(ResourceLocationJ.tryParse(ecole), true)
+    dd.setSpellUnlocked(ResourceLocationJ.tryParse(id), true)
+    Java.loadClass('com.specs.irons_spellbooks.unlock.UnlockNetworking').applyAccessAndSync(joueur)
+    fait = true
+  } catch (eA) { console.error('[codex] déblocage direct ' + nom + ' ' + id + ' -> ' + eA) }
+  if (!fait) {
+    coursNoter(joueur, id)
+    try { if (ecole) server.runCommand('specs_codex school unlock ' + nom + ' ' + ecole) } catch (e1) { console.error('[codex] school unlock ' + nom + ' ' + ecole + ' -> ' + e1) }
+    try { server.runCommand('specs_codex spell unlock ' + nom + ' ' + id) } catch (e2) { console.error('[codex] spell unlock ' + nom + ' ' + id + ' -> ' + e2) }
+  }
+  if (fait) coursNoter(joueur, id)   // sort « pour tous » (cours) donné par /codex ajouter : n'est plus reverrouillé
+  var ok = null
+  try {
+    if (!UnlockAttachJ) UnlockAttachJ = Java.loadClass('com.specs.irons_spellbooks.unlock.SpellUnlockAttachments')
+    ok = !!joueur.getData(UnlockAttachJ.UNLOCKS).isSpellUnlocked(ResourceLocationJ.tryParse(id))
+  } catch (e3) { console.error('[codex] vérification ' + nom + ' ' + id + ' -> ' + e3) }
+  console.info('[codex] ' + nom + ' : ' + id + ' (école ' + ecole + ') -> ' + (ok === true ? 'débloqué' : ok === false ? 'ÉCHEC : toujours verrouillé' : 'vérification impossible'))
+  return ok
+}
 function cmdCodexModifier(ctx, cible, sort, ajouter) {
   sort = String(sort).trim()
   if (!/^[a-z0-9_.-]+:[a-z0-9_.\/-]+$/.test(sort)) { retour(ctx, 'Identifiant invalide : ' + sort + ' (format namespace:sort)'); return 0 }
-  cmd(ctx.source.server, 'specs_codex spell ' + (ajouter ? 'unlock ' : 'lock ') + cible.username + ' ' + sort)
-  retour(ctx, (ajouter ? 'Sort ajouté au codex de ' : 'Sort retiré du codex de ') + cible.username + ' : ' + sort)
+  if (ajouter) {
+    var ok = codexDebloquer(ctx.source.server, cible, sort)
+    retour(ctx, (ok === false ? 'ÉCHEC : le sort reste verrouillé pour ' : 'Sort ajouté au codex de ') + cible.username + ' : ' + sort + (ok === false ? ' (voir le journal du serveur)' : ''))
+    return ok === false ? 0 : 1
+  }
+  cmd(ctx.source.server, 'specs_codex spell lock ' + cible.username + ' ' + sort)
+  coursOublier(cible, sort)   // un sort de cours retiré pourra être redonné par /cours
+  retour(ctx, 'Sort retiré du codex de ' + cible.username + ' : ' + sort)
   return 1
 }
 
@@ -1780,6 +1845,23 @@ ServerEvents.commandRegistry(function (event) {
           .then(Commands.argument('sort', Arguments.GREEDY_STRING.create(event))
             .executes(function (ctx) { return cmdCodexModifier(ctx, Arguments.PLAYER.getResult(ctx, 'joueur'), String(Arguments.GREEDY_STRING.getResult(ctx, 'sort')), false) }))))
   )
+
+  // /recompense sort <commun|peu_commun|rare|epique|legendaire> [joueur] : parchemin d'un sort aléatoire de la classe
+  // du joueur, au premier niveau de cette rareté (sans joueur : soi-même). Perm. 2.
+  var RECOMPENSE_RARETES = { commun: 'COMMON', peu_commun: 'UNCOMMON', rare: 'RARE', epique: 'EPIC', legendaire: 'LEGENDARY' }
+  var recompenseSort = Commands.literal('sort')
+  Object.keys(RECOMPENSE_RARETES).forEach(function (nomR) {
+    var rar = RECOMPENSE_RARETES[nomR]
+    recompenseSort = recompenseSort.then(Commands.literal(nomR)
+      .executes(function (ctx) {
+        var soi = ctx.source.player
+        if (!soi) { retour(ctx, 'Précise un joueur : /recompense sort ' + nomR + ' <joueur>'); return 0 }
+        return cmdRecompense(ctx, soi, rar)
+      })
+      .then(Commands.argument('joueur', Arguments.PLAYER.create(event))
+        .executes(function (ctx) { return cmdRecompense(ctx, Arguments.PLAYER.getResult(ctx, 'joueur'), rar) })))
+  })
+  event.register(Commands.literal('recompense').requires(estModo).then(recompenseSort))
 
   // /cours : un sort pour chaque élève de la zone de cours ; /cours ici : autour du professeur ; /cours ordre <joueur>
   event.register(
@@ -2113,6 +2195,23 @@ function coursVerrouille(joueur, id) {
   } catch (e) { return false }
 }
 
+// Note un sort « pour tous » comme acquis (même suivi que /cours) : appris par une page de Codex ou donné par /codex ajouter,
+// il reste dans le Codex au lieu d'être reverrouillé ; /cours passe alors au sort suivant.
+function coursNoter(joueur, id) {
+  try {
+    var perm = SORTS_PAR_CLASSE[id]
+    if (!perm || perm.indexOf('*') === -1) return
+    var suivi = String(joueur.persistentData.getString(COURS_CLE))
+    if (suivi.indexOf('|' + id + '|') < 0) joueur.persistentData.putString(COURS_CLE, suivi + '|' + id + '|')
+  } catch (e) { console.error('[cours] note ' + id + ' : ' + e) }
+}
+function coursOublier(joueur, id) {
+  try {
+    var suivi = String(joueur.persistentData.getString(COURS_CLE))
+    if (suivi.indexOf('|' + id + '|') >= 0) joueur.persistentData.putString(COURS_CLE, suivi.split('|' + id + '|').join(''))
+  } catch (e) {}
+}
+
 function sortInterditPourJoueur(classe, id) {
   sortsInterditsDeLaClasse(classe)
   return CACHE_SET_INTERDITS[classe.nom][id] === true
@@ -2142,6 +2241,7 @@ ItemEvents.rightClicked(function (event) {
         joueur.tell(Text.red('Ce sort n\'appartient pas à ta classe.'))
         return
       }
+      if (page && coursVerrouille(joueur, ids[k])) { coursNoter(joueur, ids[k]); continue }   // page de Codex (donnée par un op) : apprise
       if (coursVerrouille(joueur, ids[k])) {
         event.cancel()
         joueur.tell(Text.red('Ce sort ne s\'apprend qu\'en cours.'))
@@ -2318,7 +2418,9 @@ try {
 // Complète l'affaiblissement ci-dessus, qui n'arrête pas les dégâts « magiques » ou spéciaux de certaines armes.
 function degatsBloques(event) {
   try {
-    var attaquant = event.getSource().getEntity()
+    var srcDB = event.getSource(), attaquant = null
+    try { attaquant = srcDB.actual } catch (eA0) {}
+    if (!attaquant) { try { attaquant = srcDB.getEntity() } catch (eA1) {} }
     if (!attaquant || !attaquant.isPlayer()) return
     var mains = [attaquant.mainHandItem, attaquant.offHandItem]
     for (var i = 0; i < mains.length; i++) {
@@ -2353,6 +2455,25 @@ function armeInterdite(lanceur, source) {
   return false
 }
 
+var ArmeContJ = null
+function sortDeLArmeTenue(joueur, id) {
+  try {
+    if (!ArmeContJ) ArmeContJ = Java.loadClass('io.redspace.ironsspellbooks.api.spells.ISpellContainer')
+    var mains = [joueur.mainHandItem, joueur.offHandItem]
+    for (var i = 0; i < mains.length; i++) {
+      var pile = mains[i]
+      if (!pile || pile.isEmpty() || !ArmeContJ.isSpellContainer(pile)) continue
+      if (!autorise(joueur, String(pile.id))) continue
+      var c = ArmeContJ.get(pile)
+      for (var k = 0; k < c.getMaxSpellCount(); k++) {
+        var sd = c.getSpellAtIndex(k)
+        if (sd && String(sd.getSpell().getSpellId()) === id) return true
+      }
+    }
+  } catch (e) {}
+  return false
+}
+
 function reglerSortsReserves(event) {
   var id = String(event.getSpellId())
   var lanceur = event.getEntity()
@@ -2361,6 +2482,9 @@ function reglerSortsReserves(event) {
     event.setCanceled(true)
     return
   }
+  // Sort imprégné d'une arme tenue en main (et autorisée pour ce joueur) : il appartient à l'arme, pas à la classe
+  // (ex. Vue planaire de la harpe du Barde). Les sorts désactivés restent bloqués (test ci-dessus).
+  if (String(event.getCastSource()).toUpperCase().indexOf('SWORD') !== -1 && sortDeLArmeTenue(lanceur, id)) return
   var permis = SORTS_PAR_CLASSE[id]
   if (!permis) {
     // Sort sans règle particulière : réservé aux classes qui possèdent son école.
@@ -2573,19 +2697,11 @@ try {
     try {
       var page = entiteObjet.getItem()
       if (page && !page.isEmpty() && String(page.id) === PAGE_ID) {
+        // Un parchemin changé en page garde TOUJOURS son niveau (jeté par un joueur, butin de mob, coffre cassé...) :
+        // un parchemin légendaire donne le sort au niveau légendaire. (Seules les pages déjà pages dans les coffres restent au plus bas.)
         var niveau = lu.niveau
-        // Parchemin apparu au sol sans joueur (butin de mob, coffre cassé...) : la page est au niveau le plus bas du sort.
-        // Un parchemin jeté par un joueur garde son niveau.
-        var jeteParJoueur = false
-        try { jeteParJoueur = entiteObjet.getOwner() != null } catch (eO) { jeteParJoueur = true }
-        if (!jeteParJoueur) {
-          try {
-            var sp = Java.loadClass('io.redspace.ironsspellbooks.api.registry.SpellRegistry').getSpell(Java.loadClass('net.minecraft.resources.ResourceLocation').parse(lu.id))
-            niveau = Math.max(1, Number(sp.getMinLevel()))
-          } catch (eN) { niveau = 1 }
-        }
         parchEcrirePage(page, niveau)
-        console.info('[parchemin] page de ' + lu.id + ' marquée niveau ' + niveau + (jeteParJoueur ? '' : ' (butin : niveau le plus bas)'))
+        console.info('[parchemin] page de ' + lu.id + ' marquée niveau ' + niveau)
       }
     } catch (e2) { console.error('[parchemin] marquage de la page : ' + e2) }
   }
@@ -2599,6 +2715,38 @@ try {
     try { avant(e.getEntity().getItem()) } catch (x) {}
   })
   BUS_PARCH.addListener(PRIO_P.LOWEST, true, EVT_TOSS, function (e) { try { apres(e.getEntity()) } catch (x) {} })
+  // Butin de mob : Spell Codex change les parchemins en pages pendant LivingDropsEvent (avant l'arrivée au sol) :
+  // on lit les niveaux avant lui (HIGHEST) et on les inscrit sur les pages après lui (LOWEST).
+  try {
+    var EVT_DROPS = Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingDropsEvent')
+    var DROPS_LUS = null
+    BUS_PARCH.addListener(PRIO_P.HIGHEST, false, EVT_DROPS, function (e) {
+      DROPS_LUS = null
+      try {
+        if (cote(e.getEntity().level())) return
+        var it = e.getDrops().iterator(), l = []
+        while (it.hasNext()) {
+          var ie = it.next(), pl = ie.getItem()
+          if (pl && !pl.isEmpty() && String(pl.id) === 'irons_spellbooks:scroll') { var lu0 = parchLire(pl); if (lu0) l.push({ e: ie, lu: lu0 }) }
+        }
+        if (l.length) DROPS_LUS = l
+      } catch (x) {}
+    })
+    BUS_PARCH.addListener(PRIO_P.LOWEST, true, EVT_DROPS, function (e) {
+      var l = DROPS_LUS
+      DROPS_LUS = null
+      if (!l) return
+      for (var i = 0; i < l.length; i++) {
+        try {
+          var pg = l[i].e.getItem()
+          if (pg && !pg.isEmpty() && String(pg.id) === PAGE_ID) {
+            parchEcrirePage(pg, l[i].lu.niveau)
+            console.info('[parchemin] page de ' + l[i].lu.id + ' (butin de mob) marquée niveau ' + l[i].lu.niveau)
+          }
+        } catch (x2) { console.error('[parchemin] butin de mob : ' + x2) }
+      }
+    })
+  } catch (eD) { console.error('[parchemin] butin de mob indisponible : ' + eD) }
   BUS_PARCH.addListener(PRIO_P.HIGHEST, false, EVT_JOIN, function (e) {
     try {
       var ent = e.getEntity()
@@ -2731,38 +2879,142 @@ function forgeNiveauPourRarete(sortId, rarete) {
   }
   return exact || meilleur
 }
+// Premier niveau du sort dont la rareté (au sens du Codex) est EXACTEMENT celle demandée ; 0 si le sort ne l'atteint jamais.
+function forgeNiveauExact(sortId, rarete) {
+  try {
+    var IUH = Java.loadClass('com.specs.irons_spellbooks.unlock.InkUnlockHelper')
+    var sort = SpellRegistryJ.getSpell(ResourceLocationJ.tryParse(sortId))
+    var max = Number(sort.getMaxLevel())
+    for (var t = 1; t <= max; t++) {
+      var r = IUH.rarityForTier(sort, t)
+      if (r && r.ordinal() === rarete.ordinal()) return t
+    }
+  } catch (e) { console.error('[parchemin] forgeNiveauExact ' + sortId + ' : ' + e) }
+  return 0
+}
+// Autre sort de la même école, permis à la classe du joueur, pas encore découvert, qui atteint la rareté demandée.
+// touteEcole : cherche dans toutes les écoles ouvertes à la classe (sort de cours tiré par la forge) ; à défaut de rareté exacte,
+// le niveau le plus proche de la rareté demandée.
+function forgeSortDeRemplacement(joueur, sortId, rarete, touteEcole) {
+  try {
+    var ecole = String(SpellRegistryJ.getSpell(ResourceLocationJ.tryParse(sortId)).getSchoolType().getId())
+    var classe = classeDe(joueur)
+    var ouvertes = touteEcole && classe ? ecolesOuvertesDeLaClasse(classe) : null
+    var approx = []
+    var interdits = {}
+    if (classe) { sortsInterditsDeLaClasse(classe); interdits = CACHE_SET_INTERDITS[classe.nom] || {} }
+    if (!UnlockAttachJ) UnlockAttachJ = Java.loadClass('com.specs.irons_spellbooks.unlock.SpellUnlockAttachments')
+    var donnees = joueur.getData(UnlockAttachJ.UNLOCKS)
+    var Catalogue = Java.loadClass('com.specs.irons_spellbooks.catalog.SpellCatalog')
+    var liste = SpellRegistryJ.getEnabledSpells()
+    var choix = []
+    for (var i = 0; i < liste.size(); i++) {
+      try {
+        var sort = liste.get(i)
+        var id = String(sort.getSpellId())
+        if (id === sortId || interdits[id]) continue
+        if (ouvertes ? !ouvertes[String(sort.getSchoolType().getId())] : String(sort.getSchoolType().getId()) !== ecole) continue
+        if (!Catalogue.isListed(sort)) continue
+        try { if (typeof desactSortInterdit === 'function' && desactSortInterdit(id)) continue } catch (eD) {}
+        if (donnees.isSpellUnlocked(ResourceLocationJ.tryParse(id))) continue
+        var n = forgeNiveauExact(id, rarete)
+        if (n) choix.push({ id: id, niveau: n })
+        else if (ouvertes) approx.push({ id: id, niveau: forgeNiveauPourRarete(id, rarete) })
+      } catch (e1) {}
+    }
+    if (!choix.length) choix = approx
+    if (!choix.length) return null
+    return choix[Math.floor(Math.random() * choix.length)]
+  } catch (e) { console.error('[parchemin] forgeSortDeRemplacement : ' + e); return null }
+}
+var FORGE_ETAT = {}
 try {
+  var FORGE_DEJA = null
+  // Priorité HIGHEST : on lit la page vierge AVANT Spell Codex. Après lui, la pile peut être vide (dernière page vierge
+  // consommée) et on ne savait plus quelle rareté appliquer : la page forgée restait au niveau 1 (sort commun).
+  // Spell Codex traite la forge AVANT nous (priorité HIGHEST, enregistré au démarrage du jeu) et annule l'évènement :
+  // on écoute donc aussi les évènements annulés, et on lit la page vierge et l'inventaire tels qu'ils étaient au tick
+  // précédent (relevé fait à chaque tick tant que le joueur tient une page vierge).
+  PlayerEvents.tick(function (ev) {
+    try {
+      var j = ev.player
+      if (!j || j.level.clientSide) return
+      var pv = null
+      var m1 = j.getMainHandItem(), m2 = j.getOffhandItem()
+      if (m1 && !m1.isEmpty() && String(m1.id) === FORGE_VIERGE_ID) pv = m1
+      else if (m2 && !m2.isEmpty() && String(m2.id) === FORGE_VIERGE_ID) pv = m2
+      var cle = String(j.uuid)
+      if (!pv) { if (FORGE_ETAT[cle]) delete FORGE_ETAT[cle]; return }
+      FORGE_ETAT[cle] = { rarete: Java.loadClass('com.specs.irons_spellbooks.item.BlankCodexPageItem').getInkRarity(pv), avant: forgePagesSansNiveau(j), t: j.server.tickCount }
+    } catch (eT) {}
+  })
   Java.loadClass('net.neoforged.neoforge.common.NeoForge').EVENT_BUS.addListener(
-    Java.loadClass('net.neoforged.bus.api.EventPriority').LOWEST, true,
+    Java.loadClass('net.neoforged.bus.api.EventPriority').HIGHEST, true,
     Java.loadClass('net.neoforged.neoforge.event.entity.player.PlayerInteractEvent$RightClickBlock'),
     function (e) {
       try {
         var joueur = e.getEntity()
         if (!joueur || !joueur.isPlayer() || e.getLevel().isClientSide()) return
         if (String(e.getLevel().getBlockState(e.getPos()).block.id) !== 'irons_spellbooks:scroll_forge') return
-        var main = e.getItemStack()
-        if (!main || main.isEmpty() || String(main.id) !== FORGE_VIERGE_ID) return
-        var rarete = Java.loadClass('com.specs.irons_spellbooks.item.BlankCodexPageItem').getInkRarity(main)
-        if (!rarete) return
-        var avant = forgePagesSansNiveau(joueur)
+        var cleF = String(joueur.uuid) + '@' + joueur.server.tickCount   // l'événement arrive une fois par main : on ne traite qu'une fois
+        if (FORGE_DEJA === cleF) return
+        // Page vierge en main maintenant (nous passons avant Spell Codex) ou relevé du tick précédent (Spell Codex est passé avant).
+        var main = null
+        var mains = [joueur.getMainHandItem(), joueur.getOffhandItem(), e.getItemStack()]
+        for (var mi = 0; mi < mains.length; mi++) { var pm = mains[mi]; if (pm && !pm.isEmpty() && String(pm.id) === FORGE_VIERGE_ID) { main = pm; break } }
+        var etat = FORGE_ETAT[String(joueur.uuid)]
+        var rarete = null, avant = null
+        if (!e.isCanceled() && main) {
+          rarete = Java.loadClass('com.specs.irons_spellbooks.item.BlankCodexPageItem').getInkRarity(main)
+          avant = forgePagesSansNiveau(joueur)
+        } else if (etat && joueur.server.tickCount - etat.t <= 2) {
+          rarete = etat.rarete
+          avant = etat.avant
+        }
+        if (!main && !etat) return
+        FORGE_DEJA = cleF
+        console.info('[parchemin] ' + joueur.username + ' utilise la forge avec une page vierge ' + (rarete ? rarete.name() : 'sans rareté'))
+        if (!rarete || !avant) return
         joueur.server.scheduleInTicks(2, function () {
           try {
             var apres = forgePagesSansNiveau(joueur)
             for (var id in apres) {
               if ((apres[id] || 0) <= (avant[id] || 0)) continue
-              var niveau = forgeNiveauPourRarete(id, rarete)
+              // Le sort doit ATTEINDRE la rareté de la page vierge : sinon (Spell Codex tire aussi des sorts de rareté inférieure)
+              // on le remplace par un autre sort de la même école qui l'atteint, au premier niveau de cette rareté.
+              var remplacant = null
+              // Sort de cours / « pour tous » : jamais tiré par la forge, toujours remplacé
+              var interditF = false
+              try { interditF = typeof desactSortInterdit === 'function' && desactSortInterdit(id) } catch (eI) {}
+              var niveau = interditF ? 0 : forgeNiveauExact(id, rarete)
+              if (!niveau) {
+                remplacant = forgeSortDeRemplacement(joueur, id, rarete)
+                if (!remplacant && interditF) remplacant = forgeSortDeRemplacement(joueur, id, rarete, true)
+                if (remplacant) niveau = remplacant.niveau
+                else { niveau = forgeNiveauPourRarete(id, rarete); console.info('[parchemin] forge : aucun sort de l\'école de ' + id + ' n\'atteint ' + rarete.name() + ', page gardée au niveau ' + niveau) }
+              }
               var inv = joueur.getInventory()
               for (var i = 0; i < inv.getContainerSize(); i++) {
                 var p = inv.getItem(i)
                 if (!p || p.isEmpty() || String(p.id) !== PAGE_ID || parchLirePage(p)) continue
                 if (String(Java.loadClass('com.specs.irons_spellbooks.item.CodexPageItem').getSpellId(p)) !== id) continue
                 var cible = p
+                if (remplacant) {
+                  cible = Java.loadClass('com.specs.irons_spellbooks.item.CodexPageItem').createFor(ResourceLocationJ.tryParse(remplacant.id))
+                  parchEcrirePage(cible, niveau)
+                  if (p.count > 1) { p.shrink(1); joueur.give(cible) } else inv.setItem(i, cible)
+                  console.info('[parchemin] page forgée ' + id + ' remplacée par ' + remplacant.id + ' (page vierge ' + rarete.name() + ', ' + id + ' n\'atteint pas cette rareté) : niveau ' + niveau)
+                  break
+                }
                 if (p.count > 1) { cible = p.copyWithCount(1); p.shrink(1); parchEcrirePage(cible, niveau); joueur.give(cible) }
                 else parchEcrirePage(cible, niveau)
                 console.info('[parchemin] page forgée ' + id + ' (page vierge ' + rarete.name() + ') : niveau ' + niveau)
                 break
               }
             }
+            var nouv = 0
+            for (var id2 in apres) if ((apres[id2] || 0) > (avant[id2] || 0)) nouv++
+            if (!nouv) console.info('[parchemin] forge : aucune nouvelle page sans niveau trouvée dans l\'inventaire de ' + joueur.username)
           } catch (e2) { console.error('[parchemin] forge : ' + e2) }
         })
       } catch (e1) { console.error('[parchemin] forge : ' + e1) }
@@ -3135,4 +3387,1993 @@ ItemEvents.entityInteracted(function (event) {
     baliseAvertir(event.player, id, event.server.tickCount)
     event.cancel()
   } catch (e) {}
+})
+
+// ───────────── Grimoire de chronomancien : 15 emplacements (le mod aetheris_armures règle les nouveaux grimoires) ─────────────
+// Les grimoires déjà fabriqués gardent leurs 12 emplacements enregistrés : on les passe à 15 (inventaire et emplacement de grimoire),
+// sans toucher aux sorts déjà inscrits. Vérification toutes les 2 s.
+var GRIMOIRE_CHRONO = 'chronomancy:book_of_time_managment', GRIMOIRE_CHRONO_SLOTS = 15
+var GrimContJ = null, GrimCuriosJ = null
+function grimoireChronoMaj(pile) {
+  if (!pile || pile.isEmpty() || String(pile.id) !== GRIMOIRE_CHRONO) return
+  var c = GrimContJ.get(pile)
+  if (!c || c.getMaxSpellCount() >= GRIMOIRE_CHRONO_SLOTS) return
+  var m = c.mutableCopy()
+  m.setMaxSpellCount(GRIMOIRE_CHRONO_SLOTS)
+  GrimContJ.set(pile, m.toImmutable())
+}
+PlayerEvents.tick(function (event) {
+  var joueur = event.player
+  if (joueur.tickCount % 40 !== 7) return
+  try {
+    if (!GrimContJ) GrimContJ = Java.loadClass('io.redspace.ironsspellbooks.api.spells.ISpellContainer')
+    var inv = joueur.inventory
+    for (var i = 0; i < inv.getContainerSize(); i++) grimoireChronoMaj(inv.getItem(i))
+    if (!GrimCuriosJ) GrimCuriosJ = Java.loadClass('top.theillusivec4.curios.api.CuriosApi')
+    var cur = GrimCuriosJ.getCuriosInventory(joueur)
+    if (cur.isPresent()) {
+      var eq = cur.get().getEquippedCurios()
+      for (var k = 0; k < eq.getSlots(); k++) grimoireChronoMaj(eq.getStackInSlot(k))
+    }
+  } catch (e) {
+    if (!GRIMOIRE_CHRONO_ERR) { GRIMOIRE_CHRONO_ERR = true; console.error('[grimoire chrono] ' + e) }
+  }
+})
+var GRIMOIRE_CHRONO_ERR = false
+
+// ───────────── Barde : passif « Public » et Représentation ─────────────
+// Public : +5 % de puissance mélodique par autre joueur à 12 blocs ou moins (au plus +15 %).
+// Représentation : un Barde qui joue un morceau (instrument d'Immersive Melodies) devant un public reçoit, toutes les 20 s,
+// un pourboire en émeraudes et de l'XP. Les villageois (12 blocs) paient ; chaque joueur qui écoute (16 blocs, 4 au plus)
+// augmente le pourboire de 50 % et reçoit Régénération I. Sans villageois, le public de joueurs donne seulement de l'XP.
+// Au plus BARDE_SEANCES_JOUR séances payées par jour de jeu.
+var BARDE_PUBLIC_RAYON = 12, BARDE_PUBLIC_PAR_JOUEUR = 0.05, BARDE_PUBLIC_MAX = 3
+var BARDE_SEANCE_S = 20, BARDE_SEANCES_JOUR = 10
+var BARDE = null
+function bardeInit() {
+  if (BARDE) return BARDE
+  var RL = Java.loadClass('net.minecraft.resources.ResourceLocation')
+  var opt = Java.loadClass('net.minecraft.core.registries.BuiltInRegistries').ATTRIBUTE.getHolder(RL.parse('tunes_n_tomes:melody_spell_power'))
+  BARDE = {
+    attr: opt.isPresent() ? opt.get() : null,
+    modId: RL.parse('classes_rp:barde_public'),
+    Modif: Java.loadClass('net.minecraft.world.entity.ai.attributes.AttributeModifier'),
+    Op: Java.loadClass('net.minecraft.world.entity.ai.attributes.AttributeModifier$Operation'),
+    Instr: Java.loadClass('immersive_melodies.item.InstrumentItem'),
+    Villageois: Java.loadClass('net.minecraft.world.entity.npc.Villager'),
+    jeu: {}   // uuid -> secondes de jeu accumulées
+  }
+  return BARDE
+}
+function bardeJoue(joueur) {
+  var mains = [joueur.mainHandItem, joueur.offHandItem]
+  for (var i = 0; i < mains.length; i++) {
+    var s = mains[i]
+    if (s && !s.isEmpty() && BARDE.Instr.isInstance(s.item) && s.item.isPlaying(s)) return true
+  }
+  return false
+}
+function bardeAuditeurs(joueur, rayon) {
+  var res = []
+  var moi = String(joueur.uuid), dim = String(joueur.level.dimension)
+  var ps = joueur.server.players
+  for (var i = 0; i < ps.length; i++) {
+    var p = ps[i]
+    if (String(p.uuid) === moi || p.isSpectator() || !p.isAlive() || String(p.level.dimension) !== dim) continue
+    if (p.distanceToSqr(joueur) <= rayon * rayon) res.push(p)
+  }
+  return res
+}
+PlayerEvents.tick(function (event) {
+  var joueur = event.player
+  if (joueur.tickCount % 20 !== 11) return
+  try {
+    bardeInit()
+    var cl = classeDe(joueur), barde = !!(cl && cl.nom === 'Barde')
+    // Passif « Public » (vérifié toutes les 2 s)
+    if (BARDE.attr && joueur.tickCount % 40 === 31) {
+      var inst = joueur.getAttribute(BARDE.attr)
+      if (inst) {
+        var n = barde ? Math.min(BARDE_PUBLIC_MAX, bardeAuditeurs(joueur, BARDE_PUBLIC_RAYON).length) : 0
+        var actuel = inst.getModifier(BARDE.modId)
+        var voulu = n * BARDE_PUBLIC_PAR_JOUEUR
+        if (!actuel || Math.abs(Number(actuel.amount()) - voulu) > 0.0001) {
+          if (actuel) retirerModif(inst, BARDE.modId)
+          if (voulu > 0) inst.addTransientModifier(new BARDE.Modif(BARDE.modId, voulu, BARDE.Op.ADD_MULTIPLIED_BASE))
+        }
+      }
+    }
+    // Représentation
+    var uuid = String(joueur.uuid)
+    if (!barde || !bardeJoue(joueur)) { BARDE.jeu[uuid] = 0; return }
+    BARDE.jeu[uuid] = (BARDE.jeu[uuid] || 0) + 1
+    joueur.server.runCommandSilent('execute in ' + joueur.level.dimension + ' run particle minecraft:note ' + Number(joueur.x).toFixed(2) + ' ' + (Number(joueur.y) + 2.2).toFixed(2) + ' ' + Number(joueur.z).toFixed(2) + ' 0.5 0.3 0.5 1 2')
+    if (BARDE.jeu[uuid] < BARDE_SEANCE_S) return
+    BARDE.jeu[uuid] = 0
+    var auditeurs = bardeAuditeurs(joueur, 16)
+    var villageois = Number(joueur.level.getEntitiesOfClass(BARDE.Villageois, joueur.boundingBox.inflate(BARDE_PUBLIC_RAYON)).size())
+    if (!villageois && !auditeurs.length) {
+      joueur.setStatusMessage(Text.gray('Représentation : personne ne t\'écoute…'))
+      return
+    }
+    for (var a = 0; a < auditeurs.length; a++) {
+      auditeurs[a].potionEffects.add('minecraft:regeneration', 25 * 20, 0, false, true)
+      auditeurs[a].setStatusMessage(Text.lightPurple('♪ ' + joueur.username + ' joue pour toi : Régénération'))
+    }
+    var pd = joueur.persistentData
+    var jour = Math.floor(Number(joueur.level.dayTime) / 24000)
+    if (Number(pd.getLong('barde_jour')) !== jour) { pd.putLong('barde_jour', jour); pd.putInt('barde_seances', 0) }
+    if (Number(pd.getInt('barde_seances')) >= BARDE_SEANCES_JOUR) {
+      joueur.setStatusMessage(Text.gray('Représentation : ton public t\'a déjà assez payé aujourd\'hui.'))
+      return
+    }
+    pd.putInt('barde_seances', Number(pd.getInt('barde_seances')) + 1)
+    var mult = 1 + 0.5 * Math.min(4, auditeurs.length)
+    var emeraudes = villageois ? Math.round((villageois >= 3 ? 2 : 1) * mult) : 0
+    var xp = Math.round(5 * mult)
+    if (emeraudes > 0) joueur.give(Item.of('minecraft:emerald', emeraudes))
+    joueur.giveExperiencePoints(xp)
+    joueur.server.runCommandSilent('execute in ' + joueur.level.dimension + ' run particle minecraft:happy_villager ' + Number(joueur.x).toFixed(2) + ' ' + (Number(joueur.y) + 1).toFixed(2) + ' ' + Number(joueur.z).toFixed(2) + ' 1.5 0.5 1.5 0 12')
+    joueur.setStatusMessage(Text.gold('♪ Représentation : ' + (emeraudes ? '+' + emeraudes + ' émeraude' + (emeraudes > 1 ? 's' : '') + ', ' : '') + '+' + xp + ' XP' +
+      (auditeurs.length ? ' (' + auditeurs.length + ' auditeur' + (auditeurs.length > 1 ? 's' : '') + ')' : '')))
+  } catch (e) {
+    if (!BARDE_ERR) { BARDE_ERR = true; console.error('[barde] ' + e) }
+  }
+})
+var BARDE_ERR = false
+
+// ───────────── Rapière à clé de sol : note-repère de Dal Segno ─────────────
+// Un coup direct porté avec la rapière (dégâts > 0) a RAPIERE_CHANCE de chance de poser une note Segno (repère de
+// Tunes & Tomes) à l'emplacement de la cible ; Dal Segno ramène le Barde à la note la plus proche. Le nombre de notes
+// par joueur suit la limite du mod (la plus ancienne disparaît). Au plus une note toutes les RAPIERE_DELAI_MS.
+var RAPIERE_ID = 'aetheris_armures:rapiere_cle_de_sol', RAPIERE_CHANCE = 0.20, RAPIERE_DELAI_MS = 3000
+var RAPIERE = null, RAPIERE_DERNIERE = {}
+function rapiereNote(joueur, cible) {
+  if (!RAPIERE) RAPIERE = {
+    Note: Java.loadClass('net.alshanex.tunes_n_tomes.entity.segno_marker.SegnoMarkerEntity'),
+    Attache: Java.loadClass('net.alshanex.tunes_n_tomes.registry.TAttachmentRegistry'),
+    Gestion: Java.loadClass('net.alshanex.tunes_n_tomes.util.SoundMarkerManager'),
+    Config: Java.loadClass('net.alshanex.tunes_n_tomes.TunesNTomesConfig'),
+    Sons: Java.loadClass('net.alshanex.tunes_n_tomes.registry.TSoundRegistry'),
+    Source: Java.loadClass('net.minecraft.sounds.SoundSource')
+  }
+  var niveau = joueur.level
+  var note = new RAPIERE.Note(niveau, joueur)
+  note.setPos(cible.getX(), cible.getY(), cible.getZ())
+  niveau.addFreshEntity(note)
+  var donnees = joueur.getData(RAPIERE.Attache.SOUND_MARKER_DATA.get())
+  var retiree = donnees.addMarker(note.getUUID(), RAPIERE.Config.MAX_SOUND_MARKERS.get())
+  if (retiree) RAPIERE.Gestion.removeMarkerEntity(niveau, retiree)
+  RAPIERE.Gestion.syncMarkerData(joueur)
+  niveau.playSound(null, cible.getX(), cible.getY(), cible.getZ(), RAPIERE.Sons.CLEF.get(), RAPIERE.Source.PLAYERS, 1.0, 1.0)
+}
+try {
+  NativeEvents.onEvent(
+    Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingDamageEvent$Post'),
+    function (ev) {
+      try {
+        if (ev.getNewDamage() <= 0) return
+        var src = ev.getSource()
+        var joueur = src.actual          // (getEntity()/getDirectEntity() ne sont pas accessibles ici : accesseurs KubeJS)
+        var direct = src.immediate
+        if (!joueur || !joueur.isPlayer() || (direct && String(direct.uuid) !== String(joueur.uuid))) return
+        if (String(joueur.mainHandItem.id) !== RAPIERE_ID) return
+        var cible = ev.getEntity()
+        if (String(cible.uuid) === String(joueur.uuid)) return
+        var cle = String(joueur.uuid), maintenant = Date.now()
+        if (RAPIERE_DERNIERE[cle] && maintenant - RAPIERE_DERNIERE[cle] < RAPIERE_DELAI_MS) return
+        if (Math.random() >= RAPIERE_CHANCE) return
+        RAPIERE_DERNIERE[cle] = maintenant
+        rapiereNote(joueur, cible)
+      } catch (e) {
+        if (!RAPIERE_ERR) { RAPIERE_ERR = true; console.error('[rapière] ' + e) }
+      }
+    }
+  )
+} catch (e) { console.error('[rapière] note Segno indisponible : ' + e) }
+var RAPIERE_ERR = false
+
+// ───────────── Harpe du barde : effets des enchantements d'arc à l'impact des notes ─────────────
+// La harpe (mixin d'aetheris_armures) note sur chaque note tirée : Flamme, Frappe, Perforation.
+// Flamme : la cible brûle 5 s. Frappe : recul. Perforation : la note traverse et repart derrière la cible (une fois par niveau).
+var HARPE = null, HARPE_ERR = false
+try {
+  NativeEvents.onEvent(
+    Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingDamageEvent$Post'),
+    function (ev) {
+      try {
+        var note = ev.getSource().immediate
+        if (!note || String(note.type) !== 'tunes_n_tomes:default_note') return
+        var pd = note.persistentData
+        var cible = ev.getEntity()
+        var flamme = pd.getInt('aetheris_flamme'), frappe = pd.getInt('aetheris_frappe'), perfo = pd.getInt('aetheris_perforation')
+        if (flamme > 0) cible.igniteForSeconds(5)
+        var dir = note.getDeltaMovement().normalize()
+        if (frappe > 0) cible.knockback(0.6 * frappe, -dir.x(), -dir.z())
+        if (perfo > 0 && !pd.getBoolean('aetheris_perce')) {
+          pd.putBoolean('aetheris_perce', true)
+          if (!HARPE) HARPE = Java.loadClass('net.alshanex.tunes_n_tomes.entity.chord_blast.DefaultNoteEntity')
+          var tireur = ev.getSource().actual
+          if (!tireur || !tireur.isLiving()) return
+          var suite = new HARPE(cible.level, tireur)
+          var largeur = cible.getBbWidth() * 0.5 + 0.6
+          suite.setPos(cible.getX() + dir.x() * largeur, note.getY(), cible.getZ() + dir.z() * largeur)
+          suite.setRotation(note.getXRot(), note.getYRot())
+          suite.setDamage(note.getDamage())
+          suite.shoot(dir)
+          var spd = suite.persistentData
+          if (perfo > 1) spd.putInt('aetheris_perforation', perfo - 1)
+          if (flamme > 0) { spd.putInt('aetheris_flamme', flamme); suite.igniteForSeconds(100) }
+          if (frappe > 0) spd.putInt('aetheris_frappe', frappe)
+          cible.level.addFreshEntity(suite)
+        }
+      } catch (e) {
+        if (!HARPE_ERR) { HARPE_ERR = true; console.error('[harpe] ' + e) }
+      }
+    }
+  )
+} catch (e) { console.error('[harpe] effets des enchantements indisponibles : ' + e) }
+
+// ───────────── Artefacts de classe (aetheris_armures, emplacements Curios du Chronomancien) ─────────────
+// Barde, Hydromancien, Druide, Géomancien, Hémomancien, Paladin : 3 anneaux, 4 charmes, 1 ceinture, 1 collier chacun.
+// Effets actifs seulement si l'artefact est porté en Curios par un joueur de la bonne classe.
+// Le détail de chaque effet est dans les infobulles (client_scripts/classes_tooltips.js, ARTB_INFOS).
+var ARTB_SETS = {
+  'Barde': ['anneau_diapason', 'anneau_echo', 'anneau_cadence', 'metronome', 'sourdine', 'boite_a_musique', 'derniere_note', 'bandouliere', 'medaillon_harmonie'],
+  'Hydromancien': ['anneau_marees', 'anneau_corail', 'anneau_courant', 'perle_pression', 'coquille_nautile', 'conque_profondeurs', 'larme_leviathan', 'ceinture_algues', 'collier_perles_noires'],
+  'Druide': ['anneau_ronces', 'anneau_seve', 'anneau_saisons', 'gland_ancien', 'totem_meute', 'pollen_dore', 'coeur_arbre_monde', 'ceinture_lierre', 'collier_crocs'],
+  'Géomancien': ['anneau_granit', 'anneau_fracture', 'anneau_tellurique', 'pierre_ancrage', 'geode_vivante', 'sablier_desert', 'coeur_montagne', 'ceinture_filon', 'collier_fossiles'],
+  'Hémomancien': ['anneau_saignee', 'anneau_pacte', 'anneau_frenesie', 'calice_carmin', 'caillot_sang', 'dague_rituelle', 'coeur_battant', 'ceinture_osselets', 'collier_vampire'],
+  'Paladin': ['anneau_jugement', 'anneau_serment', 'anneau_aube', 'reliquaire', 'etendard', 'sceau_lumiere', 'aureole_sacree', 'ceinture_croise', 'pendentif_martyr']
+}
+var ARTB_ECOLES = {
+  'Barde': ['tunes_n_tomes:melody'],
+  'Hydromancien': ['aces_spell_utils:hydro', 'somakespells:aqua', 'cataclysm_spellbooks:abyssal'],
+  'Druide': ['irons_spellbooks:nature'],
+  'Géomancien': ['gtbcs_geomancy_plus:geo', 'cataclysm_spellbooks:sand'],
+  'Hémomancien': ['irons_spellbooks:blood'],
+  'Paladin': ['irons_spellbooks:holy']
+}
+// Sorts hydro « à eau » : la cible touchée reçoit l'effet Mouillé (somakespells:wet), quel que soit le lanceur.
+var ARTB_SORTS_EAU = ['monsterspellbooks:bubble_spray', 'monsterspellbooks:effervescence_bubble', 'monsterspellbooks:razor_typhoon', 'monsterspellbooks:riptide_dash',
+  'monsterspellbooks:water_trident', 'somakespells:submerge', 'somakespells:tidal_grasp', 'somakespells:tsunami', 'somakespells:tidal_dash', 'somakespells:thunder_cloud',
+  'somakespells:water_control', 'somakespells:water_spear', 'somakespells:water_ball', 'somakespells:hydro_slash', 'somakespells:sea_serpent', 'somakespells:sea_serpent_jet',
+  'somakespells:storm_aura', 'cataclysm_spellbooks:depth_charge', 'cataclysm_spellbooks:tidal_grab']
+var ARTB_CLASSE = {}
+for (var artbC in ARTB_SETS) for (var artbI = 0; artbI < ARTB_SETS[artbC].length; artbI++) ARTB_CLASSE[ARTB_SETS[artbC][artbI]] = artbC
+var ARTB = null, ARTB_ERR = {}
+function artbInit() {
+  if (ARTB) return ARTB
+  ARTB = {
+    Curios: Java.loadClass('top.theillusivec4.curios.api.CuriosApi'),
+    Magie: Java.loadClass('io.redspace.ironsspellbooks.api.magic.MagicData'),
+    ManaMax: Java.loadClass('io.redspace.ironsspellbooks.api.registry.AttributeRegistry').MAX_MANA,
+    PuissMelo: Java.loadClass('net.alshanex.tunes_n_tomes.registry.TAttributeRegistry').MELODY_SPELL_POWER,
+    Vivant: Java.loadClass('net.minecraft.world.entity.LivingEntity'),
+    Effets: Java.loadClass('net.minecraft.core.registries.BuiltInRegistries').MOB_EFFECT,
+    Sons: Java.loadClass('net.minecraft.sounds.SoundEvents'),
+    SrcSon: Java.loadClass('net.minecraft.sounds.SoundSource'),
+    Part: Java.loadClass('net.minecraft.core.particles.ParticleTypes'),
+    RL: Java.loadClass('net.minecraft.resources.ResourceLocation'),
+    SrcSort: Java.loadClass('io.redspace.ironsspellbooks.damage.SpellDamageSource'),
+    TagsEntites: Java.loadClass('net.minecraft.tags.EntityTypeTags'),
+    reliques: {}, consecration: {},
+    cache: {}, blessure: false, partage: false,
+    resonance: {}, cadence: {}, tempo: {}, ritournelle: {}, accords: {}, gratuitRecharge: {},
+    marees: {}, historique: {}, saison: {}, racines: {}, meute: {}, lierre: {}, granit: {}, tellurique: {},
+    fossiles: {}, frenesie: {}, calice: {}, caillot: {}, battement: {}
+  }
+  return ARTB
+}
+function artbErreur(cle, e) { if (!ARTB_ERR[cle]) { ARTB_ERR[cle] = true; console.error('[artefacts] ' + cle + ' : ' + e) } }
+// Artefacts portés (cache 0,5 s) : { id: pile }
+function artbPortes(joueur) {
+  var cle = String(joueur.uuid), t = Date.now(), c = ARTB.cache[cle]
+  if (c && t - c.t < 500) return c.p
+  var p = {}
+  var inv = ARTB.Curios.getCuriosInventory(joueur)
+  if (inv.isPresent()) {
+    var eq = inv.get().getEquippedCurios()
+    for (var k = 0; k < eq.getSlots(); k++) {
+      var s = eq.getStackInSlot(k)
+      if (s.isEmpty()) continue
+      var id = String(s.id)
+      if (id.indexOf('aetheris_armures:') === 0) p[id.substring(17)] = s
+    }
+  }
+  ARTB.cache[cle] = { t: t, p: p }
+  return p
+}
+// Renvoie la pile portée (ou null) si le joueur est de la classe de l'artefact et le porte.
+function artbPorte(joueur, nom) {
+  if (!joueur || !joueur.isPlayer()) return null
+  artbInit()
+  var s = artbPortes(joueur)[nom]
+  if (!s) return null
+  var cl = classeDe(joueur)
+  if (!cl || cl.nom !== ARTB_CLASSE[nom]) return null
+  return s
+}
+function artbEcole(ecole, classe) {
+  if (!ecole) return false
+  return ARTB_ECOLES[classe].indexOf(String(ecole.getId())) >= 0
+}
+function artbMelodie(ecole) { return artbEcole(ecole, 'Barde') }
+function artbBoss(ent) { return Number(ent.getMaxHealth()) >= 150 }
+function artbMortVivant(ent) { try { return ent.getType().is(ARTB.TagsEntites.UNDEAD) } catch (e) { return false } }
+function artbPleinJour(joueur) { return joueur.level.isDay() && joueur.level.canSeeSky(joueur.blockPosition()) }
+// Hydromancien : « sous l'eau » = immergé, ou en train de lancer le Nuage d'orage (pluie sur une petite zone)
+function artbSousLEau(joueur) {
+  if (joueur.isUnderWater()) return true
+  try {
+    var md = ARTB.Magie.getPlayerMagicData(joueur)
+    return md.isCasting() && String(md.getCastingSpellId()) === 'somakespells:thunder_cloud'
+  } catch (e) { return false }
+}
+// « Mouillé » : dans l'eau, sous la pluie, effet Mouillé, ou sous son Nuage d'orage
+function artbMouille(ent) {
+  if (ent.isInWaterRainOrBubble() || artbAEffet(ent, 'somakespells:wet') || artbAEffet(ent, 'aetheris_armures:trempe')) return true
+  return ent.isPlayer() && artbSousLEau(ent)
+}
+function artbJoueursProches(joueur, rayon, avecSoi) {
+  var res = [], liste = joueur.level.players()
+  for (var i = 0; i < liste.size(); i++) {
+    var p = liste.get(i)
+    if (!avecSoi && String(p.uuid) === String(joueur.uuid)) continue
+    if (p.isSpectator() || !p.isAlive()) continue
+    if (p.distanceToSqr(joueur) <= rayon * rayon) res.push(p)
+  }
+  return res
+}
+function artbEnnemisProches(centre, rayon, exclu) {
+  var res = [], liste = centre.level.getEntitiesOfClass(ARTB.Vivant, centre.boundingBox.inflate(rayon))
+  for (var i = 0; i < liste.size(); i++) {
+    var ent = liste.get(i)
+    if (ent.isPlayer() || !ent.isAlive()) continue
+    if (exclu && String(ent.uuid) === String(exclu.uuid)) continue
+    if (ent.persistentData.getBoolean('artb_allie')) continue
+    res.push(ent)
+  }
+  return res
+}
+function artbRetirerEffet(entite, id) {
+  var h = ARTB.Effets.getHolder(ARTB.RL.parse(id))
+  if (h.isPresent() && entite.hasEffect(h.get())) entite.removeEffect(h.get())
+}
+function artbAEffet(entite, id) {
+  var h = ARTB.Effets.getHolder(ARTB.RL.parse(id))
+  return h.isPresent() && entite.hasEffect(h.get())
+}
+function artbSon(ent, son, vol, ton) {
+  var se = son
+  try { se = son.value() } catch (x) { se = son }   // certains sons sont des Holder, d'autres des SoundEvent
+  ent.level.playSound(null, ent.getX(), ent.getY(), ent.getZ(), se, ARTB.SrcSon.PLAYERS, vol, ton)
+}
+function artbPart(ent, type, n, etendue) {
+  ent.level.sendParticles(type, ent.getX(), ent.getY() + ent.getBbHeight() * 0.6, ent.getZ(), n, etendue, 0.4, etendue, 0.05)
+}
+function artbNotes(ent, n, etendue) {
+  ent.level.sendParticles(ARTB.Part.NOTE, ent.getX(), ent.getY() + ent.getBbHeight() * 0.7, ent.getZ(), n, etendue, 0.4, etendue, 1.0)
+}
+// Dégâts magiques de l'artefact (source non « sort » : ne relance pas les effets des artefacts)
+// ── Animations des artefacts : particules des sorts d'Iron's Spells (arcs électriques, ondes de choc, sang, neige, âmes...) ──
+var ARTB_FX = null, ARTB_FX_KO = false
+var ARTB_FX_COULEURS = {
+  'Barde': [0.75, 0.45, 1], 'Hydromancien': [0.25, 0.6, 1], 'Druide': [0.4, 0.85, 0.3], 'Géomancien': [0.7, 0.55, 0.35],
+  'Hémomancien': [0.85, 0.1, 0.15], 'Paladin': [1, 0.85, 0.4], 'Pyromancien': [1, 0.5, 0.1], 'Cryomancien': [0.6, 0.9, 1],
+  'Électro-Sorcier': [1, 0.95, 0.4], 'Voyageur du Vide': [0.6, 0.2, 0.9], 'Aéromancien': [0.9, 1, 0.95], 'Nécromancien': [0.3, 0.8, 0.35],
+  'Envoûteur': [0.45, 0.1, 0.5], 'Spiritualiste': [0.45, 0.9, 1], 'Symétriste': [0.95, 0.95, 0.95], 'Technomancien': [0.3, 1, 0.8]
+}
+function artbFxInit() {
+  if (ARTB_FX || ARTB_FX_KO) return ARTB_FX
+  try {
+    var R = Java.loadClass('io.redspace.ironsspellbooks.registries.ParticleRegistry')
+    ARTB_FX = {
+      MM: Java.loadClass('io.redspace.ironsspellbooks.capabilities.magic.MagicManager'),
+      Zap: Java.loadClass('io.redspace.ironsspellbooks.particle.ZapParticleOption'),
+      Onde: Java.loadClass('io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions'),
+      Brume: Java.loadClass('io.redspace.ironsspellbooks.particle.FogParticleOptions'),
+      Vec3: Java.loadClass('net.minecraft.world.phys.Vec3'),
+      elec: R.ELECTRICITY_PARTICLE.get(), sang: R.BLOOD_PARTICLE.get(), wisp: R.WISP_PARTICLE.get(), neige: R.SNOWFLAKE_PARTICLE.get(),
+      ender: R.UNSTABLE_ENDER_PARTICLE.get(), feu: R.FIRE_PARTICLE.get(), braise: R.EMBER_PARTICLE.get(), siphon: R.SIPHON_PARTICLE.get(),
+      acide: R.ACID_PARTICLE.get(), luciole: R.FIREFLY_PARTICLE.get(), purif: R.CLEANSE_PARTICLE.get(), ame: R.SOUL_FIRE_PARTICLE.get(),
+      etoile: R.FALLING_SPARKLE_PARTICLE.get()
+    }
+  } catch (e) { ARTB_FX_KO = true; console.error('[artefacts] animations indisponibles : ' + e) }
+  return ARTB_FX
+}
+function artbFx(ent, nom, n, etendue) {
+  var F = artbFxInit()
+  if (!F || !F[nom]) return
+  F.MM.spawnParticles(ent.level, F[nom], ent.getX(), ent.getY() + ent.getBbHeight() * 0.55, ent.getZ(), n, etendue, ent.getBbHeight() * 0.3, etendue, 0.05, false)
+}
+// Arc électrique d'une entité à l'autre (particule « zap » de la Chaîne d'éclairs)
+function artbFxArc(a, b) {
+  var F = artbFxInit()
+  if (!F) return
+  F.MM.spawnParticles(a.level, new F.Zap(new F.Vec3(b.getX(), b.getY() + b.getBbHeight() * 0.5, b.getZ())), a.getX(), a.getY() + a.getBbHeight() * 0.6, a.getZ(), 1, 0, 0, 0, 0, true)
+}
+// Onde de choc au sol, colorée selon la classe du joueur
+function artbFxOnde(joueur, centre, rayon) {
+  var F = artbFxInit()
+  if (!F) return
+  var cl = joueur && joueur.isPlayer() ? classeDe(joueur) : null
+  var c = (cl && ARTB_FX_COULEURS[cl.nom]) || [1, 1, 1]
+  F.MM.spawnParticles(centre.level, new F.Onde(c[0], c[1], c[2], rayon), centre.getX(), centre.getY() + 0.15, centre.getZ(), 1, 0, 0, 0, 0, true)
+}
+function artbFxBrume(centre, r, g, b, taille, n, etendue) {
+  var F = artbFxInit()
+  if (!F) return
+  F.MM.spawnParticles(centre.level, new F.Brume(r, g, b, taille), centre.getX(), centre.getY() + 0.5, centre.getZ(), n, etendue, 0.3, etendue, 0.01, false)
+}
+// Impact d'un artefact sur une cible, selon la classe (arc électrique pour l'Électro-Sorcier et le Technomancien)
+var ARTB_FX_IMPACT = { 'Pyromancien': 'braise', 'Cryomancien': 'neige', 'Hémomancien': 'sang', 'Nécromancien': 'siphon', 'Spiritualiste': 'wisp',
+  'Voyageur du Vide': 'ender', 'Paladin': 'purif', 'Envoûteur': 'siphon', 'Druide': 'luciole', 'Électro-Sorcier': 'elec', 'Technomancien': 'elec', 'Symétriste': 'etoile' }
+function artbFxImpact(joueur, cible) {
+  if (!joueur || !joueur.isPlayer()) return
+  var cl = classeDe(joueur)
+  if (!cl) return
+  var nom = ARTB_FX_IMPACT[cl.nom]
+  if (nom) artbFx(cible, nom, 8, 0.3)
+  if ((cl.nom === 'Électro-Sorcier' || cl.nom === 'Technomancien') && joueur.distanceToSqr(cible) < 16 * 16) artbFxArc(joueur, cible)
+}
+function artbBlesser(joueur, cible, montant) {
+  if (montant <= 0 || !cible.isAlive()) return
+  ARTB.blessure = true
+  try { cible.hurt(joueur.damageSources().indirectMagic(joueur, joueur), montant) } finally { ARTB.blessure = false }
+  try { artbFxImpact(joueur, cible) } catch (e) {}
+}
+function artbMana(joueur, quantite) {
+  var md = ARTB.Magie.getPlayerMagicData(joueur)
+  var max = Number(joueur.getAttributeValue(ARTB.ManaMax)), mana = Number(md.getMana())
+  if (mana < max) md.setMana(Math.min(max, mana + quantite))
+}
+function artbPousser(ent, vx, vy, vz) {
+  ent.setDeltaMovement(vx, vy, vz)
+  ent.hurtMarked = true
+}
+// Onde de choc : recul + effet éventuel + dégâts éventuels
+function artbOnde(joueur, centre, rayon, degats, force, effet, duree, ampli) {
+  var ennemis = artbEnnemisProches(centre, rayon, null)
+  for (var i = 0; i < ennemis.length; i++) {
+    var ent = ennemis[i]
+    if (degats > 0) artbBlesser(joueur, ent, degats)
+    if (force > 0) ent.knockback(force, centre.getX() - ent.getX(), centre.getZ() - ent.getZ())
+    if (effet) ent.potionEffects.add(effet, duree, ampli || 0, false, true)
+  }
+  try { artbFxOnde(joueur, centre, rayon) } catch (e) {}
+  return ennemis
+}
+// Dégâts sur la durée : n coups toutes les secondes
+function artbSurLaDuree(joueur, cible, n, degats, soinLanceur) {
+  for (var k = 1; k <= n; k++) {
+    joueur.server.scheduleInTicks(20 * k, function () {
+      try {
+        if (!cible.isAlive()) return
+        artbBlesser(joueur, cible, degats)
+        if (soinLanceur > 0 && joueur.isAlive()) joueur.heal(soinLanceur)
+      } catch (e) { artbErreur('dégâts sur la durée', e) }
+    })
+  }
+}
+function artbStatut(joueur, texte, couleur) {
+  joueur.setStatusMessage(couleur === 'aqua' ? Text.aqua(texte) : couleur === 'green' ? Text.green(texte) : couleur === 'gold' ? Text.gold(texte) : couleur === 'red' ? Text.red(texte) : Text.lightPurple(texte))
+}
+// Anneau de Cadence : un temps (« arme » ou « sort ») ; renvoie true si la mesure est complète.
+function artbCadence(joueur, temps) {
+  var cle = String(joueur.uuid), c = ARTB.cadence[cle], t = Date.now()
+  if (!c || t - c.quand > 3000) c = { n: 0, dernier: '', pret: false, quand: 0 }
+  if (c.pret) { ARTB.cadence[cle] = null; return true }
+  if (c.dernier !== temps) c.n++
+  c.dernier = temps; c.quand = t
+  if (c.n >= 4) c.pret = true
+  ARTB.cadence[cle] = c
+  var barre = ''
+  for (var i = 1; i <= 4; i++) barre += i <= c.n ? '♪' : '·'
+  artbStatut(joueur, c.pret ? 'Mesure complète : prochain coup ou sort !' : 'Mesure ' + barre)
+  return false
+}
+function artbFinMesure(joueur, cible) {
+  artbOnde(joueur, cible, 4, 0, 1.2, 'tunes_n_tomes:deafened', 80, 0)
+  artbNotes(cible, 24, 2)
+  artbSon(joueur, ARTB.Sons.NOTE_BLOCK_BASS, 1.2, 0.8)
+}
+// Druide : saison courante (change toutes les minutes)
+var ARTB_SAISONS = ['Printemps', 'Été', 'Automne', 'Hiver']
+var ARTB_EFFETS_SAISONS = ['aetheris_armures:printemps', 'aetheris_armures:ete', 'aetheris_armures:automne', 'aetheris_armures:hiver']
+function artbSaisonsRetirer(joueur) { for (var i = 0; i < 4; i++) artbRetirerEffet(joueur, ARTB_EFFETS_SAISONS[i]) }
+// Messages en bas de l'écran quand un joueur reçoit un effet de classe
+var ARTB_MESSAGES_EFFETS = {
+  'aetheris_armures:marque_melodique': ['Vous êtes marqué par un sort mélodique', 'lightPurple'],
+  'aetheris_armures:trempe': ['Vous êtes trempés', 'aqua'],
+  'aetheris_armures:petrifie': ['Vous êtes pétrifiés', 'gold']
+}
+function artbSaison() { return Math.floor(Date.now() / 60000) % 4 }
+function artbPierre(bloc) {
+  var id = String(bloc.getBlock().builtInRegistryHolder().key().location())
+  return /stone|deepslate|granite|andesite|diorite|tuff|basalt|calcite|blackstone|cobble|ore/.test(id)
+}
+function artbSolVivant(bloc) {
+  var id = String(bloc.getBlock().builtInRegistryHolder().key().location())
+  return /grass|dirt|moss|podzol|mycelium|rooted|mud|leaves|farmland/.test(id)
+}
+
+// ═══ Lancement d'un sort ═══
+try {
+  NativeEvents.onEvent(Java.loadClass('io.redspace.ironsspellbooks.api.events.SpellOnCastEvent'), function (ev) {
+    try {
+      var joueur = ev.getEntity()
+      var ecole = ev.getSchoolType()
+      artbInit()
+      var cle = String(joueur.uuid), gratuit = false, reduction = 0, t = Date.now()
+      if (artbMelodie(ecole)) {
+        if (artbPorte(joueur, 'metronome')) {
+          var tp = ARTB.tempo[cle]
+          var ecart = tp ? t - tp.quand : -1
+          if (tp && ecart >= 1500 && ecart <= 4000) tp.n++
+          else tp = { n: 0 }
+          tp.quand = t
+          ARTB.tempo[cle] = tp
+          if (tp.n >= 3) {
+            gratuit = true; tp.n = 0
+            ARTB.gratuitRecharge[cle] = t
+            artbStatut(joueur, '♪ Tempo parfait : sort gratuit et sans recharge', 'gold')
+            artbSon(joueur, ARTB.Sons.NOTE_BLOCK_CHIME, 1, 1.5)
+          } else if (tp.n > 0) {
+            reduction += 0.25
+            artbStatut(joueur, '♪ Dans le tempo (' + tp.n + '/3)')
+          }
+        }
+        if (artbPorte(joueur, 'bandouliere')) {
+          var public_ = artbJoueursProches(joueur, 12, false)
+          reduction += 0.10 * Math.min(3, public_.length)
+          for (var i = 0; i < public_.length; i++) public_[i].potionEffects.add('tunes_n_tomes:cheered', 100, 0, false, true)
+        }
+        if (artbPorte(joueur, 'anneau_cadence') && artbCadence(joueur, 'sort')) artbFinMesure(joueur, joueur)
+      }
+      if (artbEcole(ecole, 'Hydromancien')) {
+        if (artbPorte(joueur, 'perle_pression') && artbSousLEau(joueur)) reduction += 0.25
+        if (artbPorte(joueur, 'anneau_courant') && joueur.isSprinting()) {
+          var regard = joueur.getLookAngle(), force = artbMouille(joueur) ? 2.4 : 1.4
+          artbPousser(joueur, regard.x() * force, Math.max(0.15, regard.y() * force * 0.6), regard.z() * force)
+          artbPart(joueur, ARTB.Part.SPLASH, 30, 0.6)
+          artbSon(joueur, ARTB.Sons.TRIDENT_RIPTIDE_1, 1, 1)
+        }
+      }
+      if (artbEcole(ecole, 'Druide') && artbPorte(joueur, 'totem_meute') && Math.random() < 0.10 && !(ARTB.meute[cle] && t - ARTB.meute[cle] < 30000)) {
+        ARTB.meute[cle] = t
+        for (var l = 0; l < 2; l++) {
+          var loup = joueur.level.createEntity('minecraft:wolf')
+          loup.setPos(joueur.getX() + (l ? 1.5 : -1.5), joueur.getY(), joueur.getZ() + 1)
+          loup.tame(joueur)
+          loup.persistentData.putBoolean('artb_allie', true)
+          joueur.level.addFreshEntity(loup)
+          artbPart(loup, ARTB.Part.HAPPY_VILLAGER, 12, 0.5)
+          joueur.server.scheduleInTicks(400, function () { try { if (loup.isAlive()) loup.discard() } catch (e2) {} })
+        }
+        artbSon(joueur, ARTB.Sons.WOLF_HOWL, 1, 1)
+        artbStatut(joueur, '🐺 La meute répond à ton appel', 'green')
+      }
+      if (artbEcole(ecole, 'Géomancien') && artbPorte(joueur, 'anneau_tellurique')) {
+        ARTB.tellurique[cle] = (ARTB.tellurique[cle] || 0) + 1
+        if (ARTB.tellurique[cle] >= 5) {
+          ARTB.tellurique[cle] = 0
+          var touches = artbOnde(joueur, joueur, 6, 4, 0, 'minecraft:slowness', 60, 1)
+          for (var q = 0; q < touches.length; q++) if (!artbBoss(touches[q])) artbPousser(touches[q], 0, 0.55, 0)
+          artbPart(joueur, ARTB.Part.EXPLOSION, 8, 3)
+          artbSon(joueur, ARTB.Sons.GENERIC_EXPLODE, 1, 0.6)
+          artbStatut(joueur, '⛰ Secousse tellurique !', 'gold')
+        } else artbStatut(joueur, '⛰ Secousse ' + ARTB.tellurique[cle] + '/5', 'gold')
+      }
+      if (artbEcole(ecole, 'Hémomancien') && artbPorte(joueur, 'anneau_pacte')) {
+        var cout = Number(ev.getManaCost())
+        var pv = cout * 0.04
+        if (Number(joueur.getHealth()) - pv >= 1) {
+          reduction += 0.5
+          joueur.setHealth(Number(joueur.getHealth()) - pv)
+          artbFx(joueur, 'sang', 10, 0.3)
+        }
+      }
+      if (artbEcole(ecole, 'Paladin') && artbPorte(joueur, 'anneau_aube') && artbPleinJour(joueur)) reduction += 0.25
+      if (gratuit) ev.setManaCost(0)
+      else if (reduction > 0) ev.setManaCost(Math.floor(Number(ev.getManaCost()) * (1 - Math.min(0.4, reduction))))
+    } catch (e) { artbErreur('lancement', e) }
+  })
+} catch (e) { console.error('[artefacts] lancement indisponible : ' + e) }
+
+// Recharge : sort « tempo parfait » du Métronome
+try {
+  NativeEvents.onEvent(Java.loadClass('io.redspace.ironsspellbooks.api.events.SpellCooldownAddedEvent$Pre'), function (ev) {
+    try {
+      if (!ARTB || !artbMelodie(ev.getSpell().getSchoolType())) return
+      var cle = String(ev.getEntity().uuid), t = ARTB.gratuitRecharge[cle]
+      if (!t || Date.now() - t > 20000) return
+      ARTB.gratuitRecharge[cle] = 0
+      ev.setEffectiveCooldown(0)
+    } catch (e) { artbErreur('recharge', e) }
+  })
+} catch (e) { console.error('[artefacts] recharge indisponible : ' + e) }
+
+// ═══ Dégâts de sort ═══
+try {
+  NativeEvents.onEvent(Java.loadClass('io.redspace.ironsspellbooks.api.events.SpellDamageEvent'), function (ev) {
+    try {
+      var cible = ev.getEntity()
+      var src = ev.getSpellDamageSource()
+      var lanceur = src.actual
+      artbInit()
+      // Sourdine (Barde) : la cible porte l'étouffoir
+      if (cible && cible.isPlayer() && artbPorte(cible, 'sourdine') && (!lanceur || String(lanceur.uuid) !== String(cible.uuid))) {
+        var etouffe = Number(ev.getAmount()) * 0.15
+        ev.setAmount(Number(ev.getAmount()) - etouffe)
+        artbMana(cible, etouffe * 2)
+      }
+      // Sorts à eau : la cible est mouillée (5 s)
+      if (cible && (!lanceur || String(cible.uuid) !== String(lanceur.uuid)) && ARTB_SORTS_EAU.indexOf(String(src.spell().getSpellId())) >= 0)
+        cible.potionEffects.add('somakespells:wet', 100, 0, false, true)
+      if (!lanceur || !cible || !lanceur.isPlayer() || String(cible.uuid) === String(lanceur.uuid)) return
+      var ecole = src.spell().getSchoolType()
+      var t = Date.now(), cleC = String(cible.uuid), cleL = String(lanceur.uuid)
+      // ── Barde ──
+      if (artbMelodie(ecole)) {
+        var degatsB = Number(ev.getAmount())
+        if (artbPorte(lanceur, 'anneau_diapason')) {
+          var marque = ARTB.resonance[cleC]
+          if (marque && t - marque < 4000) {
+            ARTB.resonance[cleC] = 0
+            var autour = artbEnnemisProches(cible, 4, cible)
+            for (var i = 0; i < autour.length; i++) artbBlesser(lanceur, autour[i], degatsB * 0.4)
+            artbFxOnde(lanceur, cible, 4)
+            artbNotes(cible, 16, 2)
+            artbSon(cible, ARTB.Sons.NOTE_BLOCK_BELL, 1, 1.2)
+          } else {
+            ARTB.resonance[cleC] = t
+            cible.potionEffects.add('aetheris_armures:marque_melodique', 80, 0, false, true)
+          }
+        }
+        if (artbPorte(lanceur, 'anneau_echo')) {
+          var echo = degatsB * 0.35
+          lanceur.server.scheduleInTicks(30, function () {
+            try {
+              if (!cible.isAlive() || !lanceur.isAlive()) return
+              artbBlesser(lanceur, cible, echo)
+              artbNotes(cible, 6, 0.4)
+              artbSon(cible, ARTB.Sons.NOTE_BLOCK_HARP, 0.8, 0.7)
+            } catch (e2) { artbErreur('écho', e2) }
+          })
+        }
+      }
+      // ── Hydromancien ──
+      if (artbEcole(ecole, 'Hydromancien')) {
+        if (artbPorte(lanceur, 'anneau_marees')) {
+          var maree = (ARTB.marees[cleL] || 0)
+          if (maree >= 5) {
+            ARTB.marees[cleL] = 0
+            ev.setAmount(Number(ev.getAmount()) * 1.5)
+            var happes = artbEnnemisProches(cible, 5, cible)
+            for (var h = 0; h < happes.length; h++) if (!artbBoss(happes[h])) happes[h].knockback(1.0, happes[h].getX() - cible.getX(), happes[h].getZ() - cible.getZ())
+            artbPart(cible, ARTB.Part.SPLASH, 40, 2)
+            artbSon(cible, ARTB.Sons.GENERIC_SPLASH, 1.2, 0.7)
+            artbFxOnde(lanceur, cible, 5)
+            artbStatut(lanceur, '🌊 Marée haute !', 'aqua')
+          } else {
+            ARTB.marees[cleL] = maree + 1
+            var vagues = ''
+            for (var v = 1; v <= 5; v++) vagues += v <= maree + 1 ? '≈' : '·'
+            artbStatut(lanceur, '🌊 Marée ' + vagues, 'aqua')
+          }
+        }
+        if (artbPorte(lanceur, 'anneau_corail')) {
+          if (artbMouille(cible)) ev.setAmount(Number(ev.getAmount()) * 1.2)
+          else cible.potionEffects.add('minecraft:slowness', 60, 1, false, true)
+        }
+        if (artbPorte(lanceur, 'conque_profondeurs') && Math.random() < 0.15) {
+          artbBlesser(lanceur, cible, 4)
+          if (!artbBoss(cible)) artbPousser(cible, 0, 1.0, 0)
+          artbPart(cible, ARTB.Part.SPLASH, 50, 0.4)
+          artbPart(cible, ARTB.Part.BUBBLE_COLUMN_UP, 30, 0.3)
+          artbSon(cible, ARTB.Sons.BUBBLE_COLUMN_UPWARDS_INSIDE, 1.5, 1)
+        }
+        if (artbPorte(lanceur, 'collier_perles_noires') && !cible.persistentData.getBoolean('artb_noyade')) {
+          cible.persistentData.putBoolean('artb_noyade', true)
+          artbSurLaDuree(lanceur, cible, 4, 2, 0)
+          lanceur.server.scheduleInTicks(81, function () { try { cible.persistentData.putBoolean('artb_noyade', false) } catch (e3) {} })
+          artbPart(cible, ARTB.Part.BUBBLE, 20, 0.4)
+        }
+      }
+      // ── Druide ──
+      if (artbEcole(ecole, 'Druide')) {
+        if (artbPorte(lanceur, 'anneau_ronces') && Math.random() < 0.25 && !artbBoss(cible) && !(ARTB.racines['r' + cleC] && t - ARTB.racines['r' + cleC] < 6000)) {
+          ARTB.racines['r' + cleC] = t
+          cible.potionEffects.add('minecraft:slowness', 20, 9, false, true)
+          artbSurLaDuree(lanceur, cible, 3, 1, 0)
+          artbPart(cible, ARTB.Part.HAPPY_VILLAGER, 10, 0.5); artbFx(cible, 'luciole', 10, 0.5)
+        }
+        if (artbPorte(lanceur, 'anneau_seve')) {
+          var seve = Number(ev.getAmount()) * 0.15
+          var manque = Number(lanceur.getMaxHealth()) - Number(lanceur.getHealth())
+          lanceur.heal(seve)
+          if (seve > manque) {
+            var allies = artbJoueursProches(lanceur, 10, false)
+            if (allies.length) allies[0].heal(seve - manque)
+          }
+        }
+        if (artbPorte(lanceur, 'anneau_saisons')) {
+          var s = artbSaison()
+          if (s === 0) lanceur.heal(1)
+          else if (s === 1) cible.igniteForSeconds(3)
+          else if (s === 2) cible.potionEffects.add('minecraft:weakness', 80, 0, false, true)
+          else cible.potionEffects.add('minecraft:slowness', 60, 1, false, true)
+        }
+      }
+      // ── Géomancien ──
+      if (artbEcole(ecole, 'Géomancien')) {
+        if (artbPorte(lanceur, 'anneau_granit')) {
+          var pierres = (ARTB.granit[cleC] && t - ARTB.granit[cleC].t < 6000) ? ARTB.granit[cleC].n + 1 : 1
+          if (pierres >= 4) {
+            ARTB.granit[cleC] = null
+            if (!artbBoss(cible)) cible.potionEffects.add('aetheris_armures:petrifie', 30, 0, false, true)
+            cible.potionEffects.add('minecraft:mining_fatigue', 30, 2, false, true)
+            artbPart(cible, ARTB.Part.CLOUD, 20, 0.4)
+            artbSon(cible, ARTB.Sons.STONE_PLACE, 1.5, 0.6)
+            artbStatut(lanceur, '⛰ Pétrifié !', 'gold')
+          } else ARTB.granit[cleC] = { n: pierres, t: t }
+        }
+        if (artbPorte(lanceur, 'anneau_fracture') && artbPierre(cible.level.getBlockState(cible.blockPosition().below()))) {
+          ev.setAmount(Number(ev.getAmount()) * 1.2)
+          if (!artbBoss(cible)) artbPousser(cible, 0, 0.45, 0)
+          artbPart(cible, ARTB.Part.CRIT, 15, 0.4)
+        }
+        if (artbPorte(lanceur, 'sablier_desert') && Math.random() < 0.20) cible.potionEffects.add('minecraft:blindness', 40, 0, false, true)
+      }
+      // ── Hémomancien ──
+      if (artbEcole(ecole, 'Hémomancien')) {
+        if (artbPorte(lanceur, 'ceinture_osselets') && Number(cible.getHealth()) < Number(cible.getMaxHealth()) * 0.3) {
+          ev.setAmount(Number(ev.getAmount()) * 1.3)
+          artbPart(cible, ARTB.Part.DAMAGE_INDICATOR, 6, 0.3)
+        }
+        if (artbPorte(lanceur, 'anneau_saignee') && !cible.persistentData.getBoolean('artb_saigne')) {
+          cible.persistentData.putBoolean('artb_saigne', true)
+          artbSurLaDuree(lanceur, cible, 4, 1, 1)
+          lanceur.server.scheduleInTicks(81, function () { try { cible.persistentData.putBoolean('artb_saigne', false) } catch (e4) {} })
+        }
+        if (artbPorte(lanceur, 'anneau_frenesie')) {
+          var fr = (ARTB.frenesie[cleL] && t - ARTB.frenesie[cleL].t < 8000) ? ARTB.frenesie[cleL].n + 1 : 1
+          if (fr >= 5) {
+            ARTB.frenesie[cleL] = null
+            lanceur.potionEffects.add('minecraft:strength', 120, 0, false, true)
+            lanceur.potionEffects.add('minecraft:speed', 120, 0, false, true)
+            artbStatut(lanceur, '🩸 Frénésie !', 'red')
+          } else {
+            ARTB.frenesie[cleL] = { n: fr, t: t }
+            artbStatut(lanceur, '🩸 Frénésie ' + fr + '/5', 'red')
+          }
+        }
+        if (artbPorte(lanceur, 'collier_vampire')) {
+          var part = Number(ev.getAmount()) * 0.15
+          var proches = artbJoueursProches(lanceur, 8, false)
+          for (var a = 0; a < proches.length; a++) proches[a].heal(part)
+        }
+      }
+      // ── Paladin ──
+      if (artbEcole(ecole, 'Paladin')) {
+        if (artbPorte(lanceur, 'anneau_jugement') && artbMortVivant(cible)) {
+          ev.setAmount(Number(ev.getAmount()) * 1.3)
+          cible.igniteForSeconds(3)
+          artbPart(cible, ARTB.Part.END_ROD, 8, 0.4)
+        }
+        if (artbPorte(lanceur, 'anneau_aube') && !lanceur.level.isDay()) {
+          cible.potionEffects.add('minecraft:glowing', 120, 0, false, false)
+          cible.potionEffects.add('minecraft:weakness', 80, 0, false, true)
+        }
+      }
+    } catch (e) { artbErreur('dégâts de sort', e) }
+  })
+} catch (e) { console.error('[artefacts] dégâts de sort indisponibles : ' + e) }
+
+// ═══ Dégâts infligés et subis (après calcul) ═══
+try {
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingDamageEvent$Post'), function (ev) {
+    try {
+      if (!ARTB) return
+      var degats = Number(ev.getNewDamage())
+      if (degats <= 0) return
+      var src = ev.getSource(), cible = ev.getEntity(), t = Date.now()
+      var auteur = src.actual, direct = src.immediate
+      // Cœur battant : vol de vie total
+      if (auteur && auteur.isPlayer() && ARTB.battement[String(auteur.uuid)] > t && String(auteur.uuid) !== String(cible.uuid)) auteur.heal(degats)
+      // Cadence (Barde) : coup d'arme
+      if (!ARTB.blessure && !(src instanceof ARTB.SrcSort) && auteur && auteur.isPlayer() && direct && String(direct.uuid) === String(auteur.uuid)
+          && String(cible.uuid) !== String(auteur.uuid) && artbPorte(auteur, 'anneau_cadence') && artbCadence(auteur, 'arme')) artbFinMesure(auteur, cible)
+      if (!cible.isPlayer()) return
+      var cleC = String(cible.uuid)
+      // Coquille de nautile
+      var coq = artbPorte(cible, 'coquille_nautile')
+      if (coq && Number(cible.getHealth()) < Number(cible.getMaxHealth()) * 0.4 && !cible.getCooldowns().isOnCooldown(coq.getItem())) {
+        cible.getCooldowns().addCooldown(coq.getItem(), 1200)
+        cible.potionEffects.add('minecraft:absorption', 100, 1, false, true)
+        artbMana(cible, 20)
+        artbPart(cible, ARTB.Part.BUBBLE_POP, 30, 0.6)
+        artbSon(cible, ARTB.Sons.BUBBLE_COLUMN_WHIRLPOOL_INSIDE, 1.5, 1)
+        artbStatut(cible, '🐚 Bulle protectrice', 'aqua')
+      }
+      // Ceinture de lierre : l'attaquant au corps à corps est entravé
+      if (auteur && direct && String(direct.uuid) === String(auteur.uuid) && String(auteur.uuid) !== cleC && auteur.isLiving() && artbPorte(cible, 'ceinture_lierre')) {
+        var cleA = String(auteur.uuid)
+        if (!(ARTB.lierre[cleA] && t - ARTB.lierre[cleA] < 2000)) {
+          ARTB.lierre[cleA] = t
+          auteur.potionEffects.add('minecraft:slowness', 40, 2, false, true)
+          artbBlesser(cible, auteur, 1)
+          artbPart(auteur, ARTB.Part.HAPPY_VILLAGER, 8, 0.4)
+        }
+      }
+      // Géode vivante : éclats contre l'attaquant tant que le bouclier tient
+      if (auteur && auteur.isLiving() && String(auteur.uuid) !== cleC && Number(cible.getAbsorptionAmount()) > 0 && artbPorte(cible, 'geode_vivante')) artbBlesser(cible, auteur, 2)
+      // Caillot de sang : la moitié des gros coups est régénérée en 3 s
+      if (degats > 4 && artbPorte(cible, 'caillot_sang') && !(ARTB.caillot[cleC] && t - ARTB.caillot[cleC] < 15000)) {
+        ARTB.caillot[cleC] = t
+        var parTick = degats * 0.3 / 6
+        for (var k = 1; k <= 6; k++) cible.server.scheduleInTicks(10 * k, function () { try { if (cible.isAlive()) cible.heal(parTick) } catch (e2) {} })
+        artbStatut(cible, '🩸 Coagulation', 'red')
+      }
+    } catch (e) { artbErreur('dégâts', e) }
+  })
+} catch (e) { console.error('[artefacts] dégâts indisponibles : ' + e) }
+
+// ═══ Dégâts entrants (avant calcul) : Accord, Ancrage, Mémoire des âges ═══
+try {
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent'), function (ev) {
+    try {
+      if (!ARTB || ARTB.partage) return
+      var joueur = ev.getEntity()
+      if (!joueur || !joueur.isPlayer()) return
+      var cle = String(joueur.uuid), t = Date.now()
+      if (joueur.isCrouching() && artbPorte(joueur, 'pierre_ancrage')) ev.setAmount(Number(ev.getAmount()) * 0.85)
+      if (Number(ev.getAmount()) > 6 && artbPorte(joueur, 'collier_fossiles') && !(ARTB.fossiles[cle] && t - ARTB.fossiles[cle] < 30000)) {
+        ARTB.fossiles[cle] = t
+        ev.setAmount(Math.max(6, Number(ev.getAmount()) * 0.5))
+        artbStatut(joueur, '⛰ Mémoire des âges : coup amorti', 'gold')
+        artbPart(joueur, ARTB.Part.CLOUD, 12, 0.4)
+      }
+      // Pendentif du martyr : un Paladin proche encaisse 30 % des dégâts de l'allié
+      var allies = artbJoueursProches(joueur, 8, false)
+      for (var m = 0; m < allies.length; m++) {
+        if (!artbPorte(allies[m], 'pendentif_martyr')) continue
+        var part = Number(ev.getAmount()) * 0.3
+        ev.setAmount(Number(ev.getAmount()) - part)
+        ARTB.partage = true
+        try { allies[m].hurt(allies[m].damageSources().magic(), part) } finally { ARTB.partage = false }
+        artbMana(allies[m], part * 2)
+        artbPart(joueur, ARTB.Part.END_ROD, 4, 0.3)
+        break
+      }
+      var lien = ARTB.accords[cle]
+      if (!lien || t > lien.fin) return
+      var autre = joueur.server.getPlayerList().getPlayer(lien.avec)
+      if (!autre || !autre.isAlive() || String(autre.level.dimension().location()) !== String(joueur.level.dimension().location()) || autre.distanceToSqr(joueur) > 24 * 24) return
+      var moitie = Number(ev.getAmount()) / 2
+      ev.setAmount(moitie)
+      ARTB.partage = true
+      try { autre.hurt(autre.damageSources().magic(), moitie) } finally { ARTB.partage = false }
+    } catch (e) { ARTB.partage = false; artbErreur('dégâts entrants', e) }
+  })
+} catch (e) { console.error('[artefacts] dégâts entrants indisponibles : ' + e) }
+
+// Ceinture du croisé : un coup paré au bouclier renvoie la moitié des dégâts et soigne d'un demi-cœur
+try {
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingShieldBlockEvent'), function (ev) {
+    try {
+      var joueur = ev.getEntity()
+      if (!joueur || !joueur.isPlayer() || !ev.getBlocked() || !artbPorte(joueur, 'ceinture_croise')) return
+      var auteur = ev.getDamageSource().actual
+      if (auteur && auteur.isLiving() && String(auteur.uuid) !== String(joueur.uuid)) artbBlesser(joueur, auteur, Number(ev.getBlockedDamage()) * 0.5)
+      joueur.heal(1)
+      artbPart(joueur, ARTB.Part.END_ROD, 6, 0.4)
+    } catch (e) { artbErreur('croisé', e) }
+  })
+} catch (e) { console.error('[artefacts] croisé indisponible : ' + e) }
+
+// Pierre d'ancrage : pas de recul accroupi
+try {
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent'), function (ev) {
+    try {
+      var joueur = ev.getEntity()
+      if (joueur && joueur.isPlayer() && joueur.isCrouching() && artbPorte(joueur, 'pierre_ancrage')) ev.setCanceled(true)
+    } catch (e) { artbErreur('ancrage', e) }
+  })
+} catch (e) { console.error('[artefacts] ancrage indisponible : ' + e) }
+
+// ═══ Soins ═══
+try {
+  NativeEvents.onEvent(Java.loadClass('io.redspace.ironsspellbooks.api.events.SpellHealEvent'), function (ev) {
+    try {
+      var soigneur = ev.getEntity(), cible = ev.getTargetEntity()
+      if (!cible) return
+      // Médaillon d'Harmonie (Barde)
+      if (cible.isPlayer() && String(cible.uuid) !== String(soigneur.uuid) && artbPorte(soigneur, 'medaillon_harmonie')) {
+        var fin = Date.now() + 10000
+        ARTB.accords[String(soigneur.uuid)] = { avec: cible.getUUID(), fin: fin }
+        ARTB.accords[String(cible.uuid)] = { avec: soigneur.getUUID(), fin: fin }
+        cible.setStatusMessage(Text.lightPurple('♪ Accord avec ' + soigneur.username + ' : dégâts partagés 10 s'))
+        artbNotes(cible, 8, 0.5)
+      }
+      // Anneau du Serment (Paladin) : bouclier de foi
+      if (String(cible.uuid) !== String(soigneur.uuid) && artbPorte(soigneur, 'anneau_serment')) {
+        var bouclier = Number(ev.getHealAmount()) * 0.25
+        cible.setAbsorptionAmount(Math.min(10, Number(cible.getAbsorptionAmount()) + bouclier))
+        artbPart(cible, ARTB.Part.END_ROD, 6, 0.4)
+      }
+      // Pollen doré (Druide)
+      if (artbPorte(soigneur, 'pollen_dore')) {
+        cible.potionEffects.add('minecraft:regeneration', 80, 1, false, true)
+        var mauvais = ['minecraft:poison', 'minecraft:wither', 'minecraft:weakness', 'minecraft:slowness', 'minecraft:blindness', 'minecraft:hunger']
+        for (var i = 0; i < mauvais.length; i++) if (artbAEffet(cible, mauvais[i])) { artbRetirerEffet(cible, mauvais[i]); break }
+        artbPart(cible, ARTB.Part.HAPPY_VILLAGER, 10, 0.5)
+      }
+    } catch (e) { artbErreur('soins de sort', e) }
+  })
+} catch (e) { console.error('[artefacts] soins de sort indisponibles : ' + e) }
+// Calice carmin : les soins en excès remplissent le calice
+try {
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingHealEvent'), function (ev) {
+    try {
+      var joueur = ev.getEntity()
+      if (!ARTB || !joueur || !joueur.isPlayer()) return
+      var exces = Number(joueur.getHealth()) + Number(ev.getAmount()) - Number(joueur.getMaxHealth())
+      if (exces <= 0 || !artbPorte(joueur, 'calice_carmin')) return
+      var cle = String(joueur.uuid)
+      ARTB.calice[cle] = Math.min(10, (ARTB.calice[cle] || 0) + exces)
+    } catch (e) { artbErreur('calice', e) }
+  })
+} catch (e) { console.error('[artefacts] calice indisponible : ' + e) }
+
+// ═══ Morts : sauvetages (charmes ultimes) et récompenses de mise à mort ═══
+function artbSauvetage(joueur, nom, src) {
+  var pile = artbPorte(joueur, nom)
+  if (!pile) return false
+  var msg = ''
+  try { msg = String(src.getMsgId()) } catch (x) {}
+  if (msg === 'outOfWorld' || msg === 'genericKill') return false
+  if (joueur.getCooldowns().isOnCooldown(pile.getItem())) return false
+  joueur.getCooldowns().addCooldown(pile.getItem(), 6000)
+  return true
+}
+try {
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingDeathEvent'), function (ev) {
+    try {
+      var mort = ev.getEntity(), src = ev.getSource()
+      artbInit()
+      if (!mort.isPlayer()) {
+        // Récompenses de mise à mort par un sort
+        var tueur = src.actual
+        if (!tueur || !tueur.isPlayer() || !(src instanceof ARTB.SrcSort)) return
+        var ecole = src.spell().getSchoolType()
+        if (artbEcole(ecole, 'Druide') && artbPorte(tueur, 'collier_crocs')) {
+          tueur.setAbsorptionAmount(Math.min(8, Number(tueur.getAbsorptionAmount()) + 2))
+          tueur.potionEffects.add('minecraft:speed', 100, 0, false, true)
+          artbStatut(tueur, '🐺 Instinct sauvage', 'green')
+        }
+        if (artbEcole(ecole, 'Hémomancien') && artbPorte(tueur, 'dague_rituelle')) {
+          artbMana(tueur, 15)
+          tueur.heal(2)
+          artbPart(mort, ARTB.Part.DAMAGE_INDICATOR, 10, 0.5)
+          artbStatut(tueur, '🩸 Sacrifice accepté', 'red')
+        }
+        return
+      }
+      var joueur = mort, cle = String(joueur.uuid)
+      if (artbSauvetage(joueur, 'derniere_note', src)) {
+        ev.setCanceled(true)
+        joueur.setHealth(1)
+        joueur.potionEffects.add('minecraft:resistance', 60, 4, false, true)
+        artbStatut(joueur, '♪ Chant du cygne...', 'gold')
+        artbSon(joueur, ARTB.Sons.NOTE_BLOCK_BELL, 1.5, 0.5)
+        joueur.server.scheduleInTicks(20, function () {
+          try {
+            if (!joueur.isAlive()) return
+            var puiss = Number(joueur.getAttributeValue(ARTB.PuissMelo))
+            artbOnde(joueur, joueur, 6, 8 * puiss, 1.8, 'tunes_n_tomes:deafened', 100, 0)
+            artbNotes(joueur, 40, 3)
+            artbSon(joueur, ARTB.Sons.NOTE_BLOCK_BELL, 2, 1.0)
+            joueur.potionEffects.add('minecraft:regeneration', 80, 2, false, true)
+            artbStatut(joueur, '♪ Dernière Note !', 'gold')
+          } catch (e2) { artbErreur('dernière note', e2) }
+        })
+        return
+      }
+      if (artbSauvetage(joueur, 'larme_leviathan', src)) {
+        var hist = ARTB.historique[cle], dim = String(joueur.level.dimension().location())
+        ev.setCanceled(true)
+        artbOnde(joueur, joueur, 5, 6, 1.5, 'minecraft:slowness', 60, 1)
+        artbPart(joueur, ARTB.Part.SPLASH, 60, 1.5)
+        if (hist && hist.length && hist[0].dim === dim) joueur.teleportTo(hist[0].x, hist[0].y, hist[0].z)
+        joueur.setHealth(Number(joueur.getMaxHealth()) * 0.3)
+        joueur.clearFire()
+        artbSon(joueur, ARTB.Sons.GENERIC_SPLASH, 1.5, 0.6)
+        artbStatut(joueur, '🌊 Reflux : la marée te ramène en arrière', 'aqua')
+        return
+      }
+      if (artbSauvetage(joueur, 'coeur_arbre_monde', src)) {
+        ev.setCanceled(true)
+        joueur.setHealth(Number(joueur.getMaxHealth()) * 0.3)
+        joueur.potionEffects.add('minecraft:resistance', 60, 3, false, true)
+        joueur.potionEffects.add('minecraft:slowness', 60, 9, false, true)
+        var allies = artbJoueursProches(joueur, 8, false)
+        for (var i = 0; i < allies.length; i++) allies[i].heal(6)
+        artbPart(joueur, ARTB.Part.HAPPY_VILLAGER, 50, 2); artbFxOnde(joueur, joueur, 8)
+        artbSon(joueur, ARTB.Sons.GRASS_PLACE, 1.5, 0.6)
+        artbStatut(joueur, '🌳 Renaissance : tu prends racine', 'green')
+        return
+      }
+      if (artbSauvetage(joueur, 'coeur_montagne', src)) {
+        ev.setCanceled(true)
+        joueur.setHealth(1)
+        joueur.potionEffects.add('minecraft:resistance', 60, 4, false, true)
+        joueur.potionEffects.add('minecraft:slowness', 60, 9, false, true)
+        artbPart(joueur, ARTB.Part.CLOUD, 20, 0.5)
+        artbStatut(joueur, '⛰ Inébranlable : tu te changes en pierre', 'gold')
+        joueur.server.scheduleInTicks(60, function () {
+          try {
+            if (!joueur.isAlive()) return
+            artbOnde(joueur, joueur, 5, 12, 2.0, 'minecraft:slowness', 60, 1)
+            artbPart(joueur, ARTB.Part.EXPLOSION, 10, 2)
+            artbSon(joueur, ARTB.Sons.GENERIC_EXPLODE, 1.2, 0.7)
+            joueur.potionEffects.add('minecraft:regeneration', 100, 1, false, true)
+          } catch (e3) { artbErreur('cœur de la montagne', e3) }
+        })
+        return
+      }
+      if (artbSauvetage(joueur, 'aureole_sacree', src)) {
+        ev.setCanceled(true)
+        joueur.setHealth(Number(joueur.getMaxHealth()) * 0.3)
+        joueur.potionEffects.add('minecraft:resistance', 60, 4, false, true)
+        var ennemis = artbEnnemisProches(joueur, 6, null)
+        for (var en = 0; en < ennemis.length; en++) {
+          artbBlesser(joueur, ennemis[en], artbMortVivant(ennemis[en]) ? 20 : 10)
+          ennemis[en].knockback(1.6, joueur.getX() - ennemis[en].getX(), joueur.getZ() - ennemis[en].getZ())
+        }
+        var proches = artbJoueursProches(joueur, 6, false)
+        for (var pa = 0; pa < proches.length; pa++) proches[pa].heal(6)
+        artbPart(joueur, ARTB.Part.END_ROD, 60, 2.5); artbFxOnde(joueur, joueur, 6); artbFx(joueur, 'purif', 40, 2)
+        artbSon(joueur, ARTB.Sons.BEACON_ACTIVATE, 1.5, 1.2)
+        artbStatut(joueur, '✝ Intervention divine', 'gold')
+        return
+      }
+      if (artbSauvetage(joueur, 'coeur_battant', src)) {
+        ev.setCanceled(true)
+        joueur.setHealth(1)
+        joueur.potionEffects.add('minecraft:resistance', 30, 2, false, true)
+        ARTB.battement[cle] = Date.now() + 5000
+        artbFx(joueur, 'sang', 40, 0.6); artbFxOnde(joueur, joueur, 4)
+        artbSon(joueur, ARTB.Sons.WARDEN_HEARTBEAT, 2, 1)
+        artbStatut(joueur, '🩸 Dernier battement : vol de vie total 5 s', 'red')
+      }
+    } catch (e) { artbErreur('morts', e) }
+  })
+} catch (e) { console.error('[artefacts] morts indisponibles : ' + e) }
+
+// Effet ajouté : l'effet Mouillé de So Make Spells donne aussi Trempé (visuel bleuté) ; messages des effets de classe
+try {
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.living.MobEffectEvent$Added'), function (ev) {
+    try {
+      var ent = ev.getEntity(), inst = ev.getEffectInstance()
+      var id = String(inst.getEffect().getRegisteredName())
+      if (id === 'somakespells:wet') { ent.potionEffects.add('aetheris_armures:trempe', inst.getDuration(), 0, false, true); return }
+      var msg = ARTB_MESSAGES_EFFETS[id]
+      if (!msg || !ent.isPlayer()) return
+      ent.setStatusMessage(msg[1] === 'aqua' ? Text.aqua(msg[0]) : msg[1] === 'gold' ? Text.gold(msg[0]) : Text.lightPurple(msg[0]))
+    } catch (e) { artbErreur('effet ajouté', e) }
+  })
+} catch (e) { console.error('[artefacts] effet ajouté indisponible : ' + e) }
+
+// Sourdine : les effets Assourdi et Somnolent ne s'appliquent pas
+try {
+  var ARTB_RESULTAT = Java.loadClass('net.neoforged.neoforge.event.entity.living.MobEffectEvent$Applicable$Result')
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.living.MobEffectEvent$Applicable'), function (ev) {
+    try {
+      var id = String(ev.getEffectInstance().getEffect().getRegisteredName())
+      if (id !== 'tunes_n_tomes:deafened' && id !== 'tunes_n_tomes:sleepy') return
+      if (!artbPorte(ev.getEntity(), 'sourdine')) return
+      ev.setResult(ARTB_RESULTAT.DO_NOT_APPLY)
+    } catch (e) { artbErreur('sourdine', e) }
+  })
+} catch (e) { console.error('[artefacts] sourdine indisponible : ' + e) }
+
+// Ceinture du filon : minerais
+BlockEvents.broken(function (event) {
+  try {
+    var joueur = event.player
+    if (!joueur || !event.block.hasTag('c:ores') || Math.random() >= 0.15 || !artbPorte(joueur, 'ceinture_filon')) return
+    artbMana(joueur, 10)
+    joueur.potionEffects.add('minecraft:haste', 200, 0, false, true)
+    artbStatut(joueur, '⛏ Filon : la terre te nourrit', 'gold')
+  } catch (e) { artbErreur('filon', e) }
+})
+
+// ═══ Toutes les secondes ═══
+PlayerEvents.tick(function (event) {
+  var joueur = event.player
+  if (joueur.tickCount % 20 !== 13) return
+  try {
+    artbInit()
+    var cle = String(joueur.uuid), t = Date.now()
+    var portes = artbPortes(joueur)
+    var aucun = true
+    for (var n in portes) { aucun = false; break }
+    if (aucun) {
+      ARTB.ritournelle[cle] = null; ARTB.racines[cle] = null
+      if (ARTB.saison[cle] !== undefined) { ARTB.saison[cle] = undefined; artbSaisonsRetirer(joueur) }
+      return
+    }
+    // Historique de position (Larme de Léviathan) : 4 dernières secondes
+    if (artbPorte(joueur, 'larme_leviathan')) {
+      var h = ARTB.historique[cle] || []
+      h.push({ x: joueur.getX(), y: joueur.getY(), z: joueur.getZ(), dim: String(joueur.level.dimension().location()) })
+      if (h.length > 4) h.shift()
+      ARTB.historique[cle] = h
+    }
+    // ── Barde ──
+    if (artbPorte(joueur, 'sourdine')) { artbRetirerEffet(joueur, 'tunes_n_tomes:deafened'); artbRetirerEffet(joueur, 'tunes_n_tomes:sleepy') }
+    var tp = ARTB.tempo[cle]
+    if (tp && t - tp.quand < 4000 && artbPorte(joueur, 'metronome')) joueur.playNotifySound(ARTB.Sons.NOTE_BLOCK_HAT.value(), ARTB.SrcSon.PLAYERS, 0.6, 1.6)
+    var x = joueur.getX(), y = joueur.getY(), z = joueur.getZ()
+    if (artbPorte(joueur, 'boite_a_musique')) {
+      var r = ARTB.ritournelle[cle]
+      if (!r || Math.abs(r.x - x) > 0.15 || Math.abs(r.y - y) > 0.15 || Math.abs(r.z - z) > 0.15) ARTB.ritournelle[cle] = { x: x, y: y, z: z, s: 0 }
+      else {
+        r.s++
+        if (r.s >= 3) {
+          if (r.s === 3) artbStatut(joueur, '♪ La boîte à musique joue une ritournelle')
+          var cibles = artbJoueursProches(joueur, 6, true)
+          for (var i = 0; i < cibles.length; i++) {
+            artbMana(cibles[i], 4)
+            cibles[i].potionEffects.add('minecraft:regeneration', 40, 0, false, true)
+          }
+          artbNotes(joueur, 3, 1.5)
+          if (r.s % 4 === 3) artbSon(joueur, ARTB.Sons.NOTE_BLOCK_CHIME, 0.5, 1.2)
+        }
+      }
+    }
+    // ── Hydromancien ──
+    if (artbPorte(joueur, 'perle_pression') && joueur.isUnderWater()) joueur.setAirSupply(joueur.getMaxAirSupply())
+    if (artbPorte(joueur, 'ceinture_algues') && artbMouille(joueur)) {
+      joueur.potionEffects.add('minecraft:dolphins_grace', 40, 0, false, false)
+      artbMana(joueur, 2)
+    }
+    // ── Druide ──
+    if (artbPorte(joueur, 'anneau_saisons')) {
+      var s = artbSaison()
+      if (ARTB.saison[cle] !== s || !artbAEffet(joueur, ARTB_EFFETS_SAISONS[s])) {
+        ARTB.saison[cle] = s
+        artbSaisonsRetirer(joueur)
+        // durée = temps restant avant la saison suivante
+        joueur.potionEffects.add(ARTB_EFFETS_SAISONS[s], Math.max(20, Math.ceil((60000 - Date.now() % 60000) / 50)), 0, false, true)
+        artbStatut(joueur, '🍃 Saison : ' + ARTB_SAISONS[s], 'green')
+      }
+    } else if (ARTB.saison[cle] !== undefined) { ARTB.saison[cle] = undefined; artbSaisonsRetirer(joueur) }
+    if (artbPorte(joueur, 'gland_ancien')) {
+      var rc = ARTB.racines[cle]
+      var surSol = joueur.onGround() && artbSolVivant(joueur.level.getBlockState(joueur.blockPosition().below()))
+      if (!surSol || !rc || Math.abs(rc.x - x) > 0.15 || Math.abs(rc.z - z) > 0.15) ARTB.racines[cle] = surSol ? { x: x, z: z, s: 0 } : null
+      else {
+        rc.s++
+        if (rc.s >= 2) {
+          if (rc.s === 2) artbStatut(joueur, '🌱 Tu prends racine', 'green')
+          joueur.potionEffects.add('minecraft:resistance', 40, 0, false, false)
+          joueur.heal(0.5)
+          artbMana(joueur, 2)
+          artbPart(joueur, ARTB.Part.HAPPY_VILLAGER, 4, 1.2)
+        }
+      }
+    }
+    // ── Géomancien ──
+    if (artbPorte(joueur, 'geode_vivante') && joueur.tickCount % 600 === 13 && Number(joueur.getAbsorptionAmount()) <= 0) {
+      joueur.setAbsorptionAmount(4)
+      artbPart(joueur, ARTB.Part.END_ROD, 12, 0.6)
+      artbSon(joueur, ARTB.Sons.AMETHYST_BLOCK_CHIME, 1.2, 1)
+      artbStatut(joueur, '💎 Une géode se forme sur toi', 'gold')
+    }
+    // ── Paladin ──
+    if (artbPorte(joueur, 'etendard')) {
+      var troupe = artbJoueursProches(joueur, 8, true)
+      for (var e1 = 0; e1 < troupe.length; e1++) if (String(troupe[e1].uuid) !== cle) troupe[e1].potionEffects.add('minecraft:resistance', 40, 0, false, false)
+    }
+    if (artbPorte(joueur, 'reliquaire')) {
+      var veille = artbJoueursProches(joueur, 10, true)
+      for (var e2 = 0; e2 < veille.length; e2++) {
+        var al = veille[e2], ka = String(al.uuid)
+        if (Number(al.getHealth()) >= Number(al.getMaxHealth()) * 0.3 || (ARTB.reliques[ka] && t - ARTB.reliques[ka] < 120000)) continue
+        ARTB.reliques[ka] = t
+        al.potionEffects.add('minecraft:regeneration', 80, 1, false, true)
+        artbPart(al, ARTB.Part.END_ROD, 10, 0.5)
+        artbStatut(al, '✝ Le reliquaire veille sur toi', 'gold')
+        if (ka !== cle) artbStatut(joueur, '✝ Le reliquaire protège ' + al.username, 'gold')
+      }
+    }
+    if (artbPorte(joueur, 'sceau_lumiere')) {
+      var sc = ARTB.consecration[cle]
+      if (!sc || Math.abs(sc.x - x) > 0.15 || Math.abs(sc.y - y) > 0.15 || Math.abs(sc.z - z) > 0.15) ARTB.consecration[cle] = { x: x, y: y, z: z, s: 0 }
+      else {
+        sc.s++
+        if (sc.s >= 2) {
+          if (sc.s === 2) artbStatut(joueur, '✝ Le sol est consacré', 'gold')
+          var mv = artbEnnemisProches(joueur, 5, null)
+          for (var e3 = 0; e3 < mv.length; e3++) if (artbMortVivant(mv[e3])) { artbBlesser(joueur, mv[e3], 2); mv[e3].igniteForSeconds(2) }
+          var fideles = artbJoueursProches(joueur, 5, true)
+          for (var e4 = 0; e4 < fideles.length; e4++) fideles[e4].potionEffects.add('minecraft:regeneration', 40, 0, false, true)
+          joueur.level.sendParticles(ARTB.Part.END_ROD, x, y + 0.2, z, 6, 2.5, 0.1, 2.5, 0.01); artbFx(joueur, 'purif', 10, 2.5)
+        }
+      }
+    } else ARTB.consecration[cle] = null
+    // ── Hémomancien ──
+    var cal = ARTB.calice[cle]
+    if (cal > 0 && Number(joueur.getHealth()) < Number(joueur.getMaxHealth()) * 0.3 && artbPorte(joueur, 'calice_carmin')) {
+      ARTB.calice[cle] = 0
+      joueur.heal(cal)
+      artbPart(joueur, ARTB.Part.DAMAGE_INDICATOR, 12, 0.5)
+      artbStatut(joueur, '🩸 Le calice se vide en toi (+' + Math.round(cal) + ' PV)', 'red')
+    }
+  } catch (e) { artbErreur('tick', e) }
+})
+
+// ───────────── Artefacts de classe (suite) : Pyromancien, Cryomancien, Électro-Sorcier, Voyageur du Vide, Aéromancien,
+// Nécromancien, Envoûteur, Spiritualiste, Symétriste, Technomancien. Mêmes règles que plus haut (porté en Curios + bonne classe).
+var ARTB2_SETS = {
+  'Pyromancien': ['anneau_braise', 'anneau_cendres', 'anneau_fournaise', 'peau_salamandre', 'lanterne_ardente', 'charbon_eternel', 'plume_phenix', 'ceinture_magma', 'collier_flamme'],
+  'Cryomancien': ['anneau_givre', 'anneau_eclats', 'anneau_morsure', 'flocon_eternel', 'carapace_glace', 'cristal_permafrost', 'larme_boreale', 'ceinture_frimas', 'amulette_blizzard'],
+  'Électro-Sorcier': ['anneau_arc', 'anneau_surtension', 'anneau_ion', 'batterie_statique', 'paratonnerre', 'bobine_tesla', 'coeur_orage', 'ceinture_conductrice', 'collier_eclair'],
+  'Voyageur du Vide': ['anneau_horizon', 'anneau_distorsion', 'anneau_seuil', 'ancre_vide', 'oeil_vide', 'perle_instable', 'coeur_neant', 'ceinture_abime', 'collier_exil'],
+  'Aéromancien': ['anneau_bourrasque', 'anneau_cyclone', 'anneau_zephyr', 'plume_zephyr', 'souffle_ascendant', 'sifflet_vent', 'coeur_tornade', 'ceinture_alizes', 'pendentif_rafale'],
+  'Nécromancien': ['anneau_ossements', 'anneau_putrefaction', 'anneau_tombe', 'phylactere', 'lanterne_morts', 'crane_explosif', 'coeur_liche', 'ceinture_ossuaire', 'amulette_ectoplasme'],
+  'Envoûteur': ['anneau_contagion', 'anneau_fletrissure', 'anneau_malediction', 'poupee_vaudou', 'oeil_verite', 'sceau_maudit', 'coeur_damne', 'ceinture_chaines', 'collier_supplice'],
+  'Spiritualiste': ['anneau_ames_errantes', 'anneau_lien_spirituel', 'anneau_exorcisme', 'gardien_esprit', 'lanterne_spectrale', 'encens_ancestral', 'urne_ames', 'ceinture_talismans', 'collier_ancetres'],
+  'Symétriste': ['anneau_yin', 'anneau_yang', 'anneau_miroir', 'balance_jade', 'miroir_eau', 'taijitu', 'coeur_equilibre', 'ceinture_dualite', 'pendentif_contrepoids'],
+  'Technomancien': ['anneau_circuit', 'anneau_court_circuit', 'anneau_rendement', 'batterie_arcanique', 'scanner_arcanique', 'bouclier_energie', 'noyau_reacteur', 'ceinture_outils', 'collier_drone']
+}
+ARTB_ECOLES['Pyromancien'] = ['irons_spellbooks:fire']
+ARTB_ECOLES['Cryomancien'] = ['irons_spellbooks:ice']
+ARTB_ECOLES['Électro-Sorcier'] = ['irons_spellbooks:lightning']
+ARTB_ECOLES['Voyageur du Vide'] = ['irons_spellbooks:ender']
+ARTB_ECOLES['Aéromancien'] = ['wind_spellbooks:wind']
+ARTB_ECOLES['Nécromancien'] = ['monsterspellbooks:necro']
+ARTB_ECOLES['Envoûteur'] = ['cursespells:curse']
+ARTB_ECOLES['Spiritualiste'] = ['iss_magicfromtheeast:spirit']
+ARTB_ECOLES['Symétriste'] = ['iss_magicfromtheeast:symmetry']
+ARTB_ECOLES['Technomancien'] = ['aces_spell_utils:technomancy', 'cataclysm_spellbooks:technomancy']
+for (var artb2C in ARTB2_SETS) for (var artb2I = 0; artb2I < ARTB2_SETS[artb2C].length; artb2I++) ARTB_CLASSE[ARTB2_SETS[artb2C][artb2I]] = artb2C
+ARTB_MESSAGES_EFFETS['aetheris_armures:gele'] = ['Vous êtes gelés', 'aqua']
+
+var ARTB2 = null
+function artb2Init() {
+  artbInit()
+  if (ARTB2) return ARTB2
+  ARTB2 = {
+    Hostile: Java.loadClass('net.minecraft.world.entity.monster.Enemy'),
+    ObjetSol: Java.loadClass('net.minecraft.world.entity.item.ItemEntity'),
+    Squelette: Java.loadClass('io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton'),
+    Ramassage: Java.loadClass('net.minecraft.world.entity.projectile.AbstractArrow$Pickup'),
+    chaleur: {}, givre: {}, surtension: {}, statique: {}, ancre: {}, sol: {}, ames: {}, maudits: {}, dernierMaudit: {},
+    miroir: {}, dualite: {}, contrepoids: {}, circuit: {}, batterie: {}, singularite: {}, rafale: {}, blizzard: {},
+    immobile: {}, envol: {}, alizes: {}, gardien: {}, spectral: {}, talismans: {}, frappes: {},
+    course: {}, seuil: {}, dernierePos: {}, accroupi: {}, exil: {}, choc: {},
+    EnderMan: Java.loadClass('net.minecraft.world.entity.monster.EnderMan')
+  }
+  return ARTB2
+}
+function artb2Hostiles(centre, rayon) {
+  var res = [], liste = centre.level.getEntitiesOfClass(ARTB.Vivant, centre.boundingBox.inflate(rayon))
+  for (var i = 0; i < liste.size(); i++) {
+    var ent = liste.get(i)
+    if (ent.isAlive() && ent instanceof ARTB2.Hostile && !ent.persistentData.getBoolean('artb_allie')) res.push(ent)
+  }
+  return res
+}
+function artb2PlusProche(joueur, liste) {
+  var best = null, d = 1e9
+  for (var i = 0; i < liste.length; i++) { var dd = liste[i].distanceToSqr(joueur); if (dd < d) { d = dd; best = liste[i] } }
+  return best
+}
+function artb2Pourcent(joueur) {
+  var md = ARTB.Magie.getPlayerMagicData(joueur)
+  return { pv: Number(joueur.getHealth()) / Number(joueur.getMaxHealth()), mana: Number(md.getMana()) / Math.max(1, Number(joueur.getAttributeValue(ARTB.ManaMax))), md: md }
+}
+function artb2Invoquer(joueur, n, duree) {
+  for (var l = 0; l < n; l++) {
+    var sq = new ARTB2.Squelette(joueur.level, joueur, true)
+    sq.setPos(joueur.getX() + (l ? 1.5 : -1.5), joueur.getY(), joueur.getZ() + 1)
+    sq.persistentData.putBoolean('artb_allie', true)
+    joueur.level.addFreshEntity(sq)
+    joueur.server.scheduleInTicks(duree, function () { try { if (sq.isAlive()) sq.discard() } catch (e2) {} })
+  }
+}
+// Sauvetage générique des charmes ultimes (même règle que plus haut)
+function artb2Sauver(ev, joueur, nom, src) {
+  if (!artbSauvetage(joueur, nom, src)) return false
+  ev.setCanceled(true)
+  return true
+}
+
+// ═══ Lancement d'un sort ═══
+try {
+  NativeEvents.onEvent(Java.loadClass('io.redspace.ironsspellbooks.api.events.SpellOnCastEvent'), function (ev) {
+    try {
+      var joueur = ev.getEntity(), ecole = ev.getSchoolType()
+      artb2Init()
+      var cle = String(joueur.uuid), reduction = 0, t = Date.now()
+      if (artbEcole(ecole, 'Pyromancien')) {
+        if (artbPorte(joueur, 'collier_flamme') && Number(joueur.getHealth()) < Number(joueur.getMaxHealth()) * 0.5) reduction += 0.3
+        if (artbPorte(joueur, 'anneau_fournaise')) {
+          var ch = ARTB2.chaleur[cle] || { n: 0, fin: 0 }
+          if (t > ch.fin) {
+            ch.n++
+            if (ch.n >= 8) { ch.n = 0; ch.fin = t + 6000; artbStatut(joueur, '🔥 Surchauffe ! Sorts de feu +25 %, mais tu brûles', 'gold'); artbSon(joueur, ARTB.Sons.BLAZE_SHOOT, 1, 0.8) }
+            else artbStatut(joueur, '🔥 Chaleur ' + ch.n + '/8', 'gold')
+          }
+          ARTB2.chaleur[cle] = ch
+        }
+      }
+      if (artbEcole(ecole, 'Aéromancien') && artbPorte(joueur, 'anneau_zephyr') && !joueur.onGround()) reduction += 0.25
+      if (artbEcole(ecole, 'Nécromancien') && artbPorte(joueur, 'phylactere') && (ARTB2.ames[cle] || 0) >= 3) {
+        ARTB2.ames[cle] -= 3
+        ev.setManaCost(0)
+        artbStatut(joueur, '💀 Le phylactère paie le sort (' + ARTB2.ames[cle] + ' âmes)', 'green')
+        return
+      }
+      if (artbEcole(ecole, 'Symétriste')) {
+        var pc = artb2Pourcent(joueur)
+        if (artbPorte(joueur, 'anneau_yang') && pc.mana < pc.pv) reduction += 0.2
+      }
+      if (artbEcole(ecole, 'Technomancien') && artbPorte(joueur, 'anneau_rendement')) reduction += 0.15
+      if (reduction > 0) ev.setManaCost(Math.floor(Number(ev.getManaCost()) * (1 - Math.min(0.4, reduction))))
+    } catch (e) { artbErreur('lancement (suite)', e) }
+  })
+} catch (e) { console.error('[artefacts] lancement (suite) indisponible : ' + e) }
+
+// ═══ Dégâts de sort ═══
+try {
+  NativeEvents.onEvent(Java.loadClass('io.redspace.ironsspellbooks.api.events.SpellDamageEvent'), function (ev) {
+    try {
+      var cible = ev.getEntity(), src = ev.getSpellDamageSource(), lanceur = src.actual
+      if (!lanceur || !cible || !lanceur.isPlayer() || String(cible.uuid) === String(lanceur.uuid)) return
+      artb2Init()
+      var ecole = src.spell().getSchoolType(), cleL = String(lanceur.uuid), cleC = String(cible.uuid), t = Date.now()
+      var degats = Number(ev.getAmount())
+      // ── Pyromancien ──
+      if (artbEcole(ecole, 'Pyromancien')) {
+        if (artbPorte(lanceur, 'anneau_braise') && cible.isOnFire()) ev.setAmount(Number(ev.getAmount()) * 1.2)
+        var ch = ARTB2.chaleur[cleL]
+        if (ch && t < ch.fin && artbPorte(lanceur, 'anneau_fournaise')) ev.setAmount(Number(ev.getAmount()) * 1.25)
+        if (artbPorte(lanceur, 'anneau_cendres')) cible.persistentData.putLong('artb_cendres', t)
+      }
+      // ── Cryomancien ──
+      if (artbEcole(ecole, 'Cryomancien')) {
+        if (artbPorte(lanceur, 'anneau_eclats') && artbAEffet(cible, 'aetheris_armures:gele')) {
+          ev.setAmount(Number(ev.getAmount()) * 1.4)
+          artbRetirerEffet(cible, 'aetheris_armures:gele')
+          var autour = artbEnnemisProches(cible, 3, cible)
+          for (var i = 0; i < autour.length; i++) artbBlesser(lanceur, autour[i], 3)
+          artbPart(cible, ARTB.Part.ITEM_SNOWBALL, 30, 0.6); artbFx(cible, 'neige', 25, 0.6); artbFxOnde(lanceur, cible, 3)
+          artbSon(cible, ARTB.Sons.GLASS_BREAK, 1.2, 1)
+        } else if (artbPorte(lanceur, 'anneau_givre')) {
+          var g = (ARTB2.givre[cleC] && t - ARTB2.givre[cleC].t < 6000) ? ARTB2.givre[cleC].n + 1 : 1
+          if (g >= 5) {
+            ARTB2.givre[cleC] = null
+            if (artbBoss(cible)) cible.potionEffects.add('minecraft:slowness', 60, 2, false, true)
+            else cible.potionEffects.add('aetheris_armures:gele', 30, 0, false, true)
+            artbPart(cible, ARTB.Part.SNOWFLAKE, 20, 0.5); artbFx(cible, 'neige', 20, 0.4)
+          } else ARTB2.givre[cleC] = { n: g, t: t }
+        }
+        if (artbPorte(lanceur, 'anneau_morsure')) cible.potionEffects.add('minecraft:slowness', 60, 0, false, true)
+        if (artbPorte(lanceur, 'amulette_blizzard')) {
+          ARTB2.blizzard[cleL] = (ARTB2.blizzard[cleL] || 0) + 1
+          if (ARTB2.blizzard[cleL] >= 6) {
+            ARTB2.blizzard[cleL] = 0
+            for (var k = 1; k <= 3; k++) lanceur.server.scheduleInTicks(20 * k, function () {
+              try { var vic = artbEnnemisProches(cible, 5, null); for (var b = 0; b < vic.length; b++) { artbBlesser(lanceur, vic[b], 3); vic[b].potionEffects.add('minecraft:slowness', 30, 1, false, true) }
+                    artbPart(cible, ARTB.Part.SNOWFLAKE, 30, 2.5); artbFx(cible, 'neige', 30, 2.5); artbFxBrume(cible, 0.9, 0.95, 1, 2.5, 4, 2) } catch (e2) {}
+            })
+            artbStatut(lanceur, '❄ Blizzard !', 'aqua')
+          }
+        }
+      }
+      // ── Électro-Sorcier ──
+      if (artbEcole(ecole, 'Électro-Sorcier')) {
+        if (artbPorte(lanceur, 'anneau_surtension')) {
+          ARTB2.surtension[cleL] = (ARTB2.surtension[cleL] || 0) + 1
+          if (ARTB2.surtension[cleL] >= 4) { ARTB2.surtension[cleL] = 0; ev.setAmount(Number(ev.getAmount()) * 1.6); artbFxArc(lanceur, cible); artbFxArc(lanceur, cible); artbFx(cible, 'elec', 20, 0.5); artbFxOnde(lanceur, cible, 2) }
+        }
+        if (artbPorte(lanceur, 'anneau_ion') && artbMouille(cible)) ev.setAmount(Number(ev.getAmount()) * 1.4)
+        var st = ARTB2.statique[cleL]
+        if (st && st > 0 && artbPorte(lanceur, 'batterie_statique')) { ev.setAmount(Number(ev.getAmount()) * (1 + 0.05 * st)); ARTB2.statique[cleL] = 0; artbStatut(lanceur, '⚡ Charge statique libérée', 'aqua') }
+        if (artbPorte(lanceur, 'anneau_arc')) {
+          var co = (ARTB2.course[cleL] && t - ARTB2.course[cleL].t < 6000) ? ARTB2.course[cleL].n + 1 : 1
+          ARTB2.course[cleL] = { n: co, t: t }
+          lanceur.potionEffects.add('minecraft:speed', 80, co >= 5 ? 2 : co >= 3 ? 1 : 0, false, true)
+          artbFx(lanceur, 'elec', 10, 0.3)
+        }
+      }
+      // ── Voyageur du Vide ──
+      if (artbEcole(ecole, 'Voyageur du Vide')) {
+        if (artbPorte(lanceur, 'anneau_horizon')) ev.setAmount(Number(ev.getAmount()) * (1 + Math.min(0.3, Number(lanceur.distanceTo(cible)) * 0.02)))
+        if (ARTB2.seuil[cleL] > t && artbPorte(lanceur, 'anneau_seuil')) {
+          ARTB2.seuil[cleL] = 0
+          ev.setAmount(Number(ev.getAmount()) * 1.4)
+          artbPart(cible, ARTB.Part.REVERSE_PORTAL, 20, 0.5)
+        }
+        var dis = artbPorte(lanceur, 'anneau_distorsion')
+        if (dis && !artbBoss(cible) && !lanceur.getCooldowns().isOnCooldown(dis.getItem())) {
+          lanceur.getCooldowns().addCooldown(dis.getItem(), 300)
+          var lx = lanceur.getX(), ly = lanceur.getY(), lz = lanceur.getZ()
+          artbFx(lanceur, 'ender', 25, 0.5); artbFx(cible, 'ender', 25, 0.5)
+          lanceur.teleportTo(cible.getX(), cible.getY(), cible.getZ())
+          cible.teleportTo(lx, ly, lz)
+          lanceur.fallDistance = 0
+          artbSon(lanceur, ARTB.Sons.ENDERMAN_TELEPORT, 1, 1.3)
+          artbStatut(lanceur, '🌀 Distorsion : positions échangées', 'lightPurple')
+        }
+      }
+      // ── Aéromancien ──
+      if (artbEcole(ecole, 'Aéromancien')) {
+        if (artbPorte(lanceur, 'anneau_bourrasque') && !artbBoss(cible)) cible.knockback(1.5, lanceur.getX() - cible.getX(), lanceur.getZ() - cible.getZ())
+        if (artbPorte(lanceur, 'anneau_cyclone')) {
+          var v = lanceur.getDeltaMovement(), vitesse = Math.sqrt(v.x() * v.x() + v.z() * v.z()) * 20
+          ev.setAmount(Number(ev.getAmount()) * (1 + Math.min(0.3, vitesse * 0.03)))
+        }
+        if (artbPorte(lanceur, 'pendentif_rafale')) {
+          ARTB2.rafale[cleL] = (ARTB2.rafale[cleL] || 0) + 1
+          if (ARTB2.rafale[cleL] >= 5) {
+            ARTB2.rafale[cleL] = 0
+            var souffles = artbEnnemisProches(lanceur, 5, null)
+            for (var r = 0; r < souffles.length; r++) { if (!artbBoss(souffles[r])) souffles[r].knockback(1.5, lanceur.getX() - souffles[r].getX(), lanceur.getZ() - souffles[r].getZ()); artbBlesser(lanceur, souffles[r], 3) }
+            artbPart(lanceur, ARTB.Part.CLOUD, 40, 2.5); artbFxOnde(lanceur, lanceur, 5)
+            artbSon(lanceur, ARTB.Sons.BREEZE_WIND_CHARGE_BURST, 1, 1)
+          }
+        }
+      }
+      // ── Nécromancien ──
+      if (artbEcole(ecole, 'Nécromancien')) {
+        if (artbPorte(lanceur, 'anneau_putrefaction')) cible.potionEffects.add('minecraft:wither', 60, 0, false, true)
+        if (artbPorte(lanceur, 'anneau_tombe') && artbAEffet(cible, 'minecraft:wither')) ev.setAmount(Number(ev.getAmount()) * 1.2)
+      }
+      // ── Envoûteur ──
+      if (artbEcole(ecole, 'Envoûteur')) {
+        ARTB2.maudits[cleC] = { par: lanceur, fin: t + 8000 }
+        ARTB2.dernierMaudit[cleL] = cible
+        if (artbPorte(lanceur, 'anneau_fletrissure')) cible.potionEffects.add('minecraft:weakness', 60, 1, false, true)
+        if (artbPorte(lanceur, 'anneau_malediction')) cible.persistentData.putLong('artb_maudit', t + 5000)
+        if (artbPorte(lanceur, 'collier_supplice') && Number(cible.getHealth()) < Number(cible.getMaxHealth()) * 0.25 && !cible.persistentData.getBoolean('artb_supplice')) {
+          cible.persistentData.putBoolean('artb_supplice', true)
+          artbSurLaDuree(lanceur, cible, 6, 2, 0)
+          lanceur.server.scheduleInTicks(121, function () { try { cible.persistentData.putBoolean('artb_supplice', false) } catch (e3) {} })
+        }
+      }
+      // ── Spiritualiste ──
+      if (artbEcole(ecole, 'Spiritualiste')) {
+        if (artbPorte(lanceur, 'anneau_ames_errantes') && Math.random() < 0.3) {
+          var autre = artb2PlusProche(cible, artbEnnemisProches(cible, 6, cible))
+          if (autre) { artbBlesser(lanceur, autre, degats * 0.4); artbFx(cible, 'wisp', 8, 0.3); artbPart(autre, ARTB.Part.SOUL, 8, 0.4) }
+        }
+        if (artbPorte(lanceur, 'anneau_lien_spirituel')) {
+          var allies = artbJoueursProches(lanceur, 10, true), faible = null
+          for (var a2 = 0; a2 < allies.length; a2++) if (!faible || Number(allies[a2].getHealth()) / Number(allies[a2].getMaxHealth()) < Number(faible.getHealth()) / Number(faible.getMaxHealth())) faible = allies[a2]
+          if (faible) faible.heal(degats * 0.15)
+        }
+        if (artbPorte(lanceur, 'anneau_exorcisme')) {
+          var bons = ['minecraft:strength', 'minecraft:resistance', 'minecraft:regeneration', 'minecraft:speed', 'minecraft:absorption', 'minecraft:fire_resistance']
+          for (var bb = 0; bb < bons.length; bb++) if (artbAEffet(cible, bons[bb])) { artbRetirerEffet(cible, bons[bb]); artbPart(cible, ARTB.Part.SOUL, 8, 0.4); break }
+        }
+      }
+      // ── Symétriste ──
+      if (artbEcole(ecole, 'Symétriste')) {
+        var pc = artb2Pourcent(lanceur)
+        if (artbPorte(lanceur, 'anneau_yin') && pc.pv < pc.mana) ev.setAmount(Number(ev.getAmount()) * 1.2)
+        if (artbPorte(lanceur, 'pendentif_contrepoids') && ARTB2.contrepoids[cleL] > t) { ARTB2.contrepoids[cleL] = 0; ev.setAmount(Number(ev.getAmount()) * 1.3) }
+        if (artbPorte(lanceur, 'anneau_miroir')) {
+          ARTB2.miroir[cleL] = !ARTB2.miroir[cleL]
+          if (!ARTB2.miroir[cleL]) {
+            var reflet = artb2PlusProche(cible, artbEnnemisProches(cible, 6, cible))
+            if (reflet) { artbBlesser(lanceur, reflet, degats * 0.3); artbPart(reflet, ARTB.Part.END_ROD, 8, 0.4) }
+          }
+        }
+        if (artbPorte(lanceur, 'ceinture_dualite') && artb2Dualite(lanceur, 'sort')) { artbMana(lanceur, 4); lanceur.heal(1) }
+      }
+      // ── Technomancien ──
+      if (artbEcole(ecole, 'Technomancien')) {
+        if (artbPorte(lanceur, 'anneau_circuit')) {
+          ARTB2.circuit[cleL] = (ARTB2.circuit[cleL] || 0) + 1
+          if (ARTB2.circuit[cleL] >= 3) { ARTB2.circuit[cleL] = 0; ev.setAmount(Number(ev.getAmount()) * 1.4); artbPart(cible, ARTB.Part.ELECTRIC_SPARK, 15, 0.4) }
+        }
+        if (artbPorte(lanceur, 'anneau_court_circuit') && !artbBoss(cible) && Math.random() < 0.2) cible.potionEffects.add('minecraft:slowness', 20, 3, false, true)
+      }
+    } catch (e) { artbErreur('dégâts de sort (suite)', e) }
+  })
+} catch (e) { console.error('[artefacts] dégâts de sort (suite) indisponibles : ' + e) }
+
+// Ceinture de la dualité : alterner coup d'arme et sort de symétrie
+function artb2Dualite(joueur, temps) {
+  var cle = String(joueur.uuid), d = ARTB2.dualite[cle], t = Date.now()
+  ARTB2.dualite[cle] = { dernier: temps, t: t }
+  return !!d && d.dernier !== temps && t - d.t < 3000
+}
+
+// ═══ Dégâts entrants (avant calcul) ═══
+try {
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent'), function (ev) {
+    try {
+      if (!ARTB || ARTB.partage || ARTB.blessure) return
+      artb2Init()
+      var cible = ev.getEntity(), src = ev.getSource(), t = Date.now()
+      // Malédiction : +15 % de dégâts de toutes sources
+      if (cible.persistentData.getLong('artb_maudit') > t) ev.setAmount(Number(ev.getAmount()) * 1.15)
+      if (!cible.isPlayer()) return
+      var joueur = cible, cle = String(joueur.uuid), auteur = src.actual
+      var msg = ''
+      try { msg = String(src.getMsgId()) } catch (x) {}
+      // Paratonnerre : immunité à la foudre, mana au maximum
+      if (msg === 'lightningBolt' && artbPorte(joueur, 'paratonnerre')) {
+        ev.setCanceled(true)
+        artbMana(joueur, 10000)
+        artbStatut(joueur, '⚡ Le paratonnerre absorbe la foudre', 'aqua')
+        return
+      }
+      // Peau de salamandre : pas de dégâts quand on brûle
+      if ((msg === 'onFire' || msg === 'inFire') && artbPorte(joueur, 'peau_salamandre')) { ev.setCanceled(true); return }
+      // Ceinture à talismans : 10 % d'annuler un coup (5 s minimum entre deux)
+      if (artbPorte(joueur, 'ceinture_talismans') && Math.random() < 0.10 && !(ARTB2.talismans[cle] && t - ARTB2.talismans[cle] < 5000)) {
+        ARTB2.talismans[cle] = t
+        ev.setCanceled(true)
+        artbPart(joueur, ARTB.Part.SOUL, 10, 0.4)
+        artbStatut(joueur, '👻 Les talismans détournent le coup', 'aqua')
+        return
+      }
+      // Carapace de glace : le premier coup toutes les 30 s est réduit de moitié et ralentit l'attaquant
+      var cara = artbPorte(joueur, 'carapace_glace')
+      if (cara && !joueur.getCooldowns().isOnCooldown(cara.getItem())) {
+        joueur.getCooldowns().addCooldown(cara.getItem(), 600)
+        ev.setAmount(Number(ev.getAmount()) * 0.5)
+        if (auteur && auteur.isLiving() && String(auteur.uuid) !== cle) auteur.potionEffects.add('minecraft:slowness', 60, 1, false, true)
+        artbPart(joueur, ARTB.Part.SNOWFLAKE, 20, 0.5)
+        artbSon(joueur, ARTB.Sons.GLASS_BREAK, 1, 1.4)
+      }
+      // Lanterne spectrale : sous 40 % de PV, forme spectrale 3 s (recharge 60 s)
+      var lant = artbPorte(joueur, 'lanterne_spectrale')
+      if (lant && Number(joueur.getHealth()) - Number(ev.getAmount()) < Number(joueur.getMaxHealth()) * 0.4 && !joueur.getCooldowns().isOnCooldown(lant.getItem())) {
+        joueur.getCooldowns().addCooldown(lant.getItem(), 1200)
+        ARTB2.spectral[cle] = t + 3000
+        joueur.potionEffects.add('minecraft:invisibility', 60, 0, false, false)
+        artbPart(joueur, ARTB.Part.SOUL, 20, 0.5)
+        artbStatut(joueur, '👻 Forme spectrale', 'aqua')
+      }
+      if (ARTB2.spectral[cle] > t) ev.setAmount(Number(ev.getAmount()) * 0.5)
+      // Poupée vaudou : 25 % des dégâts subis sont renvoyés à ta dernière cible maudite
+      var poupee = ARTB2.dernierMaudit[cle]
+      if (poupee && poupee.isAlive() && poupee.distanceToSqr(joueur) < 16 * 16 && artbPorte(joueur, 'poupee_vaudou')) {
+        artbBlesser(joueur, poupee, Number(ev.getAmount()) * 0.25)
+        artbPart(poupee, ARTB.Part.SMOKE, 6, 0.3)
+      }
+      // Miroir d'eau : 20 % des dégâts renvoyés à l'attaquant
+      if (auteur && auteur.isLiving() && String(auteur.uuid) !== cle && artbPorte(joueur, 'miroir_eau')) artbBlesser(joueur, auteur, Number(ev.getAmount()) * 0.2)
+      // Contrepoids : un coup de plus de 2 cœurs renforce le prochain sort de symétrie
+      if (Number(ev.getAmount()) > 4 && artbPorte(joueur, 'pendentif_contrepoids')) ARTB2.contrepoids[cle] = t + 8000
+      // Ceinture conductrice : 2 mana par point de dégât subi
+      if (artbPorte(joueur, 'ceinture_conductrice')) artbMana(joueur, Number(ev.getAmount()) * 2)
+    } catch (e) { artbErreur('dégâts entrants (suite)', e) }
+  })
+} catch (e) { console.error('[artefacts] dégâts entrants (suite) indisponibles : ' + e) }
+
+// Coups d'arme et attaques subies (après calcul)
+try {
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingDamageEvent$Post'), function (ev) {
+    try {
+      if (!ARTB || ARTB.blessure || Number(ev.getNewDamage()) <= 0) return
+      artb2Init()
+      var src = ev.getSource(), cible = ev.getEntity(), auteur = src.actual, direct = src.immediate, t = Date.now()
+      // coup d'arme d'un joueur
+      if (auteur && auteur.isPlayer() && direct && String(direct.uuid) === String(auteur.uuid) && !(src instanceof ARTB.SrcSort) && String(cible.uuid) !== String(auteur.uuid)) {
+        if (artbPorte(auteur, 'ceinture_dualite') && artb2Dualite(auteur, 'arme')) { artbMana(auteur, 4); auteur.heal(1) }
+        if (artbPorte(auteur, 'ceinture_chaines') && cible.persistentData.getLong('artb_maudit') > t) cible.potionEffects.add('minecraft:slowness', 40, 1, false, true)
+      }
+      // Collier de l'exil : 20 % de chance de bannir l'attaquant au corps à corps 8 blocs plus loin ; Collier de l'éclair : électrocute l'attaquant
+      if (cible.isPlayer() && auteur && direct && String(direct.uuid) === String(auteur.uuid) && auteur.isLiving() && String(auteur.uuid) !== String(cible.uuid)) {
+        var cA = String(auteur.uuid)
+        if (artbPorte(cible, 'collier_exil') && !artbBoss(auteur) && Math.random() < 0.2 && !(ARTB2.exil[cA] && t - ARTB2.exil[cA] < 5000)) {
+          ARTB2.exil[cA] = t
+          artbPart(auteur, ARTB.Part.PORTAL, 30, 0.5)
+          auteur.randomTeleport(auteur.getX() + (Math.random() < 0.5 ? -8 : 8), auteur.getY(), auteur.getZ() + (Math.random() < 0.5 ? -8 : 8), true)
+          artbSon(auteur, ARTB.Sons.ENDERMAN_TELEPORT, 0.8, 0.8)
+        }
+        if (artbPorte(cible, 'collier_eclair') && !(ARTB2.choc[cA] && t - ARTB2.choc[cA] < 2000)) {
+          ARTB2.choc[cA] = t
+          artbBlesser(cible, auteur, 2)
+          auteur.potionEffects.add('minecraft:slowness', 40, 0, false, true)
+          artbPart(auteur, ARTB.Part.ELECTRIC_SPARK, 12, 0.4)
+        }
+      }
+      // Ceinture de magma : l'attaquant au corps à corps prend feu
+      if (cible.isPlayer() && auteur && direct && String(direct.uuid) === String(auteur.uuid) && auteur.isLiving() && String(auteur.uuid) !== String(cible.uuid) && artbPorte(cible, 'ceinture_magma')) {
+        var ca = String(auteur.uuid)
+        if (!(ARTB2.frappes[ca] && t - ARTB2.frappes[ca] < 3000)) { ARTB2.frappes[ca] = t; auteur.igniteForSeconds(3) }
+      }
+    } catch (e) { artbErreur('coups (suite)', e) }
+  })
+} catch (e) { console.error('[artefacts] coups (suite) indisponibles : ' + e) }
+
+// ═══ Morts : sauvetages ultimes, mises à mort, gardien des esprits ═══
+try {
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingDeathEvent'), function (ev) {
+    try {
+      if (ev.isCanceled()) return
+      artb2Init()
+      var mort = ev.getEntity(), src = ev.getSource(), t = Date.now()
+      if (!mort.isPlayer()) {
+        var tueur = src.actual
+        // Contagion (Envoûteur) : la malédiction passe aux ennemis proches
+        var m = ARTB2.maudits[String(mort.uuid)]
+        if (m && m.fin > t) {
+          var envouteur = m.par
+          if (envouteur && envouteur.isAlive() && artbPorte(envouteur, 'anneau_contagion')) {
+            var voisins = artbEnnemisProches(mort, 5, mort)
+            for (var i = 0; i < voisins.length; i++) {
+              voisins[i].potionEffects.add('minecraft:weakness', 80, 0, false, true)
+              voisins[i].potionEffects.add('minecraft:slowness', 80, 0, false, true)
+              ARTB2.maudits[String(voisins[i].uuid)] = { par: m.par, fin: t + 8000 }
+            }
+            artbPart(mort, ARTB.Part.SMOKE, 20, 1.5); artbFx(mort, 'siphon', 20, 1.5); artbFxOnde(envouteur, mort, 5)
+          }
+        }
+        if (!tueur || !tueur.isPlayer()) return
+        var ecole = (src instanceof ARTB.SrcSort) ? src.spell().getSchoolType() : null
+        // Anneau des cendres : une victime brûlée par tes sorts de feu explose
+        if (mort.persistentData.getLong('artb_cendres') > t - 3000 && artbPorte(tueur, 'anneau_cendres')) {
+          var vic = artbEnnemisProches(mort, 3, mort)
+          for (var c = 0; c < vic.length; c++) { artbBlesser(tueur, vic[c], 4); vic[c].igniteForSeconds(3) }
+          artbPart(mort, ARTB.Part.FLAME, 30, 1); artbFxOnde(tueur, mort, 3); artbFx(mort, 'braise', 30, 1)
+          artbSon(mort, ARTB.Sons.GENERIC_EXPLODE, 0.8, 1.3)
+        }
+        // Charbon éternel : tuer une cible en feu rend 10 mana
+        if (mort.isOnFire() && artbPorte(tueur, 'charbon_eternel')) artbMana(tueur, 10)
+        if (!ecole) return
+        var cleT = String(tueur.uuid)
+        if (artbEcole(ecole, 'Nécromancien')) {
+          if (artbPorte(tueur, 'phylactere')) { ARTB2.ames[cleT] = Math.min(10, (ARTB2.ames[cleT] || 0) + 1); artbStatut(tueur, '💀 Âmes : ' + ARTB2.ames[cleT] + '/10', 'green') }
+          var sq = artbPorte(tueur, 'anneau_ossements')
+          if (sq && Math.random() < 0.25 && !tueur.getCooldowns().isOnCooldown(sq.getItem())) { tueur.getCooldowns().addCooldown(sq.getItem(), 400); artb2Invoquer(tueur, 1, 400); artbStatut(tueur, '💀 Un mort se relève pour toi', 'green') }
+          if (artbPorte(tueur, 'crane_explosif')) {
+            var pos = mort
+            tueur.server.scheduleInTicks(20, function () { try { var v2 = artbEnnemisProches(pos, 3, null); for (var k = 0; k < v2.length; k++) artbBlesser(tueur, v2[k], 5); artbPart(pos, ARTB.Part.SOUL_FIRE_FLAME, 30, 1); artbFxOnde(tueur, pos, 3) } catch (e2) {} })
+          }
+        }
+        if (artbEcole(ecole, 'Spiritualiste') && artbPorte(tueur, 'collier_ancetres')) { artbMana(tueur, 8); artbPart(mort, ARTB.Part.SOUL, 10, 0.5) }
+        return
+      }
+      var joueur = mort, cle = String(joueur.uuid)
+      // Gardien des esprits : un Spiritualiste proche empêche la mort d'un allié (une fois toutes les 3 min)
+      var proches = artbJoueursProches(joueur, 10, false)
+      for (var g = 0; g < proches.length; g++) {
+        var gar = artbPorte(proches[g], 'gardien_esprit')
+        if (!gar || proches[g].getCooldowns().isOnCooldown(gar.getItem())) continue
+        var msgG = ''
+        try { msgG = String(src.getMsgId()) } catch (x) {}
+        if (msgG === 'outOfWorld' || msgG === 'genericKill') break
+        proches[g].getCooldowns().addCooldown(gar.getItem(), 3600)
+        ev.setCanceled(true); joueur.setHealth(1); joueur.potionEffects.add('minecraft:resistance', 40, 4, false, true)
+        artbPart(joueur, ARTB.Part.SOUL, 20, 0.6); artbFx(joueur, 'wisp', 30, 0.8)
+        artbStatut(joueur, '👻 L\'esprit gardien de ' + proches[g].username + ' te protège', 'aqua')
+        return
+      }
+      if (artb2Sauver(ev, joueur, 'plume_phenix', src)) {
+        joueur.setHealth(Number(joueur.getMaxHealth()) * 0.4)
+        joueur.potionEffects.add('minecraft:fire_resistance', 200, 0, false, true)
+        joueur.potionEffects.add('minecraft:regeneration', 100, 1, false, true)
+        var brules = artbEnnemisProches(joueur, 6, null)
+        for (var b = 0; b < brules.length; b++) { artbBlesser(joueur, brules[b], 10); brules[b].igniteForSeconds(5) }
+        artbPart(joueur, ARTB.Part.FLAME, 40, 2.5); artbFx(joueur, 'feu', 60, 2); artbFxOnde(joueur, joueur, 6); artbSon(joueur, ARTB.Sons.BLAZE_DEATH, 1.5, 0.6)
+        artbStatut(joueur, '🔥 Tu renais de tes cendres', 'gold')
+        return
+      }
+      if (artb2Sauver(ev, joueur, 'larme_boreale', src)) {
+        joueur.setHealth(Number(joueur.getMaxHealth()) * 0.3)
+        joueur.potionEffects.add('minecraft:resistance', 60, 4, false, true)
+        joueur.potionEffects.add('aetheris_armures:gele', 60, 0, false, true)
+        artbStatut(joueur, '❄ Cryostase', 'aqua')
+        joueur.server.scheduleInTicks(60, function () {
+          try { if (!joueur.isAlive()) return; artbOnde(joueur, joueur, 6, 6, 1.2, 'minecraft:slowness', 80, 2); artbPart(joueur, ARTB.Part.SNOWFLAKE, 60, 3); artbSon(joueur, ARTB.Sons.GLASS_BREAK, 1.5, 0.7) } catch (e2) {}
+        })
+        return
+      }
+      if (artb2Sauver(ev, joueur, 'coeur_orage', src)) {
+        joueur.setHealth(Number(joueur.getMaxHealth()) * 0.3)
+        joueur.potionEffects.add('minecraft:resistance', 60, 4, false, true)
+        var cibles = artb2Hostiles(joueur, 10)
+        cibles.sort(function (a, b2) { return a.distanceToSqr(joueur) - b2.distanceToSqr(joueur) })
+        for (var f = 0; f < Math.min(3, cibles.length); f++) {
+          var eclair = joueur.level.createEntity('minecraft:lightning_bolt')
+          eclair.setPos(cibles[f].getX(), cibles[f].getY(), cibles[f].getZ()); eclair.setVisualOnly(true); artbFxArc(joueur, cibles[f])
+          joueur.level.addFreshEntity(eclair)
+          artbBlesser(joueur, cibles[f], 10)
+        }
+        artbStatut(joueur, '⚡ Foudre vengeresse', 'aqua')
+        return
+      }
+      if (artb2Sauver(ev, joueur, 'coeur_neant', src)) {
+        var an = ARTB2.ancre[cle]
+        artbOnde(joueur, joueur, 5, 0, 0, 'minecraft:levitation', 40, 0)
+        artbPart(joueur, ARTB.Part.PORTAL, 60, 1)
+        if (an && an.dim === String(joueur.level.dimension().location())) { joueur.teleportTo(an.x, an.y, an.z); ARTB2.ancre[cle] = null }
+        else joueur.randomTeleport(joueur.getX() + (Math.random() - 0.5) * 16, joueur.getY(), joueur.getZ() + (Math.random() - 0.5) * 16, true)
+        joueur.fallDistance = 0
+        joueur.setHealth(Number(joueur.getMaxHealth()) * 0.3)
+        joueur.potionEffects.add('minecraft:resistance', 40, 3, false, true)
+        artbSon(joueur, ARTB.Sons.ENDERMAN_TELEPORT, 1.5, 0.6)
+        artbStatut(joueur, an ? '🌀 Retour au néant : tu reviens à ton ancre' : '🌀 Retour au néant', 'lightPurple')
+        return
+      }
+      if (artb2Sauver(ev, joueur, 'coeur_tornade', src)) {
+        joueur.setHealth(Number(joueur.getMaxHealth()) * 0.3)
+        joueur.potionEffects.add('minecraft:slow_falling', 120, 0, false, true)
+        joueur.potionEffects.add('minecraft:resistance', 40, 3, false, true)
+        var balayes = artbEnnemisProches(joueur, 6, null)
+        for (var w = 0; w < balayes.length; w++) { artbBlesser(joueur, balayes[w], 6); if (!artbBoss(balayes[w])) balayes[w].knockback(2.0, joueur.getX() - balayes[w].getX(), joueur.getZ() - balayes[w].getZ()) }
+        artbPousser(joueur, 0, 1.4, 0)
+        artbPart(joueur, ARTB.Part.CLOUD, 60, 2.5); artbFxOnde(joueur, joueur, 6)
+        artbStatut(joueur, '🌪 Envol', 'aqua')
+        return
+      }
+      if (artb2Sauver(ev, joueur, 'coeur_liche', src)) {
+        joueur.setHealth(Number(joueur.getMaxHealth()) * 0.3)
+        joueur.potionEffects.add('minecraft:resistance', 60, 3, false, true)
+        artb2Invoquer(joueur, 2, 400)
+        artbPart(joueur, ARTB.Part.SOUL_FIRE_FLAME, 50, 1.5); artbFxOnde(joueur, joueur, 5)
+        artbStatut(joueur, '💀 Ton phylactère te relève', 'green')
+        return
+      }
+      if (artb2Sauver(ev, joueur, 'coeur_damne', src)) {
+        joueur.setHealth(Number(joueur.getMaxHealth()) * 0.3)
+        joueur.potionEffects.add('minecraft:resistance', 60, 3, false, true)
+        var damnes = artbEnnemisProches(joueur, 8, null)
+        for (var d = 0; d < damnes.length; d++) { damnes[d].potionEffects.add('minecraft:wither', 100, 1, false, true); damnes[d].potionEffects.add('minecraft:weakness', 100, 0, false, true); damnes[d].potionEffects.add('minecraft:slowness', 100, 0, false, true) }
+        artbPart(joueur, ARTB.Part.SMOKE, 40, 3); artbFx(joueur, 'siphon', 40, 3); artbFxOnde(joueur, joueur, 8)
+        artbStatut(joueur, '🕯 Damnation', 'lightPurple')
+        return
+      }
+      if (artb2Sauver(ev, joueur, 'urne_ames', src)) {
+        joueur.setHealth(Number(joueur.getMaxHealth()) * 0.3)
+        joueur.potionEffects.add('minecraft:resistance', 100, 4, false, true)
+        joueur.potionEffects.add('minecraft:invisibility', 100, 0, false, false)
+        joueur.potionEffects.add('minecraft:speed', 100, 1, false, true)
+        artbPart(joueur, ARTB.Part.SOUL, 30, 1); artbFx(joueur, 'wisp', 40, 1.2); artbFxOnde(joueur, joueur, 5)
+        artbStatut(joueur, '👻 Ascension : tu deviens esprit 5 s', 'aqua')
+        return
+      }
+      if (artb2Sauver(ev, joueur, 'coeur_equilibre', src)) {
+        joueur.setHealth(Number(joueur.getMaxHealth()) * 0.5)
+        var md = ARTB.Magie.getPlayerMagicData(joueur)
+        md.setMana(Number(joueur.getAttributeValue(ARTB.ManaMax)) * 0.5)
+        joueur.potionEffects.add('minecraft:resistance', 60, 4, false, true)
+        artbOnde(joueur, joueur, 6, 8, 1.0, null, 0, 0)
+        artbPart(joueur, ARTB.Part.END_ROD, 50, 2)
+        artbStatut(joueur, '☯ Équilibre parfait', 'gold')
+        return
+      }
+      if (artb2Sauver(ev, joueur, 'noyau_reacteur', src)) {
+        joueur.setHealth(Number(joueur.getMaxHealth()) * 0.3)
+        artbMana(joueur, 10000)
+        artbOnde(joueur, joueur, 5, 10, 1.8, null, 0, 0)
+        artbPart(joueur, ARTB.Part.EXPLOSION, 6, 2)
+        artbSon(joueur, ARTB.Sons.GENERIC_EXPLODE, 1.5, 0.8)
+        artbStatut(joueur, '⚙ Réacteur d\'urgence', 'gold')
+      }
+    } catch (e) { artbErreur('morts (suite)', e) }
+  })
+} catch (e) { console.error('[artefacts] morts (suite) indisponibles : ' + e) }
+
+// Lanterne des morts (Nécromancien) : les morts-vivants ne te prennent pas pour cible, sauf si tu les as frappés
+// Œil du Vide : idem pour les Endermen
+try {
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent'), function (ev) {
+    try {
+      var cible = ev.getNewAboutToBeSetTarget(), mob = ev.getEntity()
+      if (!cible || !cible.isPlayer() || !ARTB) return
+      artb2Init()
+      var nom = (mob instanceof ARTB2.EnderMan) ? 'oeil_vide' : artbMortVivant(mob) ? 'lanterne_morts' : null
+      if (!nom || !artbPorte(cible, nom)) return
+      var dernier = mob.getLastHurtByMob()
+      if (dernier && String(dernier.uuid) === String(cible.uuid)) return
+      ev.setCanceled(true)
+    } catch (e) { artbErreur('lanterne des morts', e) }
+  })
+} catch (e) { console.error('[artefacts] lanterne des morts indisponible : ' + e) }
+
+// Ceinture de l'ossuaire : immunité au Wither ; Flocon éternel : immunité à la Lenteur
+try {
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.living.MobEffectEvent$Applicable'), function (ev) {
+    try {
+      var id = String(ev.getEffectInstance().getEffect().getRegisteredName())
+      if ((id === 'minecraft:wither' && artbPorte(ev.getEntity(), 'ceinture_ossuaire')) || (id === 'minecraft:slowness' && artbPorte(ev.getEntity(), 'flocon_eternel')))
+        ev.setResult(ARTB_RESULTAT.DO_NOT_APPLY)
+    } catch (e) { artbErreur('immunités (suite)', e) }
+  })
+} catch (e) { console.error('[artefacts] immunités (suite) indisponibles : ' + e) }
+
+// Perle instable : les perles de l'Ender ne blessent pas, 20 % de chance d'être rendues
+try {
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.EntityTeleportEvent$EnderPearl'), function (ev) {
+    try {
+      var joueur = ev.getPlayer()
+      if (!joueur || !artbPorte(joueur, 'perle_instable')) return
+      ev.setAttackDamage(0)
+      if (Math.random() < 0.2) joueur.give('minecraft:ender_pearl')
+    } catch (e) { artbErreur('perle instable', e) }
+  })
+} catch (e) { console.error('[artefacts] perle instable indisponible : ' + e) }
+
+// ═══ Tous les ticks (saut d'air) et toutes les secondes ═══
+PlayerEvents.tick(function (event) {
+  var joueur = event.player
+  try {
+    if (!ARTB) return
+    // Souffle ascendant : s'accroupir en l'air donne une impulsion (une fois par saut)
+    if (joueur.tickCount % 2 === 0 && ARTB.cache[String(joueur.uuid)] && ARTB.cache[String(joueur.uuid)].p['souffle_ascendant']) {
+      artb2Init()
+      var cle0 = String(joueur.uuid)
+      if (joueur.onGround()) ARTB2.envol[cle0] = false
+      else if (joueur.isCrouching() && !ARTB2.envol[cle0] && artbPorte(joueur, 'souffle_ascendant')) {
+        ARTB2.envol[cle0] = true
+        var dm = joueur.getDeltaMovement()
+        artbPousser(joueur, dm.x(), 0.75, dm.z())
+        joueur.fallDistance = 0
+        artbPart(joueur, ARTB.Part.CLOUD, 12, 0.4)
+      }
+    }
+    if (joueur.tickCount % 20 !== 7) return
+    artb2Init()
+    var cle = String(joueur.uuid), t = Date.now(), p = artbPortes(joueur)
+    var aucun = true
+    for (var n in p) { if (ARTB_CLASSE[n] && ARTB2_SETS[ARTB_CLASSE[n]]) { aucun = false; break } }
+    if (aucun) return
+    var x = joueur.getX(), y = joueur.getY(), z = joueur.getZ()
+    var immobile = ARTB2.immobile[cle]
+    if (!immobile || Math.abs(immobile.x - x) > 0.15 || Math.abs(immobile.y - y) > 0.15 || Math.abs(immobile.z - z) > 0.15) ARTB2.immobile[cle] = immobile = { x: x, y: y, z: z, s: 0 }
+    else immobile.s++
+    // ── Pyromancien ──
+    var ch = ARTB2.chaleur[cle]
+    if (ch && t < ch.fin && artbPorte(joueur, 'anneau_fournaise')) { joueur.igniteForSeconds(1); artbPart(joueur, ARTB.Part.FLAME, 6, 0.4) }
+    else if (ch && ch.n > 0 && joueur.tickCount % 60 === 7) ch.n--
+    if (joueur.isOnFire() && artbPorte(joueur, 'peau_salamandre')) artbMana(joueur, 2)
+    if (joueur.tickCount % 100 === 7 && artbPorte(joueur, 'lanterne_ardente')) {
+      var proies = artb2Hostiles(joueur, 4)
+      for (var i = 0; i < proies.length; i++) { proies[i].igniteForSeconds(2); artbFx(proies[i], 'feu', 10, 0.3) }
+      if (proies.length) artbFxOnde(joueur, joueur, 4)
+    }
+    // ── Cryomancien ──
+    if (artbPorte(joueur, 'flocon_eternel')) joueur.setTicksFrozen(0)
+    if (artbPorte(joueur, 'ceinture_frimas')) {
+      var sous = String(joueur.level.getBlockState(joueur.blockPosition().below()).getBlock().builtInRegistryHolder().key().location())
+      if (/ice|snow/.test(sous)) joueur.potionEffects.add('minecraft:speed', 40, 1, false, false)
+    }
+    if (immobile.s >= 2 && artbPorte(joueur, 'cristal_permafrost')) {
+      var geles = artbEnnemisProches(joueur, 4, null)
+      for (var gg = 0; gg < geles.length; gg++) geles[gg].potionEffects.add('minecraft:slowness', 40, 1, false, true)
+      joueur.level.sendParticles(ARTB.Part.SNOWFLAKE, x, y + 0.2, z, 6, 2, 0.1, 2, 0.01); artbFx(joueur, 'neige', 8, 2)
+    }
+    // ── Électro-Sorcier ──
+    if (artbPorte(joueur, 'batterie_statique') && joueur.isSprinting()) {
+      ARTB2.statique[cle] = Math.min(10, (ARTB2.statique[cle] || 0) + 1)
+      artbStatut(joueur, '⚡ Charge statique ' + ARTB2.statique[cle] + '/10', 'aqua')
+    }
+    if (joueur.tickCount % 80 === 7 && artbPorte(joueur, 'bobine_tesla')) {
+      var zap = artb2PlusProche(joueur, artb2Hostiles(joueur, 6))
+      if (zap) { artbBlesser(joueur, zap, 3); artbSon(zap, ARTB.Sons.BEE_STING, 0.3, 2) }
+    }
+    // ── Voyageur du Vide ──
+    var an = ARTB2.ancre[cle], dimJ = String(joueur.level.dimension().location())
+    // Seuil : un saut de plus de 8 blocs en 1 s (perle, sort de téléportation...) charge l'anneau
+    var dp = ARTB2.dernierePos[cle]
+    if (dp && dp.dim === dimJ && (dp.x - x) * (dp.x - x) + (dp.y - y) * (dp.y - y) + (dp.z - z) * (dp.z - z) > 64 && artbPorte(joueur, 'anneau_seuil')) {
+      ARTB2.seuil[cle] = t + 5000
+      artbStatut(joueur, '🌀 Seuil franchi : prochain sort d\'Ender +40 %', 'lightPurple')
+    }
+    ARTB2.dernierePos[cle] = { x: x, y: y, z: z, dim: dimJ }
+    if (artbPorte(joueur, 'ancre_vide')) {
+      ARTB2.accroupi[cle] = joueur.isCrouching() ? (ARTB2.accroupi[cle] || 0) + 1 : 0
+      if (ARTB2.accroupi[cle] === 2) {
+        ARTB2.ancre[cle] = { x: x, y: y, z: z, dim: dimJ }
+        artbStatut(joueur, '🌀 Ancre du Vide posée', 'lightPurple')
+        artbSon(joueur, ARTB.Sons.RESPAWN_ANCHOR_CHARGE, 0.8, 1.2)
+      }
+      if (an && an.dim === String(joueur.level.dimension().location())) joueur.level.sendParticles(ARTB.Part.REVERSE_PORTAL, an.x, an.y + 1, an.z, 8, 0.3, 0.5, 0.3, 0.01)
+    }
+    if (joueur.tickCount % 40 === 7 && artbPorte(joueur, 'oeil_vide')) {
+      var caches = joueur.level.getEntitiesOfClass(ARTB.Vivant, joueur.boundingBox.inflate(16))
+      for (var ci = 0; ci < caches.size(); ci++) if (caches.get(ci).isInvisible()) caches.get(ci).potionEffects.add('minecraft:glowing', 50, 0, false, false)
+    }
+    var ent = artbPorte(joueur, 'ceinture_abime')
+    if (ent) {
+      if (joueur.onGround()) ARTB2.sol[cle] = { x: x, y: y, z: z }
+      else if (y < joueur.level.getMinBuildHeight() && ARTB2.sol[cle] && !joueur.getCooldowns().isOnCooldown(ent.getItem())) {
+        joueur.getCooldowns().addCooldown(ent.getItem(), 6000)
+        joueur.teleportTo(ARTB2.sol[cle].x, ARTB2.sol[cle].y, ARTB2.sol[cle].z)
+        joueur.fallDistance = 0
+        artbSon(joueur, ARTB.Sons.ENDERMAN_TELEPORT, 1, 0.8)
+        artbStatut(joueur, '🌀 L\'abîme te recrache sur la terre ferme', 'lightPurple')
+      }
+    }
+    // ── Aéromancien ──
+    if (joueur.fallDistance > 4 && artbPorte(joueur, 'plume_zephyr')) joueur.potionEffects.add('minecraft:slow_falling', 40, 0, false, false)
+    if (immobile.s >= 2 && artbPorte(joueur, 'sifflet_vent')) {
+      var vol = artbJoueursProches(joueur, 4, true)
+      for (var vv = 0; vv < vol.length; vv++) { vol[vv].potionEffects.add('minecraft:slow_falling', 60, 0, false, false); vol[vv].potionEffects.add('minecraft:jump_boost', 60, 1, false, false) }
+      joueur.level.sendParticles(ARTB.Part.CLOUD, x, y + 0.2, z, 8, 1.5, 0.1, 1.5, 0.05)
+    }
+    if (artbPorte(joueur, 'ceinture_alizes')) {
+      ARTB2.alizes[cle] = joueur.isSprinting() ? (ARTB2.alizes[cle] || 0) + 1 : 0
+      if (ARTB2.alizes[cle] >= 3) joueur.potionEffects.add('minecraft:speed', 40, 1, false, false)
+    }
+    // ── Nécromancien ──
+    var ecto = artbPorte(joueur, 'amulette_ectoplasme')
+    if (ecto && Number(joueur.getHealth()) < Number(joueur.getMaxHealth()) * 0.3 && !joueur.getCooldowns().isOnCooldown(ecto.getItem())) {
+      joueur.getCooldowns().addCooldown(ecto.getItem(), 1200)
+      joueur.potionEffects.add('minecraft:invisibility', 60, 0, false, false)
+      joueur.potionEffects.add('minecraft:speed', 60, 1, false, false)
+      artbPart(joueur, ARTB.Part.SOUL, 15, 0.5)
+      artbStatut(joueur, '💀 Tu te fonds dans l\'ectoplasme', 'green')
+    }
+    // ── Envoûteur ──
+    if (joueur.tickCount % 40 === 7 && artbPorte(joueur, 'oeil_verite')) {
+      var vus = joueur.level.getEntitiesOfClass(ARTB.Vivant, joueur.boundingBox.inflate(12))
+      for (var ov = 0; ov < vus.size(); ov++) { var e1 = vus.get(ov); if (e1.isInvisible() || e1.persistentData.getLong('artb_maudit') > t) e1.potionEffects.add('minecraft:glowing', 50, 0, false, false) }
+    }
+    if (joueur.tickCount % 40 === 7 && artbPorte(joueur, 'sceau_maudit') && Math.random() < 0.25) {
+      var mauvais = ['minecraft:poison', 'minecraft:wither', 'minecraft:weakness', 'minecraft:slowness', 'minecraft:blindness', 'minecraft:hunger', 'minecraft:mining_fatigue']
+      var victime = artb2PlusProche(joueur, artbEnnemisProches(joueur, 8, null))
+      for (var mv = 0; victime && mv < mauvais.length; mv++) if (artbAEffet(joueur, mauvais[mv])) {
+        artbRetirerEffet(joueur, mauvais[mv]); victime.potionEffects.add(mauvais[mv], 100, 0, false, true)
+        artbPart(victime, ARTB.Part.SMOKE, 10, 0.4); artbStatut(joueur, '🕯 Le sceau renvoie ta malédiction', 'lightPurple'); break
+      }
+    }
+    // ── Spiritualiste ──
+    if (immobile.s >= 3 && artbPorte(joueur, 'encens_ancestral')) {
+      if (immobile.s === 3) artbStatut(joueur, '👻 Méditation', 'aqua')
+      var med = artbJoueursProches(joueur, 5, true)
+      for (var me = 0; me < med.length; me++) { artbMana(med[me], 3); med[me].potionEffects.add('minecraft:resistance', 40, 0, false, false) }
+      joueur.level.sendParticles(ARTB.Part.SOUL, x, y + 0.5, z, 2, 1.5, 0.3, 1.5, 0.01); artbFx(joueur, 'wisp', 6, 1.5)
+    }
+    // ── Symétriste ──
+    if (artbPorte(joueur, 'balance_jade') && joueur.tickCount % 60 === 7) {
+      var pc = artb2Pourcent(joueur), maxM = Number(joueur.getAttributeValue(ARTB.ManaMax))
+      if (pc.pv - pc.mana > 0.1 && Number(joueur.getHealth()) > Number(joueur.getMaxHealth()) * 0.5) { joueur.setHealth(Number(joueur.getHealth()) - Number(joueur.getMaxHealth()) * 0.02); artbMana(joueur, maxM * 0.02) }
+      else if (pc.mana - pc.pv > 0.1) { pc.md.setMana(Number(pc.md.getMana()) - maxM * 0.02); joueur.heal(Number(joueur.getMaxHealth()) * 0.02) }
+    }
+    if (artbPorte(joueur, 'taijitu')) {
+      var eq = artb2Pourcent(joueur)
+      if (Math.abs(eq.pv - eq.mana) <= 0.1) { joueur.potionEffects.add('minecraft:resistance', 40, 0, false, false); joueur.potionEffects.add('minecraft:strength', 40, 0, false, false) }
+    }
+    // ── Technomancien ──
+    var bat = artbPorte(joueur, 'batterie_arcanique')
+    if (bat) {
+      var pb = artb2Pourcent(joueur)
+      if (pb.mana >= 0.999) ARTB2.batterie[cle] = Math.min(100, (ARTB2.batterie[cle] || 0) + 3)
+      else if (pb.mana < 0.25 && ARTB2.batterie[cle] > 0) { artbMana(joueur, ARTB2.batterie[cle]); artbStatut(joueur, '⚙ Batterie déchargée (+' + Math.round(ARTB2.batterie[cle]) + ' mana)', 'gold'); ARTB2.batterie[cle] = 0 }
+    }
+    if (joueur.tickCount % 100 === 7 && artbPorte(joueur, 'scanner_arcanique')) {
+      var reperes = artb2Hostiles(joueur, 24)
+      for (var sc = 0; sc < reperes.length; sc++) reperes[sc].potionEffects.add('minecraft:glowing', 80, 0, false, false)
+      artbFxOnde(joueur, joueur, 12)
+      if (reperes.length) joueur.playNotifySound(ARTB.Sons.NOTE_BLOCK_BIT.value(), ARTB.SrcSon.PLAYERS, 0.4, 1.8)
+    }
+    var bou = artbPorte(joueur, 'bouclier_energie')
+    if (bou && joueur.tickCount % 400 === 7 && Number(joueur.getAbsorptionAmount()) <= 0) {
+      var pe = artb2Pourcent(joueur)
+      if (Number(pe.md.getMana()) >= 20) { pe.md.setMana(Number(pe.md.getMana()) - 20); joueur.setAbsorptionAmount(4); artbFx(joueur, 'elec', 20, 0.6); artbStatut(joueur, '⚙ Bouclier énergétique rechargé', 'gold') }
+    }
+    if (artbPorte(joueur, 'ceinture_outils')) joueur.potionEffects.add('minecraft:haste', 40, 0, false, false)
+    if (artbPorte(joueur, 'collier_drone')) {
+      var objets = joueur.level.getEntitiesOfClass(ARTB2.ObjetSol, joueur.boundingBox.inflate(8))
+      for (var ob = 0; ob < objets.size(); ob++) {
+        var it = objets.get(ob)
+        if (it.hasPickUpDelay()) continue
+        it.setDeltaMovement((x - it.getX()) * 0.25, (y + 0.5 - it.getY()) * 0.25, (z - it.getZ()) * 0.25)
+      }
+    }
+  } catch (e) { artbErreur('tick (suite)', e) }
 })

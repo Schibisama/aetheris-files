@@ -19,6 +19,10 @@ var NERF_DEGATS_GROS = [
 var NERF_DEGATS_SORTS = {
   'hazennstuff:counterspell_spider_lily': 0.5   // Contre-sort : lys araignée, dégâts divisés par deux
 }
+// Mobs lanceurs de sorts dont les SORTS sont réduits (ils traversent l'armure) : identifiant du mob -> coefficient
+var NERF_MOBS_SORTS = {
+  'cursespells:remnant': 0.5   // Remnant (Curse Spells) : ses sorts comptent l'armure de la cible, puis sont divisés par deux
+}
 var NERF_GROS_SORTS = [
   'cursespells:catastrophe', 'cursespells:skyfall', 'cursespells:blade_of_judgment',
   'cursespells:pillar_of_sin', 'cursespells:the_sky_and_cosmos_are_one', 'cursespells:abhorrent_star'
@@ -57,6 +61,7 @@ function nerfEcouter(nom, classe, fn) {
 // Dégâts minimum par touche (sorts dont la puissance de base est nulle : au niveau 1 ils n'infligeaient rien)
 var DEGATS_PLANCHER = { 'monsterspellbooks:life_drain': 3 }
 var NERF_SDS = null
+var NERF_CR = null, NERF_ATTR = null
 try { NERF_SDS = Java.loadClass('io.redspace.ironsspellbooks.damage.SpellDamageSource') } catch (e) {}
 try {
   var BUS_N = Java.loadClass('net.neoforged.neoforge.common.NeoForge').EVENT_BUS
@@ -67,6 +72,27 @@ try {
       var src = e.getSource()
       if (!NERF_SDS || !(src instanceof NERF_SDS)) return
       var id = String(src.spell().getSpellId())
+      try {   // sort lancé par un mob listé dans NERF_MOBS_SORTS (pas par un joueur)
+        var lanceur = null
+        try { lanceur = src.actual } catch (eA0) {}
+        if (!lanceur) { try { lanceur = src.getEntity() } catch (eA1) {} }
+        var mm = lanceur && !lanceur.isPlayer() ? NERF_MOBS_SORTS[String(lanceur.type)] : undefined
+        if (mm !== undefined) {
+          // Ces sorts ignorent l'armure (dégâts magiques) : on applique ici la réduction d'armure normale de Minecraft
+          // (armure + robustesse de la cible), puis le coefficient du mob.
+          var dmg = e.getNewDamage()
+          try {
+            var cibleA = e.getEntity()
+            if (!NERF_CR) NERF_CR = Java.loadClass('net.minecraft.world.damagesource.CombatRules')
+            if (!NERF_ATTR) NERF_ATTR = Java.loadClass('net.minecraft.world.entity.ai.attributes.Attributes')
+            var armure = Number(cibleA.getArmorValue())
+            var robustesse = Number(cibleA.getAttributeValue(NERF_ATTR.ARMOR_TOUGHNESS))
+            if (armure > 0) dmg = NERF_CR.getDamageAfterAbsorb(cibleA, dmg, src, armure, robustesse)
+          } catch (eA) { console.error('[envouteur_nerf] armure : ' + eA) }
+          e.setNewDamage(dmg * mm)
+          return
+        }
+      } catch (eM) {}
       var plancher = DEGATS_PLANCHER[id]
       if (plancher !== undefined && e.getNewDamage() < plancher) e.setNewDamage(plancher)
       var mult = NERF_DEGATS_SORTS[id]
@@ -86,4 +112,5 @@ nerfEcouter('mana', 'io.redspace.ironsspellbooks.api.events.SpellOnCastEvent', f
   if (!nerfGros(e.getSpellId())) return
   e.setManaCost(Math.round(e.getOriginalManaCost() * NERF_MANA))
 })
+console.info('[envouteur_nerf] sorts des mobs réduits : ' + JSON.stringify(NERF_MOBS_SORTS))
 console.info('[envouteur_nerf] actif : dégâts x' + NERF_PUISSANCE + ', recharge x' + NERF_RECHARGE + ', mana x' + NERF_MANA)

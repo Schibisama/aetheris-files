@@ -346,6 +346,41 @@ function crTenter(sv, p) {
   try { ftbFait(p, 'vroom_defi') } catch (eF) {}
   return { ok: true }
 }
+// Course groupée : grille de départ. Chaque inscrit connecté est téléporté sur un balai neuf, côte à côte (comme une grille de course
+// automobile) au point de départ de l'épreuve Vroom, tous tournés vers l'anneau 1. 6 coureurs par rang, rangs espacés de 3 blocs.
+var CR_GRILLE = { ecart: 2.5, parRang: 6, entreRangs: 3 }
+function crGrilleDepart(sv, inscrits) {
+  var d = crCharger(sv), T = CR_TENTER
+  var a1 = d.anneaux[0]
+  var dx = a1 ? a1.x - T.x : 0, dz = a1 ? a1.z - T.z : 1
+  var lg = Math.sqrt(dx * dx + dz * dz) || 1
+  dx /= lg; dz /= lg                               // direction vers l'anneau 1
+  var px = -dz, pz = dx                            // perpendiculaire : la ligne de départ
+  var yaw = Math.atan2(-dx, dz) * 180 / Math.PI    // orientation Minecraft (0 = sud, 90 = ouest)
+  var presents = []
+  for (var i = 0; i < inscrits.length; i++) { var p = crJoueur(sv, inscrits[i]); if (p) presents.push(p) }
+  for (var k = 0; k < presents.length; k++) {
+    var p2 = presents[k], u = String(p2.uuid), nom = String(p2.username)
+    var rangee = Math.floor(k / CR_GRILLE.parRang), col = k % CR_GRILLE.parRang
+    var nb = Math.min(CR_GRILLE.parRang, presents.length - rangee * CR_GRILLE.parRang)
+    var off = (col - (nb - 1) / 2) * CR_GRILLE.ecart
+    var x = T.x + 0.5 + px * off - dx * rangee * CR_GRILLE.entreRangs
+    var z = T.z + 0.5 + pz * off - dz * rangee * CR_GRILLE.entreRangs
+    var pos = x.toFixed(2) + ' ' + T.y + ' ' + z.toFixed(2)
+    var tag = 'cr_gr_' + u.substring(0, 8)
+    try {
+      crRetirerBalaiEpreuve(sv, u)
+      sv.runCommandSilent('ride ' + nom + ' dismount')
+      sv.runCommandSilent('execute in ' + T.dim + ' run tp ' + nom + ' ' + pos + ' ' + yaw.toFixed(1) + ' 0')
+      sv.runCommandSilent('execute in ' + T.dim + ' run summon ' + T.balai + ' ' + pos + ' {Tags:["' + tag + '"],Rotation:[' + yaw.toFixed(1) + 'f,0f]}')
+      sv.runCommandSilent('execute in ' + T.dim + ' run ride ' + nom + ' mount @e[type=' + T.balai + ',tag=' + tag + ',limit=1,sort=nearest]')
+      sv.runCommandSilent('effect give ' + nom + ' minecraft:slow_falling 25 0 true')
+      CR_BALAIS[u] = { tag: tag, t0: sv.tickCount }
+    } catch (e) { console.error('[course] grille : ' + nom + ' : ' + e) }
+  }
+  if (CR_GROUPE) CR_GROUPE.fige = {}   // les positions figées seront relevées sur la grille
+  console.info('[course] grille de départ : ' + presents.length + ' coureur(s) placés')
+}
 function crRetirerBalaiEpreuve(sv, u) {
   var b = CR_BALAIS[u]; if (!b) return
   try { sv.runCommandSilent('kill @e[type=' + CR_TENTER.balai + ',tag=' + b.tag + ']') } catch (e) {}
@@ -488,7 +523,7 @@ ServerEvents.commandRegistry(function (event) {
         if (crCharger(sv).anneaux.length < 2) return crRep(ctx, "Le parcours n'est pas encore prêt (2 anneaux minimum).", 'The course is not ready yet (at least 2 rings).')
         if (CR_GROUPE) return crRep(ctx, 'Une course groupée est déjà en cours.', 'A group race is already running.')
         CR_GROUPE = { etat: 'inscriptions', inscrits: [], arrivees: [], partants: [] }
-        crAnnoncer(sv, 'Course de balai ! Les inscriptions sont ouvertes : tape /course rejoindre et rejoins la ligne de départ.', 'Broom race! Sign-ups are open: type /course rejoindre and head to the starting line.', 'gold')
+        crAnnoncer(sv, 'Course de balai ! Les inscriptions sont ouvertes : tape /course rejoindre. Au départ, tu seras placé sur la ligne avec un balai.', 'Broom race! Sign-ups are open: type /course rejoindre. At the start you will be placed on the line with a broom.', 'gold')
         return 1
       })
     }))
@@ -498,13 +533,14 @@ ServerEvents.commandRegistry(function (event) {
       if (!CR_GROUPE || CR_GROUPE.etat !== 'inscriptions') return crRep(ctx, "Aucune inscription ouverte pour l'instant.", 'No sign-ups open right now.')
       if (CR_GROUPE.inscrits.indexOf(String(p.uuid)) === -1) CR_GROUPE.inscrits.push(String(p.uuid))
       delete CR_COUREURS[String(p.uuid)]
-      return crRep(ctx, 'Inscrit ! Rejoins la ligne de départ sur ton balai.', 'Signed up! Go to the starting line on your broom.')
+      return crRep(ctx, 'Inscrit ! Au lancement, tu seras téléporté sur la ligne de départ avec un balai.', 'Signed up! When the race starts you will be teleported to the starting line with a broom.')
     }))
     .then(C.literal('lancer').executes(function (ctx) {
       return prof(ctx, function () {
         var sv = ctx.source.server
         if (!CR_GROUPE || CR_GROUPE.etat !== 'inscriptions') return crRep(ctx, "Ouvre d'abord les inscriptions (/course inscriptions).", 'Open sign-ups first (/course inscriptions).')
         if (!CR_GROUPE.inscrits.length) return crRep(ctx, 'Personne ne s\'est inscrit.', 'Nobody signed up.')
+        crGrilleDepart(sv, CR_GROUPE.inscrits)   // chacun sur un balai neuf, côte à côte sur la ligne de départ
         CR_GROUPE.etat = 'decompte'; CR_GROUPE.go = sv.tickCount + 100
         crAnnoncer(sv, 'La course de balai commence ! (' + CR_GROUPE.inscrits.length + ' coureurs)', 'The broom race begins! (' + CR_GROUPE.inscrits.length + ' racers)', 'gold')
         return 1

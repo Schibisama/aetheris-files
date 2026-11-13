@@ -22,9 +22,9 @@
 //   /equipe dissoudre <équipe>     /equipe retirer <joueur>
 //
 // Coéquipiers : ils ne peuvent pas se blesser entre eux, sauf pendant un duel du Colisée qui les oppose.
-// Règles des épreuves : seule une équipe d'au moins 2 membres peut y participer, et TOUS ses membres doivent être connectés
-// et proches (EQ.RAYON blocs, même dimension ; EQ.RAYON_RENDRE pour rendre une collecte) au moment où l'action compte.
-// Bonus : les 3 premières équipes à finir gagnent +30 %, +20 % et +10 % des points.
+// Règles des épreuves : un seul membre de l'équipe suffit pour participer (au moins 1 connecté), sans condition de distance ni de dimension entre les joueurs.
+// Chasse / boss : chaque mort = points pour l'équipe, jusqu'au maximum de l'épreuve. Bonus : les 3 premières équipes à finir gagnent
+// +30 %, +20 % et +10 % des points maximum en plus.
 
 var EQ = {
   CLE: 'mcrp_equipes',
@@ -147,22 +147,17 @@ function eqProf(ctx) {
 }
 
 // ───────── Équipe complète et proche ─────────
-// Retourne les membres connectés si TOUS les membres sont connectés et à moins de rayon blocs de « centre » (même dimension), sinon null.
+// Membres de l'équipe connectés et en vie (au moins 1 suffit ; aucune condition de distance ni de dimension). null si personne.
 function eqEquipeComplete(serveur, slug, centre, rayon) {
   var eq = eqCharger(serveur).equipes[slug]
-  if (!eq || eq.membres.length < EQ.MIN_MEMBRES) return null
+  if (!eq) return null
   var presents = []
   for (var i = 0; i < eq.membres.length; i++) {
     var p = null
     try { p = serveur.getPlayerList().getPlayer(EQ_UUID.fromString(eq.membres[i])) } catch (e) {}
-    if (!p || !p.isAlive()) return null
-    try {
-      if (eqDimId(p) !== eqDimId(centre)) return null
-      if (p.distanceToSqr(centre) > rayon * rayon) return null
-    } catch (e2) { return null }
-    presents.push(p)
+    if (p && p.isAlive()) presents.push(p)
   }
-  return presents
+  return presents.length ? presents : null
 }
 
 // ───────── Points ─────────
@@ -190,6 +185,8 @@ function eqEpreuve(serveur, id) {
 }
 function eqDescEpreuve(ep, en) {
   var mob = ep.cible ? ' (' + ep.cible + ')' : ''
+  if (ep.pm && ep.type === 'chasse') return en ? 'Hunt: ' + ep.points + ' pt per monster' + mob + ', max ' + ep.quantite : 'Chasse : ' + ep.points + ' pt par monstre' + mob + ', max ' + ep.quantite
+  if (ep.pm && ep.type === 'boss') return en ? 'Boss: ' + ep.points + ' pt per zone boss' + mob + ', max ' + ep.quantite : 'Boss : ' + ep.points + ' pt par boss de zone' + mob + ', max ' + ep.quantite
   if (ep.type === 'chasse') return en ? 'Hunt: kill ' + ep.quantite + ' monsters' + mob : 'Chasse : tuer ' + ep.quantite + ' monstres' + mob
   if (ep.type === 'boss') return en ? 'Boss: defeat a zone boss' + mob : 'Boss : vaincre un boss de zone' + mob
   return en ? 'Collection: bring ' + ep.quantite + ' × ' + ep.cible : 'Collecte : rapporter ' + ep.quantite + ' × ' + ep.cible
@@ -198,6 +195,34 @@ function eqDescEpreuve(ep, en) {
 function eqProgres(serveur, ep, slug, n, presents) {
   if (!ep.actif) return
   for (var f = 0; f < ep.finis.length; f++) if (ep.finis[f].slug === slug) return
+  if (ep.pm) {
+    // Épreuve « points » (chasse / boss) : chaque mort rapporte ep.points point(s) à l'équipe (total + trimestre), jusqu'au maximum ep.quantite ;
+    // le maximum atteint, l'épreuve s'arrête pour cette équipe. Le tableau se met à jour à chaque point (eqSauver).
+    var gain = Math.min(n * ep.points, ep.quantite - (ep.prog[slug] || 0))
+    if (gain <= 0) return
+    ep.prog[slug] = (ep.prog[slug] || 0) + gain
+    eqAjouterPoints(serveur, slug, gain)
+    var eqp = eqCharger(serveur).equipes[slug]
+    if (ep.prog[slug] < ep.quantite) {
+      for (var ip = 0; ip < presents.length; ip++) {
+        try { presents[ip].setStatusMessage(Text.of((eqEn(presents[ip]) ? 'Trial #' + ep.id + ': ' : 'Épreuve n°' + ep.id + ' : ') + ep.prog[slug] + ' / ' + ep.quantite + ' pts').gold()) } catch (ep1) {}
+      }
+      eqSauver(serveur)
+      return
+    }
+    var rangP = ep.finis.length
+    var bonusP = Math.round(ep.quantite * (EQ.BONUS[rangP] || 0))
+    if (bonusP > 0) eqAjouterPoints(serveur, slug, bonusP)
+    ep.finis.push({ slug: slug, t: Date.now(), pts: ep.quantite + bonusP })
+    if (ep.recompense) {
+      for (var kp = 0; kp < presents.length; kp++) eqDonnerRecompense(presents[kp], ep.recompense)
+    }
+    eqSauver(serveur)
+    eqAnnoncer(serveur,
+      "L'équipe " + eqp.nom + ' atteint le maximum de l\'épreuve n°' + ep.id + ' (' + (rangP + 1) + (rangP === 0 ? 're' : 'e') + ')' + (bonusP > 0 ? ' : bonus +' + bonusP + ' points' : '') + ' !',
+      'Team ' + eqp.nom + ' reaches the maximum of trial #' + ep.id + ' (#' + (rangP + 1) + ')' + (bonusP > 0 ? ': bonus +' + bonusP + ' points' : '') + '!', 'gold')
+    return
+  }
   ep.prog[slug] = Math.min(ep.quantite, (ep.prog[slug] || 0) + n)
   var eq = eqCharger(serveur).equipes[slug]
   if (ep.prog[slug] < ep.quantite) {
@@ -212,7 +237,7 @@ function eqProgres(serveur, ep, slug, n, presents) {
   ep.finis.push({ slug: slug, t: Date.now(), pts: pts })
   eqAjouterPoints(serveur, slug, pts)
   if (ep.recompense) {
-    for (var k = 0; k < presents.length; k++) { try { presents[k].give(Item.of(ep.recompense.id, ep.recompense.n)) } catch (e3) {} }
+    for (var k = 0; k < presents.length; k++) eqDonnerRecompense(presents[k], ep.recompense)
   }
   eqSauver(serveur)
   eqAnnoncer(serveur,
@@ -225,27 +250,52 @@ function eqEpreuvesActives(serveur, type) {
   return r
 }
 
+var EQ_CLASSE_ENEMY = null
+var EQ_DEBUG = true   // journal des morts comptées / ignorées pendant une épreuve (retirer quand tout marche)
 EntityEvents.death(function (event) {
   try {
     var mort = event.entity
     var src = event.source
-    var tueur = src ? src.player : null
+    var tueur = null
+    // L'auteur du coup : « actual » est ce qui marche sous KubeJS (utilisé par chasse_quetes.js), « player » et getEntity() en secours.
+    try { var ac = src ? src.actual : null; if (ac && ac.isPlayer()) tueur = ac } catch (e0) {}
+    if (!tueur) { try { tueur = src ? src.player : null } catch (e1) {} }
+    if (!tueur) {
+      try { var ent0 = src ? src.getEntity() : null; if (ent0 && ent0.isPlayer()) tueur = ent0 } catch (e00) {}
+    }
     if (!tueur) return
     var serveur = tueur.server
-    var slug = eqEquipeDe(serveur, tueur)
-    if (!slug) return
+    var actives = eqEpreuvesActives(serveur, 'chasse').length + eqEpreuvesActives(serveur, 'boss').length
+    if (!actives) return
     var type = String(mort.type)
+    var slug = eqEquipeDe(serveur, tueur)
+    if (!slug) { if (EQ_DEBUG) console.info('[equipes] mort ignorée : ' + tueur.username + ' n\'a pas d\'équipe (' + type + ')'); return }
     var estBoss = false
     try { estBoss = mort.tags.contains('boss_zone') || mort.tags.contains('pirate_zone') } catch (e) {}
     var estMonstre = false
-    try { estMonstre = String(mort.getType().getCategory().getName()) === 'monster' } catch (e2) {}
+    // « getType() » renvoie l'identifiant (texte) sous KubeJS, pas l'EntityType : on teste isMonster() puis l'interface Enemy.
+    try { if (mort.isMonster()) estMonstre = true } catch (e2) {}
+    if (!estMonstre) {
+      try {
+        if (!EQ_CLASSE_ENEMY) EQ_CLASSE_ENEMY = Java.loadClass('net.minecraft.world.entity.monster.Enemy')
+        if (mort instanceof EQ_CLASSE_ENEMY) estMonstre = true
+      } catch (e3) {}
+    }
+    if (!estMonstre) { try { estMonstre = String(mort.getType().getCategory().getName()) === 'monster' } catch (e4) {} }
     var chasses = estMonstre ? eqEpreuvesActives(serveur, 'chasse') : []
     var boss = estBoss ? eqEpreuvesActives(serveur, 'boss') : []
-    if (!chasses.length && !boss.length) return
+    if (!chasses.length && !boss.length) {
+      if (EQ_DEBUG) console.info('[equipes] mort ignorée : ' + type + (estBoss ? ' (boss de zone)' : estMonstre ? ' (monstre)' : ' (ni monstre ni boss de zone)') + ' — aucune épreuve en cours ne compte ce type de mob')
+      return
+    }
     var presents = eqEquipeComplete(serveur, slug, tueur, EQ.RAYON)
-    if (!presents) return
-    for (var i = 0; i < chasses.length; i++) if (!chasses[i].cible || chasses[i].cible === type) eqProgres(serveur, chasses[i], slug, 1, presents)
+    if (!presents) { if (EQ_DEBUG) console.info('[equipes] mort ignorée : aucun membre connecté pour ' + slug); return }
+    for (var i = 0; i < chasses.length; i++) {
+      if (!chasses[i].cible || chasses[i].cible === type) eqProgres(serveur, chasses[i], slug, 1, presents)
+      else if (EQ_DEBUG) console.info('[equipes] mort ignorée : ' + type + ' ≠ ' + chasses[i].cible)
+    }
     for (var j = 0; j < boss.length; j++) if (!boss[j].cible || boss[j].cible === type) eqProgres(serveur, boss[j], slug, 1, presents)
+    if (EQ_DEBUG) console.info('[equipes] mort comptée : ' + type + ' par ' + tueur.username + ' (' + slug + ')')
   } catch (e) { console.error('[equipes] mort : ' + e) }
 })
 
@@ -253,8 +303,11 @@ EntityEvents.death(function (event) {
 // Un membre d'une équipe ne peut pas blesser un autre membre de la même équipe (coups, flèches, sorts, invocations, familiers),
 // sauf pendant un duel du Colisée qui les oppose (colisee_duel.js).
 function eqAuteurJoueur(src) {
+  // KubeJS renomme DamageSource.getEntity() en .actual : getEntity() n'est pas accessible et renvoyait toujours null,
+  // ce qui désactivait toute la protection entre coéquipiers.
   var a = null
-  try { a = src.getEntity() } catch (e) {}
+  try { a = src.actual } catch (e) {}
+  if (!a) { try { a = src.getEntity() } catch (e0) {} }
   if (!a) return null
   try { if (a.isPlayer()) return a } catch (e1) {}
   try { if (typeof a.getSummoner === 'function') { var s1 = a.getSummoner(); if (s1 && s1.isPlayer()) return s1 } } catch (e2) {}
@@ -277,6 +330,40 @@ try {
     } catch (err) {}
   })
 } catch (e) { console.error('[equipes] protection entre coéquipiers indisponible : ' + e) }
+// Filet de sécurité : certains mods imposent leurs dégâts plus tard (LivingDamageEvent$Pre, en dernier). On remet à 0 les dégâts
+// entre coéquipiers à ce stade aussi, et on note dans le journal tout dégât entre coéquipiers qui passerait encore (pour l'identifier).
+function eqCoequipiers(cible, src) {
+  if (!cible || !cible.isPlayer()) return null
+  var att = eqAuteurJoueur(src)
+  if (!att || String(att.uuid) === String(cible.uuid)) return null
+  var serveur = cible.server
+  var slug = eqEquipeDe(serveur, cible)
+  if (!slug || eqEquipeDe(serveur, att) !== slug) return null
+  try { if (typeof duEstDuelliste === 'function' && duEstDuelliste(att.username) && duAdversaire(att.username) === String(cible.username)) return null } catch (eD) {}
+  return att
+}
+try {
+  var EQ_BUS = Java.loadClass('net.neoforged.neoforge.common.NeoForge').EVENT_BUS
+  var EQ_PRIO = Java.loadClass('net.neoforged.bus.api.EventPriority')
+  EQ_BUS.addListener(EQ_PRIO.LOWEST, false, Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingDamageEvent$Pre'), function (e) {
+    try {
+      var att = eqCoequipiers(e.getEntity(), e.getSource())
+      if (!att) return
+      console.info('[equipes] dégâts entre coéquipiers annulés au dernier moment : ' + att.username + ' -> ' + e.getEntity().username + ' (' + e.getSource().getMsgId() + ', ' + e.getNewDamage() + ')')
+      e.setNewDamage(0)
+    } catch (err) {}
+  })
+  EQ_BUS.addListener(EQ_PRIO.LOWEST, false, Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingDamageEvent$Post'), function (e) {
+    try {
+      var cible = e.getEntity()
+      if (!cible || !cible.isPlayer() || e.getNewDamage() <= 0) return
+      var src = e.getSource(), att = eqCoequipiers(cible, src)
+      var aucunAuteur = false
+      try { aucunAuteur = !src.actual } catch (x) {}
+      if (att) console.info('[equipes] DÉGÂTS ENTRE COÉQUIPIERS PASSÉS : ' + att.username + ' -> ' + cible.username + ' (' + src.getMsgId() + ', ' + e.getNewDamage() + ')')
+    } catch (err) {}
+  })
+} catch (e) { console.error('[equipes] filet de sécurité coéquipiers indisponible : ' + e) }
 
 // ───────── Commandes ─────────
 function eqCmdCreer(ctx, texte) {
@@ -449,42 +536,124 @@ function eqCmdPoints(ctx, texte) {
 function eqCmdLancer(ctx, texte) {
   if (!eqProf(ctx)) return eqRepondre(ctx, 'Réservé aux professeurs.', 'Teachers only.')
   var t = String(texte).trim().split(/\s+/), type = (t[0] || '').toLowerCase()
-  var ep = { id: 0, type: type, cible: null, quantite: 1, points: 0, recompense: null, actif: true, debut: Date.now(), prog: {}, finis: [] }
-  if (type === 'chasse' && t.length >= 3) { ep.quantite = parseInt(t[1], 10); ep.points = parseInt(t[2], 10); ep.cible = t[3] || null }
-  else if (type === 'boss' && t.length >= 2) { ep.points = parseInt(t[1], 10); ep.cible = t[2] || null }
+  var ep = { id: 0, type: type, cible: null, quantite: 1, points: 0, recompense: null, actif: true, debut: Date.now(), prog: {}, finis: [], finA: null }
+  // Durée optionnelle n'importe où après le type : « 15min » (minutes) ou « infini » (par défaut)
+  for (var it = t.length - 1; it >= 1; it--) {
+    var mt = String(t[it]).toLowerCase().match(/^(\d+)min$/)
+    if (mt) { ep.finA = Date.now() + parseInt(mt[1], 10) * 60000; t.splice(it, 1) }
+    else if (String(t[it]).toLowerCase() === 'infini') { ep.finA = null; t.splice(it, 1) }
+  }
+  if ((type === 'chasse' || type === 'boss') && t.length >= 2) {
+    // /epreuve lancer chasse|boss <points max> [points par mort] [mob] : 1 point par mort par défaut, jusqu'au maximum
+    ep.pm = true
+    ep.quantite = parseInt(t[1], 10)
+    var suite = t.slice(2)
+    ep.points = 1
+    if (suite.length && /^\d+$/.test(suite[0])) ep.points = parseInt(suite.shift(), 10)
+    ep.cible = suite[0] || null
+  }
   else if (type === 'collecte' && t.length >= 4) { ep.cible = t[1]; ep.quantite = parseInt(t[2], 10); ep.points = parseInt(t[3], 10) }
-  else return eqRepondre(ctx, 'Usage : /epreuve lancer chasse <quantité> <points> [mob] | boss <points> [mob] | collecte <objet> <quantité> <points>',
-    'Usage: /epreuve lancer chasse <amount> <points> [mob] | boss <points> [mob] | collecte <item> <amount> <points>')
-  if (!(ep.quantite > 0) || isNaN(ep.points)) return eqRepondre(ctx, 'Quantité ou points invalides.', 'Invalid amount or points.')
+  else return eqRepondre(ctx, 'Usage : /epreuve lancer chasse <points max> [points par mort] [mob] [Nmin|infini] | boss <points max> [points par mort] [mob] [Nmin|infini] | collecte <objet> <quantité> <points> [Nmin|infini]',
+    'Usage: /epreuve lancer chasse <max points> [points per kill] [mob] [Nmin|infini] | boss <max points> [points per kill] [mob] [Nmin|infini] | collecte <item> <amount> <points> [Nmin|infini]')
+  if (!(ep.quantite > 0) || !(ep.points > 0)) return eqRepondre(ctx, 'Quantité ou points invalides.', 'Invalid amount or points.')
   if (ep.cible && ep.cible.indexOf(':') === -1) ep.cible = 'minecraft:' + ep.cible
   if (type === 'collecte') { try { if (Item.of(ep.cible).isEmpty()) throw 'vide' } catch (e) { return eqRepondre(ctx, 'Objet inconnu : ' + ep.cible, 'Unknown item: ' + ep.cible) } }
   var serveur = ctx.source.server, d = eqCharger(serveur)
   ep.id = d.prochain++
   d.epreuves.push(ep)
   eqSauver(serveur)
-  var cmdFr = type === 'collecte' ? ' Rapportez les objets avec /epreuve rendre, toute l\'équipe réunie.' : ' Toute l\'équipe doit être réunie.'
-  var cmdEn = type === 'collecte' ? ' Bring the items with /epreuve rendre, with the whole team together.' : ' The whole team must be together.'
-  eqAnnoncer(serveur, 'Nouvelle épreuve d\'équipe n°' + ep.id + ' — ' + eqDescEpreuve(ep, false) + ' — ' + ep.points + ' points.' + cmdFr,
-    'New team trial #' + ep.id + ' — ' + eqDescEpreuve(ep, true) + ' — ' + ep.points + ' points.' + cmdEn, 'light_purple')
+  var cmdFr = type === 'collecte' ? ' Rapportez les objets avec /epreuve rendre. Un seul membre connecté suffit.' : ' Un seul membre connecté suffit. Bonus pour les 3 premières équipes !'
+  var cmdEn = type === 'collecte' ? ' Bring the items with /epreuve rendre. A single online member is enough.' : ' A single online member is enough. Bonus for the first 3 teams!'
+  var ptsFr = ep.pm ? '' : ' — ' + ep.points + ' points.'
+  var ptsEn = ep.pm ? '' : ' — ' + ep.points + ' points.'
+  var dureeFr = ep.finA ? ' Durée : ' + Math.round((ep.finA - Date.now()) / 60000) + ' min.' : ''
+  var dureeEn = ep.finA ? ' Duration: ' + Math.round((ep.finA - Date.now()) / 60000) + ' min.' : ''
+  eqAnnoncer(serveur, 'Nouvelle épreuve d\'équipe n°' + ep.id + ' — ' + eqDescEpreuve(ep, false) + ptsFr + dureeFr + cmdFr,
+    'New team trial #' + ep.id + ' — ' + eqDescEpreuve(ep, true) + ptsEn + dureeEn + cmdEn, 'light_purple')
   return 1
+}
+var EQ_RARETES = { commun: 'COMMON', peu_commun: 'UNCOMMON', rare: 'RARE', epique: 'EPIC', legendaire: 'LEGENDARY' }
+// Récompense d'épreuve pour un joueur : objet, ou parchemin(s) d'un sort de sa classe (rareté choisie).
+function eqDonnerRecompense(joueur, rec) {
+  if (!rec) return
+  if (!rec.sort) { try { joueur.give(Item.of(rec.id, rec.n)) } catch (e) {} return }
+  for (var i = 0; i < rec.n; i++) {
+    try {
+      var choix = sortRecompenseAleatoire(joueur, rec.sort)   // classes_rp.js
+      if (!choix) { joueur.tell(Text.translate('mcrp.msg.recompense_aucun').red()); return }
+      var ISC = Java.loadClass('io.redspace.ironsspellbooks.api.spells.ISpellContainer')
+      var pile = Item.of('irons_spellbooks:scroll')
+      ISC.set(pile, ISC.createScrollContainer(choix.sort, choix.niveau, pile))
+      joueur.give(pile)
+      var pp = choix.id.split(':')
+      joueur.tell(Text.of((eqEn(joueur) ? 'Trial reward: ' : 'Récompense d\'épreuve : ')).green().append(Text.translate('spell.' + pp[0] + '.' + pp[1]).gold()).append(Text.of(' (niv. ' + choix.niveau + ')').gray()))
+      console.info('[equipes] récompense : ' + joueur.username + ' reçoit ' + choix.id + ' niveau ' + choix.niveau)
+    } catch (e2) { console.error('[equipes] récompense sort : ' + e2) }
+  }
+}
+// Récompense posée pendant l'épreuve : les équipes qui avaient DÉJÀ atteint le quota la reçoivent aussi (membres connectés).
+function eqRecompenserDejaFinis(serveur, ep) {
+  console.info('[equipes] récompense de l\'épreuve n°' + ep.id + ' : ' + JSON.stringify(ep.recompense) + ' — ' + ep.finis.length + ' équipe(s) déjà au maximum')
+  for (var f = 0; f < ep.finis.length; f++) {
+    var pres = eqEquipeComplete(serveur, ep.finis[f].slug, null, 0)
+    if (!pres) continue
+    for (var k = 0; k < pres.length; k++) eqDonnerRecompense(pres[k], ep.recompense)
+  }
 }
 function eqCmdRecompense(ctx, texte) {
   if (!eqProf(ctx)) return eqRepondre(ctx, 'Réservé aux professeurs.', 'Teachers only.')
+  console.info('[equipes] /epreuve recompense ' + texte + ' (par ' + (ctx.source.player ? ctx.source.player.username : 'console') + ')')
   var t = String(texte).trim().split(/\s+/), ep = eqEpreuve(ctx.source.server, parseInt(t[0], 10))
-  if (!ep || !t[1]) return eqRepondre(ctx, 'Usage : /epreuve recompense <n°> <objet> [nombre]', 'Usage: /epreuve recompense <#> <item> [count]')
+  if (!ep || !t[1]) return eqRepondre(ctx, 'Usage : /epreuve recompense <n°> <objet> [nombre] | /epreuve recompense <n°> sort <rareté> [nombre]', 'Usage: /epreuve recompense <#> <item> [count] | /epreuve recompense <#> sort <rarity> [count]')
+  if (t[1].toLowerCase() === 'sort') {
+    // Parchemin d'un sort de la CLASSE de chaque membre (même tirage que /classe recompense)
+    var rar = EQ_RARETES[String(t[2] || '').toLowerCase()]
+    if (!rar) return eqRepondre(ctx, 'Rareté inconnue. Choix : ' + Object.keys(EQ_RARETES).join(', ') + '.', 'Unknown rarity. Choices: ' + Object.keys(EQ_RARETES).join(', ') + '.')
+    ep.recompense = { sort: rar, n: Math.max(1, parseInt(t[3] || '1', 10) || 1) }
+    eqSauver(ctx.source.server)
+    eqRecompenserDejaFinis(ctx.source.server, ep)
+    return eqRepondre(ctx, 'Épreuve n°' + ep.id + ' : chaque membre recevra ' + ep.recompense.n + ' parchemin(s) ' + t[2].toLowerCase() + ' de sa classe.', 'Trial #' + ep.id + ': each member will receive ' + ep.recompense.n + ' ' + rar.toLowerCase() + ' scroll(s) of their class.')
+  }
   var id = t[1].indexOf(':') === -1 ? 'minecraft:' + t[1] : t[1]
   try { if (Item.of(id).isEmpty()) throw 'vide' } catch (e) { return eqRepondre(ctx, 'Objet inconnu : ' + id, 'Unknown item: ' + id) }
   ep.recompense = { id: id, n: Math.max(1, parseInt(t[2] || '1', 10) || 1) }
   eqSauver(ctx.source.server)
+  eqRecompenserDejaFinis(ctx.source.server, ep)
   return eqRepondre(ctx, 'Épreuve n°' + ep.id + ' : chaque membre recevra ' + ep.recompense.n + ' × ' + id + '.', 'Trial #' + ep.id + ': each member will receive ' + ep.recompense.n + ' × ' + id + '.')
+}
+function eqCmdTemps(ctx, texte) {
+  if (!eqProf(ctx)) return eqRepondre(ctx, 'Réservé aux professeurs.', 'Teachers only.')
+  var t = String(texte).trim().split(/\s+/), serveur = ctx.source.server, ep = eqEpreuve(serveur, parseInt(t[0], 10))
+  if (!ep || !t[1]) return eqRepondre(ctx, 'Usage : /epreuve temps <n°> <minutes|infini>', 'Usage: /epreuve temps <#> <minutes|infini>')
+  if (!ep.actif) return eqRepondre(ctx, 'Cette épreuve est déjà terminée.', 'This trial is already over.')
+  var v = String(t[1]).toLowerCase().replace(/min$/, '')
+  if (v === 'infini') ep.finA = null
+  else { var m = parseInt(v, 10); if (!(m > 0)) return eqRepondre(ctx, 'Durée invalide.', 'Invalid duration.'); ep.finA = Date.now() + m * 60000 }
+  eqSauver(serveur)
+  eqAnnoncer(serveur, 'Épreuve n°' + ep.id + ' : ' + (ep.finA ? 'fin dans ' + Math.round((ep.finA - Date.now()) / 60000) + ' min.' : 'sans limite de temps.'),
+    'Trial #' + ep.id + ': ' + (ep.finA ? 'ends in ' + Math.round((ep.finA - Date.now()) / 60000) + ' min.' : 'no time limit.'), 'light_purple')
+  return 1
+}
+// Temps restant « m:ss » (ou null si pas de limite)
+function eqResteTexte(ep) {
+  if (!ep.finA) return null
+  var r = Math.max(0, Math.ceil((ep.finA - Date.now()) / 1000))
+  var hh = Math.floor(r / 3600), mm = Math.floor((r % 3600) / 60), ss = r % 60
+  var deux = function (n) { return (n < 10 ? '0' : '') + n }
+  if (hh >= 24) return Math.floor(hh / 24) + ' j ' + (hh % 24) + ' h ' + deux(mm)
+  return hh > 0 ? hh + ':' + deux(mm) + ':' + deux(ss) : mm + ':' + deux(ss)
+}
+function eqTerminer(serveur, ep, raison) {
+  ep.actif = false
+  eqSauver(serveur)
+  eqAnnoncer(serveur, "L'épreuve n°" + ep.id + (raison === 'temps' ? ' est terminée : temps écoulé !' : ' est terminée.') + ' Classement : /classement epreuve ' + ep.id,
+    'Trial #' + ep.id + (raison === 'temps' ? ' is over: time is up!' : ' is over.') + ' Ranking: /classement epreuve ' + ep.id, 'light_purple')
 }
 function eqCmdFin(ctx, texte) {
   if (!eqProf(ctx)) return eqRepondre(ctx, 'Réservé aux professeurs.', 'Teachers only.')
   var serveur = ctx.source.server, ep = eqEpreuve(serveur, parseInt(String(texte).trim(), 10))
   if (!ep) return eqRepondre(ctx, 'Épreuve introuvable.', 'Trial not found.')
-  ep.actif = false
-  eqSauver(serveur)
-  eqAnnoncer(serveur, "L'épreuve n°" + ep.id + ' est terminée. Classement : /classement epreuve ' + ep.id, 'Trial #' + ep.id + ' is over. Ranking: /classement epreuve ' + ep.id, 'light_purple')
+  eqTerminer(serveur, ep, 'fin')
   return 1
 }
 function eqCmdEpreuves(ctx) {
@@ -492,9 +661,10 @@ function eqCmdEpreuves(ctx) {
   for (var i = 0; i < d.epreuves.length; i++) {
     var ep = d.epreuves[i]
     if (!ep.actif) continue
-    var rec = ep.recompense ? ' + ' + ep.recompense.n + ' × ' + ep.recompense.id : ''
-    fr.push('n°' + ep.id + ' — ' + eqDescEpreuve(ep, false) + ' — ' + ep.points + ' pts' + rec)
-    en.push('#' + ep.id + ' — ' + eqDescEpreuve(ep, true) + ' — ' + ep.points + ' pts' + rec)
+    var rec = ep.recompense ? ' + ' + ep.recompense.n + ' × ' + (ep.recompense.sort ? 'parchemin ' + ep.recompense.sort.toLowerCase() + ' de classe' : ep.recompense.id) : ''
+    var rt = eqResteTexte(ep)
+    fr.push('n°' + ep.id + ' — ' + eqDescEpreuve(ep, false) + (ep.pm ? '' : ' — ' + ep.points + ' pts') + rec + (rt ? ' — reste ' + rt : ' — sans limite'))
+    en.push('#' + ep.id + ' — ' + eqDescEpreuve(ep, true) + (ep.pm ? '' : ' — ' + ep.points + ' pts') + rec + (rt ? ' — ' + rt + ' left' : ' — no limit'))
   }
   if (!fr.length) return eqRepondre(ctx, "Aucune épreuve en cours.", 'No trial in progress.')
   return eqRepondre(ctx, fr.join('\n'), en.join('\n'))
@@ -507,7 +677,7 @@ function eqCmdRendre(ctx) {
   var eps = eqEpreuvesActives(serveur, 'collecte')
   if (!eps.length) return eqRepondre(ctx, "Aucune épreuve de collecte en cours.", 'No collection trial in progress.')
   var presents = eqEquipeComplete(serveur, slug, p, EQ.RAYON_RENDRE)
-  if (!presents) return eqRepondre(ctx, 'Toute ton équipe doit être réunie autour de toi (moins de ' + EQ.RAYON_RENDRE + ' blocs).', 'Your whole team must be gathered around you (within ' + EQ.RAYON_RENDRE + ' blocks).')
+  if (!presents) return eqRepondre(ctx, 'Aucun membre de ton équipe n\'est connecté.', 'No member of your team is online.')
   var rendu = false
   for (var i = 0; i < eps.length; i++) {
     var ep = eps[i], deja = ep.prog[slug] || 0, besoin = ep.quantite - deja
@@ -559,6 +729,69 @@ function eqCmdRetirer(ctx, cible) {
   return 1
 }
 
+// Propositions au fil de la frappe pour /epreuve lancer : type, puis mobs (chasse / boss) ou objets (collecte).
+var EQ_SUGG = null
+function eqSuggererLancer(ctx, builder) {
+  var reste = String(builder.getRemaining())
+  var mots = reste.split(' ')
+  var idx = mots.length - 1
+  var cur = mots[idx].toLowerCase()
+  var b = builder.createOffset(builder.getStart() + reste.length - mots[idx].length)
+  var type = (mots[0] || '').toLowerCase()
+  var liste = []
+  if (idx === 0) liste = ['chasse', 'boss', 'collecte']
+  else if (type === 'chasse' || type === 'boss' || type === 'collecte') {
+    if (!EQ_SUGG) {
+      EQ_SUGG = { monstres: [], vivants: [], objets: [] }
+      var reg = Java.loadClass('net.minecraft.core.registries.BuiltInRegistries')
+      var itE = reg.ENTITY_TYPE.keySet().iterator()
+      while (itE.hasNext()) {
+        var rl = itE.next(), id = String(rl)
+        try {
+          var cat = String(reg.ENTITY_TYPE.get(rl).getCategory().getName())
+          if (cat === 'monster') EQ_SUGG.monstres.push(id)
+          if (cat !== 'misc') EQ_SUGG.vivants.push(id)
+        } catch (e) {}
+      }
+      var itI = reg.ITEM.keySet().iterator()
+      while (itI.hasNext()) EQ_SUGG.objets.push(String(itI.next()))
+    }
+    if (type === 'chasse' && idx >= 2) liste = EQ_SUGG.monstres
+    else if (type === 'boss' && idx >= 2) liste = EQ_SUGG.vivants
+    else if (type === 'collecte' && idx === 1) liste = EQ_SUGG.objets
+  }
+  for (var i = 0; i < liste.length; i++) {
+    var l = liste[i].toLowerCase()
+    if (cur === '' || l.indexOf(cur) === 0 || l.split(':').pop().indexOf(cur) === 0) b.suggest(liste[i])
+  }
+  return b.buildFuture()
+}
+function eqSuggererRecompense(ctx, builder) {
+  var reste = String(builder.getRemaining())
+  var mots = reste.split(' ')
+  var idx = mots.length - 1
+  var cur = mots[idx].toLowerCase()
+  var b = builder.createOffset(builder.getStart() + reste.length - mots[idx].length)
+  var liste = []
+  if (idx === 1) { liste = ['sort']; if (EQ_SUGG) liste = liste.concat(EQ_SUGG.objets) }
+  else if (idx === 2 && String(mots[1]).toLowerCase() === 'sort') liste = Object.keys(EQ_RARETES)
+  for (var i = 0; i < liste.length; i++) {
+    var l = liste[i].toLowerCase()
+    if (cur === '' || l.indexOf(cur) === 0 || l.split(':').pop().indexOf(cur) === 0) b.suggest(liste[i])
+  }
+  return b.buildFuture()
+}
+function eqArgRecompense(C, A, event) {
+  var arg = C.argument('texte', A.GREEDY_STRING.create(event))
+  try { arg = arg.suggests(function (ctx, builder) { return eqSuggererRecompense(ctx, builder) }) } catch (e) { console.error('[equipes] suggestions /epreuve recompense : ' + e) }
+  return arg.executes(function (ctx) { return eqCmdRecompense(ctx, A.GREEDY_STRING.getResult(ctx, 'texte')) })
+}
+function eqArgLancer(C, A, event) {
+  var arg = C.argument('texte', A.GREEDY_STRING.create(event))
+  try { arg = arg.suggests(function (ctx, builder) { return eqSuggererLancer(ctx, builder) }) } catch (e) { console.error('[equipes] suggestions /epreuve lancer : ' + e) }
+  return arg.executes(function (ctx) { return eqCmdLancer(ctx, A.GREEDY_STRING.getResult(ctx, 'texte')) })
+}
+
 ServerEvents.commandRegistry(function (event) {
   var C = event.commands, A = event.arguments
   event.register(C.literal('equipe')
@@ -581,8 +814,9 @@ ServerEvents.commandRegistry(function (event) {
   event.register(C.literal('epreuve')
     .then(C.literal('liste').executes(function (ctx) { return eqCmdEpreuves(ctx) }))
     .then(C.literal('rendre').executes(function (ctx) { return eqCmdRendre(ctx) }))
-    .then(C.literal('lancer').then(C.argument('texte', A.GREEDY_STRING.create(event)).executes(function (ctx) { return eqCmdLancer(ctx, A.GREEDY_STRING.getResult(ctx, 'texte')) })))
-    .then(C.literal('recompense').then(C.argument('texte', A.GREEDY_STRING.create(event)).executes(function (ctx) { return eqCmdRecompense(ctx, A.GREEDY_STRING.getResult(ctx, 'texte')) })))
+    .then(C.literal('lancer').then(eqArgLancer(C, A, event)))
+    .then(C.literal('recompense').then(eqArgRecompense(C, A, event)))
+    .then(C.literal('temps').then(C.argument('texte', A.GREEDY_STRING.create(event)).executes(function (ctx) { return eqCmdTemps(ctx, A.GREEDY_STRING.getResult(ctx, 'texte')) })))
     .then(C.literal('fin').then(C.argument('texte', A.GREEDY_STRING.create(event)).executes(function (ctx) { return eqCmdFin(ctx, A.GREEDY_STRING.getResult(ctx, 'texte')) }))))
   event.register(C.literal('trimestre')
     .then(C.literal('nouveau').executes(function (ctx) { return eqCmdTrimestre(ctx) })))
@@ -642,6 +876,13 @@ function eqColonne(d, champ, titreObj) {
   return parts
 }
 function eqDescJson(ep) {
+  if (ep.pm) {
+    // Texte construit sur place (pas de clé de langue à installer chez les joueurs) ; le nom du mob vient de la traduction du jeu.
+    var rm = ep.cible ? String(ep.cible).split(':') : null
+    var cibleTxt = rm ? { translate: 'entity.' + rm[0] + '.' + rm[1] } : { text: ep.type === 'boss' ? 'boss de zone' : 'monstre' }
+    return { text: '', color: 'light_purple', extra: [
+      { text: (ep.type === 'boss' ? 'Boss : ' : 'Chasse : ') + ep.points + ' pt par ' }, cibleTxt, { text: ' (max ' + ep.quantite + ')' }] }
+  }
   if (ep.type === 'chasse') {
     if (!ep.cible) return eqTr('chasse', [String(ep.quantite)], 'light_purple')
     var r = String(ep.cible).split(':')
@@ -656,7 +897,27 @@ function eqBas(d) {
   var ep = null
   for (var i = d.epreuves.length - 1; i >= 0 && !ep; i--) if (d.epreuves[i].actif) ep = d.epreuves[i]
   if (!ep) return ['', eqTr('aucune', null, 'gray')]
-  var parts = ['', eqTr('epreuve', [String(ep.id), eqDescJson(ep), String(ep.points)], 'light_purple'), { text: '\n' }]
+  var parts = ['', eqTr('epreuve', [String(ep.id), eqDescJson(ep), String(ep.pm ? ep.quantite : ep.points)], 'light_purple')]
+  var resteT = eqResteTexte(ep)
+  if (resteT) parts.push({ text: '  ⌛ ' + resteT, color: 'yellow' })
+  parts.push({ text: '\n' })
+  if (ep.pm) {   // épreuve à points : classement en direct (équipes arrivées au maximum d'abord, puis par points)
+    // Ordre : d'abord les équipes arrivées au maximum, dans l'ordre d'arrivée ; puis les autres par points.
+    var rang = [], dejaR = {}
+    for (var fr = 0; fr < ep.finis.length; fr++) { rang.push({ slug: ep.finis[fr].slug, n: ep.quantite }); dejaR[ep.finis[fr].slug] = true }
+    var autres = []
+    for (var sl in ep.prog) if (!dejaR[sl]) autres.push({ slug: sl, n: ep.prog[sl] })
+    autres.sort(function (a, b) { return b.n - a.n })
+    rang = rang.concat(autres)
+    if (!rang.length) { parts.push(eqTr('personne', null, 'gray')); return parts }
+    for (var r = 0; r < rang.length && r < 5; r++) {
+      var er = d.equipes[rang[r].slug]
+      if (!er) continue
+      if (r > 0) parts.push({ text: '\n' })
+      parts.push({ text: (r + 1) + '. ', color: 'gray' }, eqLogoJson(er), { text: ' ' + er.nom + ' ', color: 'white' }, { text: rang[r].n + ' / ' + ep.quantite + (rang[r].n >= ep.quantite ? ' ✔' : ''), color: rang[r].n >= ep.quantite ? 'green' : 'gold' })
+    }
+    return parts
+  }
   var noms = []
   for (var f = 0; f < ep.finis.length; f++) { var e = d.equipes[ep.finis[f].slug]; if (e) noms.push(e.nom) }
   parts.push(noms.length ? eqTr('reussie', [noms.join(', ')], 'gray') : eqTr('personne', null, 'gray'))
@@ -743,13 +1004,32 @@ function eqPoserTableau(serveur, joueur, type, taille) {
   eqSauver(serveur)
   return t
 }
+var EQ_HAUTEUR_LIGNE = 0.25   // hauteur d'une ligne de text_display à l'échelle 1 (en blocs)
+// Nombre de lignes d'un texte JSON (morceaux) : 1 + nombre de retours à la ligne.
+function eqNbLignes(parts) {
+  var n = 1
+  for (var i = 0; i < parts.length; i++) {
+    var p = parts[i]
+    var txt = typeof p === 'string' ? p : (p && p.text ? String(p.text) : '')
+    for (var c = 0; c < txt.length; c++) if (txt.charAt(c) === '\n') n++
+  }
+  return n
+}
 function eqRedessiner(serveur) {
   var d = eqCharger(serveur)
   if (!d.tableaux || !d.tableaux.length) return
   for (var i = 0; i < d.tableaux.length; i++) {
     var t = d.tableaux[i], morceaux = eqMorceaux(d, t)
     for (var k = 0; k < morceaux.length; k++) {
-      try { serveur.runCommandSilent('execute in ' + t.dim + ' run data merge entity @e[type=minecraft:text_display,tag=mcrp_tab_' + t.id + '_' + morceaux[k][0] + ',limit=1] {text:' + eqSnbtTexte(morceaux[k][3]) + '}') } catch (e) {}
+      var extra = ''
+      if (morceaux[k][0] === 'b') {
+        // Un text_display grandit vers le HAUT quand il a plus de lignes : on le descend d'autant (translation),
+        // pour que le classement de l'épreuve s'allonge vers le bas sans recouvrir les colonnes.
+        var lignes = eqNbLignes(morceaux[k][3])
+        var dy = -Math.max(0, lignes - 2) * EQ_HAUTEUR_LIGNE * (t.taille || 0.7)
+        extra = ',transformation:{translation:[0f,' + dy.toFixed(3) + 'f,0f]}'
+      }
+      try { serveur.runCommandSilent('execute in ' + t.dim + ' run data merge entity @e[type=minecraft:text_display,tag=mcrp_tab_' + t.id + '_' + morceaux[k][0] + ',limit=1] {text:' + eqSnbtTexte(morceaux[k][3]) + extra + '}') } catch (e) {}
     }
   }
 }
@@ -772,6 +1052,15 @@ function eqRetirerTableau(serveur, joueur) {
 ServerEvents.tick(function (event) {
   var sv = event.server
   if (sv.tickCount % 20 !== 7) return
+  try {   // épreuves à durée limitée : fin automatique, et tableau redessiné chaque seconde pour le compte à rebours
+    var dT = eqCharger(sv), maintenant = Date.now()
+    for (var iT = 0; iT < dT.epreuves.length; iT++) {
+      var epT = dT.epreuves[iT]
+      if (!epT.actif || !epT.finA) continue
+      if (maintenant >= epT.finA) eqTerminer(sv, epT, 'temps')
+      else EQ_SALE = true
+    }
+  } catch (eT) { console.error('[equipes] durée des épreuves : ' + eT) }
   if (!EQ_SALE && sv.tickCount % 1200 !== 7) return   // dès qu'un classement change, sinon toutes les minutes (chunks rechargés)
   EQ_SALE = false
   try { eqRedessiner(sv) } catch (e) { console.error('[equipes] tableaux : ' + e) }

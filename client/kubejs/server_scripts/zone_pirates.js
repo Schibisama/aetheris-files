@@ -182,6 +182,45 @@ function zpJoueurDedans(j, m) {
   return zpDans(j.x, j.z, m) && j.y >= ZP.y1 - 10 && j.y <= ZP.y2 + 25
 }
 
+// Anti-doublon (même principe que boss_zones.js) : pas d'apparition tant qu'un tronçon chargé de la zone attend ses entités,
+// et un seul exemplaire par matelot (tag zp<n>) : le plus entamé est gardé, les autres retirés sans butin.
+var ZP_CHUNKPOS = null
+function zpZoneChargee(niveau) {
+  try {
+    if (!ZP_CHUNKPOS) ZP_CHUNKPOS = Java.loadClass('net.minecraft.world.level.ChunkPos')
+    var m = ZP.marge + 20
+    for (var cx = Math.floor((ZP.x1 - m) / 16); cx <= Math.floor((ZP.x2 + m) / 16); cx++)
+      for (var cz = Math.floor((ZP.z1 - m) / 16); cz <= Math.floor((ZP.z2 + m) / 16); cz++)
+        if (niveau.hasChunk(cx, cz) && !niveau.areEntitiesLoaded(ZP_CHUNKPOS.asLong(cx, cz))) return false   // tronçon chargé, entités pas encore
+    return true
+  } catch (e) { return true }
+}
+function zpTagIndex(e) {   // seulement les matelots apparus par le script (tag zp<n>)
+  try { for (var i = 0; i < ZP.mobs.length; i++) if (e.tags.contains('zp' + i)) return i } catch (x) {}
+  return -1
+}
+function zpDedoublonner(liste) {
+  var ratio = function (x) { try { return x.health / x.maxHealth } catch (y) { return 1 } }
+  var garde = {}
+  for (var i = 0; i < liste.length; i++) {
+    var idx = zpTagIndex(liste[i])
+    if (idx < 0) continue
+    var g = garde[idx], v = liste[i]
+    if (!g || ratio(v) < ratio(g) - 0.001 || (Math.abs(ratio(v) - ratio(g)) <= 0.001 && v.tickCount > g.tickCount)) garde[idx] = v
+  }
+  var res = []
+  for (var j = 0; j < liste.length; j++) {
+    var e = liste[j], k = zpTagIndex(e)
+    if (k >= 0 && garde[k] !== e) {
+      try { e.discard() } catch (x3) {}
+      console.info('[zone_pirates] matelot zp' + k + ' en double : exemplaire en trop retiré')
+      continue
+    }
+    res.push(e)
+  }
+  return res
+}
+
 function zpSpawn(server) {
   for (var i = 0; i < ZP.mobs.length; i++) {
     var m = ZP.mobs[i]
@@ -221,7 +260,7 @@ ServerEvents.tick(perfWrap('zone_pirates:177', function (event) {
   try {
     var niveau = zpNiveau(server)
     if (!niveau || !AABB_ZP) return
-    var vivants = zpMobs(niveau)
+    var vivants = zpDedoublonner(zpMobs(niveau))
     for (var i = 0; i < vivants.length; i++) {
       var e = vivants[i]
       zpBuff(server, e)
@@ -306,6 +345,7 @@ ServerEvents.tick(perfWrap('zone_pirates:177', function (event) {
     if (Date.now() < quand) return
     zpAbsent++
     if (zpAbsent < 2) return   // laisse aux entités le temps de se charger
+    if (!zpZoneChargee(niveau)) { zpAbsent = 0; return }   // un matelot peut encore être dans un tronçon non chargé
     zpAbsent = 0
     zpSpawn(server)
   } catch (err) {

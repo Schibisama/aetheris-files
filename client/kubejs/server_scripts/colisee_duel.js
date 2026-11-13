@@ -7,6 +7,9 @@
 // /duel arreter : annule le duel en cours (personne ne gagne).
 // /duel <adversaire> : un élève défie un autre joueur (les deux dans le Colisée) ; /duel accepter | refuser pour répondre.
 // /duel <joueur1> <joueur2> et /duel arreter : professeurs et opérateurs. Les armures ne s'usent pas pendant un duel.
+// /duel equipe <équipe> : un membre d'une équipe défie une autre équipe ; un membre de l'équipe défiée répond /duel accepter | refuser.
+//   Combattent les membres connectés des deux équipes présents dans le Colisée (au moins 1 de chaque côté). Un joueur à 1 cœur est
+//   « hors combat » (figé, lumineux, intouchable) ; la première équipe dont tous les combattants sont hors combat perd.
 // Règles : un seul duel à la fois ; personne d'autre ne peut toucher les duellistes, et les duellistes ne peuvent toucher qu'entre eux ;
 //   sortir de l'arène ou se déconnecter pendant le combat = défaite.
 
@@ -24,11 +27,50 @@ var DUEL = null
 
 var DU_DEFIS = {}      // défis en attente : nom du défié -> { de, fin }
 var DU_DEFI_S = 60    // secondes pour accepter un défi
+var DU_DEFIS_EQ = {}   // défis d'équipe en attente : slug de l'équipe défiée -> { de: slug, par: nom, fin }
+
+// ── Duel d'équipes (s'appuie sur equipes.js) ──
+function duEquipe(sv, slug) { try { return eqCharger(sv).equipes[slug] || null } catch (e) { return null } }
+// Membres connectés de l'équipe présents dans le Colisée
+function duCombattantsEquipe(sv, slug) {
+  var eq = duEquipe(sv, slug), l = []
+  if (!eq) return l
+  for (var i = 0; i < eq.membres.length; i++) {
+    var j = null
+    try { j = sv.getPlayerList().getPlayer(EQ_UUID.fromString(eq.membres[i])) } catch (e) {}
+    if (j && j.isAlive() && duDansArene(j)) l.push(j)
+  }
+  return l
+}
+// Membres connectés de l'équipe (pour leur envoyer le défi)
+function duConnectesEquipe(sv, slug) {
+  var eq = duEquipe(sv, slug), l = []
+  if (!eq) return l
+  for (var i = 0; i < eq.membres.length; i++) {
+    try { var j = sv.getPlayerList().getPlayer(EQ_UUID.fromString(eq.membres[i])); if (j) l.push(j) } catch (e) {}
+  }
+  return l
+}
 
 function duCmd(sv, txt) { try { sv.runCommandSilent('execute in ' + DU_DIM + ' run ' + txt) } catch (e) { console.error('[duel] ' + txt + ' -> ' + e) } }
 function duJoueur(sv, nom) { try { return sv.getPlayerList().getPlayerByName(nom) } catch (e) { return null } }
-function duEstDuelliste(nom) { return !!DUEL && (DUEL.a === String(nom) || DUEL.b === String(nom)) }
-function duAdversaire(nom) { return DUEL ? (DUEL.a === String(nom) ? DUEL.b : DUEL.a) : null }
+// DUEL.camps : { 1: [noms], 2: [noms] } ; DUEL.ko : noms hors combat (duel d'équipes) ; DUEL.mode : 'solo' | 'equipe'
+function duCampDe(nom) {
+  if (!DUEL || !DUEL.camps) return 0
+  nom = String(nom)
+  if (DUEL.camps[1].indexOf(nom) !== -1) return 1
+  if (DUEL.camps[2].indexOf(nom) !== -1) return 2
+  return 0
+}
+function duParticipants() { return DUEL && DUEL.camps ? DUEL.camps[1].concat(DUEL.camps[2]) : [] }
+function duEstDuelliste(nom) { return duCampDe(nom) > 0 }
+function duEstKo(nom) { return !!(DUEL && DUEL.ko && DUEL.ko[String(nom)]) }
+// Duel à deux : l'adversaire ; duel d'équipes : null (utilisé par equipes.js pour les coups entre coéquipiers)
+function duAdversaire(nom) { return DUEL && DUEL.mode === 'solo' ? (DUEL.a === String(nom) ? DUEL.b : DUEL.a) : null }
+function duSontAdversaires(x, y) {
+  var cx = duCampDe(x), cy = duCampDe(y)
+  return cx > 0 && cy > 0 && cx !== cy && !duEstKo(x) && !duEstKo(y)
+}
 function duDansArene(j) {
   try {
     if (String(j.level.dimension).indexOf(DU_DIM) < 0) return false
@@ -88,8 +130,8 @@ function duArmures(j) {
 }
 function duReparer(sv) {
   if (!DUEL || !DUEL.armures) return
-  var n = [DUEL.a, DUEL.b]
-  for (var k = 0; k < 2; k++) {
+  var n = duParticipants()
+  for (var k = 0; k < n.length; k++) {
     var j = duJoueur(sv, n[k]), m = DUEL.armures[n[k]]
     if (!j || !m) continue
     var sl = duSlots()
@@ -105,30 +147,46 @@ function duReparer(sv) {
 
 function duLancer(sv, j1, j2) {
   var a = String(j1.username), b = String(j2.username)
-  DUEL = { a: a, b: b, phase: 'decompte', t: sv.tickCount, reste: DU_DECOMPTE, perdant: null }
-  DUEL.armures = {}
-  DUEL.armures[a] = duArmures(j1); DUEL.armures[b] = duArmures(j2)
-  var pos = [[j1, DU_POS_1], [j2, DU_POS_2]]
-  for (var i = 0; i < 2; i++) {
-    var p = pos[i][1], n = String(pos[i][0].username)
-    duCmd(sv, 'tp ' + n + ' ' + (p[0] + 0.5) + ' ' + p[1] + ' ' + (p[2] + 0.5) + ' ' + p[3] + ' 0')
-    duSoigner(pos[i][0])
-    duFiger(sv, n, false)
-  }
+  duDemarrer(sv, [j1], [j2], { mode: 'solo', a: a, b: b, titre: a + ' contre ' + b })
   duCmd(sv, 'tellraw @a ' + JSON.stringify([{ text: '[Colisée] ', color: 'gold' }, { text: a, color: 'yellow' },
     { text: ' et ', color: 'gray' }, { text: b, color: 'yellow' }, { text: ' s\'affrontent en duel !', color: 'gray' }]))
   duAfficherDecompte(sv)
 }
+// Duel d'équipes : js1 / js2 = joueurs de chaque camp ; nom1 / nom2 = noms des équipes
+function duLancerEquipes(sv, js1, js2, nom1, nom2, slug1, slug2) {
+  duDemarrer(sv, js1, js2, { mode: 'equipe', nom1: nom1, nom2: nom2, slug1: slug1, slug2: slug2, titre: nom1 + ' contre ' + nom2 })
+  duCmd(sv, 'tellraw @a ' + JSON.stringify([{ text: '[Colisée] ', color: 'gold' }, { text: 'L\'équipe ', color: 'gray' }, { text: nom1, color: 'yellow' },
+    { text: ' (' + js1.length + ') et l\'équipe ', color: 'gray' }, { text: nom2, color: 'yellow' }, { text: ' (' + js2.length + ') s\'affrontent au Colisée !', color: 'gray' }]))
+  duAfficherDecompte(sv)
+}
+function duDemarrer(sv, js1, js2, info) {
+  DUEL = { mode: info.mode, a: info.a || null, b: info.b || null, titre: info.titre, nom1: info.nom1, nom2: info.nom2, slug1: info.slug1, slug2: info.slug2,
+    camps: { 1: [], 2: [] }, ko: {}, phase: 'decompte', t: sv.tickCount, reste: DU_DECOMPTE, perdant: null, armures: {} }
+  var camps = [[js1, DU_POS_1, 1], [js2, DU_POS_2, 2]]
+  for (var c = 0; c < 2; c++) {
+    var liste = camps[c][0], p = camps[c][1]
+    for (var i = 0; i < liste.length; i++) {
+      var j = liste[i], n = String(j.username)
+      DUEL.camps[camps[c][2]].push(n)
+      DUEL.armures[n] = duArmures(j)
+      var dz = (i - (liste.length - 1) / 2) * 2.5   // côte à côte, espacés de 2,5 blocs
+      duCmd(sv, 'tp ' + n + ' ' + (p[0] + 0.5) + ' ' + p[1] + ' ' + (p[2] + 0.5 + dz) + ' ' + p[3] + ' 0')
+      duSoigner(j)
+      duFiger(sv, n, false)
+    }
+  }
+}
 function duAfficherDecompte(sv) {
   var l = duPublic(sv)
   for (var i = 0; i < l.length; i++) {
-    duTitre(sv, l[i], String(DUEL.reste), 'gold', DUEL.a + ' contre ' + DUEL.b)
+    duTitre(sv, l[i], String(DUEL.reste), 'gold', DUEL.titre)
     duCmd(sv, 'execute as ' + l[i] + ' at @s run playsound minecraft:block.note_block.hat master @s ~ ~ ~ 1 1')
   }
 }
 function duDebutCombat(sv) {
   DUEL.phase = 'combat'
-  duLiberer(sv, DUEL.a); duLiberer(sv, DUEL.b)
+  var tous = duParticipants()
+  for (var q = 0; q < tous.length; q++) duLiberer(sv, tous[q])
   var l = duPublic(sv)
   for (var i = 0; i < l.length; i++) {
     duTitre(sv, l[i], 'Combattez !', 'red', '')
@@ -153,11 +211,44 @@ function duVictoire(sv, perdant, raison) {
   console.info('[duel] ' + gagnant + ' bat ' + perdant + (raison ? ' (' + raison + ')' : ''))
   try { if (typeof eqDuelResultat === 'function') eqDuelResultat(sv, gagnant, perdant) } catch (eS) {}   // tableau des duellistes (equipes.js)
 }
+// Un combattant tombe à 1 cœur (ou sort / se déconnecte) : duel à deux = défaite ; duel d'équipes = hors combat, et son camp perd
+// quand tous ses combattants sont hors combat.
+function duKo(sv, nom, raison) {
+  if (!DUEL || DUEL.phase === 'fin') return
+  if (DUEL.mode !== 'equipe') { duVictoire(sv, nom, raison); return }
+  nom = String(nom)
+  if (DUEL.ko[nom]) return
+  DUEL.ko[nom] = true
+  var jp = duJoueur(sv, nom)
+  if (jp) {
+    try { if (Number(jp.health) < DU_KO_PV) jp.setHealth(DU_KO_PV) } catch (e) {}
+    duFiger(sv, nom, true)
+    duCmd(sv, 'title ' + nom + ' actionbar ' + JSON.stringify({ text: 'Tu es hors combat.', color: 'red' }))
+  }
+  var camp = duCampDe(nom)
+  duCmd(sv, 'tellraw @a ' + JSON.stringify([{ text: '[Colisée] ', color: 'gold' }, { text: nom, color: 'yellow' },
+    { text: ' (' + (camp === 1 ? DUEL.nom1 : DUEL.nom2) + ') est hors combat' + (raison ? ' : ' + raison : '') + '.', color: 'gray' }]))
+  var membres = DUEL.camps[camp], restants = 0
+  for (var i = 0; i < membres.length; i++) if (!DUEL.ko[membres[i]]) restants++
+  if (restants === 0) duVictoireEquipe(sv, camp === 1 ? 2 : 1)
+}
+function duVictoireEquipe(sv, campGagnant) {
+  if (!DUEL || DUEL.phase === 'fin') return
+  var nomG = campGagnant === 1 ? DUEL.nom1 : DUEL.nom2, nomP = campGagnant === 1 ? DUEL.nom2 : DUEL.nom1
+  DUEL.phase = 'fin'; DUEL.t = sv.tickCount
+  var gagnants = DUEL.camps[campGagnant]
+  for (var i = 0; i < gagnants.length; i++) { try { var jg = duJoueur(sv, gagnants[i]); if (jg) ftbFait(jg, 'duel_gagne') } catch (eF) {} }
+  duCmd(sv, 'title @a times 10 80 20')
+  duCmd(sv, 'title @a subtitle ' + JSON.stringify({ text: 'a vaincu l\'équipe ' + nomP + ' au Colisée', color: 'gray' }))
+  duCmd(sv, 'title @a title ' + JSON.stringify({ text: 'L\'équipe ' + nomG + ' gagne', color: 'gold' }))
+  duCmd(sv, 'execute as @a at @s run playsound minecraft:ui.toast.challenge_complete master @s ~ ~ ~ 1 1')
+  console.info('[duel] équipe ' + nomG + ' bat équipe ' + nomP)
+}
 function duTerminer(sv) {
   if (!DUEL) return
   duReparer(sv)
-  var n = [DUEL.a, DUEL.b]
-  for (var i = 0; i < 2; i++) {
+  var n = duParticipants()
+  for (var i = 0; i < n.length; i++) {
     duLiberer(sv, n[i])
     var j = duJoueur(sv, n[i]); if (j) duSoigner(j)
   }
@@ -187,15 +278,16 @@ try {
       var att = duAttaquant(event.getSource())
       var attJoueur = att && att.isPlayer && att.isPlayer() ? String(att.username) : null
       var cibleJoueur = cible && cible.isPlayer() ? String(cible.username) : null
-      // Un duelliste ne frappe que son adversaire (pas les spectateurs) ; personne d'autre ne touche les duellistes.
-      if (attJoueur && duEstDuelliste(attJoueur) && cibleJoueur && cibleJoueur !== duAdversaire(attJoueur) && cibleJoueur !== attJoueur) { event.setCanceled(true); return }
+      // Un duelliste ne frappe que ses adversaires (pas les spectateurs, ni ses coéquipiers) ; personne d'autre ne touche les duellistes.
+      if (attJoueur && duEstDuelliste(attJoueur) && cibleJoueur && cibleJoueur !== attJoueur && !duSontAdversaires(attJoueur, cibleJoueur)) { event.setCanceled(true); return }
       if (!cibleJoueur || !duEstDuelliste(cibleJoueur)) return
       if (attJoueur && attJoueur !== cibleJoueur && !duEstDuelliste(attJoueur)) { event.setCanceled(true); return }
+      if (duEstKo(cibleJoueur) || (attJoueur && duEstKo(attJoueur))) { event.setCanceled(true); return }   // hors combat : intouchable et inoffensif
       if (DUEL.phase !== 'combat') { event.setCanceled(true); return }
       if (duApresDegats(cible, event) <= DU_KO_PV) {
         event.setCanceled(true)
         try { cible.setHealth(DU_KO_PV) } catch (e) {}
-        duVictoire(cible.server, cibleJoueur)
+        duKo(cible.server, cibleJoueur)
       }
     } catch (err) { console.error('[duel] dégâts : ' + err) }
   })
@@ -209,7 +301,7 @@ try {
       if (!c || !c.isPlayer() || !duEstDuelliste(c.username)) return
       event.setCanceled(true)
       try { c.setHealth(DU_KO_PV) } catch (e) {}
-      if (DUEL.phase === 'combat') duVictoire(c.server, String(c.username))
+      if (DUEL.phase === 'combat') duKo(c.server, String(c.username))
     } catch (err) { console.error('[duel] mort : ' + err) }
   })
 } catch (e) { console.error('[duel] événement de mort indisponible : ' + e) }
@@ -217,14 +309,14 @@ try {
 try {
   NativeEvents.onEvent(Java.loadClass('io.redspace.ironsspellbooks.api.events.SpellPreCastEvent'), function (event) {
     try {
-      if (!DUEL || DUEL.phase === 'combat') return
+      if (!DUEL) return
       var j = event.getEntity()
-      if (j && j.isPlayer() && duEstDuelliste(j.username)) event.setCanceled(true)
+      if (j && j.isPlayer() && duEstDuelliste(j.username) && (DUEL.phase !== 'combat' || duEstKo(j.username))) event.setCanceled(true)
     } catch (err) {}
   })
 } catch (e) { console.error('[duel] blocage des sorts indisponible : ' + e) }
 ItemEvents.rightClicked(function (e) {
-  try { if (DUEL && DUEL.phase !== 'combat' && duEstDuelliste(e.player.username)) e.cancel() } catch (err) {}
+  try { if (DUEL && duEstDuelliste(e.player.username) && (DUEL.phase !== 'combat' || duEstKo(e.player.username))) e.cancel() } catch (err) {}
 })
 
 // ── Déroulement (vérifié chaque tick) ──
@@ -256,12 +348,14 @@ ServerEvents.tick(function (event) {
     }
     // combat : chaque seconde, déconnexion / sortie de l'arène / 1 cœur
     if (sv.tickCount % 20 !== 0) return
-    var n = [DUEL.a, DUEL.b]
-    for (var i = 0; i < 2; i++) {
+    var n = duParticipants()
+    for (var i = 0; i < n.length; i++) {
+      if (!DUEL || DUEL.phase !== 'combat') return
+      if (duEstKo(n[i])) continue
       var j = duJoueur(sv, n[i])
-      if (!j) { duVictoire(sv, n[i], n[i] + ' a quitté le serveur'); return }
-      if (!duDansArene(j)) { duVictoire(sv, n[i], n[i] + ' est sorti de l\'arène'); return }
-      if (Number(j.health) <= DU_KO_PV) { duVictoire(sv, n[i]); return }
+      if (!j) { duKo(sv, n[i], n[i] + ' a quitté le serveur'); continue }
+      if (!duDansArene(j)) { duKo(sv, n[i], n[i] + ' est sorti de l\'arène'); continue }
+      if (Number(j.health) <= DU_KO_PV) duKo(sv, n[i])
     }
   } catch (err) { console.error('[duel] ' + err); }
 })
@@ -273,6 +367,49 @@ PlayerEvents.loggedIn(function (e) {
     if (j.persistentData.getBoolean('duel_fige') && !duEstDuelliste(j.username)) duLiberer(e.server, String(j.username))
   } catch (err) { console.error('[duel] connexion : ' + err) }
 })
+
+function duArgEquipe(Commands, Arguments, event, dire) {
+  var arg = Commands.argument('equipe', Arguments.GREEDY_STRING.create(event))
+  try {
+    arg = arg.suggests(function (ctx, builder) {
+      try {
+        var eqs = eqCharger(ctx.source.server).equipes, cur = String(builder.getRemaining()).toLowerCase()
+        for (var s in eqs) { var nm = String(eqs[s].nom); if (!cur || nm.toLowerCase().indexOf(cur) === 0 || s.indexOf(cur) === 0) builder.suggest(nm) }
+      } catch (e) {}
+      return builder.buildFuture()
+    })
+  } catch (e) { console.error('[duel] suggestions /duel equipe : ' + e) }
+  return arg.executes(function (ctx) {
+    try {
+      var moi = ctx.source.player
+      if (!moi) return 0
+      var sv = ctx.source.server
+      var slugMoi = null
+      try { slugMoi = eqEquipeDe(sv, moi) } catch (e0) {}
+      if (!slugMoi) { dire(ctx, 'Tu dois faire partie d\'une équipe (voir /equipe).', true); return 0 }
+      var slugAdv = eqSlug(Arguments.GREEDY_STRING.getResult(ctx, 'equipe'))
+      var eqAdv = duEquipe(sv, slugAdv)
+      if (!eqAdv) { dire(ctx, 'Équipe introuvable (voir /equipe liste).', true); return 0 }
+      if (slugAdv === slugMoi) { dire(ctx, 'Tu ne peux pas défier ta propre équipe.', true); return 0 }
+      if (DUEL) { dire(ctx, 'Un duel est déjà en cours (' + DUEL.titre + ').', true); return 0 }
+      if (!duDansArene(moi)) { dire(ctx, 'Tu dois être dans le Colisée pour lancer un défi.', true); return 0 }
+      var cibles = duConnectesEquipe(sv, slugAdv)
+      if (!cibles.length) { dire(ctx, 'Aucun membre de l\'équipe ' + eqAdv.nom + ' n\'est connecté.', true); return 0 }
+      var eqMoi = duEquipe(sv, slugMoi)
+      DU_DEFIS_EQ[slugAdv] = { de: slugMoi, par: String(moi.username), fin: sv.tickCount + DU_DEFI_S * 20 }
+      for (var i = 0; i < cibles.length; i++) {
+        sv.runCommandSilent('tellraw ' + cibles[i].username + ' ' + JSON.stringify([
+          { text: '[Colisée] ', color: 'gold' }, { text: moi.username, color: 'yellow' }, { text: ' (équipe ' + eqMoi.nom + ') défie ton équipe en duel ! Rendez-vous au Colisée. ', color: 'gray' },
+          { text: '[Accepter]', color: 'green', bold: true, clickEvent: { action: 'run_command', value: '/duel accepter' } }, { text: '  ' },
+          { text: '[Refuser]', color: 'red', bold: true, clickEvent: { action: 'run_command', value: '/duel refuser' } }]))
+      }
+      var miens = duConnectesEquipe(sv, slugMoi)
+      for (var k = 0; k < miens.length; k++) if (String(miens[k].username) !== String(moi.username)) miens[k].tell(Text.gold('[Colisée] ' + moi.username + ' a défié l\'équipe ' + eqAdv.nom + '. Rendez-vous au Colisée !'))
+      dire(ctx, 'Défi envoyé à l\'équipe ' + eqAdv.nom + ' (' + DU_DEFI_S + ' s pour répondre).', false)
+      return 1
+    } catch (err) { console.error('[duel] défi d\'équipe : ' + err); return 0 }
+  })
+}
 
 // ── Commande ──
 ServerEvents.commandRegistry(function (event) {
@@ -287,7 +424,7 @@ ServerEvents.commandRegistry(function (event) {
     console.info('[duel] ' + txt)
   }
   var verifs = function (ctx, sv, j1, j2) {
-    if (DUEL) { dire(ctx, 'Un duel est déjà en cours (' + DUEL.a + ' contre ' + DUEL.b + ').', true); return false }
+    if (DUEL) { dire(ctx, 'Un duel est déjà en cours (' + DUEL.titre + ').', true); return false }
     if (String(j1.username) === String(j2.username)) { dire(ctx, 'Il faut deux joueurs différents.', true); return false }
     try { if (typeof auCombatActif === 'function' && auCombatActif(sv)) { dire(ctx, 'Impossible pendant l\'épreuve du Courage.', true); return false } } catch (e) {}
     try { if (!sv.isPvpAllowed()) { dire(ctx, 'Le PvP est désactivé sur le serveur (pvp=false dans server.properties).', true); return false } } catch (e2) {}
@@ -298,7 +435,7 @@ ServerEvents.commandRegistry(function (event) {
     .then(Commands.literal('arreter').requires(autorise).executes(function (ctx) {
       if (!DUEL) { dire(ctx, 'Aucun duel en cours.', true); return 0 }
       var sv = ctx.source.server
-      duCmd(sv, 'tellraw @a ' + JSON.stringify([{ text: '[Colisée] ', color: 'gold' }, { text: 'Le duel entre ' + DUEL.a + ' et ' + DUEL.b + ' a été annulé.', color: 'gray' }]))
+      duCmd(sv, 'tellraw @a ' + JSON.stringify([{ text: '[Colisée] ', color: 'gold' }, { text: 'Le duel (' + DUEL.titre + ') a été annulé.', color: 'gray' }]))
       duTerminer(sv)
       return 1
     }))
@@ -309,6 +446,23 @@ ServerEvents.commandRegistry(function (event) {
       var sv = ctx.source.server
       var d = DU_DEFIS[String(moi.username)]
       delete DU_DEFIS[String(moi.username)]
+      if (!d) {   // défi lancé à son équipe ?
+        var slugMoi = null
+        try { slugMoi = eqEquipeDe(sv, moi) } catch (eS) {}
+        var de = slugMoi ? DU_DEFIS_EQ[slugMoi] : null
+        if (de) {
+          delete DU_DEFIS_EQ[slugMoi]
+          if (sv.tickCount > de.fin) { dire(ctx, 'Le défi de l\'équipe a expiré.', true); return 0 }
+          if (DUEL) { dire(ctx, 'Un duel est déjà en cours (' + DUEL.titre + ').', true); return 0 }
+          try { if (typeof auCombatActif === 'function' && auCombatActif(sv)) { dire(ctx, 'Impossible pendant l\'épreuve du Courage.', true); return 0 } } catch (eC) {}
+          try { if (!sv.isPvpAllowed()) { dire(ctx, 'Le PvP est désactivé sur le serveur.', true); return 0 } } catch (eP) {}
+          var c1 = duCombattantsEquipe(sv, de.de), c2 = duCombattantsEquipe(sv, slugMoi)
+          if (!c1.length || !c2.length) { dire(ctx, 'Il faut au moins un membre de chaque équipe dans le Colisée.', true); return 0 }
+          var e1 = duEquipe(sv, de.de), e2 = duEquipe(sv, slugMoi)
+          duLancerEquipes(sv, c1, c2, e1 ? e1.nom : de.de, e2 ? e2.nom : slugMoi, de.de, slugMoi)
+          return 1
+        }
+      }
       if (!d || sv.tickCount > d.fin) { dire(ctx, 'Personne ne t\'a défié (ou le défi a expiré).', true); return 0 }
       var adv = duJoueur(sv, d.de)
       if (!adv) { dire(ctx, d.de + ' n\'est plus connecté.', true); return 0 }
@@ -322,12 +476,26 @@ ServerEvents.commandRegistry(function (event) {
       if (!moi) return 0
       var d = DU_DEFIS[String(moi.username)]
       delete DU_DEFIS[String(moi.username)]
+      if (!d) {   // refus d'un défi d'équipe
+        var svR = ctx.source.server, slugR = null
+        try { slugR = eqEquipeDe(svR, moi) } catch (eS) {}
+        var dR = slugR ? DU_DEFIS_EQ[slugR] : null
+        if (dR) {
+          delete DU_DEFIS_EQ[slugR]
+          var lr = duConnectesEquipe(svR, dR.de)
+          for (var r = 0; r < lr.length; r++) lr[r].tell(Text.gray(moi.username + ' a refusé le duel d\'équipes.'))
+          dire(ctx, 'Duel d\'équipes refusé.', false)
+          return 1
+        }
+      }
       if (!d) { dire(ctx, 'Personne ne t\'a défié.', true); return 0 }
       var adv = duJoueur(ctx.source.server, d.de)
       if (adv) adv.tell(Text.gray(moi.username + ' a refusé ton duel.'))
       dire(ctx, 'Duel refusé.', false)
       return 1
     }))
+    // /duel equipe <équipe> : défier une autre équipe (les membres présents dans le Colisée combattent)
+    .then(Commands.literal('equipe').then(duArgEquipe(Commands, Arguments, event, dire)))
     .then(Commands.argument('joueur1', Arguments.PLAYER.create(event))
       // /duel <adversaire> : un élève défie un autre joueur ; les deux doivent être dans le Colisée
       .executes(function (ctx) {
