@@ -34,6 +34,7 @@ var RESTRICTIONS = [
   { regle: /^aetheris_armures:(anneau_(ronces|seve|saisons)|gland_ancien|totem_meute|pollen_dore|coeur_arbre_monde|ceinture_lierre|collier_crocs)$/, classes: ['Druide'] },
   { regle: /^aetheris_armures:(anneau_(granit|fracture|tellurique)|pierre_ancrage|geode_vivante|sablier_desert|coeur_montagne|ceinture_filon|collier_fossiles)$/, classes: ['Géomancien'] },
   { regle: /^aetheris_armures:(anneau_(saignee|pacte|frenesie)|calice_carmin|caillot_sang|dague_rituelle|coeur_battant|ceinture_osselets|collier_vampire)$/, classes: ['Hémomancien'] },
+  { regle: /^aetheris_armures:(anneau_(jugement|serment|aube)|reliquaire|etendard|sceau_lumiere|aureole_sacree|ceinture_croise|pendentif_martyr)$/, classes: ['Paladin'] },
   // ── Cursed School / Curse Spells ──
   { regle: /^cursed_school:margin_reaper$/, classes: ['Réprouvé'] },
   // ── Apprentice's Codex ──
@@ -403,6 +404,26 @@ ItemEvents.modifyTooltips(function (event) {
       ['Hémorragie : sorts de sang +40 % contre les cibles sous 30 % de PV']],
     collier_vampire: [['Blood bond: players within 8 blocks are healed', 'for 25% of the damage of your blood spells'],
       ['Lien de sang : les joueurs à 8 blocs sont soignés', 'de 25 % des dégâts de tes sorts de sang']]
+    ,
+    // ── Paladin ──
+    anneau_jugement: [['Judgment: holy spells deal +50% to undead and set them ablaze for 3 s'],
+      ['Jugement : les sorts sacrés font +50 % aux morts-vivants et les embrasent 3 s']],
+    anneau_serment: [['Oath: your healing spells on allies also give them a shield', 'of absorption equal to 25% of the heal (max 5 hearts)'],
+      ['Serment : tes sorts de soin sur un allié lui donnent aussi un bouclier', 'd\'absorption égal à 25 % du soin (max 5 cœurs)']],
+    anneau_aube: [['Dawn: in daylight under open sky, holy spells cost 25% less mana', 'At night, they make targets glow and weaken them'],
+      ['Aube : en plein jour à ciel ouvert, les sorts sacrés coûtent 25 % de mana en moins', 'La nuit, ils font briller et affaiblissent leurs cibles']],
+    reliquaire: [['Holy watch: when a player within 10 blocks drops below 30% HP', 'they receive Regeneration II for 4 s (30 s per player)'],
+      ['Veille sacrée : quand un joueur à 10 blocs passe sous 30 % de PV', 'il reçoit Régénération II pendant 4 s (30 s par joueur)']],
+    etendard: [['Banner: you and players within 8 blocks have Resistance I'],
+      ['Étendard : toi et les joueurs à 8 blocs avez Résistance I']],
+    sceau_lumiere: [['Consecration: stand still 2 s to consecrate the ground (5 blocks)', 'Undead burn and take 2 damage per second, allies regenerate'],
+      ['Consécration : reste immobile 2 s pour consacrer le sol (5 blocs)', 'Les morts-vivants brûlent et subissent 2 dégâts par seconde, les alliés se régénèrent']],
+    aureole_sacree: [['Divine intervention: a fatal blow leaves you at 50% HP with Resistance V 4 s', 'Holy blast: 10 damage (20 to undead) within 6 blocks, allies healed 3 hearts (5 min cooldown)'],
+      ['Intervention divine : un coup fatal te laisse à 50 % de PV avec Résistance V 4 s', 'Explosion sacrée : 10 dégâts (20 aux morts-vivants) à 6 blocs, alliés soignés de 3 cœurs (recharge 5 min)']],
+    ceinture_croise: [['Rampart: blocking a hit with a shield returns half the damage', 'to the attacker and heals you half a heart'],
+      ['Rempart : parer un coup au bouclier renvoie la moitié des dégâts', 'à l\'attaquant et te soigne d\'un demi-cœur']],
+    pendentif_martyr: [['Martyr: you take 30% of the damage dealt to players within 8 blocks', 'and regain 2 mana per point absorbed'],
+      ['Martyr : tu encaisses 30 % des dégâts subis par les joueurs à 8 blocs', 'et regagnes 2 mana par point encaissé']]
   }
   for (var ab in ARTB_INFOS) {
     var lignes = ARTB_INFOS[ab][langueAnglaise() ? 0 : 1]
