@@ -1,5 +1,5 @@
 {
- "version": "2026-11-13T13:06:12.602Z",
+ "version": "2026-11-13T14:41:19.682Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6322,8 +6322,8 @@
   },
   {
    "path": "kubejs/client_scripts/classes_tooltips.js",
-   "sha1": "d4040ac41e6b5c38fcb3d50aca94aa1c1871698b",
-   "size": 111418
+   "sha1": "8acef0c7bb92e0a65390906c29f816f7d5880f87",
+   "size": 133279
   },
   {
    "path": "kubejs/client_scripts/main.js",
@@ -6427,8 +6427,8 @@
   },
   {
    "path": "kubejs/server_scripts/armures_butin.js",
-   "sha1": "9bd40e4ced9ceb3d7af1e40087a8f2383b550ef8",
-   "size": 24921
+   "sha1": "dc30b6becf0b44f2c21243f9272e4864eec2f1db",
+   "size": 25086
   },
   {
    "path": "kubejs/server_scripts/baton_neant.js",
@@ -6437,8 +6437,8 @@
   },
   {
    "path": "kubejs/server_scripts/boss_zones.js",
-   "sha1": "acf49a06bb7c96043e5b8c72c49159d4aea23d18",
-   "size": 50300
+   "sha1": "5a3577d722f85cb75db06039866009f4c18d253c",
+   "size": 52986
   },
   {
    "path": "kubejs/server_scripts/chasse_quetes.js",
@@ -6452,8 +6452,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_desactives.js",
-   "sha1": "19f9389da49f99d9b05779823f7cd80a62162754",
-   "size": 58445
+   "sha1": "60f1dc76b56dc009684260bd2be5c9df9fa65e00",
+   "size": 64651
   },
   {
    "path": "kubejs/server_scripts/classes_dump_armes.js",
@@ -6467,8 +6467,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "7a6ea361fa34135cf811204761e1d420c06dd9e9",
-   "size": 174478
+   "sha1": "908d5f58aae1c808ccf874d24870d3be50d87ae9",
+   "size": 307772
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -6477,18 +6477,18 @@
   },
   {
    "path": "kubejs/server_scripts/classes_sons.js",
-   "sha1": "43b3c94b70b2075d9550ab4ee58bc216048d4328",
-   "size": 1549
+   "sha1": "8e3b149ea3590667d68a8376caf12431bfe65149",
+   "size": 4739
   },
   {
    "path": "kubejs/server_scripts/colisee_duel.js",
-   "sha1": "95351fba6dfde33f8fc5f44497a3b58c0d7cea2c",
-   "size": 18815
+   "sha1": "3856e7b0b6ddc61a9c256b8630bb5b4a3a38f2ab",
+   "size": 29203
   },
   {
    "path": "kubejs/server_scripts/course_balai.js",
-   "sha1": "1e3bbbfc7315eb5942cbf3040ef0f4a72ff8d3c7",
-   "size": 35511
+   "sha1": "41f8e6b39b00f976296d9513cde5a9a1fffe6282",
+   "size": 38184
   },
   {
    "path": "kubejs/server_scripts/decouverte_lieux.js",
@@ -6502,18 +6502,18 @@
   },
   {
    "path": "kubejs/server_scripts/envouteur_nerf.js",
-   "sha1": "899fcabd4edf209ec6e672f0112774ae04c6b187",
-   "size": 5322
+   "sha1": "b54ef9a452fda0b9834ee45dfdd33e8bb430c149",
+   "size": 7004
   },
   {
    "path": "kubejs/server_scripts/equipes.js",
-   "sha1": "11eb4467050d43d470bb4cc79342b3495a45d9aa",
-   "size": 48799
+   "sha1": "9fadcc1f78fbcdae7ce10712dcab4a411897f5e8",
+   "size": 67066
   },
   {
    "path": "kubejs/server_scripts/ftb_aide.js",
-   "sha1": "a3d21a0a673d5e353e72b854e276260917f7ca54",
-   "size": 3037
+   "sha1": "f9a8a8d882ef5902583ebcb90dd07b9fc261fb8a",
+   "size": 6609
   },
   {
    "path": "kubejs/server_scripts/furniture_ops.js",
@@ -6532,8 +6532,8 @@
   },
   {
    "path": "kubejs/server_scripts/mobs_distance.js",
-   "sha1": "a7c0c25cb624a883267133cbaeb8569a69470ab6",
-   "size": 26407
+   "sha1": "4b36e6ddf0cd1ad11f81c6e709dba7124d7de005",
+   "size": 28677
   },
   {
    "path": "kubejs/server_scripts/parchemins_coffres.js",
@@ -6592,8 +6592,8 @@
   },
   {
    "path": "kubejs/server_scripts/zone_pirates.js",
-   "sha1": "dd15445a9366c65b0c5c96821cb204b6dd1c9e23",
-   "size": 27704
+   "sha1": "381091d43da1d3c0328a0a521e6dc7a7c45a28d4",
+   "size": 29590
   },
   {
    "path": "kubejs/startup_scripts/aura_professeur_effet.js",
@@ -6612,8 +6612,8 @@
   },
   {
    "path": "kubejs/startup_scripts/classes_equip_ecoles.js",
-   "sha1": "a0a9a70931550dc931dc218c2e52e58b30eb6386",
-   "size": 51549
+   "sha1": "7a119282b8a77f366cdb61dee1121d82e520bd3c",
+   "size": 53458
   },
   {
    "path": "kubejs/startup_scripts/classes_niveaux.js",
@@ -6647,8 +6647,8 @@
   },
   {
    "path": "mods/aetheris_armures-neoforge-1.21.1-1.0.0.jar",
-   "sha1": "70d674267f9ff13c8454348fff2abe4baae8a338",
-   "size": 238774
+   "sha1": "2f2d0d7a478a51351ace0713dd1293d0ace19850",
+   "size": 519163
   },
   {
    "path": "mods/aetheris_balai-neoforge-1.21.1-1.4.0.jar",
