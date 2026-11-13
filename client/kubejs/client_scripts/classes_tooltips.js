@@ -28,7 +28,7 @@ var RESTRICTIONS = [
   { regle: /^irons_spellbooks:twilight_gale$/, classes: ['Électro-Sorcier', 'Aéromancien'] },
   // ── Wind Spellbooks ──
   { regle: /^wind_spellbooks:(aeromancer_(helmet|chestplate|leggings|boots)|wind_staff)$/, classes: ['Aéromancien'] },
-  { regle: /^(tunes_n_tomes:(bard_(harp|helmet|chestplate|leggings|boots)|melodic_mastery_(helmet|chestplate|leggings|boots)|affinity_ring_melody)|aetheris_armures:(virtuose_(helmet|chestplate|leggings|boots)|rapiere_cle_de_sol))$/, classes: ['Barde'] },   // + Virtuose (aetheris_armures) ; instruments d'Immersive Melodies libres (effet réservé au Barde)
+  { regle: /^(tunes_n_tomes:(bard_(harp|helmet|chestplate|leggings|boots)|melodic_mastery_(helmet|chestplate|leggings|boots)|affinity_ring_melody)|aetheris_armures:(virtuose_(helmet|chestplate|leggings|boots)|rapiere_cle_de_sol|anneau_(diapason|echo|cadence)|metronome|sourdine|boite_a_musique|derniere_note|bandouliere|medaillon_harmonie))$/, classes: ['Barde'] },   // + Virtuose (aetheris_armures) ; instruments d'Immersive Melodies libres (effet réservé au Barde)
   // ── Cursed School / Curse Spells ──
   { regle: /^cursed_school:margin_reaper$/, classes: ['Réprouvé'] },
   // ── Apprentice's Codex ──
@@ -301,6 +301,19 @@ ItemEvents.modifyTooltips(function (event) {
   event.add('tunes_n_tomes:bard_harp', Text.lightPurple(langueAnglaise() ? 'Imbued spell: use the imbued weapon key' : 'Sort imprégné : touche des armes imprégnées'))
   // Rapière à clé de sol : note-repère de Dal Segno
   event.add('aetheris_armures:rapiere_cle_de_sol', Text.lightPurple(langueAnglaise() ? 'On hit: 20% chance to leave a Segno note (Dal Segno marker)' : 'Au toucher : 20 % de chance de poser une note Segno (repère de Dal Segno)'))
+  // Artefacts du Barde (effets actifs seulement portés par un Barde)
+  var ARTB_INFOS = {
+    anneau_diapason: ['Melody spell damage: 25% chance to Deafen for 3 s', 'Dégâts de sort mélodique : 25 % de chance d\'assourdir 3 s'],
+    anneau_echo: ['Melody spells: 15% chance to trigger no cooldown', 'Sorts mélodiques : 15 % de chance de ne pas avoir de recharge'],
+    anneau_cadence: ['Casting a melody spell grants Haste II for 5 s', 'Lancer un sort mélodique donne Célérité II pendant 5 s'],
+    metronome: ['Every 4th melody spell costs no mana', 'Un sort mélodique sur 4 ne coûte pas de mana'],
+    sourdine: ['Immune to Deafened and Sleepy', 'Immunité à Assourdi et Somnolent'],
+    boite_a_musique: ['Every 4 s: you and players within 8 blocks regain 6 mana', 'Toutes les 4 s : toi et les joueurs à 8 blocs regagnez 6 mana'],
+    derniere_note: ['Survives a fatal blow with 3 hearts, repels and deafens nearby enemies (3 min cooldown)', 'Survit à un coup fatal avec 3 cœurs, repousse et assourdit les ennemis proches (recharge 3 min)'],
+    bandouliere: ['Melody spells cost 10% less mana per other player within 12 blocks (max 30%)', 'Sorts mélodiques : -10 % de mana par autre joueur à 12 blocs (max -30 %)'],
+    medaillon_harmonie: ['Your healing spells give the target Absorption I for 10 s', 'Tes sorts de soin donnent Absorption I pendant 10 s à la cible']
+  }
+  for (var ab in ARTB_INFOS) event.add('aetheris_armures:' + ab, Text.lightPurple(ARTB_INFOS[ab][langueAnglaise() ? 0 : 1]))
   // Instruments d'Immersive Melodies : Représentation du Barde
   var en = langueAnglaise()
   for (var m = 0; m < ids.length; m++) {
