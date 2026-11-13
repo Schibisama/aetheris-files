@@ -620,3 +620,34 @@ ServerEvents.tags('item', function (event) {
   })
   console.info('[classes_desactives] ' + n + ' anneaux de classe déplacés vers l\'emplacement Rings.')
 })
+// Les anneaux qui se portent désormais dans « Rings » mais sont encore dans l'emplacement « Anneau » y sont déplacés
+// automatiquement (à la connexion puis toutes les 5 s). S'il n'y a plus de place dans Rings, l'anneau va dans l'inventaire
+// (ou au sol si l'inventaire est plein) : rien n'est jamais perdu.
+var ANNEAUX_J = null
+function anneauxDeplacer(joueur) {
+  if (!ANNEAUX_J) {
+    var RL = Java.loadClass('net.minecraft.resources.ResourceLocation'), IT = Java.loadClass('net.minecraft.tags.ItemTags')
+    ANNEAUX_J = { CA: Java.loadClass('top.theillusivec4.curios.api.CuriosApi'), RINGS: IT.create(RL.parse('curios:rings')), RING: IT.create(RL.parse('curios:ring')),
+      VIDE: Java.loadClass('net.minecraft.world.item.ItemStack').EMPTY }
+  }
+  var inv = ANNEAUX_J.CA.getCuriosInventory(joueur)
+  if (!inv.isPresent()) return
+  var src = inv.get().getStacksHandler('ring'), dst = inv.get().getStacksHandler('rings')
+  if (!src.isPresent() || !dst.isPresent()) return
+  var s = src.get().getStacks(), d = dst.get().getStacks()
+  for (var i = 0; i < s.getSlots(); i++) {
+    var pile = s.getStackInSlot(i)
+    if (pile.isEmpty() || !pile.is(ANNEAUX_J.RINGS) || pile.is(ANNEAUX_J.RING)) continue
+    var copie = pile.copy(), place = false
+    for (var k = 0; k < d.getSlots() && !place; k++) if (d.getStackInSlot(k).isEmpty()) { d.setStackInSlot(k, copie); place = true }
+    s.setStackInSlot(i, ANNEAUX_J.VIDE)
+    if (!place) joueur.give(copie)
+    console.info('[classes_desactives] ' + joueur.username + ' : ' + copie.id + (place ? ' déplacé dans Rings' : ' rendu dans l\'inventaire (Rings plein)'))
+  }
+}
+PlayerEvents.loggedIn(function (event) { try { anneauxDeplacer(event.player) } catch (e) { console.error('[classes_desactives] anneaux : ' + e) } })
+PlayerEvents.tick(function (event) {
+  var j = event.player
+  if (j.tickCount % 100 !== 37) return
+  try { anneauxDeplacer(j) } catch (e) {}
+})

@@ -3499,7 +3499,7 @@ ServerEvents.tick(perfWrap('classes_rp:danse', function (event) {
       if (!v || !v.isAlive() || v.isRemoved() || t >= d.fin) { delete DANSE.v[cle]; continue }
       if (!DANSE.J) DANSE.J = { Note: Java.loadClass('net.minecraft.core.particles.ParticleTypes').NOTE }
       var m = d.musicien
-      if (m && m.isAlive()) v.getLookControl().setLookAt(m, 30, 30)
+      if (m && m.isAlive()) v.getLookControl().setLookAt(Number(m.getX()), Number(m.getEyeY()), Number(m.getZ()))
       var k = (t + d.phase) % 12
       if (k === 0 && v.onGround()) {
         // pas chassé perpendiculaire à la direction du musicien
