@@ -602,3 +602,21 @@ ServerEvents.tags('item', function (event) {
     console.error('[classes_desactives] Parade : ' + e)
   }
 })
+
+// Anneaux réservés à une classe : portés dans l'emplacement « Rings » (Cataclysm) au lieu de « Anneau »,
+// comme les anneaux d'artefacts du mod aetheris_armures.
+var ANNEAUX_DE_CLASSE = ['chronomancy:cracked_dial', 'chronomancy:geminated_ring', 'chronomancy:ring_of_rifts',
+  'colormagic:flower_ring', 'colormagic:rainbow_ring', 'crystal_chronicles:diffraction_ring', 'cursed_school:the_cursed_ring',
+  'cursespells:clairvoyance_ring', 'cursespells:curse_bane_ring']
+ServerEvents.tags('item', function (event) {
+  var n = 0
+  ANNEAUX_DE_CLASSE.forEach(function (id) {
+    try {
+      if (Item.of(id).isEmpty()) return
+      event.remove('curios:ring', id)
+      event.add('curios:rings', id)
+      n++
+    } catch (e) { console.error('[classes_desactives] anneau ' + id + ' : ' + e) }
+  })
+  console.info('[classes_desactives] ' + n + ' anneaux de classe déplacés vers l\'emplacement Rings.')
+})
