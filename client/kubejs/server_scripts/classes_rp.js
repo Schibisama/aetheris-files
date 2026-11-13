@@ -4740,7 +4740,6 @@ PlayerEvents.tick(function (event) {
             ajouterEffet(cibles[i], 'minecraft:regeneration', 40, 0, false, true)
           }
           artbNotes(joueur, 3, 1.5)
-          if (r.s % 4 === 3) artbSon(joueur, ARTB.Sons.NOTE_BLOCK_CHIME, 0.5, 1.2)
         }
       }
     }
