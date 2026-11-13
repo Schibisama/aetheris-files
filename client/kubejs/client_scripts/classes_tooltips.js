@@ -28,7 +28,7 @@ var RESTRICTIONS = [
   { regle: /^irons_spellbooks:twilight_gale$/, classes: ['Électro-Sorcier', 'Aéromancien'] },
   // ── Wind Spellbooks ──
   { regle: /^wind_spellbooks:(aeromancer_(helmet|chestplate|leggings|boots)|wind_staff)$/, classes: ['Aéromancien'] },
-  { regle: /^(tunes_n_tomes:(bard_(harp|helmet|chestplate|leggings|boots)|melodic_mastery_(helmet|chestplate|leggings|boots)|affinity_ring_melody)|aetheris_armures:(virtuose_(helmet|chestplate|leggings|boots)|rapiere_cle_de_sol)|immersive_melodies:(bagpipe|didgeridoo|flute|lute|piano|triangle|trumpet|tiny_drum|vielle|ender_bass|handpan))$/, classes: ['Barde'] },   // + Virtuose (aetheris_armures) et instruments d'Immersive Melodies
+  { regle: /^(tunes_n_tomes:(bard_(harp|helmet|chestplate|leggings|boots)|melodic_mastery_(helmet|chestplate|leggings|boots)|affinity_ring_melody)|aetheris_armures:(virtuose_(helmet|chestplate|leggings|boots)|rapiere_cle_de_sol))$/, classes: ['Barde'] },   // + Virtuose (aetheris_armures) ; instruments d'Immersive Melodies libres (effet réservé au Barde)
   // ── Cursed School / Curse Spells ──
   { regle: /^cursed_school:margin_reaper$/, classes: ['Réprouvé'] },
   // ── Apprentice's Codex ──
@@ -305,7 +305,7 @@ ItemEvents.modifyTooltips(function (event) {
   var en = langueAnglaise()
   for (var m = 0; m < ids.length; m++) {
     if (ids[m].indexOf('immersive_melodies:') !== 0) continue
-    event.add(ids[m], Text.lightPurple(en ? 'Performance: play near villagers to earn tips' : 'Représentation : joue près de villageois pour gagner des pourboires'))
+    event.add(ids[m], Text.lightPurple(en ? 'Bard Performance: play near villagers to earn tips' : 'Représentation (Barde) : joue près de villageois pour gagner des pourboires'))
     event.add(ids[m], Text.lightPurple(en ? 'Listening players increase the tips and gain Regeneration' : 'Les joueurs qui écoutent augmentent les pourboires et reçoivent Régénération'))
   }
   console.info('[classes_tooltips] ' + n + ' objets étiquetés.')
