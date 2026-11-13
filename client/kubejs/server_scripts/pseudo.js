@@ -132,7 +132,7 @@ PlayerEvents.loggedIn(function (event) {
     psSync(serveur, j)
     var reappliquer = function () {
       try {
-        var jj = serveur.getPlayerList().getPlayer(j.getUUID())
+        var jj = serveur.getPlayerList().getPlayer(j.uuid)
         if (jj) psSync(serveur, jj)
       } catch (e2) {}
     }

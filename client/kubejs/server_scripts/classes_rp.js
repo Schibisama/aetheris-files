@@ -3301,7 +3301,7 @@ function baliseRefuse(proprio, idObjet) {
 }
 function baliseAvertir(proprio, idObjet, tick) {
   if (!proprio) return
-  var k = String(proprio.getUUID()) + '|' + idObjet
+  var k = String(proprio.uuid) + '|' + idObjet
   if (BALISE_AVERTI[k] && tick - BALISE_AVERTI[k] < 60) return
   BALISE_AVERTI[k] = tick
   try { proprio.setStatusMessage(Text.translate('mcrp.msg.brasero_refus').gold()) } catch (e) {}
@@ -3358,9 +3358,9 @@ ServerEvents.tick(perfWrap('classes_rp:balise', function (event) {
   for (var i = BALISES.length - 1; i >= 0; i--) {
     var b = BALISES[i]
     try {
-      if (!b.isAlive()) { delete BALISE_LABEL[String(b.getUUID())]; BALISES.splice(i, 1); continue }
+      if (!b.isAlive()) { delete BALISE_LABEL[String(b.uuid)]; BALISES.splice(i, 1); continue }
       // offrande acceptée : annonce le joli nom de la structure recherchée (le mod n'affiche que son identifiant)
-      var lab = String(b.getTargetLabel() || ''), cle = String(b.getUUID())
+      var lab = String(b.getTargetLabel() || ''), cle = String(b.uuid)
       if (lab && BALISE_LABEL[cle] !== lab) {
         BALISE_LABEL[cle] = lab
         var p0 = baliseProprietaire(b), nomStruct = BALISE_STRUCT_PAR_ID[lab.split(', ')[0]]
@@ -3474,7 +3474,10 @@ function bardeFaireDanser(joueur) {
     if (t !== 'minecraft:villager' && t !== 'minecraft:wandering_trader') continue
     try { if (v.isSleeping()) continue } catch (eS) {}
     ajouterEffet(v, 'aetheris_armures:danse', 50, 0, true, true)
-    try { v.getLookControl().setLookAt(joueur, 30, 30) } catch (eL) {}
+    var cleV = String(v.uuid)
+    if (!DANSE.v[cleV]) DANSE.v[cleV] = { ent: v, phase: Math.floor(Math.random() * 12), cote: 1 }
+    DANSE.v[cleV].fin = Number(joueur.server.getTickCount()) + 45
+    DANSE.v[cleV].musicien = joueur
     n++; dern = v
   }
   var u = String(joueur.uuid), maintenant = Date.now()
@@ -3484,6 +3487,33 @@ function bardeFaireDanser(joueur) {
   }
 }
 var BARDE_JOURNAL_DANSE = {}
+// Gigue jouée côté serveur (visible par tous, sans dépendre du rendu) : le villageois reste face au musicien et
+// sautille sur place en alternant un petit pas à gauche puis à droite toutes les 12 ticks ; ses jambes battent la mesure
+// avec ces pas. Des notes s'échappent au-dessus de lui. Il s'arrête ~2 s après la fin de la musique.
+var DANSE = { v: {}, J: null }
+ServerEvents.tick(perfWrap('classes_rp:danse', function (event) {
+  var t = Number(event.server.getTickCount())
+  for (var cle in DANSE.v) {
+    var d = DANSE.v[cle], v = d.ent
+    try {
+      if (!v || !v.isAlive() || v.isRemoved() || t >= d.fin) { delete DANSE.v[cle]; continue }
+      if (!DANSE.J) DANSE.J = { Note: Java.loadClass('net.minecraft.core.particles.ParticleTypes').NOTE }
+      var m = d.musicien
+      if (m && m.isAlive()) v.getLookControl().setLookAt(m, 30, 30)
+      var k = (t + d.phase) % 12
+      if (k === 0 && v.onGround()) {
+        // pas chassé perpendiculaire à la direction du musicien
+        var dx = 0, dz = 0
+        if (m) { dx = Number(m.getX()) - Number(v.getX()); dz = Number(m.getZ()) - Number(v.getZ()) }
+        var n = Math.sqrt(dx * dx + dz * dz) || 1
+        d.cote = -d.cote
+        v.setDeltaMovement(-dz / n * 0.09 * d.cote, 0.33, dx / n * 0.09 * d.cote)
+        v.hasImpulse = true
+      }
+      if (k === 6) v.level.sendParticles(DANSE.J.Note, v.getX(), v.getY() + Number(v.getBbHeight()) + 0.4, v.getZ(), 1, 0.3, 0.1, 0.3, Math.random())
+    } catch (e) { delete DANSE.v[cle]; if (!DANSE.err) { DANSE.err = true; console.error('[barde] gigue des villageois : ' + e) } }
+  }
+}))
 // Journal de diagnostic : au plus une ligne par joueur et par minute.
 var BARDE_JOURNAL = {}
 function bardeJournal(joueur, texte) {
@@ -3593,7 +3623,7 @@ function rapiereNote(joueur, cible) {
   note.setPos(cible.getX(), cible.getY(), cible.getZ())
   niveau.addFreshEntity(note)
   var donnees = joueur.getData(RAPIERE.Attache.SOUND_MARKER_DATA.get())
-  var retiree = donnees.addMarker(note.getUUID(), RAPIERE.Config.MAX_SOUND_MARKERS.get())
+  var retiree = donnees.addMarker(note.uuid, RAPIERE.Config.MAX_SOUND_MARKERS.get())
   if (retiree) RAPIERE.Gestion.removeMarkerEntity(niveau, retiree)
   RAPIERE.Gestion.syncMarkerData(joueur)
   niveau.playSound(null, cible.getX(), cible.getY(), cible.getZ(), RAPIERE.Sons.CLEF.get(), RAPIERE.Source.PLAYERS, 1.0, 1.0)
@@ -4367,8 +4397,8 @@ try {
       // Médaillon d'Harmonie (Barde)
       if (cible.isPlayer() && String(cible.uuid) !== String(soigneur.uuid) && artbPorte(soigneur, 'medaillon_harmonie')) {
         var fin = Date.now() + 10000
-        ARTB.accords[String(soigneur.uuid)] = { avec: cible.getUUID(), fin: fin }
-        ARTB.accords[String(cible.uuid)] = { avec: soigneur.getUUID(), fin: fin }
+        ARTB.accords[String(soigneur.uuid)] = { avec: cible.uuid, fin: fin }
+        ARTB.accords[String(cible.uuid)] = { avec: soigneur.uuid, fin: fin }
         cible.setStatusMessage(Text.lightPurple('♪ Accord avec ' + soigneur.username + ' : dégâts partagés 10 s'))
         artbNotes(cible, 8, 0.5)
       }
@@ -4531,12 +4561,16 @@ try {
 // Un joueur qui reçoit l'effet Somnolent (tunes_n_tomes:sleepy, Note soporifique du Barde) est couché de force dans un lit
 // qui apparaît sous lui le temps de l'effet, et ronfle (son aetheris_armures:ronflement, mod aetheris_armures). À la fin de
 // l'effet (ou à la mort / déconnexion), il se réveille, le lit disparaît sans rien lâcher et le ronflement s'arrête net.
-// Il ne peut pas quitter le lit avant la fin. Le sommeil est relancé toutes les 4 s pour ne jamais compter dans le passage
-// de la nuit. Pas de lit s'il n'y a pas 2 blocs libres (ou s'il est sur une monture) : il ronfle quand même.
-var SOMMEIL = { joueurs: {}, lits: {}, J: null, SON_TICKS: 114 }
+// Il ne peut pas quitter le lit avant la fin (ni être réveillé par un coup). Le sommeil forcé dure au plus 95 ticks
+// (l'effet en dure 100) : il ne compte donc jamais comme un vrai sommeil et ne fait jamais passer la nuit.
+// Pas de lit s'il n'y a pas 2 blocs libres (ou s'il est sur une monture) : il ronfle quand même.
+var SOMMEIL = { joueurs: {}, lits: {}, J: null }
 var SOMMEIL_DIRS = [['north', 0, -1], ['south', 0, 1], ['west', -1, 0], ['east', 1, 0]]
 function sommeilInit() {
-  if (!SOMMEIL.J) SOMMEIL.J = { BlockPos: Java.loadClass('net.minecraft.core.BlockPos'), UUID: Java.loadClass('java.util.UUID') }
+  if (!SOMMEIL.J) SOMMEIL.J = { BlockPos: Java.loadClass('net.minecraft.core.BlockPos'), UUID: Java.loadClass('java.util.UUID'),
+    Son: Java.loadClass('net.minecraft.sounds.SoundEvent').createVariableRangeEvent(Java.loadClass('net.minecraft.resources.ResourceLocation').parse('aetheris_armures:ronflement')),
+    Source: Java.loadClass('net.minecraft.sounds.SoundSource'),
+    Effet: Java.loadClass('net.minecraft.core.registries.BuiltInRegistries').MOB_EFFECT.getHolder(Java.loadClass('net.minecraft.resources.ResourceLocation').parse('tunes_n_tomes:sleepy')) }
   return SOMMEIL.J
 }
 function sommeilLibre(niveau, x, y, z) {
@@ -4546,10 +4580,11 @@ function sommeilCmd(serveur, dim, cmd) { serveur.runCommandSilent('execute in ' 
 function sommeilDebut(joueur, duree) {
   var J = sommeilInit(), u = String(joueur.uuid), t = Number(joueur.server.getTickCount())
   var deja = SOMMEIL.joueurs[u]
-  if (deja) { deja.fin = Math.max(deja.fin, t + duree); return }
+  if (deja) return
+  duree = Math.min(95, Math.max(20, duree))
   var dim = String(joueur.level.dimension)
   var x = Math.floor(Number(joueur.x)), y = Math.floor(Number(joueur.y)), z = Math.floor(Number(joueur.z))
-  var info = { dim: dim, fin: t + duree, son: 0, cycle: t, pieds: null, tete: null }
+  var info = { dim: dim, debut: t, fin: t + duree, pieds: null, tete: null }
   if (!joueur.isPassenger() && sommeilLibre(joueur.level, x, y, z)) {
     // on essaie d'abord la direction du regard
     var yaw = ((Number(joueur.yRot) % 360) + 360) % 360
@@ -4566,9 +4601,16 @@ function sommeilDebut(joueur, duree) {
   }
   SOMMEIL.joueurs[u] = info
   if (info.tete) { try { joueur.startSleeping(new J.BlockPos(info.tete[0], info.tete[1], info.tete[2])) } catch (eS) { console.error('[sommeil] coucher impossible : ' + eS) } }
+  sommeilRonfler(joueur)
+  console.info('[sommeil] ' + joueur.username + ' s\'endort ' + (info.tete ? 'dans un lit en ' + info.pieds.join(' ') : 'sans lit (pas de place)') + ' pour ' + duree + ' ticks')
 }
-function sommeilFin(serveur, u, joueur) {
+function sommeilRonfler(joueur) {
+  var J = sommeilInit()
+  joueur.level.playSound(null, joueur.getX(), joueur.getY(), joueur.getZ(), J.Son, J.Source.PLAYERS, 1.0, 1.0)
+}
+function sommeilFin(serveur, u, joueur, raison) {
   var info = SOMMEIL.joueurs[u]; if (!info) return
+  console.info('[sommeil] réveil (' + raison + ')')
   delete SOMMEIL.joueurs[u]
   try { if (joueur && joueur.isSleeping()) joueur.stopSleepInBed(true, true) } catch (e) {}
   var p = info.tete || info.pieds || null
@@ -4581,7 +4623,7 @@ function sommeilFin(serveur, u, joueur) {
     }
   }
   var cible = joueur ? Number(joueur.x).toFixed(1) + ' ' + Number(joueur.y).toFixed(1) + ' ' + Number(joueur.z).toFixed(1) : (p ? p[0] + ' ' + p[1] + ' ' + p[2] : null)
-  if (cible) sommeilCmd(serveur, info.dim, 'execute positioned ' + cible + ' run stopsound @a[distance=..48] player aetheris_armures:ronflement')
+  if (cible) sommeilCmd(serveur, info.dim, 'execute positioned ' + cible + ' run stopsound @a[distance=..64] player aetheris_armures:ronflement')
 }
 ServerEvents.tick(perfWrap('classes_rp:sommeil', function (event) {
   var serveur = event.server, t = Number(serveur.getTickCount())
@@ -4589,18 +4631,13 @@ ServerEvents.tick(perfWrap('classes_rp:sommeil', function (event) {
     var info = SOMMEIL.joueurs[u], J = sommeilInit()
     var joueur = serveur.getPlayerList().getPlayer(J.UUID.fromString(u))
     try {
-      if (!joueur || !joueur.isAlive() || t >= info.fin || !artbAEffet(joueur, 'tunes_n_tomes:sleepy')) { sommeilFin(serveur, u, joueur); continue }
-      if (info.tete) {
-        var pos = new J.BlockPos(info.tete[0], info.tete[1], info.tete[2])
-        // relancé toutes les 4 s (le compteur de sommeil repart de zéro : la nuit n'est jamais passée par ce sommeil forcé)
-        if (joueur.isSleeping() && t - info.cycle >= 80) { info.cycle = t; joueur.stopSleepInBed(true, true) }
-        if (!joueur.isSleeping()) joueur.startSleeping(pos)
-      }
-      if (t >= info.son) {
-        info.son = t + SOMMEIL.SON_TICKS
-        sommeilCmd(serveur, info.dim, 'playsound aetheris_armures:ronflement player @a ' + Number(joueur.x).toFixed(1) + ' ' + Number(joueur.y).toFixed(1) + ' ' + Number(joueur.z).toFixed(1) + ' 1 1')
-      }
-    } catch (e) { console.error('[sommeil] ' + e); sommeilFin(serveur, u, joueur) }
+      if (!joueur) { sommeilFin(serveur, u, null, 'déconnecté'); continue }
+      if (!joueur.isAlive()) { sommeilFin(serveur, u, joueur, 'mort'); continue }
+      if (t >= info.fin) { sommeilFin(serveur, u, joueur, 'fin de l\'effet'); continue }
+      if (t > info.debut + 2 && (!J.Effet.isPresent() || !joueur.hasEffect(J.Effet.get()))) { sommeilFin(serveur, u, joueur, 'effet retiré'); continue }
+      // réveillé (coup, bouton « Quitter le lit ») : recouché aussitôt
+      if (info.tete && !joueur.isSleeping()) joueur.startSleeping(new J.BlockPos(info.tete[0], info.tete[1], info.tete[2]))
+    } catch (e) { console.error('[sommeil] ' + e); sommeilFin(serveur, u, joueur, 'erreur') }
   }
 }))
 // Le lit temporaire ne se casse pas (et ne lâche donc jamais de lit)
