@@ -1,5 +1,5 @@
 {
- "version": "2026-11-13T20:17:12.845Z",
+ "version": "2026-11-13T20:25:43.200Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -5047,8 +5047,8 @@
   },
   {
    "path": "kubejs/assets/mcrp/sounds.json",
-   "sha1": "5cafcd0d685d1666390708110174cacc7003a4c3",
-   "size": 5350
+   "sha1": "f7fb406cb739bdbf93c554ead62382e50920c239",
+   "size": 5562
   },
   {
    "path": "kubejs/assets/mcrp/sounds/npc/parole_feminine_1.ogg",
@@ -5214,6 +5214,11 @@
    "path": "kubejs/assets/mcrp/sounds/pnj/ulrich_grand_brule__poudre.ogg",
    "sha1": "204c0e2e3c438e608f2d870cf9ab53990303b0bc",
    "size": 219102
+  },
+  {
+   "path": "kubejs/assets/mcrp/sounds/ronflement.ogg",
+   "sha1": "0fcbf104d753cf8265a1b67c3f8d62678cc69cfe",
+   "size": 56503
   },
   {
    "path": "kubejs/assets/mcrp/sounds/the_world.ogg",
@@ -6467,8 +6472,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "a08af9faa43ed88a82ab0037a17982e753de978b",
-   "size": 320715
+   "sha1": "2dfd5c3cd670e21dda8d334297ece7fb04c5112e",
+   "size": 320704
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
