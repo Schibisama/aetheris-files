@@ -28,7 +28,7 @@ var RESTRICTIONS = [
   { regle: /^irons_spellbooks:twilight_gale$/, classes: ['Électro-Sorcier', 'Aéromancien'] },
   // ── Wind Spellbooks ──
   { regle: /^wind_spellbooks:(aeromancer_(helmet|chestplate|leggings|boots)|wind_staff)$/, classes: ['Aéromancien'] },
-  { regle: /^(tunes_n_tomes:(bard_(harp|helmet|chestplate|leggings|boots)|melodic_mastery_(helmet|chestplate|leggings|boots)|affinity_ring_melody)|aetheris_armures:virtuose_(helmet|chestplate|leggings|boots)|immersive_melodies:(bagpipe|didgeridoo|flute|lute|piano|triangle|trumpet|tiny_drum|vielle|ender_bass|handpan))$/, classes: ['Barde'] },   // + Virtuose (aetheris_armures) et instruments d'Immersive Melodies
+  { regle: /^(tunes_n_tomes:(bard_(harp|helmet|chestplate|leggings|boots)|melodic_mastery_(helmet|chestplate|leggings|boots)|affinity_ring_melody)|aetheris_armures:(virtuose_(helmet|chestplate|leggings|boots)|rapiere_cle_de_sol)|immersive_melodies:(bagpipe|didgeridoo|flute|lute|piano|triangle|trumpet|tiny_drum|vielle|ender_bass|handpan))$/, classes: ['Barde'] },   // + Virtuose (aetheris_armures) et instruments d'Immersive Melodies
   // ── Cursed School / Curse Spells ──
   { regle: /^cursed_school:margin_reaper$/, classes: ['Réprouvé'] },
   // ── Apprentice's Codex ──
@@ -296,6 +296,8 @@ ItemEvents.modifyTooltips(function (event) {
       }
     }
   }
+  // Rapière à clé de sol : note-repère de Dal Segno
+  event.add('aetheris_armures:rapiere_cle_de_sol', Text.lightPurple(langueAnglaise() ? 'On hit: 20% chance to leave a Segno note (Dal Segno marker)' : 'Au toucher : 20 % de chance de poser une note Segno (repère de Dal Segno)'))
   // Instruments d'Immersive Melodies : Représentation du Barde
   var en = langueAnglaise()
   for (var m = 0; m < ids.length; m++) {
