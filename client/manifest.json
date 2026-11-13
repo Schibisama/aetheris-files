@@ -1,5 +1,5 @@
 {
- "version": "2026-11-13T20:14:36.226Z",
+ "version": "2026-11-13T20:17:12.845Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6647,8 +6647,8 @@
   },
   {
    "path": "mods/aetheris_armures-neoforge-1.21.1-1.0.0.jar",
-   "sha1": "c0eca22bc47c4428339dfe748fe6b0c7a684cdee",
-   "size": 577575
+   "sha1": "9bdf5eb23486ec77497ebe650f2b4844bde78e8b",
+   "size": 577584
   },
   {
    "path": "mods/aetheris_balai-neoforge-1.21.1-1.4.0.jar",
