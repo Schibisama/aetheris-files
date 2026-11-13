@@ -1,5 +1,5 @@
 {
- "version": "2026-11-13T03:36:23.249Z",
+ "version": "2026-11-13T03:40:46.563Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6322,8 +6322,8 @@
   },
   {
    "path": "kubejs/client_scripts/classes_tooltips.js",
-   "sha1": "2c22529750d3292fc14839086e82f87a47ae704c",
-   "size": 111224
+   "sha1": "83a2f8cef77285ed46c640df8ec5fa820bdcfc75",
+   "size": 111416
   },
   {
    "path": "kubejs/client_scripts/main.js",
@@ -6647,8 +6647,8 @@
   },
   {
    "path": "mods/aetheris_armures-neoforge-1.21.1-1.0.0.jar",
-   "sha1": "5da9969a3b77885bd3bb58433c61872b6b2a74a7",
-   "size": 227097
+   "sha1": "9138b9e3838e5626faff9625f45d36e4727372e7",
+   "size": 224767
   },
   {
    "path": "mods/aetheris_balai-neoforge-1.21.1-1.4.0.jar",
