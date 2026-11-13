@@ -624,12 +624,10 @@ ServerEvents.tags('item', function (event) {
 // automatiquement (à la connexion puis toutes les 5 s). S'il n'y a plus de place dans Rings, l'anneau va dans l'inventaire
 // (ou au sol si l'inventaire est plein) : rien n'est jamais perdu.
 var ANNEAUX_J = null
+// Anneau qui se porte désormais dans Rings : anneaux d'artefacts du mod aetheris_armures et anneaux de classe ci-dessus
+function anneauVersRings(id) { return id.indexOf('aetheris_armures:anneau_') === 0 || ANNEAUX_DE_CLASSE.indexOf(id) !== -1 }
 function anneauxDeplacer(joueur) {
-  if (!ANNEAUX_J) {
-    var RL = Java.loadClass('net.minecraft.resources.ResourceLocation'), IT = Java.loadClass('net.minecraft.tags.ItemTags')
-    ANNEAUX_J = { CA: Java.loadClass('top.theillusivec4.curios.api.CuriosApi'), RINGS: IT.create(RL.parse('curios:rings')), RING: IT.create(RL.parse('curios:ring')),
-      VIDE: Java.loadClass('net.minecraft.world.item.ItemStack').EMPTY }
-  }
+  if (!ANNEAUX_J) ANNEAUX_J = { CA: Java.loadClass('top.theillusivec4.curios.api.CuriosApi'), VIDE: Java.loadClass('net.minecraft.world.item.ItemStack').EMPTY }
   var inv = ANNEAUX_J.CA.getCuriosInventory(joueur)
   if (!inv.isPresent()) return
   var src = inv.get().getStacksHandler('ring'), dst = inv.get().getStacksHandler('rings')
@@ -637,7 +635,7 @@ function anneauxDeplacer(joueur) {
   var s = src.get().getStacks(), d = dst.get().getStacks()
   for (var i = 0; i < s.getSlots(); i++) {
     var pile = s.getStackInSlot(i)
-    if (pile.isEmpty() || !pile.is(ANNEAUX_J.RINGS) || pile.is(ANNEAUX_J.RING)) continue
+    if (pile.isEmpty() || !anneauVersRings(String(pile.id))) continue
     var copie = pile.copy(), place = false
     for (var k = 0; k < d.getSlots() && !place; k++) if (d.getStackInSlot(k).isEmpty()) { d.setStackInSlot(k, copie); place = true }
     s.setStackInSlot(i, ANNEAUX_J.VIDE)

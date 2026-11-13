@@ -3507,10 +3507,10 @@ ServerEvents.tick(perfWrap('classes_rp:danse', function (event) {
         if (m) { dx = Number(m.getX()) - Number(v.getX()); dz = Number(m.getZ()) - Number(v.getZ()) }
         var n = Math.sqrt(dx * dx + dz * dz) || 1
         d.cote = -d.cote
-        v.setDeltaMovement(-dz / n * 0.09 * d.cote, 0.33, dx / n * 0.09 * d.cote)
-        v.hasImpulse = true
+        v.setMotionX(-dz / n * 0.09 * d.cote); v.setMotionY(0.33); v.setMotionZ(dx / n * 0.09 * d.cote)
+        try { v.hasImpulse = true } catch (eI) {}
       }
-      if (k === 6) v.level.sendParticles(DANSE.J.Note, v.getX(), v.getY() + Number(v.getBbHeight()) + 0.4, v.getZ(), 1, 0.3, 0.1, 0.3, Math.random())
+      if (k === 6) { try { v.level.sendParticles(DANSE.J.Note, v.getX(), v.getY() + Number(v.getBbHeight()) + 0.4, v.getZ(), 1, 0.3, 0.1, 0.3, Math.random()) } catch (eP) { if (!DANSE.errP) { DANSE.errP = true; console.error('[barde] notes de la gigue : ' + eP) } } }
     } catch (e) { delete DANSE.v[cle]; if (!DANSE.err) { DANSE.err = true; console.error('[barde] gigue des villageois : ' + e) } }
   }
 }))
