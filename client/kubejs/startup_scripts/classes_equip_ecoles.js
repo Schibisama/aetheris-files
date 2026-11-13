@@ -316,6 +316,13 @@ var EQ_BONUS_REMPLACES = {}
     EQ_BONUS_REMPLACES['hazennstuff:iron431_' + pieces[i]] = iron
     EQ_BONUS_REMPLACES['hazennstuff:ascended_iron431_' + pieces[i]] = iron
     // Clocksmith (Chronomancy) : 125 -> 225 mana, +10 % -> +15 % de puissance de chronomancie
+    // Melodic Mastery (Tunes & Tomes) : devenue le dernier palier du Barde (Bard -> Virtuose -> Melodic Mastery) ; elle reprend
+    // les valeurs de l'ancien Virtuose (200 mana, +20 % mélodie, +10 % puissance des sorts, défense 5/10/8/5, robustesse 3,
+    // recul 0,2) et garde son bonus de set.
+    EQ_BONUS_REMPLACES['tunes_n_tomes:melodic_mastery_' + pieces[i]] = [['irons_spellbooks:max_mana', 200, 'ADD_VALUE'],
+      ['tunes_n_tomes:melody_spell_power', 0.20, 'ADD_MULTIPLIED_BASE'], ['irons_spellbooks:spell_power', 0.10, 'ADD_MULTIPLIED_BASE'],
+      ['minecraft:generic.armor', [5, 10, 8, 5][i], 'ADD_VALUE'], ['minecraft:generic.armor_toughness', 3, 'ADD_VALUE'],
+      ['minecraft:generic.knockback_resistance', 0.2, 'ADD_VALUE']]
     EQ_BONUS_REMPLACES['chronomancy:clocksmith_' + pieces[i]] = [['irons_spellbooks:max_mana', 225, 'ADD_VALUE'], ['chronomancy:chronomancy_spell_power', 0.15, 'ADD_MULTIPLIED_BASE']]
     // Prismatic Knight (Crystal Chronicles) : +20 % de puissance des sorts retiré -> +15 % géomancie et +15 % nature (Druide)
     EQ_BONUS_REMPLACES['crystal_chronicles:prismatic_knight_' + pieces[i]] = [['irons_spellbooks:spell_power', null], ['gtbcs_geomancy_plus:geo_spell_power', 0.15, 'ADD_MULTIPLIED_BASE'], ['irons_spellbooks:nature_spell_power', 0.15, 'ADD_MULTIPLIED_BASE']]
