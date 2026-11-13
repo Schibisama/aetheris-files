@@ -591,7 +591,7 @@ ServerEvents.tags('item', function (event) {
       var id = String(pile.id)
       if (id.indexOf('minecraft:') === 0 || PARADE_EXCLUS.indexOf(id) !== -1) continue
       var ok = false
-      try { ok = SwordItemJ.isInstance(pile.item) } catch (e1) {}
+      try { ok = (pile.item instanceof SwordItemJ) } catch (e1) {}
       if (!ok) ok = PARADE_NOMS.test(id)
       if (!ok) continue
       event.add('swordblockingmechanics:can_perform_sword_blocking', id)

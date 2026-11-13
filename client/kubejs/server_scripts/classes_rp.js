@@ -2529,7 +2529,7 @@ try { IMAGIC_SUMMON = Java.loadClass('io.redspace.ironsspellbooks.entity.mobs.IM
   console.error('[classes_rp] interface IMagicSummon introuvable : ' + e)
 }
 function estInvocation(entite) {
-  try { return !!(IMAGIC_SUMMON && IMAGIC_SUMMON.isInstance(entite)) } catch (e) {}
+  try { return !!(IMAGIC_SUMMON && (entite instanceof IMAGIC_SUMMON)) } catch (e) {}
   return false
 }
 
@@ -3449,9 +3449,40 @@ function bardeJoue(joueur) {
   var mains = [joueur.mainHandItem, joueur.offHandItem]
   for (var i = 0; i < mains.length; i++) {
     var s = mains[i]
-    if (s && !s.isEmpty() && BARDE.Instr.isInstance(s.item) && s.item.isPlaying(s)) return true
+    if (s && !s.isEmpty() && (s.item instanceof BARDE.Instr) && s.item.isPlaying(s)) return true
   }
   return false
+}
+// Villageois (et marchands ambulants) dans le rayon, compté par type d'entité (méthode éprouvée de boss_zones.js).
+function bardeVillageois(joueur) {
+  var n = 0
+  var liste = joueur.level.getEntitiesWithin(joueur.boundingBox.inflate(BARDE_PUBLIC_RAYON))
+  for (var i = 0; i < liste.size(); i++) {
+    var t = String(liste.get(i).type)
+    if (t === 'minecraft:villager' || t === 'minecraft:wandering_trader') n++
+  }
+  return n
+}
+// Danse : tout joueur (quelle que soit sa classe) qui joue d'un instrument fait danser une gigue aux villageois
+// et marchands ambulants à 12 blocs : effet aetheris_armures:danse (immobiles, animation dans le mod aetheris_armures),
+// renouvelé chaque seconde tant que la musique continue ; ils se tournent vers le musicien. Les villageois endormis ne dansent pas.
+function bardeFaireDanser(joueur) {
+  var liste = joueur.level.getEntitiesWithin(joueur.boundingBox.inflate(BARDE_PUBLIC_RAYON))
+  for (var i = 0; i < liste.size(); i++) {
+    var v = liste.get(i), t = String(v.type)
+    if (t !== 'minecraft:villager' && t !== 'minecraft:wandering_trader') continue
+    try { if (v.isSleeping()) continue } catch (eS) {}
+    v.potionEffects.add('aetheris_armures:danse', 50, 0, true, true)
+    try { v.getLookControl().setLookAt(joueur, 30, 30) } catch (eL) {}
+  }
+}
+// Journal de diagnostic : au plus une ligne par joueur et par minute.
+var BARDE_JOURNAL = {}
+function bardeJournal(joueur, texte) {
+  var u = String(joueur.uuid), t = Date.now()
+  if (BARDE_JOURNAL[u] && t - BARDE_JOURNAL[u] < 60000) return
+  BARDE_JOURNAL[u] = t
+  console.info('[barde] ' + joueur.username + ' : ' + texte)
 }
 function bardeAuditeurs(joueur, rayon) {
   var res = []
@@ -3483,15 +3514,27 @@ PlayerEvents.tick(function (event) {
         }
       }
     }
+    // Danse des villageois (tout musicien)
+    var joue = bardeJoue(joueur)
+    if (joue) { try { bardeFaireDanser(joueur) } catch (eDanse) { bardeJournal(joueur, 'danse des villageois impossible : ' + eDanse) } }
     // Représentation
     var uuid = String(joueur.uuid)
-    if (!barde || !bardeJoue(joueur)) { BARDE.jeu[uuid] = 0; return }
+    if (!barde || !joue) {
+      if (barde && BARDE.jeu[uuid] > 0) bardeJournal(joueur, 'arrête de jouer après ' + BARDE.jeu[uuid] + ' s (il en faut ' + BARDE_SEANCE_S + ')')
+      else if (barde) {
+        var mh = joueur.mainHandItem, oh = joueur.offHandItem
+        if ((mh && (mh.item instanceof BARDE.Instr)) || (oh && (oh.item instanceof BARDE.Instr))) bardeJournal(joueur, 'tient un instrument, mais le serveur ne le voit pas en train de jouer')
+      }
+      BARDE.jeu[uuid] = 0
+      return
+    }
     BARDE.jeu[uuid] = (BARDE.jeu[uuid] || 0) + 1
     joueur.server.runCommandSilent('execute in ' + joueur.level.dimension + ' run particle minecraft:note ' + Number(joueur.x).toFixed(2) + ' ' + (Number(joueur.y) + 2.2).toFixed(2) + ' ' + Number(joueur.z).toFixed(2) + ' 0.5 0.3 0.5 1 2')
     if (BARDE.jeu[uuid] < BARDE_SEANCE_S) return
     BARDE.jeu[uuid] = 0
     var auditeurs = bardeAuditeurs(joueur, 16)
-    var villageois = Number(joueur.level.getEntitiesOfClass(BARDE.Villageois, joueur.boundingBox.inflate(BARDE_PUBLIC_RAYON)).size())
+    var villageois = bardeVillageois(joueur)
+    console.info('[barde] ' + joueur.username + ' : séance terminée, ' + villageois + ' villageois, ' + auditeurs.length + ' auditeur(s)')
     if (!villageois && !auditeurs.length) {
       joueur.setStatusMessage(Text.gray('Représentation : personne ne t\'écoute…'))
       return

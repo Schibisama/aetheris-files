@@ -299,6 +299,94 @@ EntityEvents.death(function (event) {
   } catch (e) { console.error('[equipes] mort : ' + e) }
 })
 
+// ───────── Groupes temporaires ─────────
+// /groupe creer, /groupe inviter <joueur>, /groupe rejoindre, /groupe quitter, /groupe info.
+// Le temps d'une sortie : un membre ne peut pas blesser les autres membres du groupe (sorts, invocations, armes, flèches).
+// Le groupe n'est pas sauvegardé : il disparaît
+// au redémarrage du serveur, et un joueur qui se déconnecte le quitte. Indépendant des équipes permanentes.
+var GR = { MAX: 8, INVIT_MS: 120000 }
+var GR_DE = {}      // uuid joueur -> id du groupe
+var GR_LISTE = {}   // id -> { chef: uuid, membres: [uuid], noms: {uuid: nom} }
+var GR_INVIT = {}   // uuid invité -> { id, fin }
+var GR_SUIVANT = 1
+function grGroupeDe(joueur) { var id = GR_DE[String(joueur.uuid)]; return (id && GR_LISTE[id]) ? id : null }
+function grMemeGroupe(a, b) { var g = grGroupeDe(a); return g !== null && g === grGroupeDe(b) }
+function grProtege(cible, att, src) {
+  if (!cible || !att || !cible.isPlayer()) return false
+  if (String(att.uuid) === String(cible.uuid) || !grMemeGroupe(att, cible)) return false
+  try { if (typeof duEstDuelliste === 'function' && duEstDuelliste(att.username) && duAdversaire(att.username) === String(cible.username)) return false } catch (eD) {}
+  return true
+}
+function grDireGroupe(serveur, id, fr, en, couleur) {
+  var g = GR_LISTE[id]; if (!g) return
+  for (var i = 0; i < g.membres.length; i++) {
+    var j = serveur.getPlayerList().getPlayer(EQ_UUID.fromString(g.membres[i]))
+    if (j) eqDire(j, fr, en, couleur)
+  }
+}
+function grRetirer(serveur, uuid, raisonFr, raisonEn) {
+  var id = GR_DE[uuid]; delete GR_DE[uuid]
+  var g = id ? GR_LISTE[id] : null
+  if (!g) return
+  var nom = g.noms[uuid] || '?'
+  g.membres = g.membres.filter(function (u) { return u !== uuid })
+  if (g.membres.length === 0) { delete GR_LISTE[id]; return }
+  if (g.chef === uuid) g.chef = g.membres[0]
+  grDireGroupe(serveur, id, nom + ' ' + raisonFr + '.', nom + ' ' + raisonEn + '.', 'gray')
+  if (g.membres.length === 1) {
+    grDireGroupe(serveur, id, 'Le groupe est dissous (plus qu\'un membre).', 'The group is disbanded (only one member left).', 'gray')
+    delete GR_DE[g.membres[0]]; delete GR_LISTE[id]
+  }
+}
+function grCmdCreer(ctx) {
+  var p = ctx.source.player; if (!p) return 0
+  if (grGroupeDe(p)) return eqRepondre(ctx, 'Tu es déjà dans un groupe. Quitte-le avec /groupe quitter.', 'You are already in a group. Leave it with /groupe quitter.')
+  var id = 'g' + (GR_SUIVANT++), u = eqUuid(p)
+  GR_LISTE[id] = { chef: u, membres: [u], noms: {} }; GR_LISTE[id].noms[u] = String(p.username)
+  GR_DE[u] = id
+  return eqRepondre(ctx, 'Groupe créé. Invite tes alliés avec /groupe inviter <joueur> : vous ne pourrez plus vous blesser entre vous (sorts, armes, flèches).', 'Group created. Invite your allies with /groupe inviter <player>: you will no longer be able to hurt each other (spells, weapons, arrows).')
+}
+function grCmdInviter(ctx, cible) {
+  var p = ctx.source.player; if (!p) return 0
+  var serveur = ctx.source.server, id = grGroupeDe(p)
+  if (!id) { grCmdCreer(ctx); id = grGroupeDe(p); if (!id) return 0 }
+  var g = GR_LISTE[id]
+  if (String(cible.uuid) === eqUuid(p)) return eqRepondre(ctx, 'Tu ne peux pas t\'inviter toi-même.', 'You cannot invite yourself.')
+  if (g.membres.length >= GR.MAX) return eqRepondre(ctx, 'Le groupe est complet (' + GR.MAX + ' membres).', 'The group is full (' + GR.MAX + ' members).')
+  if (grGroupeDe(cible)) return eqRepondre(ctx, String(cible.username) + ' est déjà dans un groupe.', String(cible.username) + ' is already in a group.')
+  GR_INVIT[String(cible.uuid)] = { id: id, fin: Date.now() + GR.INVIT_MS }
+  eqDire(cible, String(p.username) + ' t\'invite dans son groupe. Tape /groupe rejoindre dans les 2 minutes pour accepter.', String(p.username) + ' invites you to their group. Type /groupe rejoindre within 2 minutes to accept.', 'aqua')
+  return eqRepondre(ctx, 'Invitation envoyée à ' + String(cible.username) + '.', 'Invitation sent to ' + String(cible.username) + '.')
+}
+function grCmdRejoindre(ctx) {
+  var p = ctx.source.player; if (!p) return 0
+  var serveur = ctx.source.server, u = eqUuid(p), inv = GR_INVIT[u]
+  delete GR_INVIT[u]
+  if (!inv || inv.fin < Date.now() || !GR_LISTE[inv.id]) return eqRepondre(ctx, 'Tu n\'as aucune invitation de groupe en attente.', 'You have no pending group invitation.')
+  if (grGroupeDe(p)) return eqRepondre(ctx, 'Tu es déjà dans un groupe. Quitte-le avec /groupe quitter.', 'You are already in a group. Leave it with /groupe quitter.')
+  var g = GR_LISTE[inv.id]
+  if (g.membres.length >= GR.MAX) return eqRepondre(ctx, 'Ce groupe est complet.', 'This group is full.')
+  g.membres.push(u); g.noms[u] = String(p.username); GR_DE[u] = inv.id
+  grDireGroupe(serveur, inv.id, String(p.username) + ' rejoint le groupe.', String(p.username) + ' joins the group.', 'aqua')
+  return 1
+}
+function grCmdQuitter(ctx) {
+  var p = ctx.source.player; if (!p) return 0
+  if (!grGroupeDe(p)) return eqRepondre(ctx, 'Tu n\'es dans aucun groupe.', 'You are not in a group.')
+  grRetirer(ctx.source.server, eqUuid(p), 'quitte le groupe', 'leaves the group')
+  return eqRepondre(ctx, 'Tu as quitté le groupe.', 'You left the group.')
+}
+function grCmdInfo(ctx) {
+  var p = ctx.source.player; if (!p) return 0
+  var id = grGroupeDe(p)
+  if (!id) return eqRepondre(ctx, 'Tu n\'es dans aucun groupe. Crée-en un avec /groupe creer.', 'You are not in a group. Create one with /groupe creer.')
+  var g = GR_LISTE[id], noms = g.membres.map(function (u) { return (g.noms[u] || '?') + (u === g.chef ? ' (chef)' : '') })
+  return eqRepondre(ctx, 'Ton groupe : ' + noms.join(', ') + '.', 'Your group: ' + noms.join(', ') + '.')
+}
+PlayerEvents.loggedOut(function (event) {
+  try { var u = String(event.player.uuid); delete GR_INVIT[u]; if (GR_DE[u]) grRetirer(event.server, u, 's\'est déconnecté et quitte le groupe', 'logged out and left the group') } catch (e) {}
+})
+
 // ───────── Pas de dégâts entre coéquipiers ─────────
 // Un membre d'une équipe ne peut pas blesser un autre membre de la même équipe (coups, flèches, sorts, invocations, familiers),
 // sauf pendant un duel du Colisée qui les oppose (colisee_duel.js).
@@ -321,6 +409,7 @@ try {
       if (!cible || !cible.isPlayer()) return
       var att = eqAuteurJoueur(event.getSource())
       if (!att || String(att.uuid) === String(cible.uuid)) return
+      if (grProtege(cible, att, event.getSource())) { event.setCanceled(true); return }
       var serveur = cible.server
       var slug = eqEquipeDe(serveur, cible)
       if (!slug || eqEquipeDe(serveur, att) !== slug) return
@@ -336,6 +425,7 @@ function eqCoequipiers(cible, src) {
   if (!cible || !cible.isPlayer()) return null
   var att = eqAuteurJoueur(src)
   if (!att || String(att.uuid) === String(cible.uuid)) return null
+  if (grProtege(cible, att, src)) return att
   var serveur = cible.server
   var slug = eqEquipeDe(serveur, cible)
   if (!slug || eqEquipeDe(serveur, att) !== slug) return null
@@ -805,6 +895,12 @@ ServerEvents.commandRegistry(function (event) {
     .then(C.literal('liste').executes(function (ctx) { return eqCmdListe(ctx) }))
     .then(C.literal('dissoudre').then(C.argument('nom', A.GREEDY_STRING.create(event)).executes(function (ctx) { return eqCmdDissoudre(ctx, A.GREEDY_STRING.getResult(ctx, 'nom')) })))
     .then(C.literal('retirer').then(C.argument('joueur', A.PLAYER.create(event)).executes(function (ctx) { return eqCmdRetirer(ctx, A.PLAYER.getResult(ctx, 'joueur')) }))))
+  event.register(C.literal('groupe')
+    .then(C.literal('creer').executes(function (ctx) { return grCmdCreer(ctx) }))
+    .then(C.literal('inviter').then(C.argument('joueur', A.PLAYER.create(event)).executes(function (ctx) { return grCmdInviter(ctx, A.PLAYER.getResult(ctx, 'joueur')) })))
+    .then(C.literal('rejoindre').executes(function (ctx) { return grCmdRejoindre(ctx) }))
+    .then(C.literal('quitter').executes(function (ctx) { return grCmdQuitter(ctx) }))
+    .then(C.literal('info').executes(function (ctx) { return grCmdInfo(ctx) })))
   event.register(C.literal('classement').executes(function (ctx) { return eqCmdClassement(ctx, 'total') })
     .then(C.literal('trimestre').executes(function (ctx) { return eqCmdClassement(ctx, 'trimestre') }))
     .then(C.literal('epreuve').executes(function (ctx) { return eqCmdClassement(ctx, 'epreuve', null) })
