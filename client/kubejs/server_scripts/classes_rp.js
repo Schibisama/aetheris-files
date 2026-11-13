@@ -4559,7 +4559,7 @@ try {
 
 // ───────── Note soporifique : vrai sommeil ─────────
 // Un joueur qui reçoit l'effet Somnolent (tunes_n_tomes:sleepy, Note soporifique du Barde) est couché de force dans un lit
-// qui apparaît sous lui le temps de l'effet, et ronfle (son aetheris_armures:ronflement, mod aetheris_armures, entendu à 3 blocs). À la fin de
+// qui apparaît sous lui le temps de l'effet, et ronfle (son mcrp:ronflement dans kubejs/assets/mcrp, comme « The World », entendu à 3 blocs). À la fin de
 // l'effet (ou à la mort / déconnexion), il se réveille, le lit disparaît sans rien lâcher et le ronflement s'arrête net.
 // Il ne peut pas quitter le lit avant la fin (ni être réveillé par un coup). Le sommeil forcé dure au plus 95 ticks
 // (l'effet en dure 100) : il ne compte donc jamais comme un vrai sommeil et ne fait jamais passer la nuit.
@@ -4568,7 +4568,7 @@ var SOMMEIL = { joueurs: {}, lits: {}, J: null }
 var SOMMEIL_DIRS = [['north', 0, -1], ['south', 0, 1], ['west', -1, 0], ['east', 1, 0]]
 function sommeilInit() {
   if (!SOMMEIL.J) SOMMEIL.J = { BlockPos: Java.loadClass('net.minecraft.core.BlockPos'), UUID: Java.loadClass('java.util.UUID'),
-    Son: Java.loadClass('net.minecraft.sounds.SoundEvent').createFixedRangeEvent(Java.loadClass('net.minecraft.resources.ResourceLocation').parse('aetheris_armures:ronflement'), 3.0),
+    Son: Java.loadClass('net.minecraft.sounds.SoundEvent').createFixedRangeEvent(Java.loadClass('net.minecraft.resources.ResourceLocation').parse('mcrp:ronflement'), 3.0),
     Source: Java.loadClass('net.minecraft.sounds.SoundSource'),
     Effet: Java.loadClass('net.minecraft.core.registries.BuiltInRegistries').MOB_EFFECT.getHolder(Java.loadClass('net.minecraft.resources.ResourceLocation').parse('tunes_n_tomes:sleepy')) }
   return SOMMEIL.J
@@ -4623,7 +4623,7 @@ function sommeilFin(serveur, u, joueur, raison) {
     }
   }
   var cible = joueur ? Number(joueur.x).toFixed(1) + ' ' + Number(joueur.y).toFixed(1) + ' ' + Number(joueur.z).toFixed(1) : (p ? p[0] + ' ' + p[1] + ' ' + p[2] : null)
-  if (cible) sommeilCmd(serveur, info.dim, 'execute positioned ' + cible + ' run stopsound @a[distance=..8] player aetheris_armures:ronflement')
+  if (cible) sommeilCmd(serveur, info.dim, 'execute positioned ' + cible + ' run stopsound @a[distance=..8] player mcrp:ronflement')
 }
 ServerEvents.tick(perfWrap('classes_rp:sommeil', function (event) {
   var serveur = event.server, t = Number(serveur.getTickCount())

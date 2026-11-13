@@ -274,5 +274,15 @@
         "stream": true
       }
     ]
+  },
+  "ronflement": {
+    "subtitle": "subtitles.aetheris_armures.ronflement",
+    "sounds": [
+      {
+        "name": "mcrp:ronflement",
+        "stream": false,
+        "attenuation_distance": 3
+      }
+    ]
   }
 }
