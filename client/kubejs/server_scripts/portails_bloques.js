@@ -50,7 +50,7 @@ function pbPortalSpawn(e) {
   try { e.setCanceled(true) } catch (c) { console.error('[portails_bloques] annulation impossible : ' + c); return }
   try {
     pos = e.getPos()
-    var joueurs = e.getLevel().players()
+    var joueurs = e.getLevel().players
     for (var i = 0; i < joueurs.size(); i++) {
       var j = joueurs.get(i)
       if (pbOp(j) && j.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < PB_RAYON_OP * PB_RAYON_OP) {

@@ -3455,7 +3455,7 @@ function bardeJoue(joueur) {
 }
 // Villageois (et marchands ambulants) dans le rayon, compté par type d'entité (méthode éprouvée de boss_zones.js).
 function bardeVillageois(joueur) {
-  var n = 0
+  var n = 0, dern = null
   var liste = joueur.level.getEntitiesWithin(joueur.boundingBox.inflate(BARDE_PUBLIC_RAYON))
   for (var i = 0; i < liste.size(); i++) {
     var t = String(liste.get(i).type)
@@ -3467,6 +3467,7 @@ function bardeVillageois(joueur) {
 // et marchands ambulants à 12 blocs : effet aetheris_armures:danse (immobiles, animation dans le mod aetheris_armures),
 // renouvelé chaque seconde tant que la musique continue ; ils se tournent vers le musicien. Les villageois endormis ne dansent pas.
 function bardeFaireDanser(joueur) {
+  var n = 0
   var liste = joueur.level.getEntitiesWithin(joueur.boundingBox.inflate(BARDE_PUBLIC_RAYON))
   for (var i = 0; i < liste.size(); i++) {
     var v = liste.get(i), t = String(v.type)
@@ -3474,8 +3475,15 @@ function bardeFaireDanser(joueur) {
     try { if (v.isSleeping()) continue } catch (eS) {}
     v.potionEffects.add('aetheris_armures:danse', 50, 0, true, true)
     try { v.getLookControl().setLookAt(joueur, 30, 30) } catch (eL) {}
+    n++; dern = v
+  }
+  var u = String(joueur.uuid), t = Date.now()
+  if (!BARDE_JOURNAL_DANSE[u] || t - BARDE_JOURNAL_DANSE[u] > 60000) {
+    BARDE_JOURNAL_DANSE[u] = t
+    console.info('[barde] ' + joueur.username + ' fait danser ' + n + ' villageois' + (dern ? ' ; effets du dernier : ' + dern.getActiveEffects() : ''))
   }
 }
+var BARDE_JOURNAL_DANSE = {}
 // Journal de diagnostic : au plus une ligne par joueur et par minute.
 var BARDE_JOURNAL = {}
 function bardeJournal(joueur, texte) {
@@ -3544,7 +3552,7 @@ PlayerEvents.tick(function (event) {
       auditeurs[a].setStatusMessage(Text.lightPurple('♪ ' + joueur.username + ' joue pour toi : Régénération'))
     }
     var pd = joueur.persistentData
-    var jour = Math.floor(Number(joueur.level.dayTime) / 24000)
+    var jour = Math.floor(Number(joueur.level.getDayTime()) / 24000)
     if (Number(pd.getLong('barde_jour')) !== jour) { pd.putLong('barde_jour', jour); pd.putInt('barde_seances', 0) }
     if (Number(pd.getInt('barde_seances')) >= BARDE_SEANCES_JOUR) {
       joueur.setStatusMessage(Text.gray('Représentation : ton public t\'a déjà assez payé aujourd\'hui.'))
@@ -3759,7 +3767,7 @@ function artbMouille(ent) {
   return ent.isPlayer() && artbSousLEau(ent)
 }
 function artbJoueursProches(joueur, rayon, avecSoi) {
-  var res = [], liste = joueur.level.players()
+  var res = [], liste = joueur.level.players
   for (var i = 0; i < liste.size(); i++) {
     var p = liste.get(i)
     if (!avecSoi && String(p.uuid) === String(joueur.uuid)) continue

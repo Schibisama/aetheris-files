@@ -487,7 +487,7 @@ ServerEvents.tick(perfWrap('mobs_distance:cap', function (event) {
     try {
       var niveau = niveaux.next(), n = 0, np = 0, it = niveau.getAllEntities().iterator()
       while (it.hasNext()) { var en = it.next(); try { var cat = String(en.getType().getCategory().getName()); if (cat === 'monster') n++; else if (SPAWN_PASSIFS.indexOf(cat) >= 0) np++ } catch (e0) {} }
-      SPAWN_LEGER.compte[String(niveau.dimension)] = { n: n, np: np, j: niveau.players().size() }
+      SPAWN_LEGER.compte[String(niveau.dimension)] = { n: n, np: np, j: niveau.players.size() }
     } catch (e) {}
   }
 }))
