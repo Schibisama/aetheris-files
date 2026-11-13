@@ -303,17 +303,29 @@ ItemEvents.modifyTooltips(function (event) {
   event.add('aetheris_armures:rapiere_cle_de_sol', Text.lightPurple(langueAnglaise() ? 'On hit: 20% chance to leave a Segno note (Dal Segno marker)' : 'Au toucher : 20 % de chance de poser une note Segno (repère de Dal Segno)'))
   // Artefacts du Barde (effets actifs seulement portés par un Barde)
   var ARTB_INFOS = {
-    anneau_diapason: ['Melody spell damage: 25% chance to Deafen for 3 s', 'Dégâts de sort mélodique : 25 % de chance d\'assourdir 3 s'],
-    anneau_echo: ['Melody spells: 15% chance to trigger no cooldown', 'Sorts mélodiques : 15 % de chance de ne pas avoir de recharge'],
-    anneau_cadence: ['Casting a melody spell grants Haste II for 5 s', 'Lancer un sort mélodique donne Célérité II pendant 5 s'],
-    metronome: ['Every 4th melody spell costs no mana', 'Un sort mélodique sur 4 ne coûte pas de mana'],
-    sourdine: ['Immune to Deafened and Sleepy', 'Immunité à Assourdi et Somnolent'],
-    boite_a_musique: ['Every 4 s: you and players within 8 blocks regain 6 mana', 'Toutes les 4 s : toi et les joueurs à 8 blocs regagnez 6 mana'],
-    derniere_note: ['Survives a fatal blow with 3 hearts, repels and deafens nearby enemies (3 min cooldown)', 'Survit à un coup fatal avec 3 cœurs, repousse et assourdit les ennemis proches (recharge 3 min)'],
-    bandouliere: ['Melody spells cost 10% less mana per other player within 12 blocks (max 30%)', 'Sorts mélodiques : -10 % de mana par autre joueur à 12 blocs (max -30 %)'],
-    medaillon_harmonie: ['Your healing spells give the target Absorption I for 10 s', 'Tes sorts de soin donnent Absorption I pendant 10 s à la cible']
+    anneau_diapason: [['Resonance: a melody spell marks its target for 4 s', 'Hitting it again makes it vibrate: 40% of the damage hits enemies within 4 blocks'],
+      ['Résonance : un sort mélodique marque sa cible 4 s', 'La retoucher la fait vibrer : 40 % des dégâts frappent les ennemis à 4 blocs']],
+    anneau_echo: [['Echo: 1.5 s after a melody spell hits, an echo strikes again for 35% of the damage'],
+      ['Écho : 1,5 s après un sort mélodique qui touche, un écho refrappe pour 35 % des dégâts']],
+    anneau_cadence: [['Four-beat bar: alternate weapon hits and melody spells (under 3 s apart)', 'On the 4th beat, your next hit or spell releases a wave: knockback + Deafened'],
+      ['Mesure à quatre temps : alterne coups d\'arme et sorts mélodiques (moins de 3 s d\'écart)', 'Au 4e temps, le coup ou sort suivant libère une onde : recul + Assourdi']],
+    metronome: [['Tempo: a melody spell cast 1.5 to 4 s after the previous one is on beat (-25% mana)', 'The 4th spell in a row on beat is free and has no cooldown'],
+      ['Tempo : un sort mélodique lancé 1,5 à 4 s après le précédent est dans le tempo (-25 % de mana)', 'Le 4e sort de suite dans le tempo est gratuit et sans recharge']],
+    sourdine: [['Damper: immune to Deafened and Sleepy', '25% of spell damage taken is muffled and turned into mana'],
+      ['Étouffoir : immunité à Assourdi et Somnolent', '25 % des dégâts de sorts subis sont étouffés et rendus en mana']],
+    boite_a_musique: [['Ritornello: stand still 3 s and the box starts playing', 'Every second: you and players within 6 blocks regain 4 mana and get Regeneration'],
+      ['Ritournelle : reste immobile 3 s et la boîte se met à jouer', 'Chaque seconde : toi et les joueurs à 6 blocs regagnez 4 mana et recevez Régénération']],
+    derniere_note: [['Swan song: a fatal blow leaves you at 1 HP with Resistance V', 'The final note deals 8 × melody power to enemies within 6 blocks (5 min cooldown)'],
+      ['Chant du cygne : un coup fatal te laisse à 1 PV avec Résistance V', 'La note finale inflige 8 × puissance mélodique aux ennemis à 6 blocs (recharge 5 min)']],
+    bandouliere: [['Tour: melody spells cost 10% less mana per other player within 12 blocks (max 30%)', 'Each melody spell gives your audience Cheered for 5 s'],
+      ['Tournée : -10 % de mana par autre joueur à 12 blocs (max -30 %)', 'Chaque sort mélodique donne Encouragé 5 s à ton public']],
+    medaillon_harmonie: [['Chord: healing another player links you for 10 s', 'Damage taken by either of you is split half and half'],
+      ['Accord : soigner un autre joueur vous lie 10 s', 'Les dégâts subis par l\'un sont partagés moitié-moitié avec l\'autre']]
   }
-  for (var ab in ARTB_INFOS) event.add('aetheris_armures:' + ab, Text.lightPurple(ARTB_INFOS[ab][langueAnglaise() ? 0 : 1]))
+  for (var ab in ARTB_INFOS) {
+    var lignes = ARTB_INFOS[ab][langueAnglaise() ? 0 : 1]
+    for (var li = 0; li < lignes.length; li++) event.add('aetheris_armures:' + ab, Text.lightPurple(lignes[li]))
+  }
   // Instruments d'Immersive Melodies : Représentation du Barde
   var en = langueAnglaise()
   for (var m = 0; m < ids.length; m++) {
