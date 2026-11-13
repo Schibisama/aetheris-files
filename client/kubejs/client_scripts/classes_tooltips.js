@@ -296,6 +296,9 @@ ItemEvents.modifyTooltips(function (event) {
       }
     }
   }
+  // Harpe du barde : arc à notes
+  event.add('tunes_n_tomes:bard_harp', Text.lightPurple(langueAnglaise() ? 'Hold right-click to draw, release to shoot a musical note' : 'Maintenir clic droit pour bander, relâcher pour tirer une note de musique'))
+  event.add('tunes_n_tomes:bard_harp', Text.lightPurple(langueAnglaise() ? 'Imbued spell: use the imbued weapon key' : 'Sort imprégné : touche des armes imprégnées'))
   // Rapière à clé de sol : note-repère de Dal Segno
   event.add('aetheris_armures:rapiere_cle_de_sol', Text.lightPurple(langueAnglaise() ? 'On hit: 20% chance to leave a Segno note (Dal Segno marker)' : 'Au toucher : 20 % de chance de poser une note Segno (repère de Dal Segno)'))
   // Instruments d'Immersive Melodies : Représentation du Barde
