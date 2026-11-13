@@ -613,3 +613,15 @@ try {
 } catch (e) {
   console.error('[classes_equip_ecoles] Impossible d\'activer : ' + e)
 }
+
+// Armure de Maîtrise mélodique (Tunes 'n Tomes) : même durabilité que les grosses armures de classe
+// (multiplicateur 53, comme l'armure du Virtuose dont elle est l'amélioration, au lieu de 37 dans le mod).
+// Les pièces déjà fabriquées en profitent aussi. Startup script : redémarrage nécessaire.
+ItemEvents.modification(function (event) {
+  var durabilites = { helmet: 11 * 53, chestplate: 16 * 53, leggings: 15 * 53, boots: 13 * 53 }
+  Object.keys(durabilites).forEach(function (piece) {
+    try {
+      event.modify('tunes_n_tomes:melodic_mastery_' + piece, function (item) { item.setMaxDamage(durabilites[piece]) })
+    } catch (e) { console.error('[classes_equip_ecoles] durabilité maîtrise mélodique ' + piece + ' : ' + e) }
+  })
+})

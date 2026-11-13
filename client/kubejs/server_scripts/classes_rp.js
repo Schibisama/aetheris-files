@@ -3467,19 +3467,19 @@ function bardeVillageois(joueur) {
 // et marchands ambulants à 12 blocs : effet aetheris_armures:danse (immobiles, animation dans le mod aetheris_armures),
 // renouvelé chaque seconde tant que la musique continue ; ils se tournent vers le musicien. Les villageois endormis ne dansent pas.
 function bardeFaireDanser(joueur) {
-  var n = 0
+  var n = 0, dern = null
   var liste = joueur.level.getEntitiesWithin(joueur.boundingBox.inflate(BARDE_PUBLIC_RAYON))
   for (var i = 0; i < liste.size(); i++) {
     var v = liste.get(i), t = String(v.type)
     if (t !== 'minecraft:villager' && t !== 'minecraft:wandering_trader') continue
     try { if (v.isSleeping()) continue } catch (eS) {}
-    v.potionEffects.add('aetheris_armures:danse', 50, 0, true, true)
+    ajouterEffet(v, 'aetheris_armures:danse', 50, 0, true, true)
     try { v.getLookControl().setLookAt(joueur, 30, 30) } catch (eL) {}
     n++; dern = v
   }
-  var u = String(joueur.uuid), t = Date.now()
-  if (!BARDE_JOURNAL_DANSE[u] || t - BARDE_JOURNAL_DANSE[u] > 60000) {
-    BARDE_JOURNAL_DANSE[u] = t
+  var u = String(joueur.uuid), maintenant = Date.now()
+  if (!BARDE_JOURNAL_DANSE[u] || maintenant - BARDE_JOURNAL_DANSE[u] > 60000) {
+    BARDE_JOURNAL_DANSE[u] = maintenant
     console.info('[barde] ' + joueur.username + ' fait danser ' + n + ' villageois' + (dern ? ' ; effets du dernier : ' + dern.getActiveEffects() : ''))
   }
 }
@@ -3548,7 +3548,7 @@ PlayerEvents.tick(function (event) {
       return
     }
     for (var a = 0; a < auditeurs.length; a++) {
-      auditeurs[a].potionEffects.add('minecraft:regeneration', 25 * 20, 0, false, true)
+      ajouterEffet(auditeurs[a], 'minecraft:regeneration', 25 * 20, 0, false, true)
       auditeurs[a].setStatusMessage(Text.lightPurple('♪ ' + joueur.username + ' joue pour toi : Régénération'))
     }
     var pd = joueur.persistentData
@@ -3685,11 +3685,17 @@ var ARTB_ECOLES = {
   'Hémomancien': ['irons_spellbooks:blood'],
   'Paladin': ['irons_spellbooks:holy']
 }
-// Sorts hydro « à eau » : la cible touchée reçoit l'effet Mouillé (somakespells:wet), quel que soit le lanceur.
+// Sorts hydro « à eau » : la cible touchée reçoit l'effet Trempé (aetheris_armures:trempe), quel que soit le lanceur.
 var ARTB_SORTS_EAU = ['monsterspellbooks:bubble_spray', 'monsterspellbooks:effervescence_bubble', 'monsterspellbooks:razor_typhoon', 'monsterspellbooks:riptide_dash',
   'monsterspellbooks:water_trident', 'somakespells:submerge', 'somakespells:tidal_grasp', 'somakespells:tsunami', 'somakespells:tidal_dash', 'somakespells:thunder_cloud',
   'somakespells:water_control', 'somakespells:water_spear', 'somakespells:water_ball', 'somakespells:hydro_slash', 'somakespells:sea_serpent', 'somakespells:sea_serpent_jet',
   'somakespells:storm_aura', 'cataclysm_spellbooks:depth_charge', 'cataclysm_spellbooks:tidal_grab']
+var ARTB_JOURNAL_EAU = {}
+var ARTB_ECOLES_EAU = ['aces_spell_utils:hydro', 'somakespells:aqua', 'cataclysm_spellbooks:abyssal']
+function artbSortEau(sort) {
+  if (ARTB_SORTS_EAU.indexOf(String(sort.getSpellId())) >= 0) return true
+  try { return ARTB_ECOLES_EAU.indexOf(String(sort.getSchoolType().getId())) >= 0 } catch (e) { return false }
+}
 var ARTB_CLASSE = {}
 for (var artbC in ARTB_SETS) for (var artbI = 0; artbI < ARTB_SETS[artbC].length; artbI++) ARTB_CLASSE[ARTB_SETS[artbC][artbI]] = artbC
 var ARTB = null, ARTB_ERR = {}
@@ -3791,6 +3797,21 @@ function artbRetirerEffet(entite, id) {
   var h = ARTB.Effets.getHolder(ARTB.RL.parse(id))
   if (h.isPresent() && entite.hasEffect(h.get())) entite.removeEffect(h.get())
 }
+// Ajoute un effet à une entité. Passe par le Holder du registre (méthode éprouvée dans professeur.js) :
+// potionEffects.add('id', ...) de KubeJS ne convertit pas toujours l'identifiant et échoue alors sans rien dire.
+var EFFET_J = null
+function ajouterEffet(ent, id, duree, ampli, ambiant, visible) {
+  if (!EFFET_J) EFFET_J = { MEI: Java.loadClass('net.minecraft.world.effect.MobEffectInstance'), REG: Java.loadClass('net.minecraft.core.registries.BuiltInRegistries').MOB_EFFECT, RL: Java.loadClass('net.minecraft.resources.ResourceLocation'), cache: {}, avertis: {} }
+  var cle = String(id), h = EFFET_J.cache[cle]
+  if (h === undefined) {
+    var o = EFFET_J.REG.getHolder(EFFET_J.RL.parse(cle))
+    h = o.isPresent() ? o.get() : null
+    EFFET_J.cache[cle] = h
+  }
+  if (h === null) { if (!EFFET_J.avertis[cle]) { EFFET_J.avertis[cle] = true; console.error('[classes_rp] effet introuvable : ' + cle) } return false }
+  return ent.addEffect(new EFFET_J.MEI(h, Math.floor(Number(duree)), Math.floor(Number(ampli || 0)), !!ambiant, visible !== false))
+}
+
 function artbAEffet(entite, id) {
   var h = ARTB.Effets.getHolder(ARTB.RL.parse(id))
   return h.isPresent() && entite.hasEffect(h.get())
@@ -3890,7 +3911,7 @@ function artbOnde(joueur, centre, rayon, degats, force, effet, duree, ampli) {
     var ent = ennemis[i]
     if (degats > 0) artbBlesser(joueur, ent, degats)
     if (force > 0) ent.knockback(force, centre.getX() - ent.getX(), centre.getZ() - ent.getZ())
-    if (effet) ent.potionEffects.add(effet, duree, ampli || 0, false, true)
+    if (effet) ajouterEffet(ent, effet, duree, ampli || 0, false, true)
   }
   try { artbFxOnde(joueur, centre, rayon) } catch (e) {}
   return ennemis
@@ -3978,7 +3999,7 @@ try {
         if (artbPorte(joueur, 'bandouliere')) {
           var public_ = artbJoueursProches(joueur, 12, false)
           reduction += 0.10 * Math.min(3, public_.length)
-          for (var i = 0; i < public_.length; i++) public_[i].potionEffects.add('tunes_n_tomes:cheered', 100, 0, false, true)
+          for (var i = 0; i < public_.length; i++) ajouterEffet(public_[i], 'tunes_n_tomes:cheered', 100, 0, false, true)
         }
         if (artbPorte(joueur, 'anneau_cadence') && artbCadence(joueur, 'sort')) artbFinMesure(joueur, joueur)
       }
@@ -4060,8 +4081,11 @@ try {
         artbMana(cible, etouffe * 2)
       }
       // Sorts à eau : la cible est mouillée (5 s)
-      if (cible && (!lanceur || String(cible.uuid) !== String(lanceur.uuid)) && ARTB_SORTS_EAU.indexOf(String(src.spell().getSpellId())) >= 0)
-        cible.potionEffects.add('somakespells:wet', 100, 0, false, true)
+      // (tous les sorts des écoles de l'Hydromancien — hydro, aqua, abyssal — plus les sorts d'eau des autres écoles listés)
+      if (cible && (!lanceur || String(cible.uuid) !== String(lanceur.uuid)) && artbSortEau(src.spell())) {
+        ajouterEffet(cible, 'aetheris_armures:trempe', 100, 0, false, true)
+        if (!ARTB_JOURNAL_EAU.t || Date.now() - ARTB_JOURNAL_EAU.t > 60000) { ARTB_JOURNAL_EAU.t = Date.now(); console.info('[artefacts] trempé : ' + cible.type + ' touché par ' + src.spell().getSpellId()) }
+      }
       if (!lanceur || !cible || !lanceur.isPlayer() || String(cible.uuid) === String(lanceur.uuid)) return
       var ecole = src.spell().getSchoolType()
       var t = Date.now(), cleC = String(cible.uuid), cleL = String(lanceur.uuid)
@@ -4079,7 +4103,7 @@ try {
             artbSon(cible, ARTB.Sons.NOTE_BLOCK_BELL, 1, 1.2)
           } else {
             ARTB.resonance[cleC] = t
-            cible.potionEffects.add('aetheris_armures:marque_melodique', 80, 0, false, true)
+            ajouterEffet(cible, 'aetheris_armures:marque_melodique', 80, 0, false, true)
           }
         }
         if (artbPorte(lanceur, 'anneau_echo')) {
@@ -4116,7 +4140,7 @@ try {
         }
         if (artbPorte(lanceur, 'anneau_corail')) {
           if (artbMouille(cible)) ev.setAmount(Number(ev.getAmount()) * 1.2)
-          else cible.potionEffects.add('minecraft:slowness', 60, 1, false, true)
+          else ajouterEffet(cible, 'minecraft:slowness', 60, 1, false, true)
         }
         if (artbPorte(lanceur, 'conque_profondeurs') && Math.random() < 0.15) {
           artbBlesser(lanceur, cible, 4)
@@ -4136,7 +4160,7 @@ try {
       if (artbEcole(ecole, 'Druide')) {
         if (artbPorte(lanceur, 'anneau_ronces') && Math.random() < 0.25 && !artbBoss(cible) && !(ARTB.racines['r' + cleC] && t - ARTB.racines['r' + cleC] < 6000)) {
           ARTB.racines['r' + cleC] = t
-          cible.potionEffects.add('minecraft:slowness', 20, 9, false, true)
+          ajouterEffet(cible, 'minecraft:slowness', 20, 9, false, true)
           artbSurLaDuree(lanceur, cible, 3, 1, 0)
           artbPart(cible, ARTB.Part.HAPPY_VILLAGER, 10, 0.5); artbFx(cible, 'luciole', 10, 0.5)
         }
@@ -4153,8 +4177,8 @@ try {
           var s = artbSaison()
           if (s === 0) lanceur.heal(1)
           else if (s === 1) cible.igniteForSeconds(3)
-          else if (s === 2) cible.potionEffects.add('minecraft:weakness', 80, 0, false, true)
-          else cible.potionEffects.add('minecraft:slowness', 60, 1, false, true)
+          else if (s === 2) ajouterEffet(cible, 'minecraft:weakness', 80, 0, false, true)
+          else ajouterEffet(cible, 'minecraft:slowness', 60, 1, false, true)
         }
       }
       // ── Géomancien ──
@@ -4163,8 +4187,8 @@ try {
           var pierres = (ARTB.granit[cleC] && t - ARTB.granit[cleC].t < 6000) ? ARTB.granit[cleC].n + 1 : 1
           if (pierres >= 4) {
             ARTB.granit[cleC] = null
-            if (!artbBoss(cible)) cible.potionEffects.add('aetheris_armures:petrifie', 30, 0, false, true)
-            cible.potionEffects.add('minecraft:mining_fatigue', 30, 2, false, true)
+            if (!artbBoss(cible)) ajouterEffet(cible, 'aetheris_armures:petrifie', 30, 0, false, true)
+            ajouterEffet(cible, 'minecraft:mining_fatigue', 30, 2, false, true)
             artbPart(cible, ARTB.Part.CLOUD, 20, 0.4)
             artbSon(cible, ARTB.Sons.STONE_PLACE, 1.5, 0.6)
             artbStatut(lanceur, '⛰ Pétrifié !', 'gold')
@@ -4175,7 +4199,7 @@ try {
           if (!artbBoss(cible)) artbPousser(cible, 0, 0.45, 0)
           artbPart(cible, ARTB.Part.CRIT, 15, 0.4)
         }
-        if (artbPorte(lanceur, 'sablier_desert') && Math.random() < 0.20) cible.potionEffects.add('minecraft:blindness', 40, 0, false, true)
+        if (artbPorte(lanceur, 'sablier_desert') && Math.random() < 0.20) ajouterEffet(cible, 'minecraft:blindness', 40, 0, false, true)
       }
       // ── Hémomancien ──
       if (artbEcole(ecole, 'Hémomancien')) {
@@ -4192,8 +4216,8 @@ try {
           var fr = (ARTB.frenesie[cleL] && t - ARTB.frenesie[cleL].t < 8000) ? ARTB.frenesie[cleL].n + 1 : 1
           if (fr >= 5) {
             ARTB.frenesie[cleL] = null
-            lanceur.potionEffects.add('minecraft:strength', 120, 0, false, true)
-            lanceur.potionEffects.add('minecraft:speed', 120, 0, false, true)
+            ajouterEffet(lanceur, 'minecraft:strength', 120, 0, false, true)
+            ajouterEffet(lanceur, 'minecraft:speed', 120, 0, false, true)
             artbStatut(lanceur, '🩸 Frénésie !', 'red')
           } else {
             ARTB.frenesie[cleL] = { n: fr, t: t }
@@ -4214,8 +4238,8 @@ try {
           artbPart(cible, ARTB.Part.END_ROD, 8, 0.4)
         }
         if (artbPorte(lanceur, 'anneau_aube') && !lanceur.level.isDay()) {
-          cible.potionEffects.add('minecraft:glowing', 120, 0, false, false)
-          cible.potionEffects.add('minecraft:weakness', 80, 0, false, true)
+          ajouterEffet(cible, 'minecraft:glowing', 120, 0, false, false)
+          ajouterEffet(cible, 'minecraft:weakness', 80, 0, false, true)
         }
       }
     } catch (e) { artbErreur('dégâts de sort', e) }
@@ -4242,7 +4266,7 @@ try {
       var coq = artbPorte(cible, 'coquille_nautile')
       if (coq && Number(cible.getHealth()) < Number(cible.getMaxHealth()) * 0.4 && !cible.getCooldowns().isOnCooldown(coq.getItem())) {
         cible.getCooldowns().addCooldown(coq.getItem(), 1200)
-        cible.potionEffects.add('minecraft:absorption', 100, 1, false, true)
+        ajouterEffet(cible, 'minecraft:absorption', 100, 1, false, true)
         artbMana(cible, 20)
         artbPart(cible, ARTB.Part.BUBBLE_POP, 30, 0.6)
         artbSon(cible, ARTB.Sons.BUBBLE_COLUMN_WHIRLPOOL_INSIDE, 1.5, 1)
@@ -4253,7 +4277,7 @@ try {
         var cleA = String(auteur.uuid)
         if (!(ARTB.lierre[cleA] && t - ARTB.lierre[cleA] < 2000)) {
           ARTB.lierre[cleA] = t
-          auteur.potionEffects.add('minecraft:slowness', 40, 2, false, true)
+          ajouterEffet(auteur, 'minecraft:slowness', 40, 2, false, true)
           artbBlesser(cible, auteur, 1)
           artbPart(auteur, ARTB.Part.HAPPY_VILLAGER, 8, 0.4)
         }
@@ -4356,7 +4380,7 @@ try {
       }
       // Pollen doré (Druide)
       if (artbPorte(soigneur, 'pollen_dore')) {
-        cible.potionEffects.add('minecraft:regeneration', 80, 1, false, true)
+        ajouterEffet(cible, 'minecraft:regeneration', 80, 1, false, true)
         var mauvais = ['minecraft:poison', 'minecraft:wither', 'minecraft:weakness', 'minecraft:slowness', 'minecraft:blindness', 'minecraft:hunger']
         for (var i = 0; i < mauvais.length; i++) if (artbAEffet(cible, mauvais[i])) { artbRetirerEffet(cible, mauvais[i]); break }
         artbPart(cible, ARTB.Part.HAPPY_VILLAGER, 10, 0.5)
@@ -4401,7 +4425,7 @@ try {
         var ecole = src.spell().getSchoolType()
         if (artbEcole(ecole, 'Druide') && artbPorte(tueur, 'collier_crocs')) {
           tueur.setAbsorptionAmount(Math.min(8, Number(tueur.getAbsorptionAmount()) + 2))
-          tueur.potionEffects.add('minecraft:speed', 100, 0, false, true)
+          ajouterEffet(tueur, 'minecraft:speed', 100, 0, false, true)
           artbStatut(tueur, '🐺 Instinct sauvage', 'green')
         }
         if (artbEcole(ecole, 'Hémomancien') && artbPorte(tueur, 'dague_rituelle')) {
@@ -4416,7 +4440,7 @@ try {
       if (artbSauvetage(joueur, 'derniere_note', src)) {
         ev.setCanceled(true)
         joueur.setHealth(1)
-        joueur.potionEffects.add('minecraft:resistance', 60, 4, false, true)
+        ajouterEffet(joueur, 'minecraft:resistance', 60, 4, false, true)
         artbStatut(joueur, '♪ Chant du cygne...', 'gold')
         artbSon(joueur, ARTB.Sons.NOTE_BLOCK_BELL, 1.5, 0.5)
         joueur.server.scheduleInTicks(20, function () {
@@ -4426,7 +4450,7 @@ try {
             artbOnde(joueur, joueur, 6, 8 * puiss, 1.8, 'tunes_n_tomes:deafened', 100, 0)
             artbNotes(joueur, 40, 3)
             artbSon(joueur, ARTB.Sons.NOTE_BLOCK_BELL, 2, 1.0)
-            joueur.potionEffects.add('minecraft:regeneration', 80, 2, false, true)
+            ajouterEffet(joueur, 'minecraft:regeneration', 80, 2, false, true)
             artbStatut(joueur, '♪ Dernière Note !', 'gold')
           } catch (e2) { artbErreur('dernière note', e2) }
         })
@@ -4447,8 +4471,8 @@ try {
       if (artbSauvetage(joueur, 'coeur_arbre_monde', src)) {
         ev.setCanceled(true)
         joueur.setHealth(Number(joueur.getMaxHealth()) * 0.3)
-        joueur.potionEffects.add('minecraft:resistance', 60, 3, false, true)
-        joueur.potionEffects.add('minecraft:slowness', 60, 9, false, true)
+        ajouterEffet(joueur, 'minecraft:resistance', 60, 3, false, true)
+        ajouterEffet(joueur, 'minecraft:slowness', 60, 9, false, true)
         var allies = artbJoueursProches(joueur, 8, false)
         for (var i = 0; i < allies.length; i++) allies[i].heal(6)
         artbPart(joueur, ARTB.Part.HAPPY_VILLAGER, 50, 2); artbFxOnde(joueur, joueur, 8)
@@ -4459,8 +4483,8 @@ try {
       if (artbSauvetage(joueur, 'coeur_montagne', src)) {
         ev.setCanceled(true)
         joueur.setHealth(1)
-        joueur.potionEffects.add('minecraft:resistance', 60, 4, false, true)
-        joueur.potionEffects.add('minecraft:slowness', 60, 9, false, true)
+        ajouterEffet(joueur, 'minecraft:resistance', 60, 4, false, true)
+        ajouterEffet(joueur, 'minecraft:slowness', 60, 9, false, true)
         artbPart(joueur, ARTB.Part.CLOUD, 20, 0.5)
         artbStatut(joueur, '⛰ Inébranlable : tu te changes en pierre', 'gold')
         joueur.server.scheduleInTicks(60, function () {
@@ -4469,7 +4493,7 @@ try {
             artbOnde(joueur, joueur, 5, 12, 2.0, 'minecraft:slowness', 60, 1)
             artbPart(joueur, ARTB.Part.EXPLOSION, 10, 2)
             artbSon(joueur, ARTB.Sons.GENERIC_EXPLODE, 1.2, 0.7)
-            joueur.potionEffects.add('minecraft:regeneration', 100, 1, false, true)
+            ajouterEffet(joueur, 'minecraft:regeneration', 100, 1, false, true)
           } catch (e3) { artbErreur('cœur de la montagne', e3) }
         })
         return
@@ -4477,7 +4501,7 @@ try {
       if (artbSauvetage(joueur, 'aureole_sacree', src)) {
         ev.setCanceled(true)
         joueur.setHealth(Number(joueur.getMaxHealth()) * 0.3)
-        joueur.potionEffects.add('minecraft:resistance', 60, 4, false, true)
+        ajouterEffet(joueur, 'minecraft:resistance', 60, 4, false, true)
         var ennemis = artbEnnemisProches(joueur, 6, null)
         for (var en = 0; en < ennemis.length; en++) {
           artbBlesser(joueur, ennemis[en], artbMortVivant(ennemis[en]) ? 20 : 10)
@@ -4493,7 +4517,7 @@ try {
       if (artbSauvetage(joueur, 'coeur_battant', src)) {
         ev.setCanceled(true)
         joueur.setHealth(1)
-        joueur.potionEffects.add('minecraft:resistance', 30, 2, false, true)
+        ajouterEffet(joueur, 'minecraft:resistance', 30, 2, false, true)
         ARTB.battement[cle] = Date.now() + 5000
         artbFx(joueur, 'sang', 40, 0.6); artbFxOnde(joueur, joueur, 4)
         artbSon(joueur, ARTB.Sons.WARDEN_HEARTBEAT, 2, 1)
@@ -4503,13 +4527,104 @@ try {
   })
 } catch (e) { console.error('[artefacts] morts indisponibles : ' + e) }
 
-// Effet ajouté : l'effet Mouillé de So Make Spells donne aussi Trempé (visuel bleuté) ; messages des effets de classe
+// ───────── Note soporifique : vrai sommeil ─────────
+// Un joueur qui reçoit l'effet Somnolent (tunes_n_tomes:sleepy, Note soporifique du Barde) est couché de force dans un lit
+// qui apparaît sous lui le temps de l'effet, et ronfle (son aetheris_armures:ronflement, mod aetheris_armures). À la fin de
+// l'effet (ou à la mort / déconnexion), il se réveille, le lit disparaît sans rien lâcher et le ronflement s'arrête net.
+// Il ne peut pas quitter le lit avant la fin. Le sommeil est relancé toutes les 4 s pour ne jamais compter dans le passage
+// de la nuit. Pas de lit s'il n'y a pas 2 blocs libres (ou s'il est sur une monture) : il ronfle quand même.
+var SOMMEIL = { joueurs: {}, lits: {}, J: null, SON_TICKS: 114 }
+var SOMMEIL_DIRS = [['north', 0, -1], ['south', 0, 1], ['west', -1, 0], ['east', 1, 0]]
+function sommeilInit() {
+  if (!SOMMEIL.J) SOMMEIL.J = { BlockPos: Java.loadClass('net.minecraft.core.BlockPos'), UUID: Java.loadClass('java.util.UUID') }
+  return SOMMEIL.J
+}
+function sommeilLibre(niveau, x, y, z) {
+  try { return niveau.getBlock(x, y, z).blockState.canBeReplaced() } catch (e) { return false }
+}
+function sommeilCmd(serveur, dim, cmd) { serveur.runCommandSilent('execute in ' + dim + ' run ' + cmd) }
+function sommeilDebut(joueur, duree) {
+  var J = sommeilInit(), u = String(joueur.uuid), t = Number(joueur.server.getTickCount())
+  var deja = SOMMEIL.joueurs[u]
+  if (deja) { deja.fin = Math.max(deja.fin, t + duree); return }
+  var dim = String(joueur.level.dimension)
+  var x = Math.floor(Number(joueur.x)), y = Math.floor(Number(joueur.y)), z = Math.floor(Number(joueur.z))
+  var info = { dim: dim, fin: t + duree, son: 0, cycle: t, pieds: null, tete: null }
+  if (!joueur.isPassenger() && sommeilLibre(joueur.level, x, y, z)) {
+    // on essaie d'abord la direction du regard
+    var yaw = ((Number(joueur.yRot) % 360) + 360) % 360
+    var ordre = yaw >= 45 && yaw < 135 ? [2, 0, 1, 3] : yaw >= 135 && yaw < 225 ? [0, 2, 3, 1] : yaw >= 225 && yaw < 315 ? [3, 0, 1, 2] : [1, 2, 3, 0]
+    for (var k = 0; k < ordre.length; k++) {
+      var d = SOMMEIL_DIRS[ordre[k]], hx = x + d[1], hz = z + d[2]
+      if (!sommeilLibre(joueur.level, hx, y, hz)) continue
+      sommeilCmd(joueur.server, dim, 'setblock ' + hx + ' ' + y + ' ' + hz + ' minecraft:white_bed[facing=' + d[0] + ',part=head]')
+      sommeilCmd(joueur.server, dim, 'setblock ' + x + ' ' + y + ' ' + z + ' minecraft:white_bed[facing=' + d[0] + ',part=foot]')
+      info.pieds = [x, y, z]; info.tete = [hx, y, hz]
+      SOMMEIL.lits[dim + ' ' + x + ' ' + y + ' ' + z] = true; SOMMEIL.lits[dim + ' ' + hx + ' ' + y + ' ' + hz] = true
+      break
+    }
+  }
+  SOMMEIL.joueurs[u] = info
+  if (info.tete) { try { joueur.startSleeping(new J.BlockPos(info.tete[0], info.tete[1], info.tete[2])) } catch (eS) { console.error('[sommeil] coucher impossible : ' + eS) } }
+}
+function sommeilFin(serveur, u, joueur) {
+  var info = SOMMEIL.joueurs[u]; if (!info) return
+  delete SOMMEIL.joueurs[u]
+  try { if (joueur && joueur.isSleeping()) joueur.stopSleepInBed(true, true) } catch (e) {}
+  var p = info.tete || info.pieds || null
+  if (info.tete) {
+    var lits = [info.tete, info.pieds]
+    for (var i = 0; i < 2; i++) {
+      var b = lits[i]
+      delete SOMMEIL.lits[info.dim + ' ' + b[0] + ' ' + b[1] + ' ' + b[2]]
+      sommeilCmd(serveur, info.dim, 'execute if block ' + b[0] + ' ' + b[1] + ' ' + b[2] + ' minecraft:white_bed run setblock ' + b[0] + ' ' + b[1] + ' ' + b[2] + ' minecraft:air')
+    }
+  }
+  var cible = joueur ? Number(joueur.x).toFixed(1) + ' ' + Number(joueur.y).toFixed(1) + ' ' + Number(joueur.z).toFixed(1) : (p ? p[0] + ' ' + p[1] + ' ' + p[2] : null)
+  if (cible) sommeilCmd(serveur, info.dim, 'execute positioned ' + cible + ' run stopsound @a[distance=..48] player aetheris_armures:ronflement')
+}
+ServerEvents.tick(perfWrap('classes_rp:sommeil', function (event) {
+  var serveur = event.server, t = Number(serveur.getTickCount())
+  for (var u in SOMMEIL.joueurs) {
+    var info = SOMMEIL.joueurs[u], J = sommeilInit()
+    var joueur = serveur.getPlayerList().getPlayer(J.UUID.fromString(u))
+    try {
+      if (!joueur || !joueur.isAlive() || t >= info.fin || !artbAEffet(joueur, 'tunes_n_tomes:sleepy')) { sommeilFin(serveur, u, joueur); continue }
+      if (info.tete) {
+        var pos = new J.BlockPos(info.tete[0], info.tete[1], info.tete[2])
+        // relancé toutes les 4 s (le compteur de sommeil repart de zéro : la nuit n'est jamais passée par ce sommeil forcé)
+        if (joueur.isSleeping() && t - info.cycle >= 80) { info.cycle = t; joueur.stopSleepInBed(true, true) }
+        if (!joueur.isSleeping()) joueur.startSleeping(pos)
+      }
+      if (t >= info.son) {
+        info.son = t + SOMMEIL.SON_TICKS
+        sommeilCmd(serveur, info.dim, 'playsound aetheris_armures:ronflement player @a ' + Number(joueur.x).toFixed(1) + ' ' + Number(joueur.y).toFixed(1) + ' ' + Number(joueur.z).toFixed(1) + ' 1 1')
+      }
+    } catch (e) { console.error('[sommeil] ' + e); sommeilFin(serveur, u, joueur) }
+  }
+}))
+// Le lit temporaire ne se casse pas (et ne lâche donc jamais de lit)
+BlockEvents.broken(function (event) {
+  try {
+    var b = event.block
+    if (SOMMEIL.lits[String(event.level.dimension) + ' ' + b.x + ' ' + b.y + ' ' + b.z]) event.cancel()
+  } catch (e) {}
+})
+// Il fait jour : le sommeil forcé continue quand même
+try {
+  NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.player.CanContinueSleepingEvent'), function (ev) {
+    try { if (SOMMEIL.joueurs[String(ev.getEntity().uuid)]) ev.setContinueSleeping(true) } catch (e) {}
+  })
+} catch (e) { console.error('[sommeil] CanContinueSleepingEvent indisponible (le joueur pourra être réveillé le jour) : ' + e) }
+
+// Effet ajouté : secours si Mouillé (So Make Spells) passe malgré le blocage ci-dessus : il donne aussi Trempé ; messages des effets de classe
 try {
   NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.living.MobEffectEvent$Added'), function (ev) {
     try {
       var ent = ev.getEntity(), inst = ev.getEffectInstance()
       var id = String(inst.getEffect().getRegisteredName())
-      if (id === 'somakespells:wet') { ent.potionEffects.add('aetheris_armures:trempe', inst.getDuration(), 0, false, true); return }
+      if (id === 'somakespells:wet') { ajouterEffet(ent, 'aetheris_armures:trempe', inst.getDuration(), 0, false, true); return }
+      if (id === 'tunes_n_tomes:sleepy' && ent.isPlayer()) { try { sommeilDebut(ent, Number(inst.getDuration())) } catch (eZ) { console.error('[sommeil] ' + eZ) } }
       var msg = ARTB_MESSAGES_EFFETS[id]
       if (!msg || !ent.isPlayer()) return
       ent.setStatusMessage(msg[1] === 'aqua' ? Text.aqua(msg[0]) : msg[1] === 'gold' ? Text.gold(msg[0]) : Text.lightPurple(msg[0]))
@@ -4523,6 +4638,12 @@ try {
   NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.living.MobEffectEvent$Applicable'), function (ev) {
     try {
       var id = String(ev.getEffectInstance().getEffect().getRegisteredName())
+      // Un seul effet d'eau sur le serveur : le Mouillé de So Make Spells est remplacé par Trempé (même durée)
+      if (id === 'somakespells:wet') {
+        ev.setResult(ARTB_RESULTAT.DO_NOT_APPLY)
+        ajouterEffet(ev.getEntity(), 'aetheris_armures:trempe', ev.getEffectInstance().getDuration(), 0, false, true)
+        return
+      }
       if (id !== 'tunes_n_tomes:deafened' && id !== 'tunes_n_tomes:sleepy') return
       if (!artbPorte(ev.getEntity(), 'sourdine')) return
       ev.setResult(ARTB_RESULTAT.DO_NOT_APPLY)
@@ -4536,7 +4657,7 @@ BlockEvents.broken(function (event) {
     var joueur = event.player
     if (!joueur || !event.block.hasTag('c:ores') || Math.random() >= 0.15 || !artbPorte(joueur, 'ceinture_filon')) return
     artbMana(joueur, 10)
-    joueur.potionEffects.add('minecraft:haste', 200, 0, false, true)
+    ajouterEffet(joueur, 'minecraft:haste', 200, 0, false, true)
     artbStatut(joueur, '⛏ Filon : la terre te nourrit', 'gold')
   } catch (e) { artbErreur('filon', e) }
 })
@@ -4578,7 +4699,7 @@ PlayerEvents.tick(function (event) {
           var cibles = artbJoueursProches(joueur, 6, true)
           for (var i = 0; i < cibles.length; i++) {
             artbMana(cibles[i], 4)
-            cibles[i].potionEffects.add('minecraft:regeneration', 40, 0, false, true)
+            ajouterEffet(cibles[i], 'minecraft:regeneration', 40, 0, false, true)
           }
           artbNotes(joueur, 3, 1.5)
           if (r.s % 4 === 3) artbSon(joueur, ARTB.Sons.NOTE_BLOCK_CHIME, 0.5, 1.2)
@@ -4588,7 +4709,7 @@ PlayerEvents.tick(function (event) {
     // ── Hydromancien ──
     if (artbPorte(joueur, 'perle_pression') && joueur.isUnderWater()) joueur.setAirSupply(joueur.getMaxAirSupply())
     if (artbPorte(joueur, 'ceinture_algues') && artbMouille(joueur)) {
-      joueur.potionEffects.add('minecraft:dolphins_grace', 40, 0, false, false)
+      ajouterEffet(joueur, 'minecraft:dolphins_grace', 40, 0, false, false)
       artbMana(joueur, 2)
     }
     // ── Druide ──
@@ -4598,7 +4719,7 @@ PlayerEvents.tick(function (event) {
         ARTB.saison[cle] = s
         artbSaisonsRetirer(joueur)
         // durée = temps restant avant la saison suivante
-        joueur.potionEffects.add(ARTB_EFFETS_SAISONS[s], Math.max(20, Math.ceil((60000 - Date.now() % 60000) / 50)), 0, false, true)
+        ajouterEffet(joueur, ARTB_EFFETS_SAISONS[s], Math.max(20, Math.ceil((60000 - Date.now() % 60000) / 50)), 0, false, true)
         artbStatut(joueur, '🍃 Saison : ' + ARTB_SAISONS[s], 'green')
       }
     } else if (ARTB.saison[cle] !== undefined) { ARTB.saison[cle] = undefined; artbSaisonsRetirer(joueur) }
@@ -4610,7 +4731,7 @@ PlayerEvents.tick(function (event) {
         rc.s++
         if (rc.s >= 2) {
           if (rc.s === 2) artbStatut(joueur, '🌱 Tu prends racine', 'green')
-          joueur.potionEffects.add('minecraft:resistance', 40, 0, false, false)
+          ajouterEffet(joueur, 'minecraft:resistance', 40, 0, false, false)
           joueur.heal(0.5)
           artbMana(joueur, 2)
           artbPart(joueur, ARTB.Part.HAPPY_VILLAGER, 4, 1.2)
@@ -4627,7 +4748,7 @@ PlayerEvents.tick(function (event) {
     // ── Paladin ──
     if (artbPorte(joueur, 'etendard')) {
       var troupe = artbJoueursProches(joueur, 8, true)
-      for (var e1 = 0; e1 < troupe.length; e1++) if (String(troupe[e1].uuid) !== cle) troupe[e1].potionEffects.add('minecraft:resistance', 40, 0, false, false)
+      for (var e1 = 0; e1 < troupe.length; e1++) if (String(troupe[e1].uuid) !== cle) ajouterEffet(troupe[e1], 'minecraft:resistance', 40, 0, false, false)
     }
     if (artbPorte(joueur, 'reliquaire')) {
       var veille = artbJoueursProches(joueur, 10, true)
@@ -4635,7 +4756,7 @@ PlayerEvents.tick(function (event) {
         var al = veille[e2], ka = String(al.uuid)
         if (Number(al.getHealth()) >= Number(al.getMaxHealth()) * 0.3 || (ARTB.reliques[ka] && t - ARTB.reliques[ka] < 120000)) continue
         ARTB.reliques[ka] = t
-        al.potionEffects.add('minecraft:regeneration', 80, 1, false, true)
+        ajouterEffet(al, 'minecraft:regeneration', 80, 1, false, true)
         artbPart(al, ARTB.Part.END_ROD, 10, 0.5)
         artbStatut(al, '✝ Le reliquaire veille sur toi', 'gold')
         if (ka !== cle) artbStatut(joueur, '✝ Le reliquaire protège ' + al.username, 'gold')
@@ -4651,7 +4772,7 @@ PlayerEvents.tick(function (event) {
           var mv = artbEnnemisProches(joueur, 5, null)
           for (var e3 = 0; e3 < mv.length; e3++) if (artbMortVivant(mv[e3])) { artbBlesser(joueur, mv[e3], 2); mv[e3].igniteForSeconds(2) }
           var fideles = artbJoueursProches(joueur, 5, true)
-          for (var e4 = 0; e4 < fideles.length; e4++) fideles[e4].potionEffects.add('minecraft:regeneration', 40, 0, false, true)
+          for (var e4 = 0; e4 < fideles.length; e4++) ajouterEffet(fideles[e4], 'minecraft:regeneration', 40, 0, false, true)
           joueur.level.sendParticles(ARTB.Part.END_ROD, x, y + 0.2, z, 6, 2.5, 0.1, 2.5, 0.01); artbFx(joueur, 'purif', 10, 2.5)
         }
       }
@@ -4809,18 +4930,18 @@ try {
           var g = (ARTB2.givre[cleC] && t - ARTB2.givre[cleC].t < 6000) ? ARTB2.givre[cleC].n + 1 : 1
           if (g >= 5) {
             ARTB2.givre[cleC] = null
-            if (artbBoss(cible)) cible.potionEffects.add('minecraft:slowness', 60, 2, false, true)
-            else cible.potionEffects.add('aetheris_armures:gele', 30, 0, false, true)
+            if (artbBoss(cible)) ajouterEffet(cible, 'minecraft:slowness', 60, 2, false, true)
+            else ajouterEffet(cible, 'aetheris_armures:gele', 30, 0, false, true)
             artbPart(cible, ARTB.Part.SNOWFLAKE, 20, 0.5); artbFx(cible, 'neige', 20, 0.4)
           } else ARTB2.givre[cleC] = { n: g, t: t }
         }
-        if (artbPorte(lanceur, 'anneau_morsure')) cible.potionEffects.add('minecraft:slowness', 60, 0, false, true)
+        if (artbPorte(lanceur, 'anneau_morsure')) ajouterEffet(cible, 'minecraft:slowness', 60, 0, false, true)
         if (artbPorte(lanceur, 'amulette_blizzard')) {
           ARTB2.blizzard[cleL] = (ARTB2.blizzard[cleL] || 0) + 1
           if (ARTB2.blizzard[cleL] >= 6) {
             ARTB2.blizzard[cleL] = 0
             for (var k = 1; k <= 3; k++) lanceur.server.scheduleInTicks(20 * k, function () {
-              try { var vic = artbEnnemisProches(cible, 5, null); for (var b = 0; b < vic.length; b++) { artbBlesser(lanceur, vic[b], 3); vic[b].potionEffects.add('minecraft:slowness', 30, 1, false, true) }
+              try { var vic = artbEnnemisProches(cible, 5, null); for (var b = 0; b < vic.length; b++) { artbBlesser(lanceur, vic[b], 3); ajouterEffet(vic[b], 'minecraft:slowness', 30, 1, false, true) }
                     artbPart(cible, ARTB.Part.SNOWFLAKE, 30, 2.5); artbFx(cible, 'neige', 30, 2.5); artbFxBrume(cible, 0.9, 0.95, 1, 2.5, 4, 2) } catch (e2) {}
             })
             artbStatut(lanceur, '❄ Blizzard !', 'aqua')
@@ -4839,7 +4960,7 @@ try {
         if (artbPorte(lanceur, 'anneau_arc')) {
           var co = (ARTB2.course[cleL] && t - ARTB2.course[cleL].t < 6000) ? ARTB2.course[cleL].n + 1 : 1
           ARTB2.course[cleL] = { n: co, t: t }
-          lanceur.potionEffects.add('minecraft:speed', 80, co >= 5 ? 2 : co >= 3 ? 1 : 0, false, true)
+          ajouterEffet(lanceur, 'minecraft:speed', 80, co >= 5 ? 2 : co >= 3 ? 1 : 0, false, true)
           artbFx(lanceur, 'elec', 10, 0.3)
         }
       }
@@ -4883,14 +5004,14 @@ try {
       }
       // ── Nécromancien ──
       if (artbEcole(ecole, 'Nécromancien')) {
-        if (artbPorte(lanceur, 'anneau_putrefaction')) cible.potionEffects.add('minecraft:wither', 60, 0, false, true)
+        if (artbPorte(lanceur, 'anneau_putrefaction')) ajouterEffet(cible, 'minecraft:wither', 60, 0, false, true)
         if (artbPorte(lanceur, 'anneau_tombe') && artbAEffet(cible, 'minecraft:wither')) ev.setAmount(Number(ev.getAmount()) * 1.2)
       }
       // ── Envoûteur ──
       if (artbEcole(ecole, 'Envoûteur')) {
         ARTB2.maudits[cleC] = { par: lanceur, fin: t + 8000 }
         ARTB2.dernierMaudit[cleL] = cible
-        if (artbPorte(lanceur, 'anneau_fletrissure')) cible.potionEffects.add('minecraft:weakness', 60, 1, false, true)
+        if (artbPorte(lanceur, 'anneau_fletrissure')) ajouterEffet(cible, 'minecraft:weakness', 60, 1, false, true)
         if (artbPorte(lanceur, 'anneau_malediction')) cible.persistentData.putLong('artb_maudit', t + 5000)
         if (artbPorte(lanceur, 'collier_supplice') && Number(cible.getHealth()) < Number(cible.getMaxHealth()) * 0.25 && !cible.persistentData.getBoolean('artb_supplice')) {
           cible.persistentData.putBoolean('artb_supplice', true)
@@ -4934,7 +5055,7 @@ try {
           ARTB2.circuit[cleL] = (ARTB2.circuit[cleL] || 0) + 1
           if (ARTB2.circuit[cleL] >= 3) { ARTB2.circuit[cleL] = 0; ev.setAmount(Number(ev.getAmount()) * 1.4); artbPart(cible, ARTB.Part.ELECTRIC_SPARK, 15, 0.4) }
         }
-        if (artbPorte(lanceur, 'anneau_court_circuit') && !artbBoss(cible) && Math.random() < 0.2) cible.potionEffects.add('minecraft:slowness', 20, 3, false, true)
+        if (artbPorte(lanceur, 'anneau_court_circuit') && !artbBoss(cible) && Math.random() < 0.2) ajouterEffet(cible, 'minecraft:slowness', 20, 3, false, true)
       }
     } catch (e) { artbErreur('dégâts de sort (suite)', e) }
   })
@@ -4982,7 +5103,7 @@ try {
       if (cara && !joueur.getCooldowns().isOnCooldown(cara.getItem())) {
         joueur.getCooldowns().addCooldown(cara.getItem(), 600)
         ev.setAmount(Number(ev.getAmount()) * 0.5)
-        if (auteur && auteur.isLiving() && String(auteur.uuid) !== cle) auteur.potionEffects.add('minecraft:slowness', 60, 1, false, true)
+        if (auteur && auteur.isLiving() && String(auteur.uuid) !== cle) ajouterEffet(auteur, 'minecraft:slowness', 60, 1, false, true)
         artbPart(joueur, ARTB.Part.SNOWFLAKE, 20, 0.5)
         artbSon(joueur, ARTB.Sons.GLASS_BREAK, 1, 1.4)
       }
@@ -4991,7 +5112,7 @@ try {
       if (lant && Number(joueur.getHealth()) - Number(ev.getAmount()) < Number(joueur.getMaxHealth()) * 0.4 && !joueur.getCooldowns().isOnCooldown(lant.getItem())) {
         joueur.getCooldowns().addCooldown(lant.getItem(), 1200)
         ARTB2.spectral[cle] = t + 3000
-        joueur.potionEffects.add('minecraft:invisibility', 60, 0, false, false)
+        ajouterEffet(joueur, 'minecraft:invisibility', 60, 0, false, false)
         artbPart(joueur, ARTB.Part.SOUL, 20, 0.5)
         artbStatut(joueur, '👻 Forme spectrale', 'aqua')
       }
@@ -5022,7 +5143,7 @@ try {
       // coup d'arme d'un joueur
       if (auteur && auteur.isPlayer() && direct && String(direct.uuid) === String(auteur.uuid) && !(src instanceof ARTB.SrcSort) && String(cible.uuid) !== String(auteur.uuid)) {
         if (artbPorte(auteur, 'ceinture_dualite') && artb2Dualite(auteur, 'arme')) { artbMana(auteur, 4); auteur.heal(1) }
-        if (artbPorte(auteur, 'ceinture_chaines') && cible.persistentData.getLong('artb_maudit') > t) cible.potionEffects.add('minecraft:slowness', 40, 1, false, true)
+        if (artbPorte(auteur, 'ceinture_chaines') && cible.persistentData.getLong('artb_maudit') > t) ajouterEffet(cible, 'minecraft:slowness', 40, 1, false, true)
       }
       // Collier de l'exil : 20 % de chance de bannir l'attaquant au corps à corps 8 blocs plus loin ; Collier de l'éclair : électrocute l'attaquant
       if (cible.isPlayer() && auteur && direct && String(direct.uuid) === String(auteur.uuid) && auteur.isLiving() && String(auteur.uuid) !== String(cible.uuid)) {
@@ -5036,7 +5157,7 @@ try {
         if (artbPorte(cible, 'collier_eclair') && !(ARTB2.choc[cA] && t - ARTB2.choc[cA] < 2000)) {
           ARTB2.choc[cA] = t
           artbBlesser(cible, auteur, 2)
-          auteur.potionEffects.add('minecraft:slowness', 40, 0, false, true)
+          ajouterEffet(auteur, 'minecraft:slowness', 40, 0, false, true)
           artbPart(auteur, ARTB.Part.ELECTRIC_SPARK, 12, 0.4)
         }
       }
@@ -5065,8 +5186,8 @@ try {
           if (envouteur && envouteur.isAlive() && artbPorte(envouteur, 'anneau_contagion')) {
             var voisins = artbEnnemisProches(mort, 5, mort)
             for (var i = 0; i < voisins.length; i++) {
-              voisins[i].potionEffects.add('minecraft:weakness', 80, 0, false, true)
-              voisins[i].potionEffects.add('minecraft:slowness', 80, 0, false, true)
+              ajouterEffet(voisins[i], 'minecraft:weakness', 80, 0, false, true)
+              ajouterEffet(voisins[i], 'minecraft:slowness', 80, 0, false, true)
               ARTB2.maudits[String(voisins[i].uuid)] = { par: m.par, fin: t + 8000 }
             }
             artbPart(mort, ARTB.Part.SMOKE, 20, 1.5); artbFx(mort, 'siphon', 20, 1.5); artbFxOnde(envouteur, mort, 5)
@@ -5107,15 +5228,15 @@ try {
         try { msgG = String(src.getMsgId()) } catch (x) {}
         if (msgG === 'outOfWorld' || msgG === 'genericKill') break
         proches[g].getCooldowns().addCooldown(gar.getItem(), 3600)
-        ev.setCanceled(true); joueur.setHealth(1); joueur.potionEffects.add('minecraft:resistance', 40, 4, false, true)
+        ev.setCanceled(true); joueur.setHealth(1); ajouterEffet(joueur, 'minecraft:resistance', 40, 4, false, true)
         artbPart(joueur, ARTB.Part.SOUL, 20, 0.6); artbFx(joueur, 'wisp', 30, 0.8)
         artbStatut(joueur, '👻 L\'esprit gardien de ' + proches[g].username + ' te protège', 'aqua')
         return
       }
       if (artb2Sauver(ev, joueur, 'plume_phenix', src)) {
         joueur.setHealth(Number(joueur.getMaxHealth()) * 0.4)
-        joueur.potionEffects.add('minecraft:fire_resistance', 200, 0, false, true)
-        joueur.potionEffects.add('minecraft:regeneration', 100, 1, false, true)
+        ajouterEffet(joueur, 'minecraft:fire_resistance', 200, 0, false, true)
+        ajouterEffet(joueur, 'minecraft:regeneration', 100, 1, false, true)
         var brules = artbEnnemisProches(joueur, 6, null)
         for (var b = 0; b < brules.length; b++) { artbBlesser(joueur, brules[b], 10); brules[b].igniteForSeconds(5) }
         artbPart(joueur, ARTB.Part.FLAME, 40, 2.5); artbFx(joueur, 'feu', 60, 2); artbFxOnde(joueur, joueur, 6); artbSon(joueur, ARTB.Sons.BLAZE_DEATH, 1.5, 0.6)
@@ -5124,8 +5245,8 @@ try {
       }
       if (artb2Sauver(ev, joueur, 'larme_boreale', src)) {
         joueur.setHealth(Number(joueur.getMaxHealth()) * 0.3)
-        joueur.potionEffects.add('minecraft:resistance', 60, 4, false, true)
-        joueur.potionEffects.add('aetheris_armures:gele', 60, 0, false, true)
+        ajouterEffet(joueur, 'minecraft:resistance', 60, 4, false, true)
+        ajouterEffet(joueur, 'aetheris_armures:gele', 60, 0, false, true)
         artbStatut(joueur, '❄ Cryostase', 'aqua')
         joueur.server.scheduleInTicks(60, function () {
           try { if (!joueur.isAlive()) return; artbOnde(joueur, joueur, 6, 6, 1.2, 'minecraft:slowness', 80, 2); artbPart(joueur, ARTB.Part.SNOWFLAKE, 60, 3); artbSon(joueur, ARTB.Sons.GLASS_BREAK, 1.5, 0.7) } catch (e2) {}
@@ -5134,7 +5255,7 @@ try {
       }
       if (artb2Sauver(ev, joueur, 'coeur_orage', src)) {
         joueur.setHealth(Number(joueur.getMaxHealth()) * 0.3)
-        joueur.potionEffects.add('minecraft:resistance', 60, 4, false, true)
+        ajouterEffet(joueur, 'minecraft:resistance', 60, 4, false, true)
         var cibles = artb2Hostiles(joueur, 10)
         cibles.sort(function (a, b2) { return a.distanceToSqr(joueur) - b2.distanceToSqr(joueur) })
         for (var f = 0; f < Math.min(3, cibles.length); f++) {
@@ -5154,15 +5275,15 @@ try {
         else joueur.randomTeleport(joueur.getX() + (Math.random() - 0.5) * 16, joueur.getY(), joueur.getZ() + (Math.random() - 0.5) * 16, true)
         joueur.fallDistance = 0
         joueur.setHealth(Number(joueur.getMaxHealth()) * 0.3)
-        joueur.potionEffects.add('minecraft:resistance', 40, 3, false, true)
+        ajouterEffet(joueur, 'minecraft:resistance', 40, 3, false, true)
         artbSon(joueur, ARTB.Sons.ENDERMAN_TELEPORT, 1.5, 0.6)
         artbStatut(joueur, an ? '🌀 Retour au néant : tu reviens à ton ancre' : '🌀 Retour au néant', 'lightPurple')
         return
       }
       if (artb2Sauver(ev, joueur, 'coeur_tornade', src)) {
         joueur.setHealth(Number(joueur.getMaxHealth()) * 0.3)
-        joueur.potionEffects.add('minecraft:slow_falling', 120, 0, false, true)
-        joueur.potionEffects.add('minecraft:resistance', 40, 3, false, true)
+        ajouterEffet(joueur, 'minecraft:slow_falling', 120, 0, false, true)
+        ajouterEffet(joueur, 'minecraft:resistance', 40, 3, false, true)
         var balayes = artbEnnemisProches(joueur, 6, null)
         for (var w = 0; w < balayes.length; w++) { artbBlesser(joueur, balayes[w], 6); if (!artbBoss(balayes[w])) balayes[w].knockback(2.0, joueur.getX() - balayes[w].getX(), joueur.getZ() - balayes[w].getZ()) }
         artbPousser(joueur, 0, 1.4, 0)
@@ -5172,7 +5293,7 @@ try {
       }
       if (artb2Sauver(ev, joueur, 'coeur_liche', src)) {
         joueur.setHealth(Number(joueur.getMaxHealth()) * 0.3)
-        joueur.potionEffects.add('minecraft:resistance', 60, 3, false, true)
+        ajouterEffet(joueur, 'minecraft:resistance', 60, 3, false, true)
         artb2Invoquer(joueur, 2, 400)
         artbPart(joueur, ARTB.Part.SOUL_FIRE_FLAME, 50, 1.5); artbFxOnde(joueur, joueur, 5)
         artbStatut(joueur, '💀 Ton phylactère te relève', 'green')
@@ -5180,18 +5301,18 @@ try {
       }
       if (artb2Sauver(ev, joueur, 'coeur_damne', src)) {
         joueur.setHealth(Number(joueur.getMaxHealth()) * 0.3)
-        joueur.potionEffects.add('minecraft:resistance', 60, 3, false, true)
+        ajouterEffet(joueur, 'minecraft:resistance', 60, 3, false, true)
         var damnes = artbEnnemisProches(joueur, 8, null)
-        for (var d = 0; d < damnes.length; d++) { damnes[d].potionEffects.add('minecraft:wither', 100, 1, false, true); damnes[d].potionEffects.add('minecraft:weakness', 100, 0, false, true); damnes[d].potionEffects.add('minecraft:slowness', 100, 0, false, true) }
+        for (var d = 0; d < damnes.length; d++) { ajouterEffet(damnes[d], 'minecraft:wither', 100, 1, false, true); ajouterEffet(damnes[d], 'minecraft:weakness', 100, 0, false, true); ajouterEffet(damnes[d], 'minecraft:slowness', 100, 0, false, true) }
         artbPart(joueur, ARTB.Part.SMOKE, 40, 3); artbFx(joueur, 'siphon', 40, 3); artbFxOnde(joueur, joueur, 8)
         artbStatut(joueur, '🕯 Damnation', 'lightPurple')
         return
       }
       if (artb2Sauver(ev, joueur, 'urne_ames', src)) {
         joueur.setHealth(Number(joueur.getMaxHealth()) * 0.3)
-        joueur.potionEffects.add('minecraft:resistance', 100, 4, false, true)
-        joueur.potionEffects.add('minecraft:invisibility', 100, 0, false, false)
-        joueur.potionEffects.add('minecraft:speed', 100, 1, false, true)
+        ajouterEffet(joueur, 'minecraft:resistance', 100, 4, false, true)
+        ajouterEffet(joueur, 'minecraft:invisibility', 100, 0, false, false)
+        ajouterEffet(joueur, 'minecraft:speed', 100, 1, false, true)
         artbPart(joueur, ARTB.Part.SOUL, 30, 1); artbFx(joueur, 'wisp', 40, 1.2); artbFxOnde(joueur, joueur, 5)
         artbStatut(joueur, '👻 Ascension : tu deviens esprit 5 s', 'aqua')
         return
@@ -5200,7 +5321,7 @@ try {
         joueur.setHealth(Number(joueur.getMaxHealth()) * 0.5)
         var md = ARTB.Magie.getPlayerMagicData(joueur)
         md.setMana(Number(joueur.getAttributeValue(ARTB.ManaMax)) * 0.5)
-        joueur.potionEffects.add('minecraft:resistance', 60, 4, false, true)
+        ajouterEffet(joueur, 'minecraft:resistance', 60, 4, false, true)
         artbOnde(joueur, joueur, 6, 8, 1.0, null, 0, 0)
         artbPart(joueur, ARTB.Part.END_ROD, 50, 2)
         artbStatut(joueur, '☯ Équilibre parfait', 'gold')
@@ -5300,11 +5421,11 @@ PlayerEvents.tick(function (event) {
     if (artbPorte(joueur, 'flocon_eternel')) joueur.setTicksFrozen(0)
     if (artbPorte(joueur, 'ceinture_frimas')) {
       var sous = String(joueur.level.getBlockState(joueur.blockPosition().below()).getBlock().builtInRegistryHolder().key().location())
-      if (/ice|snow/.test(sous)) joueur.potionEffects.add('minecraft:speed', 40, 1, false, false)
+      if (/ice|snow/.test(sous)) ajouterEffet(joueur, 'minecraft:speed', 40, 1, false, false)
     }
     if (immobile.s >= 2 && artbPorte(joueur, 'cristal_permafrost')) {
       var geles = artbEnnemisProches(joueur, 4, null)
-      for (var gg = 0; gg < geles.length; gg++) geles[gg].potionEffects.add('minecraft:slowness', 40, 1, false, true)
+      for (var gg = 0; gg < geles.length; gg++) ajouterEffet(geles[gg], 'minecraft:slowness', 40, 1, false, true)
       joueur.level.sendParticles(ARTB.Part.SNOWFLAKE, x, y + 0.2, z, 6, 2, 0.1, 2, 0.01); artbFx(joueur, 'neige', 8, 2)
     }
     // ── Électro-Sorcier ──
@@ -5336,7 +5457,7 @@ PlayerEvents.tick(function (event) {
     }
     if (joueur.tickCount % 40 === 7 && artbPorte(joueur, 'oeil_vide')) {
       var caches = joueur.level.getEntitiesOfClass(ARTB.Vivant, joueur.boundingBox.inflate(16))
-      for (var ci = 0; ci < caches.size(); ci++) if (caches.get(ci).isInvisible()) caches.get(ci).potionEffects.add('minecraft:glowing', 50, 0, false, false)
+      for (var ci = 0; ci < caches.size(); ci++) if (caches.get(ci).isInvisible()) ajouterEffet(caches.get(ci), 'minecraft:glowing', 50, 0, false, false)
     }
     var ent = artbPorte(joueur, 'ceinture_abime')
     if (ent) {
@@ -5350,35 +5471,35 @@ PlayerEvents.tick(function (event) {
       }
     }
     // ── Aéromancien ──
-    if (joueur.fallDistance > 4 && artbPorte(joueur, 'plume_zephyr')) joueur.potionEffects.add('minecraft:slow_falling', 40, 0, false, false)
+    if (joueur.fallDistance > 4 && artbPorte(joueur, 'plume_zephyr')) ajouterEffet(joueur, 'minecraft:slow_falling', 40, 0, false, false)
     if (immobile.s >= 2 && artbPorte(joueur, 'sifflet_vent')) {
       var vol = artbJoueursProches(joueur, 4, true)
-      for (var vv = 0; vv < vol.length; vv++) { vol[vv].potionEffects.add('minecraft:slow_falling', 60, 0, false, false); vol[vv].potionEffects.add('minecraft:jump_boost', 60, 1, false, false) }
+      for (var vv = 0; vv < vol.length; vv++) { ajouterEffet(vol[vv], 'minecraft:slow_falling', 60, 0, false, false); ajouterEffet(vol[vv], 'minecraft:jump_boost', 60, 1, false, false) }
       joueur.level.sendParticles(ARTB.Part.CLOUD, x, y + 0.2, z, 8, 1.5, 0.1, 1.5, 0.05)
     }
     if (artbPorte(joueur, 'ceinture_alizes')) {
       ARTB2.alizes[cle] = joueur.isSprinting() ? (ARTB2.alizes[cle] || 0) + 1 : 0
-      if (ARTB2.alizes[cle] >= 3) joueur.potionEffects.add('minecraft:speed', 40, 1, false, false)
+      if (ARTB2.alizes[cle] >= 3) ajouterEffet(joueur, 'minecraft:speed', 40, 1, false, false)
     }
     // ── Nécromancien ──
     var ecto = artbPorte(joueur, 'amulette_ectoplasme')
     if (ecto && Number(joueur.getHealth()) < Number(joueur.getMaxHealth()) * 0.3 && !joueur.getCooldowns().isOnCooldown(ecto.getItem())) {
       joueur.getCooldowns().addCooldown(ecto.getItem(), 1200)
-      joueur.potionEffects.add('minecraft:invisibility', 60, 0, false, false)
-      joueur.potionEffects.add('minecraft:speed', 60, 1, false, false)
+      ajouterEffet(joueur, 'minecraft:invisibility', 60, 0, false, false)
+      ajouterEffet(joueur, 'minecraft:speed', 60, 1, false, false)
       artbPart(joueur, ARTB.Part.SOUL, 15, 0.5)
       artbStatut(joueur, '💀 Tu te fonds dans l\'ectoplasme', 'green')
     }
     // ── Envoûteur ──
     if (joueur.tickCount % 40 === 7 && artbPorte(joueur, 'oeil_verite')) {
       var vus = joueur.level.getEntitiesOfClass(ARTB.Vivant, joueur.boundingBox.inflate(12))
-      for (var ov = 0; ov < vus.size(); ov++) { var e1 = vus.get(ov); if (e1.isInvisible() || e1.persistentData.getLong('artb_maudit') > t) e1.potionEffects.add('minecraft:glowing', 50, 0, false, false) }
+      for (var ov = 0; ov < vus.size(); ov++) { var e1 = vus.get(ov); if (e1.isInvisible() || e1.persistentData.getLong('artb_maudit') > t) ajouterEffet(e1, 'minecraft:glowing', 50, 0, false, false) }
     }
     if (joueur.tickCount % 40 === 7 && artbPorte(joueur, 'sceau_maudit') && Math.random() < 0.25) {
       var mauvais = ['minecraft:poison', 'minecraft:wither', 'minecraft:weakness', 'minecraft:slowness', 'minecraft:blindness', 'minecraft:hunger', 'minecraft:mining_fatigue']
       var victime = artb2PlusProche(joueur, artbEnnemisProches(joueur, 8, null))
       for (var mv = 0; victime && mv < mauvais.length; mv++) if (artbAEffet(joueur, mauvais[mv])) {
-        artbRetirerEffet(joueur, mauvais[mv]); victime.potionEffects.add(mauvais[mv], 100, 0, false, true)
+        artbRetirerEffet(joueur, mauvais[mv]); ajouterEffet(victime, mauvais[mv], 100, 0, false, true)
         artbPart(victime, ARTB.Part.SMOKE, 10, 0.4); artbStatut(joueur, '🕯 Le sceau renvoie ta malédiction', 'lightPurple'); break
       }
     }
@@ -5386,7 +5507,7 @@ PlayerEvents.tick(function (event) {
     if (immobile.s >= 3 && artbPorte(joueur, 'encens_ancestral')) {
       if (immobile.s === 3) artbStatut(joueur, '👻 Méditation', 'aqua')
       var med = artbJoueursProches(joueur, 5, true)
-      for (var me = 0; me < med.length; me++) { artbMana(med[me], 3); med[me].potionEffects.add('minecraft:resistance', 40, 0, false, false) }
+      for (var me = 0; me < med.length; me++) { artbMana(med[me], 3); ajouterEffet(med[me], 'minecraft:resistance', 40, 0, false, false) }
       joueur.level.sendParticles(ARTB.Part.SOUL, x, y + 0.5, z, 2, 1.5, 0.3, 1.5, 0.01); artbFx(joueur, 'wisp', 6, 1.5)
     }
     // ── Symétriste ──
@@ -5397,7 +5518,7 @@ PlayerEvents.tick(function (event) {
     }
     if (artbPorte(joueur, 'taijitu')) {
       var eq = artb2Pourcent(joueur)
-      if (Math.abs(eq.pv - eq.mana) <= 0.1) { joueur.potionEffects.add('minecraft:resistance', 40, 0, false, false); joueur.potionEffects.add('minecraft:strength', 40, 0, false, false) }
+      if (Math.abs(eq.pv - eq.mana) <= 0.1) { ajouterEffet(joueur, 'minecraft:resistance', 40, 0, false, false); ajouterEffet(joueur, 'minecraft:strength', 40, 0, false, false) }
     }
     // ── Technomancien ──
     var bat = artbPorte(joueur, 'batterie_arcanique')
@@ -5408,7 +5529,7 @@ PlayerEvents.tick(function (event) {
     }
     if (joueur.tickCount % 100 === 7 && artbPorte(joueur, 'scanner_arcanique')) {
       var reperes = artb2Hostiles(joueur, 24)
-      for (var sc = 0; sc < reperes.length; sc++) reperes[sc].potionEffects.add('minecraft:glowing', 80, 0, false, false)
+      for (var sc = 0; sc < reperes.length; sc++) ajouterEffet(reperes[sc], 'minecraft:glowing', 80, 0, false, false)
       artbFxOnde(joueur, joueur, 12)
       if (reperes.length) joueur.playNotifySound(ARTB.Sons.NOTE_BLOCK_BIT.value(), ARTB.SrcSon.PLAYERS, 0.4, 1.8)
     }
@@ -5417,7 +5538,7 @@ PlayerEvents.tick(function (event) {
       var pe = artb2Pourcent(joueur)
       if (Number(pe.md.getMana()) >= 20) { pe.md.setMana(Number(pe.md.getMana()) - 20); joueur.setAbsorptionAmount(4); artbFx(joueur, 'elec', 20, 0.6); artbStatut(joueur, '⚙ Bouclier énergétique rechargé', 'gold') }
     }
-    if (artbPorte(joueur, 'ceinture_outils')) joueur.potionEffects.add('minecraft:haste', 40, 0, false, false)
+    if (artbPorte(joueur, 'ceinture_outils')) ajouterEffet(joueur, 'minecraft:haste', 40, 0, false, false)
     if (artbPorte(joueur, 'collier_drone')) {
       var objets = joueur.level.getEntitiesOfClass(ARTB2.ObjetSol, joueur.boundingBox.inflate(8))
       for (var ob = 0; ob < objets.size(); ob++) {
