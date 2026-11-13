@@ -1,5 +1,5 @@
 {
- "version": "2026-11-13T20:25:43.200Z",
+ "version": "2026-11-13T20:28:00.649Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6457,8 +6457,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_desactives.js",
-   "sha1": "ddd95aeedda407299810f9b69405b9160cf34b3a",
-   "size": 64652
+   "sha1": "19e81bc1bcec7e93d3fa88007e52307e1d673255",
+   "size": 65561
   },
   {
    "path": "kubejs/server_scripts/classes_dump_armes.js",
