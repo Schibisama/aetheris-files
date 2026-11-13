@@ -4559,7 +4559,8 @@ try {
 
 // ───────── Note soporifique : vrai sommeil ─────────
 // Un joueur qui reçoit l'effet Somnolent (tunes_n_tomes:sleepy, Note soporifique du Barde) est couché de force dans un lit
-// qui apparaît sous lui le temps de l'effet, et ronfle (son mcrp:ronflement dans kubejs/assets/mcrp, comme « The World », entendu à 3 blocs). À la fin de
+// qui apparaît sous lui le temps de l'effet, et ronfle (son mcrp:ronflement dans kubejs/assets/mcrp, comme « The World ») : envoyé seulement aux joueurs à 3 blocs
+// ou moins, et joué presque à plein volume pour eux (atténuation réglée sur 8 blocs dans sounds.json). À la fin de
 // l'effet (ou à la mort / déconnexion), il se réveille, le lit disparaît sans rien lâcher et le ronflement s'arrête net.
 // Il ne peut pas quitter le lit avant la fin (ni être réveillé par un coup). Le sommeil forcé dure au plus 95 ticks
 // (l'effet en dure 100) : il ne compte donc jamais comme un vrai sommeil et ne fait jamais passer la nuit.

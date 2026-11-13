@@ -281,7 +281,7 @@
       {
         "name": "mcrp:ronflement",
         "stream": false,
-        "attenuation_distance": 3
+        "attenuation_distance": 8
       }
     ]
   }
