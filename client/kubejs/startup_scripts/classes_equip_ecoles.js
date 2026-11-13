@@ -625,3 +625,9 @@ ItemEvents.modification(function (event) {
     } catch (e) { console.error('[classes_equip_ecoles] durabilité maîtrise mélodique ' + piece + ' : ' + e) }
   })
 })
+
+// Épée du Courage (Monster Spellbooks, arme du Paladin) : le mod ne la range dans aucun onglet créatif,
+// elle n'apparaissait donc pas dans JEI. On l'ajoute à l'onglet équipement du mod, après le marteau du paladin.
+StartupEvents.modifyCreativeTab('monsterspellbooks:monsters_and_gear_tab', function (event) {
+  try { event.add(['monsterspellbooks:sword_of_courage']) } catch (e) { console.error('[classes_equip_ecoles] onglet Monster Spellbooks : ' + e) }
+})
