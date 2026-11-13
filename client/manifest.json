@@ -1,5 +1,5 @@
 {
- "version": "2026-11-13T14:41:19.682Z",
+ "version": "2026-11-13T15:57:56.170Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6452,8 +6452,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_desactives.js",
-   "sha1": "60f1dc76b56dc009684260bd2be5c9df9fa65e00",
-   "size": 64651
+   "sha1": "ddd95aeedda407299810f9b69405b9160cf34b3a",
+   "size": 64652
   },
   {
    "path": "kubejs/server_scripts/classes_dump_armes.js",
@@ -6467,8 +6467,8 @@
   },
   {
    "path": "kubejs/server_scripts/classes_rp.js",
-   "sha1": "908d5f58aae1c808ccf874d24870d3be50d87ae9",
-   "size": 307772
+   "sha1": "8ae5745a74d4e1d6e2020642f76a97f0cef0fbe1",
+   "size": 310114
   },
   {
    "path": "kubejs/server_scripts/classes_sets_hazen.js",
@@ -6507,8 +6507,8 @@
   },
   {
    "path": "kubejs/server_scripts/equipes.js",
-   "sha1": "9fadcc1f78fbcdae7ce10712dcab4a411897f5e8",
-   "size": 67066
+   "sha1": "265659a329227cfb24cac56dd25af59aa47e04d7",
+   "size": 73707
   },
   {
    "path": "kubejs/server_scripts/ftb_aide.js",
@@ -6647,8 +6647,8 @@
   },
   {
    "path": "mods/aetheris_armures-neoforge-1.21.1-1.0.0.jar",
-   "sha1": "2f2d0d7a478a51351ace0713dd1293d0ace19850",
-   "size": 519163
+   "sha1": "a1a5e64e4a8caec663186fbf3e3ca6e9c1238424",
+   "size": 521388
   },
   {
    "path": "mods/aetheris_balai-neoforge-1.21.1-1.4.0.jar",
