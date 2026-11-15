@@ -46,23 +46,78 @@ function rtpSur(niveau, x, y, z) {
   return pieds === 'minecraft:air' && tete === 'minecraft:air'
 }
 
-function rtpTrouver(niveau, cx, cz) {
-  var Types = Java.loadClass('net.minecraft.world.level.levelgen.Heightmap$Types')
-  var derniers = []
-  for (var i = 0; i < RTP.ESSAIS; i++) {
-    var p = rtpPoint(cx, cz)
-    try {
-      if (!niveau.worldBorder.isWithinBounds(p.x, p.z)) continue
-    } catch (e) {}
-    // Le jeu ne connaît la hauteur d'un point que si son chunk est chargé (sinon il répond « tout en bas »,
-    // ce qui faisait croire que l'endroit n'était pas sûr). On charge donc le chunk avant de mesurer.
-    try { niveau.getChunk(p.x >> 4, p.z >> 4) } catch (e2) { console.error('[rtp] chargement du chunk impossible : ' + e2) }
-    var y = niveau.getHeight(Types.MOTION_BLOCKING_NO_LEAVES, p.x, p.z)
-    if (rtpSur(niveau, p.x, y, p.z)) return { x: p.x + 0.5, y: y, z: p.z + 0.5 }
-    derniers.push(p.x + ',' + y + ',' + p.z)
+// Recherche SANS bloquer le serveur : l'ancien chargement direct des chunks (jusqu'à 30 chunks neufs à générer
+// d'un coup) gelait le serveur plus de 60 s et le faisait crasher (watchdog). Désormais chaque point demande le
+// chargement de son chunk en arrière-plan (ticket « portal », 15 s), et on vérifie à chaque tick s'il est prêt.
+var RTP_RECH = {}         // username -> recherche en cours
+var RTP_TICK = 0
+var RTP_ATTENTE_MAX = 300 // ticks d'attente maximum par point (15 s) avant d'en essayer un autre
+var RTP_CLASSES = null
+
+function rtpClasses() {
+  if (!RTP_CLASSES) RTP_CLASSES = {
+    Types: Java.loadClass('net.minecraft.world.level.levelgen.Heightmap$Types'),
+    Ticket: Java.loadClass('net.minecraft.server.level.TicketType'),
+    ChunkPos: Java.loadClass('net.minecraft.world.level.ChunkPos'),
+    BlockPos: Java.loadClass('net.minecraft.core.BlockPos')
   }
-  console.info('[rtp] aucun point sûr après ' + RTP.ESSAIS + ' essais (x,y,z testés) : ' + derniers.slice(0, 5).join(' | '))
-  return null
+  return RTP_CLASSES
+}
+
+// Tire le point suivant (dans la bordure du monde) et demande le chargement de son chunk. false = plus d'essais.
+function rtpPointSuivant(r) {
+  var C = rtpClasses()
+  while (r.essai < RTP.ESSAIS) {
+    r.essai++
+    var p = rtpPoint(r.cx, r.cz)
+    try { if (!r.niveau.worldBorder.isWithinBounds(p.x, p.z)) continue } catch (e) {}
+    try {
+      r.niveau.getChunkSource().addRegionTicket(C.Ticket.PORTAL, new C.ChunkPos(p.x >> 4, p.z >> 4), 1, new C.BlockPos(p.x, 64, p.z))
+    } catch (e2) { console.error('[rtp] demande de chargement impossible : ' + e2) }
+    r.point = p
+    r.depuis = RTP_TICK
+    return true
+  }
+  return false
+}
+
+function rtpFin(nom) { delete RTP_RECH[nom] }
+
+ServerEvents.tick(function (event) {
+  RTP_TICK++
+  for (var nom in RTP_RECH) {
+    var r = RTP_RECH[nom]
+    try {
+      var joueur = event.server.playerList.getPlayerByName(nom)
+      if (!joueur || joueur.isRemoved() || rtpDimension(rtpVal(joueur, 'level', 'level')) !== r.dim) { rtpFin(nom); continue }
+      var p = r.point
+      if (!r.niveau.getChunkSource().hasChunk(p.x >> 4, p.z >> 4)) {
+        if (RTP_TICK - r.depuis > RTP_ATTENTE_MAX) {
+          r.derniers.push(p.x + ',?,' + p.z)
+          if (!rtpPointSuivant(r)) { rtpEchec(joueur, r); rtpFin(nom) }
+        }
+        continue
+      }
+      var y = r.niveau.getHeight(rtpClasses().Types.MOTION_BLOCKING_NO_LEAVES, p.x, p.z)
+      if (rtpSur(r.niveau, p.x, y, p.z)) {
+        event.server.runCommandSilent('tp ' + nom + ' ' + (p.x + 0.5).toFixed(2) + ' ' + y + ' ' + (p.z + 0.5).toFixed(2))
+        joueur.persistentData.putLong(RTP_CLE, Date.now())
+        joueur.tell(Text.translate('mcrp.rtp.ok', p.x, y, p.z).green())
+        rtpFin(nom)
+        continue
+      }
+      r.derniers.push(p.x + ',' + y + ',' + p.z)
+      if (!rtpPointSuivant(r)) { rtpEchec(joueur, r); rtpFin(nom) }
+    } catch (e) {
+      console.error('[rtp] ' + e)
+      rtpFin(nom)
+    }
+  }
+})
+
+function rtpEchec(joueur, r) {
+  console.info('[rtp] aucun point sûr après ' + RTP.ESSAIS + ' essais (x,y,z testés) : ' + r.derniers.slice(0, 5).join(' | '))
+  joueur.tell(Text.translate('mcrp.rtp.introuvable').red())
 }
 
 function cmdRtp(ctx) {
@@ -84,15 +139,21 @@ function cmdRtp(ctx) {
     }
   }
 
-  var cible = rtpTrouver(niveau, Number(rtpVal(joueur, 'x', 'getX')), Number(rtpVal(joueur, 'z', 'getZ')))
-  if (!cible) {
+  var nom = String(joueur.username)
+  if (RTP_RECH[nom]) {
+    joueur.tell(Text.gray('Recherche d\'un endroit déjà en cours…'))
+    return 0
+  }
+  var r = {
+    niveau: niveau, dim: rtpDimension(niveau), essai: 0, point: null, depuis: 0, derniers: [],
+    cx: Number(rtpVal(joueur, 'x', 'getX')), cz: Number(rtpVal(joueur, 'z', 'getZ'))
+  }
+  if (!rtpPointSuivant(r)) {
     joueur.tell(Text.translate('mcrp.rtp.introuvable').red())
     return 0
   }
-
-  ctx.source.server.runCommandSilent('tp ' + joueur.username + ' ' + cible.x.toFixed(2) + ' ' + cible.y + ' ' + cible.z.toFixed(2))
-  data.putLong(RTP_CLE, Date.now())
-  joueur.tell(Text.translate('mcrp.rtp.ok', Math.floor(cible.x), cible.y, Math.floor(cible.z)).green())
+  RTP_RECH[nom] = r
+  joueur.tell(Text.gray('Recherche d\'un endroit sûr…'))
   return 1
 }
 
