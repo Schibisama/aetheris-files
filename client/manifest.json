@@ -1,5 +1,5 @@
 {
- "version": "2026-11-15T21:30:41.296Z",
+ "version": "2026-11-15T21:39:29.902Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6512,8 +6512,8 @@
   },
   {
    "path": "kubejs/server_scripts/equipes.js",
-   "sha1": "72b257060f198be0debf342abe072d9318b6bd41",
-   "size": 77511
+   "sha1": "5d7c80b254f948e57765984621169860f24a3192",
+   "size": 77464
   },
   {
    "path": "kubejs/server_scripts/ftb_aide.js",
