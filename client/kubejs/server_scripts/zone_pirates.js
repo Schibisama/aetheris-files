@@ -86,7 +86,7 @@ function zpMobs(niveau) {
 }
 
 // ───────────── Difficulté : vie x3 et dégâts x1,5 (les seuils de phase restent en % de la vie max) ─────────────
-var ZP_VIE_MULT = 5   // vie TOTALE visée (réelle + fictive) pour un joueur seul
+var ZP_VIE_MULT = 5   // vie max x5 (plafonnée) ; plus de vie fictive
 var ZP_VIE_ATTR_MAX = 1000   // part portée par la vraie vie max (attribut) : plafond Minecraft 1024. Le reste est fait par la vie fictive.
 var ZP_DEGATS_MULT = 1.5
 // Échelle selon le groupe (même principe que boss_zones.js) : chaque joueur AU-DELÀ DU PREMIER dans la zone ajoute ZP_VIE_PAR_JOUEUR
@@ -126,7 +126,10 @@ function zpVieMult(e) {
   try { var base = e.persistentData.getDouble('zp_buff3_base'); if (base > 0) reel = Math.max(1, e.maxHealth / base) } catch (x) {}
   return Math.max(1, ZP_VIE_MULT * (1 + ZP_VIE_PAR_JOUEUR * (zpNbJoueurs - 1)) / reel)
 }
+// Vie fictive DÉSACTIVÉE : la vie des pirates est uniquement leur vraie barre (vie max x5, plafonnée).
+var ZP_VIE_FICTIVE = false
 function zpVieFictive(e) {
+  if (!ZP_VIE_FICTIVE) return
   try {
     var id = String(e.uuid)
     var h = e.health
@@ -298,11 +301,13 @@ ServerEvents.tick(perfWrap('zone_pirates:177', function (event) {
       var sp = (idx >= 0) ? ZP.mobs[idx] : null
       var spx = sp ? sp.x : (ZP.x1 + ZP.x2) / 2, spy = sp ? sp.y : ZP.y1, spz = sp ? sp.z : (ZP.z1 + ZP.z2) / 2
       var presents = false
+      var dansZonePir = false   // un joueur dans la zone de combat : aucune régénération
       try {
         var jr = server.getPlayers()
         for (var qr = 0; qr < jr.size(); qr++) {
           var jp = jr.get(qr)
           if (jp.isSpectator() || !jp.isAlive()) continue
+          if (zpDans(jp.x, jp.z, 10)) { dansZonePir = true; presents = true; break }
           var rx = jp.x - spx, ry = jp.y - spy, rz = jp.z - spz
           var ex2 = jp.x - e.x, ey2 = jp.y - e.y, ez2 = jp.z - e.z
           // à moins de 30 blocs du point d'apparition OU du mob lui-même
@@ -324,7 +329,7 @@ ServerEvents.tick(perfWrap('zone_pirates:177', function (event) {
       }
       // mob incapable de blesser un joueur depuis REGEN_INUTILE_S secondes : il récupère REGEN_INUTILE_POURCENT % par seconde même s'il est frappé
       if (!pd.contains('bz_degats')) pd.putLong('bz_degats', Date.now())
-      if (!soignePir && zpCompteur % 20 === 0 && e.health < e.maxHealth && Date.now() - pd.getLong('bz_degats') >= REGEN_INUTILE_S * 1000) {
+      if (!soignePir && !dansZonePir && zpCompteur % 20 === 0 && e.health < e.maxHealth && Date.now() - pd.getLong('bz_degats') >= REGEN_INUTILE_S * 1000) {
         try { e.heal(e.maxHealth * REGEN_INUTILE_POURCENT / 100) } catch (x) {}
       }
     }

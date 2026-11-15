@@ -23,7 +23,8 @@ var perfWrap = (typeof perfWrap === 'function') ? perfWrap : (function () {
 // Règles communes :
 //  - un seul exemplaire à la fois ; il n'apparaît que si un joueur est proche (chunks chargés) ;
 //  - s'il sort de la zone : il perd sa cible et retourne au centre ; il oublie une cible qui quitte la zone ;
-//  - aucun joueur à moins de REGEN_DISTANCE blocs de son point d'apparition depuis REGEN_DELAI_S secondes : il récupère REGEN_POURCENT % de sa vie max par seconde ;
+//  - aucun joueur dans sa zone de combat ni à moins de REGEN_DISTANCE blocs depuis REGEN_DELAI_S secondes : il récupère REGEN_POURCENT % de sa vie max par seconde ;
+//    tant qu'un joueur est dans la zone de combat, il ne récupère RIEN ;
 //  - après sa mort : respawn au bout de respawnMin minutes (temps réel) ;
 //  - quête : chaque joueur qui a frappé le boss dans les 5 dernières minutes (tueur compris) reçoit l'objet de quête,
 //    s'il a accepté la quête.
@@ -169,7 +170,7 @@ function bzNiveau(server) {
   return null
 }
 // ───────────── Difficulté : vie x5 et dégâts x1,5 (les seuils de phase restent en % de la vie max) ─────────────
-var BZ_VIE_MULT = 5   // vie TOTALE visée (réelle + fictive) pour un joueur seul
+var BZ_VIE_MULT = 5   // vie max x5 (plafonnée à BZ_VIE_ATTR_MAX) ; plus de vie fictive
 var BZ_VIE_ATTR_MAX = 1000   // part portée par la vraie vie max (attribut) : plafond Minecraft 1024. Le reste est fait par la vie fictive.
 var BZ_DEGATS_MULT = 1.5
 // Échelle selon le groupe : chaque joueur AU-DELÀ DU PREMIER, présent dans la zone du boss (rayon + BZ_MARGE_GROUPE blocs), ajoute
@@ -218,7 +219,10 @@ function bzArmureMult(victime) {
 // on lui rend les 2/3 de la perte. Indépendant des évènements de dégâts ; ignoré sous 0,2 PV (le mod annule alors la mort lui-même).
 var bzHpPrec = {}
 var bzLogsVie = 0
+// Vie fictive DÉSACTIVÉE : la vie du boss est uniquement sa vraie barre (vie max x5, plafonnée à BZ_VIE_ATTR_MAX).
+var BZ_VIE_FICTIVE = false
 function bzVieFictive(e) {
+  if (!BZ_VIE_FICTIVE) return
   try {
     var id = String(e.uuid)
     var h = e.health
@@ -258,6 +262,20 @@ function bzBuff(server, e) {
 
 // Hors combat = aucun coup reçu depuis 20 s ET aucun joueur (hors spectateur) à moins de rayon + 30 blocs (le dragon perd souvent sa cible en vol).
 var BZ_AGGRO = 30   // distance (blocs) autour du boss à laquelle un joueur le provoque sans le frapper
+
+// Un joueur (vivant, hors spectateur) est-il dans la zone de combat du boss (rayon + BARRE_MARGE) ? Si oui : aucune régénération.
+function bzJoueurDansZone(server, b) {
+  try {
+    var js = server.getPlayers()
+    for (var i = 0; i < js.size(); i++) {
+      var j = js.get(i)
+      if (j.isSpectator() || !j.isAlive()) continue
+      var dx = j.x - b.x, dz = j.z - b.z
+      if (Math.sqrt(dx * dx + dz * dz) <= b.rayon + BARRE_MARGE) return true
+    }
+  } catch (x) {}
+  return false
+}
 
 function bzHorsCombat(server, e, b) {
   try {
@@ -563,7 +581,7 @@ ServerEvents.tick(perfWrap('boss_zones:466', function (event) {
         if (Math.sqrt(dx * dx + dz * dz) > b.rayon) {
           try { e.persistentData.putBoolean('bz_engage', false) } catch (x) {}
           bzRamener(event.server, e, b)
-          if (b.soigneSiSort) {
+          if (b.soigneSiSort && !bzJoueurDansZone(event.server, b)) {
             try { e.setHealth(e.maxHealth) } catch (x) { try { e.health = e.maxHealth } catch (y) {} }
             console.info('[boss_zones] ' + nom + ' est sorti de sa zone : retour au centre, vie restaurée.')
           }
@@ -610,7 +628,9 @@ ServerEvents.tick(perfWrap('boss_zones:466', function (event) {
         if (pvNow < pvPrec - 0.05) pd.putLong('bz_coup', Date.now())
         pd.putDouble('bz_pv_prec', pvNow)
         var frappe = pd.contains('bz_coup') && (Date.now() - pd.getLong('bz_coup') < REGEN_DELAI_S * 1000)
-        if (frappe || bzJoueurPres(event.server, e.x, e.y, e.z, REGEN_DISTANCE) || bzJoueurPres(event.server, b.x, b.y, b.z, REGEN_DISTANCE)) {
+        var joueurEnZone = bzCompteur % 20 === 0 && bzJoueurDansZone(event.server, b)   // personne dans la zone de combat = condition de toute regen
+        if (joueurEnZone) soigne = true   // bloque aussi la regen « boss inutile » ci-dessous
+        if (frappe || joueurEnZone || bzJoueurPres(event.server, e.x, e.y, e.z, REGEN_DISTANCE) || bzJoueurPres(event.server, b.x, b.y, b.z, REGEN_DISTANCE)) {
           pd.putLong('bz_libre_depuis', 0)
         } else {
           var depuis = pd.getLong('bz_libre_depuis')
