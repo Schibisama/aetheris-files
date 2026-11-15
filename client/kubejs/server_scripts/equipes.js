@@ -25,6 +25,7 @@
 // Règles des épreuves : un seul membre de l'équipe suffit pour participer (au moins 1 connecté), sans condition de distance ni de dimension entre les joueurs.
 // Chasse / boss : chaque mort = points pour l'équipe, jusqu'au maximum de l'épreuve. Bonus : les 3 premières équipes à finir gagnent
 // +30 %, +20 % et +10 % des points maximum en plus.
+// Boss de zone / zone pirate : sa mort compte pour l'équipe du tueur ET pour l'équipe de chaque joueur qui l'a frappé.
 
 var EQ = {
   CLE: 'mcrp_equipes',
@@ -252,10 +253,32 @@ function eqEpreuvesActives(serveur, type) {
 
 var EQ_CLASSE_ENEMY = null
 var EQ_DEBUG = true   // journal des morts comptées / ignorées pendant une épreuve (retirer quand tout marche)
+// Boss de zone / zone pirate : chaque joueur qui l'a frappé est noté ; à sa mort, l'équipe de CHAQUE joueur qui l'a frappé
+// (en plus de celle du tueur) progresse dans les épreuves en cours, une fois par équipe.
+var EQ_FRAPPEURS = {}   // uuid du boss -> { t: dernier coup (ms), j: { uuid joueur: true } }
+NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingDamageEvent$Post'), function (ev) {
+  try {
+    var cible = ev.getEntity()
+    if (!cible || !cible.tags || !(cible.tags.contains('boss_zone') || cible.tags.contains('pirate_zone'))) return
+    var att = eqAuteurJoueur(ev.getSource())
+    if (!att) return
+    var cle = String(cible.uuid), f = EQ_FRAPPEURS[cle]
+    if (!f) f = EQ_FRAPPEURS[cle] = { t: 0, j: {} }
+    f.t = Date.now(); f.j[String(att.uuid)] = true
+  } catch (e) {}
+})
+
 EntityEvents.death(function (event) {
   try {
     var mort = event.entity
     var src = event.source
+    var estBoss = false
+    try { estBoss = mort.tags.contains('boss_zone') || mort.tags.contains('pirate_zone') } catch (e) {}
+    var frappe = estBoss ? EQ_FRAPPEURS[String(mort.uuid)] : null
+    if (estBoss) delete EQ_FRAPPEURS[String(mort.uuid)]
+    // ménage : boss disparus sans mourir
+    var maintenant = Date.now()
+    for (var kf in EQ_FRAPPEURS) if (maintenant - EQ_FRAPPEURS[kf].t > 3600000) delete EQ_FRAPPEURS[kf]
     var tueur = null
     // L'auteur du coup : « actual » est ce qui marche sous KubeJS (utilisé par chasse_quetes.js), « player » et getEntity() en secours.
     try { var ac = src ? src.actual : null; if (ac && ac.isPlayer()) tueur = ac } catch (e0) {}
@@ -267,21 +290,27 @@ EntityEvents.death(function (event) {
     // sinon le dernier joueur à l'avoir frappé (crédit de la mort, comme pour l'expérience).
     if (!tueur) { try { tueur = eqAuteurJoueur(src) } catch (e5) {} }
     if (!tueur) { try { var kc = mort.getKillCredit(); if (kc && kc.isPlayer()) tueur = kc } catch (e6) {} }
-    if (!tueur) {
-      try { if (EQ_DEBUG && (mort.tags.contains('boss_zone') || mort.tags.contains('pirate_zone'))) console.info('[equipes] mort de boss ignorée : aucun joueur trouvé comme tueur (' + mort.type + ')') } catch (e7) {}
+    var serveur = tueur ? tueur.server : event.server
+    // Participants : le tueur, puis (pour un boss) tous les joueurs connectés qui l'ont frappé
+    var participants = tueur ? [tueur] : []
+    if (frappe) {
+      for (var u in frappe.j) {
+        if (tueur && u === String(tueur.uuid)) continue
+        var pj = null
+        try { pj = serveur.getPlayerList().getPlayer(EQ_UUID.fromString(u)) } catch (eu) {}
+        if (pj) participants.push(pj)
+      }
+    }
+    if (!participants.length) {
+      if (EQ_DEBUG && estBoss) console.info('[equipes] mort de boss ignorée : aucun joueur ne l\'a frappé (' + mort.type + ')')
       return
     }
-    var serveur = tueur.server
     var actives = eqEpreuvesActives(serveur, 'chasse').length + eqEpreuvesActives(serveur, 'boss').length
     if (!actives) return
     var type = String(mort.type)
-    var slug = eqEquipeDe(serveur, tueur)
-    if (!slug) { if (EQ_DEBUG) console.info('[equipes] mort ignorée : ' + tueur.username + ' n\'a pas d\'équipe (' + type + ')'); return }
-    var estBoss = false
-    try { estBoss = mort.tags.contains('boss_zone') || mort.tags.contains('pirate_zone') } catch (e) {}
-    var estMonstre = false
+    var estMonstre = estBoss   // un boss de zone compte aussi pour une épreuve de chasse
     // « getType() » renvoie l'identifiant (texte) sous KubeJS, pas l'EntityType : on teste isMonster() puis l'interface Enemy.
-    try { if (mort.isMonster()) estMonstre = true } catch (e2) {}
+    if (!estMonstre) { try { if (mort.isMonster()) estMonstre = true } catch (e2) {} }
     if (!estMonstre) {
       try {
         if (!EQ_CLASSE_ENEMY) EQ_CLASSE_ENEMY = Java.loadClass('net.minecraft.world.entity.monster.Enemy')
@@ -289,21 +318,28 @@ EntityEvents.death(function (event) {
       } catch (e3) {}
     }
     if (!estMonstre) { try { estMonstre = String(mort.getType().getCategory().getName()) === 'monster' } catch (e4) {} }
-    if (estBoss) estMonstre = true   // un boss de zone compte aussi pour une épreuve de chasse
     var chasses = estMonstre ? eqEpreuvesActives(serveur, 'chasse') : []
     var boss = estBoss ? eqEpreuvesActives(serveur, 'boss') : []
     if (!chasses.length && !boss.length) {
       if (EQ_DEBUG) console.info('[equipes] mort ignorée : ' + type + (estBoss ? ' (boss de zone)' : estMonstre ? ' (monstre)' : ' (ni monstre ni boss de zone)') + ' — aucune épreuve en cours ne compte ce type de mob')
       return
     }
-    var presents = eqEquipeComplete(serveur, slug, tueur, EQ.RAYON)
-    if (!presents) { if (EQ_DEBUG) console.info('[equipes] mort ignorée : aucun membre connecté pour ' + slug); return }
-    for (var i = 0; i < chasses.length; i++) {
-      if (!chasses[i].cible || chasses[i].cible === type) eqProgres(serveur, chasses[i], slug, 1, presents)
-      else if (EQ_DEBUG) console.info('[equipes] mort ignorée : ' + type + ' ≠ ' + chasses[i].cible)
+    var equipesVues = {}
+    for (var ip = 0; ip < participants.length; ip++) {
+      var joueur = participants[ip]
+      var slug = eqEquipeDe(serveur, joueur)
+      if (!slug) { if (EQ_DEBUG) console.info('[equipes] mort ignorée pour ' + joueur.username + ' : pas d\'équipe (' + type + ')'); continue }
+      if (equipesVues[slug]) continue
+      equipesVues[slug] = true
+      var presents = eqEquipeComplete(serveur, slug, joueur, EQ.RAYON)
+      if (!presents) continue
+      for (var i = 0; i < chasses.length; i++) {
+        if (!chasses[i].cible || chasses[i].cible === type) eqProgres(serveur, chasses[i], slug, 1, presents)
+        else if (EQ_DEBUG) console.info('[equipes] mort ignorée : ' + type + ' ≠ ' + chasses[i].cible)
+      }
+      for (var b = 0; b < boss.length; b++) if (!boss[b].cible || boss[b].cible === type) eqProgres(serveur, boss[b], slug, 1, presents)
+      if (EQ_DEBUG) console.info('[equipes] mort comptée : ' + type + ' pour ' + joueur.username + ' (' + slug + ')' + (joueur === tueur ? '' : ' — a frappé le boss'))
     }
-    for (var j = 0; j < boss.length; j++) if (!boss[j].cible || boss[j].cible === type) eqProgres(serveur, boss[j], slug, 1, presents)
-    if (EQ_DEBUG) console.info('[equipes] mort comptée : ' + type + ' par ' + tueur.username + ' (' + slug + ')')
   } catch (e) { console.error('[equipes] mort : ' + e) }
 })
 
