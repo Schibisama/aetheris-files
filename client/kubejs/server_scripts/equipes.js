@@ -7,7 +7,7 @@
 //   Dans la liste des joueurs (Tab), chaque joueur affiche le logo et le nom de son équipe, et les joueurs sont rangés par équipe (voir pseudo.js).
 //   /equipe inviter <joueur>   invite un joueur (3 membres maximum)
 //   /equipe rejoindre          accepte la dernière invitation reçue
-//   /equipe quitter            quitte son équipe (délai avant d'en rejoindre une autre : EQ.DELAI_QUITTER_H heures)
+//   /equipe quitter            quitte son équipe (délai avant d'en rejoindre une autre : EQ.DELAI_QUITTER_H heures, 0 = aucun)
 //   /equipe info [nom]         membres et points        /equipe liste    toutes les équipes
 //   /classement                classement permanent     /classement trimestre     /classement epreuve [n°]
 //   /epreuve liste             épreuves en cours        /epreuve rendre           rend les objets d'une épreuve de collecte
@@ -32,7 +32,7 @@ var EQ = {
   MAX_MEMBRES: 3,
   RAYON: 64,
   RAYON_RENDRE: 10,
-  DELAI_QUITTER_H: 72,
+  DELAI_QUITTER_H: 0,   // 0 = aucun délai : on peut rejoindre ou recréer une équipe tout de suite après en avoir quitté une
   BONUS: [0.3, 0.2, 0.1]
 }
 // 29 logos (caractères de la police kubejs:equipes) et 15 couleurs (couleurs du chat de Minecraft)
