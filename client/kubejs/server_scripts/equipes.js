@@ -354,12 +354,12 @@ EntityEvents.death(function (event) {
       equipesVues[slug] = true
       var presents = eqEquipeComplete(serveur, slug, joueur, EQ.RAYON)
       if (!presents) continue
+      var compte = 0
       for (var i = 0; i < chasses.length; i++) {
-        if (!chasses[i].cible || chasses[i].cible === type) eqProgres(serveur, chasses[i], slug, 1, presents)
-        else if (EQ_DEBUG) console.info('[equipes] mort ignorée : ' + type + ' ≠ ' + chasses[i].cible)
+        if (!chasses[i].cible || chasses[i].cible === type) { eqProgres(serveur, chasses[i], slug, 1, presents); compte++ }
       }
-      for (var b = 0; b < boss.length; b++) if (!boss[b].cible || boss[b].cible === type) eqProgres(serveur, boss[b], slug, 1, presents)
-      if (EQ_DEBUG) console.info('[equipes] mort comptée : ' + type + ' pour ' + joueur.username + ' (' + slug + ')' + (joueur === tueur ? '' : ' — a frappé le boss'))
+      for (var b = 0; b < boss.length; b++) if (!boss[b].cible || boss[b].cible === type) { eqProgres(serveur, boss[b], slug, 1, presents); compte++ }
+      if (EQ_DEBUG && compte) console.info('[equipes] mort comptée : ' + type + ' pour ' + joueur.username + ' (' + slug + ')' + (joueur === tueur ? '' : ' — a frappé le boss'))
     }
   } catch (e) { console.error('[equipes] mort : ' + e) }
 })
