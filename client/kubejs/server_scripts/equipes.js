@@ -263,7 +263,14 @@ EntityEvents.death(function (event) {
     if (!tueur) {
       try { var ent0 = src ? src.getEntity() : null; if (ent0 && ent0.isPlayer()) tueur = ent0 } catch (e00) {}
     }
-    if (!tueur) return
+    // Coup fatal porté par une invocation, un familier, un sort à retardement… : le joueur qui en est l'auteur,
+    // sinon le dernier joueur à l'avoir frappé (crédit de la mort, comme pour l'expérience).
+    if (!tueur) { try { tueur = eqAuteurJoueur(src) } catch (e5) {} }
+    if (!tueur) { try { var kc = mort.getKillCredit(); if (kc && kc.isPlayer()) tueur = kc } catch (e6) {} }
+    if (!tueur) {
+      try { if (EQ_DEBUG && (mort.tags.contains('boss_zone') || mort.tags.contains('pirate_zone'))) console.info('[equipes] mort de boss ignorée : aucun joueur trouvé comme tueur (' + mort.type + ')') } catch (e7) {}
+      return
+    }
     var serveur = tueur.server
     var actives = eqEpreuvesActives(serveur, 'chasse').length + eqEpreuvesActives(serveur, 'boss').length
     if (!actives) return
@@ -282,6 +289,7 @@ EntityEvents.death(function (event) {
       } catch (e3) {}
     }
     if (!estMonstre) { try { estMonstre = String(mort.getType().getCategory().getName()) === 'monster' } catch (e4) {} }
+    if (estBoss) estMonstre = true   // un boss de zone compte aussi pour une épreuve de chasse
     var chasses = estMonstre ? eqEpreuvesActives(serveur, 'chasse') : []
     var boss = estBoss ? eqEpreuvesActives(serveur, 'boss') : []
     if (!chasses.length && !boss.length) {
