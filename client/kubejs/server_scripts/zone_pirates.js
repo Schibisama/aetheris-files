@@ -445,6 +445,14 @@ try {
         try { if (zpTirAllie(ev)) { ev.setCanceled(true); return } } catch (eF) {}
         var att = null
         try { att = ev.getSource().actual } catch (e0) {}
+        // un joueur (ou son invocation) frappe un pirate : noté pour la jambe de bois (il faut un coup dans les 5 dernières minutes)
+        try {
+          var vise = ev.getEntity()
+          if (vise && vise.tags && vise.tags.contains('pirate_zone')) {
+            var auteur = (att && att.isPlayer()) ? att : (typeof eqAuteurJoueur === 'function' ? eqAuteurJoueur(ev.getSource()) : null)
+            if (auteur && auteur.isPlayer()) ZP_FRAPPEURS[String(auteur.username)] = Date.now()
+          }
+        } catch (eP) {}
         if (!att || !att.tags || !att.tags.contains('pirate_zone')) return
         var mult = ZP_DEGATS_MULT * (1 + ZP_DEGATS_PAR_JOUEUR * (zpNbJoueurs - 1))
         try { if (ev.getEntity().isPlayer()) mult = mult * zpArmureMult(ev.getEntity()) } catch (e5) {}
@@ -481,6 +489,8 @@ try {
   console.info('[zone_pirates] Aucun autre mob ne peut apparaître dans la zone.')
 } catch (e) { console.error('[zone_pirates] blocage des apparitions indisponible : ' + e) }
 
+var ZP_FRAPPEURS = {}   // nom du joueur -> heure de son dernier coup sur un pirate (ms)
+var ZP_FENETRE_COUP_MS = 5 * 60 * 1000
 // (nettoyage prolongé à 30 s : Scylla lâche son butin à la fin de son animation de mort)
 // ───────── Mort d'un mob : le dernier lâche la jambe de bois ─────────
 EntityEvents.death(function (event) {
@@ -496,10 +506,27 @@ EntityEvents.death(function (event) {
     console.info('[zone_pirates] mort de ' + String(e.type) + ' : ' + reste + ' restant(s).')
     if (reste === 0) {
       d.putLong('pirates_respawn', Date.now() + ZP.respawnMin * 60 * 1000)
-      server.runCommandSilent('execute in minecraft:overworld run summon item ' + e.x + ' ' + (e.y + 0.5) + ' ' + e.z +
-        ' {Item:{id:"kubejs:jambe_de_bois",count:1},PickupDelay:20,Glowing:1b,Invulnerable:1b,Age:-32768s}')
-      try { server.tell(Text.gold('[Sculk Castle] ').append(Text.gray('Le dernier gardien s\'effondre... quelque chose de bois roule sur le sol.'))) } catch (x) {}
-      console.info('[zone_pirates] dernier mort : la jambe de bois est tombée.')
+      // Jambe de bois : à CHAQUE joueur qui a frappé un pirate dans les 5 dernières minutes et qui a accepté la quête.
+      // Personne dans ce cas : elle tombe au sol comme avant.
+      var recus = []
+      for (var nomF in ZP_FRAPPEURS) {
+        if (Date.now() - ZP_FRAPPEURS[nomF] > ZP_FENETRE_COUP_MS) continue
+        var jF = null
+        try { jF = server.getPlayerList().getPlayerByName(nomF) } catch (eN) {}
+        if (!jF || jF.persistentData.getInt(ZP.quete.cle) !== 1) continue
+        jF.give(Item.of(ZP.quete.objet, 1))
+        recus.push(nomF)
+      }
+      ZP_FRAPPEURS = {}
+      if (recus.length) {
+        try { server.tell(Text.gold('[Sculk Castle] ').append(Text.gray('Le dernier gardien s\'effondre... ' + recus.join(', ') + ' récupère' + (recus.length > 1 ? 'nt chacun' : '') + ' une jambe de bois.'))) } catch (x0) {}
+        console.info('[zone_pirates] dernier mort : jambe de bois remise à ' + recus.join(', '))
+      } else {
+        server.runCommandSilent('execute in minecraft:overworld run summon item ' + e.x + ' ' + (e.y + 0.5) + ' ' + e.z +
+          ' {Item:{id:"kubejs:jambe_de_bois",count:1},PickupDelay:20,Glowing:1b,Invulnerable:1b,Age:-32768s}')
+        try { server.tell(Text.gold('[Sculk Castle] ').append(Text.gray('Le dernier gardien s\'effondre... quelque chose de bois roule sur le sol.'))) } catch (x) {}
+        console.info('[zone_pirates] dernier mort : la jambe de bois est tombée (aucun joueur avec la quête n\'a frappé de pirate ces 5 dernières minutes).')
+      }
       try { if (typeof autelBossTue === 'function') autelBossTue(server, 'pirates') } catch (eA) { console.error('[zone_pirates] autel : ' + eA) }   // étape Force de l'Autel du Sceau
     }
   } catch (err) {

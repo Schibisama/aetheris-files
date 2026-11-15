@@ -25,7 +25,8 @@ var perfWrap = (typeof perfWrap === 'function') ? perfWrap : (function () {
 //  - s'il sort de la zone : il perd sa cible et retourne au centre ; il oublie une cible qui quitte la zone ;
 //  - aucun joueur à moins de REGEN_DISTANCE blocs de son point d'apparition depuis REGEN_DELAI_S secondes : il récupère REGEN_POURCENT % de sa vie max par seconde ;
 //  - après sa mort : respawn au bout de respawnMin minutes (temps réel) ;
-//  - quête : SEUL le joueur qui porte le coup fatal reçoit le crédit (et seulement s'il a accepté la quête).
+//  - quête : chaque joueur qui a frappé le boss dans les 5 dernières minutes (tueur compris) reçoit l'objet de quête,
+//    s'il a accepté la quête.
 var REGEN_DELAI_S = 10   // secondes sans aucun joueur à moins de REGEN_DISTANCE blocs du point d'apparition
 var REGEN_POURCENT = 3   // % de la vie max récupérés par seconde
 var REGEN_DISTANCE = 30
@@ -482,8 +483,9 @@ function bzMort(server, nom, b, e, src) {
     tueur = nomT ? bzJoueurParNom(server, nomT) : null
   }
   delete bzDernierCoup[cle]
-  var parts = bzParticipants[cle] || {}
+  var partsTout = bzParticipants[cle] || {}, parts = {}
   delete bzParticipants[cle]
+  for (var npT in partsTout) if (Date.now() - partsTout[npT] <= BZ_FENETRE_COUP_MS) parts[npT] = true
   try {   // quête « Terreur des gardiens » : le tueur et ceux qui ont frappé le boss
     if (tueur && tueur.isPlayer()) ftbFait(tueur, 'boss')
     for (var npF in parts) { var pjF = bzJoueurParNom(server, npF); if (pjF) ftbFait(pjF, 'boss') }
@@ -491,22 +493,10 @@ function bzMort(server, nom, b, e, src) {
   console.info('[boss_zones] ' + nom + ' vaincu' + (tueur ? ' par ' + tueur.username : ' (aucun joueur identifié)'))
   try { if (typeof autelBossTue === 'function') autelBossTue(server, nom) } catch (eA) { console.error('[boss_zones] autel : ' + eA) }   // étape Force de l'Autel du Sceau
   if (!b.quete) return
-  // Objet de quête : au SEUL joueur du coup fatal s'il a la quête active ; sinon (coup fatal non identifié, sort, ou tueur sans la quête)
-  // repli sur ceux qui ont frappé le boss, puis sur les joueurs à moins de 80 blocs, du moment que la quête est acceptée.
+  // Objet de quête : à CHAQUE joueur qui a frappé le boss dans les 5 dernières minutes (tueur compris), s'il a la quête acceptée.
   var cibles = {}
-  var tueurOk = false
-  try { tueurOk = !!tueur && tueur.isPlayer() && tueur.persistentData.getInt(b.quete.cle) === 1 } catch (eT) {}
-  if (tueurOk) cibles[String(tueur.username)] = true
-  else {
-    for (var np in parts) cibles[np] = true
-    try {
-      var ps = server.players
-      for (var i = 0; i < ps.length; i++) {
-        var dxp = ps[i].x - e.x, dzp = ps[i].z - e.z
-        if (Math.sqrt(dxp * dxp + dzp * dzp) <= 80) cibles[String(ps[i].username)] = true
-      }
-    } catch (eN) {}
-  }
+  if (tueur && tueur.isPlayer()) cibles[String(tueur.username)] = true
+  for (var np in parts) cibles[np] = true
   var donnes = 0, sansQuete = []
   for (var nomJ in cibles) {
     var j = bzJoueurParNom(server, nomJ)
@@ -530,7 +520,8 @@ function bzEnMort(e) {
 }
 
 var bzDernierCoup = {}
-var bzParticipants = {}   // uuid du boss -> { nom du joueur: true } : tous ceux qui l'ont frappé
+var bzParticipants = {}   // uuid du boss -> { nom du joueur: heure de son dernier coup (ms) } : tous ceux qui l'ont frappé
+var BZ_FENETRE_COUP_MS = 5 * 60 * 1000   // il faut avoir frappé le boss dans les 5 dernières minutes pour avoir le crédit
 
 ServerEvents.tick(perfWrap('boss_zones:466', function (event) {
   bzCompteur++
@@ -661,13 +652,15 @@ try {
       try {
         var cible = ev.getEntity()
         var att = null
-        try { att = ev.getSource().actual } catch (e0) {}
-        if (!att || !att.isPlayer()) return
         if (!cible.tags || !cible.tags.contains('boss_zone')) return
+        try { att = ev.getSource().actual } catch (e0) {}
+        // coup d'une invocation / d'un familier : on remonte à son maître (fonction de equipes.js)
+        if ((!att || !att.isPlayer()) && typeof eqAuteurJoueur === 'function') { try { att = eqAuteurJoueur(ev.getSource()) } catch (e2) {} }
+        if (!att || !att.isPlayer()) return
         bzDernierCoup[String(cible.uuid)] = String(att.username)
         var cleP = String(cible.uuid)
         if (!bzParticipants[cleP]) bzParticipants[cleP] = {}
-        bzParticipants[cleP][String(att.username)] = true
+        bzParticipants[cleP][String(att.username)] = Date.now()
       } catch (e) {}
     }
   )
@@ -786,7 +779,7 @@ function bzNettoyer(niveau, x, y, z) {
 
 var bzNettoyages = []   // butin parasite (lâché hors événement) à effacer autour des boss de zone morts
 
-// Mort d'un boss : timer de respawn + crédit de quête au SEUL joueur qui a porté le coup fatal
+// Mort d'un boss : timer de respawn + objet de quête à chaque joueur qui l'a frappé dans les 5 dernières minutes
 EntityEvents.death(function (event) {
   try {
     var type = String(event.entity.type)

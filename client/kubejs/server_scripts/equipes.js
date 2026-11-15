@@ -14,7 +14,7 @@
 // Professeurs et ops :
 //   /points <équipe> <nombre> [raison]           donne ou retire des points (permanent + trimestre)
 //   /epreuve lancer chasse <quantité> <points> [mob]       ex. /epreuve lancer chasse 50 30   ou   chasse 20 40 minecraft:zombie
-//   /epreuve lancer boss <points> [mob]                    un boss de zone ou de la zone pirate (ou un boss précis)
+//   /epreuve lancer boss <points> [mob]                    un boss (de zone, pirate, ou boss d'un mod — tag c:bosses) ou un boss précis
 //   /epreuve lancer collecte <objet> <quantité> <points>   ex. /epreuve lancer collecte minecraft:diamond 10 50
 //   /epreuve recompense <n°> <objet> [nombre]              objet donné à chaque membre de l'équipe qui réussit
 //   /epreuve fin <n°>          clôt l'épreuve (le classement de l'épreuve reste consultable)
@@ -25,7 +25,8 @@
 // Règles des épreuves : un seul membre de l'équipe suffit pour participer (au moins 1 connecté), sans condition de distance ni de dimension entre les joueurs.
 // Chasse / boss : chaque mort = points pour l'équipe, jusqu'au maximum de l'épreuve. Bonus : les 3 premières équipes à finir gagnent
 // +30 %, +20 % et +10 % des points maximum en plus.
-// Boss de zone / zone pirate : sa mort compte pour l'équipe du tueur ET pour l'équipe de chaque joueur qui l'a frappé.
+// Boss (de zone, pirates ou boss de mod) : sa mort compte pour l'équipe du tueur ET pour celle de chaque joueur qui l'a frappé
+// dans les 5 dernières minutes.
 
 var EQ = {
   CLE: 'mcrp_equipes',
@@ -187,9 +188,9 @@ function eqEpreuve(serveur, id) {
 function eqDescEpreuve(ep, en) {
   var mob = ep.cible ? ' (' + ep.cible + ')' : ''
   if (ep.pm && ep.type === 'chasse') return en ? 'Hunt: ' + ep.points + ' pt per monster' + mob + ', max ' + ep.quantite : 'Chasse : ' + ep.points + ' pt par monstre' + mob + ', max ' + ep.quantite
-  if (ep.pm && ep.type === 'boss') return en ? 'Boss: ' + ep.points + ' pt per zone boss' + mob + ', max ' + ep.quantite : 'Boss : ' + ep.points + ' pt par boss de zone' + mob + ', max ' + ep.quantite
+  if (ep.pm && ep.type === 'boss') return en ? 'Boss: ' + ep.points + ' pt per boss' + mob + ', max ' + ep.quantite : 'Boss : ' + ep.points + ' pt par boss' + mob + ', max ' + ep.quantite
   if (ep.type === 'chasse') return en ? 'Hunt: kill ' + ep.quantite + ' monsters' + mob : 'Chasse : tuer ' + ep.quantite + ' monstres' + mob
-  if (ep.type === 'boss') return en ? 'Boss: defeat a zone boss' + mob : 'Boss : vaincre un boss de zone' + mob
+  if (ep.type === 'boss') return en ? 'Boss: defeat a boss' + mob : 'Boss : vaincre un boss' + mob
   return en ? 'Collection: bring ' + ep.quantite + ' × ' + ep.cible : 'Collecte : rapporter ' + ep.quantite + ' × ' + ep.cible
 }
 // Fait avancer l'épreuve ep pour l'équipe slug ; termine si l'objectif est atteint.
@@ -253,18 +254,38 @@ function eqEpreuvesActives(serveur, type) {
 
 var EQ_CLASSE_ENEMY = null
 var EQ_DEBUG = true   // journal des morts comptées / ignorées pendant une épreuve (retirer quand tout marche)
-// Boss de zone / zone pirate : chaque joueur qui l'a frappé est noté ; à sa mort, l'équipe de CHAQUE joueur qui l'a frappé
-// (en plus de celle du tueur) progresse dans les épreuves en cours, une fois par équipe.
-var EQ_FRAPPEURS = {}   // uuid du boss -> { t: dernier coup (ms), j: { uuid joueur: true } }
+// Boss : boss de zone, mobs de la zone pirate, et tout mob du tag c:bosses (boss des mods : Cataclysm, Mowzie, etc.).
+// Chaque joueur qui le frappe est noté avec l'heure ; à sa mort, l'équipe de chaque joueur qui l'a frappé dans les
+// 5 dernières minutes (en plus de celle du tueur) progresse dans les épreuves en cours, une fois par équipe.
+var EQ_FRAPPEURS = {}   // uuid du boss -> { t: dernier coup (ms), j: { uuid joueur: heure du dernier coup (ms) } }
+var EQ_FENETRE_COUP_MS = 5 * 60 * 1000
+var EQ_BOSS_TYPES = null
+function eqEstBoss(ent) {
+  try { if (ent.tags && (ent.tags.contains('boss_zone') || ent.tags.contains('pirate_zone'))) return true } catch (e) {}
+  if (!EQ_BOSS_TYPES) {
+    EQ_BOSS_TYPES = {}
+    try {
+      var RL = Java.loadClass('net.minecraft.resources.ResourceLocation'), TK = Java.loadClass('net.minecraft.tags.TagKey')
+      var REG = Java.loadClass('net.minecraft.core.registries.BuiltInRegistries').ENTITY_TYPE
+      var tag = REG.getTag(TK.create(Java.loadClass('net.minecraft.core.registries.Registries').ENTITY_TYPE, RL.parse('c:bosses')))
+      if (tag.isPresent()) {
+        var hs = tag.get()
+        for (var i = 0; i < hs.size(); i++) EQ_BOSS_TYPES[String(hs.get(i).unwrapKey().get().location())] = true
+      }
+      console.info('[equipes] ' + Object.keys(EQ_BOSS_TYPES).length + ' types de boss (tag c:bosses) : ' + Object.keys(EQ_BOSS_TYPES).join(', '))
+    } catch (eT) { console.error('[equipes] tag c:bosses illisible : ' + eT) }
+  }
+  return !!EQ_BOSS_TYPES[String(ent.type)]
+}
 NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.living.LivingDamageEvent$Post'), function (ev) {
   try {
     var cible = ev.getEntity()
-    if (!cible || !cible.tags || !(cible.tags.contains('boss_zone') || cible.tags.contains('pirate_zone'))) return
+    if (!cible || !eqEstBoss(cible)) return
     var att = eqAuteurJoueur(ev.getSource())
     if (!att) return
     var cle = String(cible.uuid), f = EQ_FRAPPEURS[cle]
     if (!f) f = EQ_FRAPPEURS[cle] = { t: 0, j: {} }
-    f.t = Date.now(); f.j[String(att.uuid)] = true
+    f.t = Date.now(); f.j[String(att.uuid)] = f.t
   } catch (e) {}
 })
 
@@ -272,8 +293,7 @@ EntityEvents.death(function (event) {
   try {
     var mort = event.entity
     var src = event.source
-    var estBoss = false
-    try { estBoss = mort.tags.contains('boss_zone') || mort.tags.contains('pirate_zone') } catch (e) {}
+    var estBoss = eqEstBoss(mort)
     var frappe = estBoss ? EQ_FRAPPEURS[String(mort.uuid)] : null
     if (estBoss) delete EQ_FRAPPEURS[String(mort.uuid)]
     // ménage : boss disparus sans mourir
@@ -296,6 +316,7 @@ EntityEvents.death(function (event) {
     if (frappe) {
       for (var u in frappe.j) {
         if (tueur && u === String(tueur.uuid)) continue
+        if (maintenant - frappe.j[u] > EQ_FENETRE_COUP_MS) continue   // dernier coup trop ancien (plus de 5 min)
         var pj = null
         try { pj = serveur.getPlayerList().getPlayer(EQ_UUID.fromString(u)) } catch (eu) {}
         if (pj) participants.push(pj)
@@ -308,7 +329,7 @@ EntityEvents.death(function (event) {
     var actives = eqEpreuvesActives(serveur, 'chasse').length + eqEpreuvesActives(serveur, 'boss').length
     if (!actives) return
     var type = String(mort.type)
-    var estMonstre = estBoss   // un boss de zone compte aussi pour une épreuve de chasse
+    var estMonstre = estBoss   // un boss compte aussi pour une épreuve de chasse
     // « getType() » renvoie l'identifiant (texte) sous KubeJS, pas l'EntityType : on teste isMonster() puis l'interface Enemy.
     if (!estMonstre) { try { if (mort.isMonster()) estMonstre = true } catch (e2) {} }
     if (!estMonstre) {
@@ -321,7 +342,7 @@ EntityEvents.death(function (event) {
     var chasses = estMonstre ? eqEpreuvesActives(serveur, 'chasse') : []
     var boss = estBoss ? eqEpreuvesActives(serveur, 'boss') : []
     if (!chasses.length && !boss.length) {
-      if (EQ_DEBUG) console.info('[equipes] mort ignorée : ' + type + (estBoss ? ' (boss de zone)' : estMonstre ? ' (monstre)' : ' (ni monstre ni boss de zone)') + ' — aucune épreuve en cours ne compte ce type de mob')
+      if (EQ_DEBUG) console.info('[equipes] mort ignorée : ' + type + (estBoss ? ' (boss)' : estMonstre ? ' (monstre)' : ' (ni monstre ni boss)') + ' — aucune épreuve en cours ne compte ce type de mob')
       return
     }
     var equipesVues = {}
@@ -1019,7 +1040,7 @@ function eqDescJson(ep) {
   if (ep.pm) {
     // Texte construit sur place (pas de clé de langue à installer chez les joueurs) ; le nom du mob vient de la traduction du jeu.
     var rm = ep.cible ? String(ep.cible).split(':') : null
-    var cibleTxt = rm ? { translate: 'entity.' + rm[0] + '.' + rm[1] } : { text: ep.type === 'boss' ? 'boss de zone' : 'monstre' }
+    var cibleTxt = rm ? { translate: 'entity.' + rm[0] + '.' + rm[1] } : { text: ep.type === 'boss' ? 'boss' : 'monstre' }
     return { text: '', color: 'light_purple', extra: [
       { text: (ep.type === 'boss' ? 'Boss : ' : 'Chasse : ') + ep.points + ' pt par ' }, cibleTxt, { text: ' (max ' + ep.quantite + ')' }] }
   }
