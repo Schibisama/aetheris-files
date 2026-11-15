@@ -289,6 +289,16 @@ NativeEvents.onEvent(Java.loadClass('net.neoforged.neoforge.event.entity.living.
   } catch (e) {}
 })
 
+// Mobs qui se divisent en mourant : leurs morceaux comptent aussi pour une épreuve qui vise le mob d'origine.
+var EQ_VARIANTES = {
+  'born_in_chaos_v1:siamese_skeletons': ['born_in_chaos_v1:siamese_skeletonsleft', 'born_in_chaos_v1:siamese_skeletonsright']
+}
+function eqCibleOk(cible, type) {
+  if (!cible || cible === type) return true
+  var v = EQ_VARIANTES[cible]
+  return !!(v && v.indexOf(type) !== -1)
+}
+
 EntityEvents.death(function (event) {
   try {
     var mort = event.entity
@@ -356,9 +366,9 @@ EntityEvents.death(function (event) {
       if (!presents) continue
       var compte = 0
       for (var i = 0; i < chasses.length; i++) {
-        if (!chasses[i].cible || chasses[i].cible === type) { eqProgres(serveur, chasses[i], slug, 1, presents); compte++ }
+        if (eqCibleOk(chasses[i].cible, type)) { eqProgres(serveur, chasses[i], slug, 1, presents); compte++ }
       }
-      for (var b = 0; b < boss.length; b++) if (!boss[b].cible || boss[b].cible === type) { eqProgres(serveur, boss[b], slug, 1, presents); compte++ }
+      for (var b = 0; b < boss.length; b++) if (eqCibleOk(boss[b].cible, type)) { eqProgres(serveur, boss[b], slug, 1, presents); compte++ }
       if (EQ_DEBUG && compte) console.info('[equipes] mort comptée : ' + type + ' pour ' + joueur.username + ' (' + slug + ')' + (joueur === tueur ? '' : ' — a frappé le boss'))
     }
   } catch (e) { console.error('[equipes] mort : ' + e) }
