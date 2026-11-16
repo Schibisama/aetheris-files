@@ -1,5 +1,5 @@
 {
- "version": "2026-11-16T11:25:34.182Z",
+ "version": "2026-11-16T11:35:34.317Z",
  "minecraft": "1.21.1",
  "neoforge": "21.1.264",
  "managed": [
@@ -6652,8 +6652,8 @@
   },
   {
    "path": "mods/aetheris_armures-neoforge-1.21.1-1.0.0.jar",
-   "sha1": "159cd3a4ffa70b8e92e614e818bee2c87622e62b",
-   "size": 574312
+   "sha1": "817cd4c4196e02f4e0312aebbef98165205fc4a0",
+   "size": 572433
   },
   {
    "path": "mods/aetheris_balai-neoforge-1.21.1-1.4.0.jar",
@@ -6757,8 +6757,8 @@
   },
   {
    "path": "mods/chronomancy-1.0.5.jar",
-   "sha1": "47c87bff7868d78e3fa5eb6e65687f8befc8b0d5",
-   "size": 5884585
+   "sha1": "852cfbc8486afbf1bac98662f0ea4f46f3a64694",
+   "size": 5877281
   },
   {
    "path": "mods/citadel-1.21.1-2.7.6.jar",
